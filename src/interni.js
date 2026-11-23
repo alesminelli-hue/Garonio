@@ -203,7 +203,8 @@ export class Interni {
     const g = this.game;
     g.world.bloccatoFuoriMappa = (x, z, r) => this.blocked(x, z, r);
     // Loredana ti ha bandito dal bar (lavoro "bar"): fuori, subito
-    g.on('bandoBar', () => { if (this.edificio === 'bar') setTimeout(() => this.esci(), 300); });
+    const via = () => { if (this.edificio !== 'bar') return; if (g.ui.busy() || g.locked || g.combat?.active) { setTimeout(via, 400); return; } this.esci(); };
+    g.on('bandoBar', () => setTimeout(via, 300));
     this._css();
     const st = this.st;
     if (st.dentro && this.defs[st.dentro]) {
