@@ -29,33 +29,37 @@ export class Pannelli {
     el.classList.add('spostabile');
     const presa = maniglia || el;
     let st = null;
-    presa.addEventListener('pointerdown', e => {
-      if (e.button > 0 || el.classList.contains('big')) return;
-      if (e.target.closest('.rid-btn, .mn-close, .mn-tab, .mn-body, input')) return;
-      const p = this._pos(id);
-      st = { x: e.clientX, y: e.clientY, dx: p.dx, dy: p.dy, via: false, pid: e.pointerId };
-    });
-    presa.addEventListener('pointermove', e => {
+    // durante il trascinamento si ascolta tutta la finestra: il dito può uscire dal pannello
+    const muovi = e => {
       if (!st || e.pointerId !== st.pid) return;
       const mx = e.clientX - st.x, my = e.clientY - st.y;
       if (!st.via && Math.hypot(mx, my) < SOGLIA) return;
-      if (!st.via) { st.via = true; try { presa.setPointerCapture(e.pointerId); } catch {} el.classList.add('trascina'); }
+      if (!st.via) { st.via = true; el.classList.add('trascina'); }
       const p = this._pos(id); p.dx = st.dx + mx; p.dy = st.dy + my;
       this.applica(id);
-      e.preventDefault(); e.stopPropagation();
-    });
+      e.preventDefault();
+    };
     const fine = e => {
       if (!st || e.pointerId !== st.pid) return;
+      window.removeEventListener('pointermove', muovi, true);
+      window.removeEventListener('pointerup', fine, true);
+      window.removeEventListener('pointercancel', fine, true);
       if (st.via) {
         el.classList.remove('trascina');
         this.applica(id, true); salva(this.dati);
         this.zitto = true; setTimeout(() => { this.zitto = false; }, 80);
-        e.stopPropagation();
       }
       st = null;
     };
-    presa.addEventListener('pointerup', fine);
-    presa.addEventListener('pointercancel', fine);
+    presa.addEventListener('pointerdown', e => {
+      if (e.button > 0 || el.classList.contains('big') || st) return;
+      if (e.target.closest('.rid-btn, .mn-close, .mn-tab, .mn-body, input')) return;
+      const p = this._pos(id);
+      st = { x: e.clientX, y: e.clientY, dx: p.dx, dy: p.dy, via: false, pid: e.pointerId };
+      window.addEventListener('pointermove', muovi, true);
+      window.addEventListener('pointerup', fine, true);
+      window.addEventListener('pointercancel', fine, true);
+    });
     if (riducibile) {
       const b = document.createElement('button');
       b.className = 'rid-btn'; b.type = 'button'; b.title = 'Riduci / allarga';
