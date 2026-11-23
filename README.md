@@ -9,13 +9,16 @@ Il design completo è in [GDD.md](GDD.md).
 
 - **Frecce / WASD**: muoversi · **Shift**: correre · **E / Spazio / Invio**: agire · **J**: menu di Garonio (abilità, equipaggiamento, zaino, diario) · **M**: musica on/off · **T**: telefonino a conchiglia (T risponde, X rifiuta)
 - Su telefono: appoggia il pollice sulla metà sinistra dello schermo e compare la levetta (spinta fino in fondo = corsa); pulsante **E** a destra per agire, **Q** per saltare. Un tocco a sinistra fa anche avanzare i dialoghi. Si gioca sia in verticale sia in orizzontale.
+- **Salvataggi**: 3 slot più uno automatico che si aggiorna ogni mattina al risveglio. La partita si salva da sola ogni ora nello slot in uso. Dal menu (scheda 💾 Partite) salvi in un altro slot o ne carichi uno; sul titolo «Continua» riprende l'ultimo salvato e «Carica partita» fa scegliere.
 - Ogni mattina il Gigante ti dà una missione con scadenza. Se fallisci arriva Mister Mountain.
 - Lavorare alza **stanchezza** e **stress**. Il **bar** abbassa lo stress, la **casa** fa dormire (dopo le 20:00) o fare un pisolino.
 - Se resti fermo qualche secondo Garonio si appisola: recupera stanchezza, ma se il Gigante è vicino ti becca.
 - Campo (mais) e orto (pomodori): zappa, semina, annaffia ogni giorno, raccogli. Vendi tutto alla cassa di legno vicino a casa.
 - Pollaio: raccogli le uova, dai da mangiare alle galline alla mangiatoia per averne di più.
 - Le nutrie escono dal canale e mangiano le piante del campo: avvicinati e affrontale in uno scontro a turni (Attacca, Abilità, Oggetti, Difendi, Fuggi). Con lo stress sopra 60 si sblocca **Rabbia Incontrollata**.
-- Officina: attrezzi che rendono il lavoro meno faticoso.
+- **Magazzino del Bubetto** (parla col Bubetto in paese): armi‑attrezzo (rastrello, badile, forcone, falce, roncola, motosega: escono man mano nell'annata), vestiti, manuali (+1 punto abilità ciascuno), trappole, pomate e la rete anti‑nutria, l'angolo dell'usato che cambia ogni lunedì, e la lavagna con le sue commissioni (piccioni sul silos, ferro vecchio nei fossi, il pacco per il Postino, i soldi di Mister Frank, le code di ratto). Più commissioni fai, più sconto ti fa.
+- **Armi e mosse**: ogni arma porta la sua mossa nel menu Abilità dello scontro (Lottatore grado 3 sblocca la seconda). Coi livelli arrivano Lancio di letame, Colpo di clacson (se arrivi col mezzo), Bestemmia trattenuta, Fischio al cane e Secondo fiato. Nello scontro si usano tutti gli oggetti dello zaino: trappole, panini, grappa, pomata...
+- Officina: Zeno affila l'arma impugnata (3 gradi, +2 attacco l'uno)... se è di buon umore.
 - **Mezzi**: avvicinati alla Vespa, alla Punto o ai trattori e premi **E** per salire o scendere. Si guida con frecce/WASD o con la levetta, **Q** (o il pulsante 📯 sul telefono) suona il clacson.
   - La Vespa blu è veloce ma ogni tanto non parte o si spegne. La Punto bianca consuma benzina e può forare.
   - I trattori arano da soli le zolle del campo dove passano e spaventano le nutrie, ma con gli urti o guidando troppo stanco si rompono: arriva Mister Mountain.

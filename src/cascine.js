@@ -69,10 +69,13 @@ const cuccia = () => canvas(18, 16, P => {
   P('#8a3a2a', 1, 4, 16, 3); P('#a84a32', 3, 1, 12, 3); P('#9a6a3a', 2, 7, 14, 9);
   P('#2a1a12', 6, 9, 6, 7); P('#6e4826', 2, 7, 14, 1);
 });
-const pozzo = () => canvas(22, 28, P => {
-  P('#6e4826', 3, 2, 2, 16); P('#6e4826', 17, 2, 2, 16); P('#a8462e', 1, 0, 20, 3);     // tettuccio
-  P('#7a7a80', 4, 7, 14, 1); P('#5a4a3a', 10, 7, 1, 6); P('#8a6a3a', 9, 12, 3, 3);     // carrucola e secchio
-  P('#9a9aa0', 1, 16, 20, 11); P('#b8b8c0', 1, 16, 20, 2); P('#6a6a72', 6, 19, 1, 8); P('#6a6a72', 14, 19, 1, 8); P('#6a6a72', 1, 22, 20, 1);
+// pozzo di pietra con l'acqua: livello 2 = pieno, 1 = a metà, 0 = vuoto (si svuota mentre la turbina pompa)
+const pozzo = (livello = 2) => canvas(26, 32, P => {
+  P('#6e4826', 3, 2, 2, 18); P('#6e4826', 21, 2, 2, 18); P('#a8462e', 1, 0, 24, 3); P('#c85a3a', 3, 0, 20, 1);  // tettuccio
+  P('#7a7a80', 4, 7, 18, 1); P('#5a4a3a', 12, 7, 1, 6); P('#8a6a3a', 11, 12, 3, 3);                           // carrucola e secchio
+  P('#2a3a4a', 2, 18, 22, 4);                                                                                    // bocca del pozzo
+  if (livello > 0) { P(livello > 1 ? '#3a8ad0' : '#2a5a90', 3, livello > 1 ? 18 : 20, 20, livello > 1 ? 4 : 2); if (livello > 1) P('#a8dcff', 6, 19, 5, 1); }
+  P('#9a9aa0', 1, 21, 24, 10); P('#b8b8c0', 1, 21, 24, 2); P('#6a6a72', 7, 24, 1, 7); P('#6a6a72', 17, 24, 1, 7); P('#6a6a72', 1, 27, 24, 1);
 });
 const ceppo = () => canvas(14, 9, P => { P('#7a5434', 2, 2, 10, 7); P('#c8a070', 3, 1, 8, 2); P('#8a6038', 5, 1, 3, 1); P('#5a3a22', 0, 7, 3, 2); P('#5a3a22', 11, 7, 3, 2); });
 const paletto = () => canvas(5, 18, P => { P('#9a6a3a', 1, 4, 3, 14); P('#e03a2a', 1, 0, 3, 2); P('#f4f4f4', 1, 2, 3, 2); });
@@ -136,7 +139,12 @@ export class Cascine {
 
     // pozzo di Frank
     const pz = BERSAGLI.pozzo;
-    add(PIX.toTexture(pozzo()), 1.4, 1.75, pz.x, pz.z); solid(pz.x, pz.z, 0.6, 0.3);
+    this._texPozzo = [0, 1, 2].map(l => PIX.toTexture(pozzo(l)));
+    this.pozzo = add(this._texPozzo[2], 2, 2.45, pz.x, pz.z); solid(pz.x, pz.z, 0.85, 0.35);
+    // cartelli: così il bersaglio dell'acqua si trova anche senza minimappa
+    for (const c of BERSAGLI.cartelli) { const cv = PIX.signpost(c.testo); add(PIX.toTexture(cv), cv.width / PIX.PX, cv.height / PIX.PX, c.x, c.z); }
+    // segnalino sopra l'obiettivo della truffa in corso
+    this._obj = W.sprite(PIX.toTexture(bubble('!', '#d890ff')), { w: 0.8, h: 0.68 }); this._obj.visible = false; scene.add(this._obj);
 
     // alberi del confine
     this._texAlbero = [1, 2, 3].map(i => PIX.toTexture(PIX.tree(40 + i)));
@@ -328,13 +336,13 @@ export class Cascine {
 
     if (g.vehicles.driving) {
       const v = g.vehicles.driving;
-      if (this.pompa) return this.pompa.vero ? null : { label: 'Stacca la turbina', fn: () => this._fermaPompa() };
+      if (this.pompa) return { label: 'Stacca la turbina', fn: () => this._fermaPompa() };
       if (truffa?.tipo === 'acqua') {
         const sp = BERSAGLI.acqua[truffa.vicino];
         if (Math.hypot(v.st.x - sp.x, v.st.z - sp.z) < 3.4) {
           // con la turbina vera (src/attrezzi.js) spruzza da sola; senza, il Gigante presta la sua turbina vecchia
           if (this._turbinaVera()) {
-            if (g.attrezzi.su?.(v.id) === 'turbina') return null;
+            if (g.attrezzi.su?.(v.id) === 'turbina') return { label: `Attacca la turbina a ${sp.nome}`, fn: () => this._attaccaPompa(v, truffa.vicino) };
             return { label: 'Serve la turbina: agganciala al trattore rosso sotto la tettoia', fn: () => g.ui.toast('Aggancia la turbina al trattore rosso sotto la tettoia, poi torna qui.', 'bad') };
           }
           if (v.id !== 'trattore1') return { label: 'Qui serve il trattore rosso con la turbina', fn: () => g.ui.toast('La turbina vecchia del Gigante va sul trattore ROSSO.', 'bad') };
@@ -342,6 +350,13 @@ export class Cascine {
         }
       }
       return null;
+    }
+
+    if (truffa?.tipo === 'acqua') {
+      const sp = BERSAGLI.acqua[truffa.vicino];
+      if (d(sp.x, sp.z) < 2.2) return { label: `Qui serve il trattore rosso con la turbina`, fn: () => g.ui.toast(this._turbinaVera()
+        ? 'Aggancia la turbina al trattore rosso sotto la tettoia, portalo qui e premi E dal trattore.'
+        : 'Prendi il trattore ROSSO (il Gigante ti presta la turbina vecchia), portalo qui e premi E dal trattore.', '') };
     }
 
     if (truffa?.tipo === 'alberi' && g.prog.ha('motosega_gigante')) {
@@ -449,16 +464,11 @@ export class Cascine {
   }
   _aggiornaPompa() {
     const g = this.game, t = this.attiva();
-    // con gli attrezzi veri (lavoro C): la turbina accesa vicino all'acqua del vicino conta da sola
-    if (!this.pompa && this._turbinaVera() && t?.a.stato === 'attiva' && t.def.tipo === 'acqua') {
-      const sp = BERSAGLI.acqua[t.def.vicino];
-      if (g.attrezzi.turbinaAttiva(sp.x, sp.z, 3.6) && g.vehicles.driving) this.pompa = { v: g.vehicles.driving, vicino: t.def.vicino, last: this.s.minutes, vero: true };
-    }
+    this._livelloPozzo();
     const p = this.pompa; if (!p) return;
     const sp = BERSAGLI.acqua[p.vicino];
     const lontano = g.vehicles.driving !== p.v || Math.hypot(p.v.st.x - sp.x, p.v.st.z - sp.z) > 3.6;
-    const spenta = p.vero && !g.attrezzi.turbinaAttiva(sp.x, sp.z, 3.6);
-    if (!t || t.def.tipo !== 'acqua' || lontano || spenta) { this._fermaPompa(!t); return; }
+    if (!t || t.def.tipo !== 'acqua' || lontano) { this._fermaPompa(!t); return; }
     this.f.pompa += Math.max(0, this.s.minutes - p.last); p.last = this.s.minutes;
     this.spruzzo.visible = true;
     this.spruzzo.position.set(p.v.st.x + 0.2, 0.6 + Math.sin(performance.now() / 120) * 0.05, p.v.st.z + 0.6);
@@ -468,6 +478,12 @@ export class Cascine {
       this._irriga();
       this._segnaFatto(p.vicino, 'acqua');
     }
+  }
+  // il pozzo di Frank si svuota mentre pompi (e si riempie di nuovo quando non c'è una truffa dell'acqua)
+  _livelloPozzo() {
+    const t = this.attiva(), k = t?.def.tipo === 'acqua' && t.def.vicino === 'frank' ? this.f.pompa / DURATE.turbinaMinuti : 0;
+    const l = t && t.a.stato === 'pronta' && t.def.vicino === 'frank' ? 0 : k >= 0.85 ? 0 : k >= 0.4 ? 1 : 2;
+    if (this.pozzo.material.map !== this._texPozzo[l]) this.pozzo.material.map = this._texPozzo[l];
   }
   // l'acqua rubata annaffia il campo del Gigante
   _irriga() {
@@ -503,14 +519,20 @@ export class Cascine {
   _mm() {
     const mm = this.game.minimap || window.__garonio?.minimap; if (!mm) return null;
     const t = this.attiva();
-    if (!t) { mm.setMarker('truffa', null); return mm; }
+    if (!t) { mm.setMarker('truffa', null); if (this._obj) this._obj.visible = false; return mm; }
     let p = null;
     if (t.a.stato === 'pronta') { const G = this.game.gigante.group.position; p = { x: G.x, z: G.z }; }
     else if (t.def.tipo === 'acqua') p = BERSAGLI.acqua[t.def.vicino];
     else if (t.def.tipo === 'alberi') p = this.alberi.find(a => a.vicino === t.def.vicino && !a.cut);
     else if (t.def.tipo === 'confine') { const q = this.paletti.find(p => !p.spostato); p = q && { x: q.x0, z: q.z }; }
     else if (t.def.tipo === 'prestito') p = this.f.erpice === 'garonio' ? BERSAGLI.prestito.tettoia : BERSAGLI.prestito;
-    if (p) mm.setMarker('truffa', p.x, p.z, '#d060ff'); else mm.setMarker('truffa', null);
+    if (this._obj) {
+      const show = !!p && t.a.stato !== 'pronta';
+      this._obj.visible = show;
+      const alto = { acqua: t.def.vicino === 'frank' ? 2.9 : 1.2, alberi: 3.1, confine: 1.5, prestito: 1.3 }[t.def.tipo] || 1.5;
+      if (show) this._obj.position.set(p.x, alto + Math.sin(performance.now() / 250) * 0.12, p.z);
+    }
+    if (p) mm.setMarker('truffa', p.x, p.z, '#d060ff', t.def.tipo === 'acqua' && t.a.stato !== 'pronta' ? '~' : '!'); else mm.setMarker('truffa', null);
     return mm;
   }
 

@@ -5,7 +5,7 @@
 //   nuovoGiorno     { day }                    dopo il risveglio
 //   ora             { ora }                    ogni ora di gioco piena
 //   azione          { tipo }                   zappa, semina, annaffia, raccogli, uovo, nutri
-//   raccolto        { crop }                   pianta raccolta (pomodoro, mais)
+//   raccolto        { crop, x, z }             pianta raccolta (pomodoro, mais)
 //   venduto         { tot }                    vendita alla cassa
 //   nemicoSconfitto { id, place }              uno per ogni nemico battuto
 //   combattimento   { esito, place, nemici }   fine scontro: 'win' | 'lose' | 'flee'
@@ -44,6 +44,10 @@
 //   impiccione      { png, scelta }            un paesano attacca bottone: 'ascolta' | 'taglia' | 'telefono'
 //   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
 //   telefono        { tipo, chi }              telefonino (src/telefono.js): 'risposta' | 'rifiutata' | 'persa' | 'chiamata' | 'sms'
+//   annaffiato      { x, z }                   zolla annaffiata a mano
+//   sconfitta       { place }                  Garonio va a terra in uno scontro (il santino non l'ha salvato)
+//   comprato        { tipo, id, prezzo }       acquisto nel magazzino del Bubetto (src/negozio.js)
+//   affilatura      { arma, grado, fregatura } Zeno ha affilato (fregatura: null | 'sovrapprezzo' | 'meta')
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }
