@@ -86,7 +86,7 @@ export const VESTITI = {
   grembiule:       { nome: 'Grembiule di cuoio',       slot: 'corpo', bonus: { def: 6 }, prezzo: 180, liv: 14, desc: 'difesa +6' },
   santino:         { nome: 'Santino della nonna',      slot: 'portafortuna', bonus: { santino: 1 }, desc: 'una volta al giorno, a Vita 0 si rialza' },
   thermos:         { nome: 'Thermos di caffè',         slot: 'portafortuna', bonus: { faticaInizioScontro: 10 }, desc: 'fatica −10 a inizio scontro' },
-  telefonoConsulente: { nome: 'Telefono del Consulente', slot: 'portafortuna', bonus: { consigliAlTelefono: 1 }, desc: 'i consigli arrivano per messaggio' },
+  telefonoConsulente: { nome: 'Numero del Consulente', slot: 'portafortuna', bonus: { consigliAlTelefono: 1 }, desc: 'le dritte arrivano per SMS sul telefonino' },
   // angolo dell'usato del Bubetto: roba che "arriva" dalle cascine vicine (GDD 19.3)
   cappelloPaglia:  { nome: 'Cappello di paglia del Patata', slot: 'testa', bonus: { def: 1, stress: 0.05 }, desc: 'difesa +1, stress −5%. Profuma di patata' },
   stivaliPostino:  { nome: 'Stivali del Postino',      slot: 'piedi', bonus: { velocita: 0.15, def: 1 }, desc: 'cammini +15%, difesa +1. Il Postino li cerca ancora' },
