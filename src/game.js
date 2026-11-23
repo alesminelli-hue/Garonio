@@ -27,6 +27,7 @@ import { GRANO_MINUTI } from './data/stagioni.js';
 import { Pilot } from './pilot.js';
 import { Interni } from './interni.js';
 import { PORTE } from './data/interni.js';
+import { Bestie } from './bestie.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -101,6 +102,7 @@ export class Game {
     this.stagioni = new Stagioni(this);
     this.attrezzi = new Attrezzi(this);
     this.maiali = new Maiali(this);
+    this.bestie = new Bestie(this);       // bestie leggendarie e gruppi di nemici (src/bestie.js, src/spawn.js)
     this.pilot = new Pilot(this);         // ?pilot nell'indirizzo: scorciatoie per provare l'annata
     this.bar = new Bar(this);               // trama del bar (src/bar.js)
     this.consulente = new Consulente(this); // consigli e oggetti nascosti (src/consulente.js)
@@ -162,6 +164,7 @@ export class Game {
     this.bar.init();
     this.consulente.init();
     this.interni.init();
+    this.bestie.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();

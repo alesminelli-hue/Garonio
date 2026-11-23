@@ -34,6 +34,11 @@
 //   briscola        { vinta, tuoi, suoi }      partita a briscola con Tarcisio
 //   trovato         { id, dove }               raccolto l'oggetto nascosto indicato dal Consulente
 //   consulente      { livello }                sale l'amicizia col Consulente
+//   traccia         { bestia, luogo }          (ascoltato) segni di un re trovati altrove (es. negli interni)
+//   tracciaBestia   { id, n, tot }             traccia di un re trovata sulla mappa
+//   bestiaSconfitta { id }                     un re è stato battuto (trofeo già dato)
+//   gruppo          { stato, membri, zona }    gruppo sulla mappa: 'comparso' | 'win' | 'lose' | 'flee'
+//   clacson         { mezzo, x, z }            Garonio suona il clacson (scaccia i gruppi piccoli)
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }

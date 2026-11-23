@@ -255,6 +255,7 @@ export class Vehicles {
     this.audio.sfx('horn_' + v.kind);
     // il clacson spaventa le nutrie vicine
     for (const n of this.game.nutrie) if (n.state !== 'flee' && Math.hypot(n.x - v.st.x, n.z - v.st.z) < 3) this.game._flee(n, true);
+    this.game.emit('clacson', { mezzo: v.kind, x: v.st.x, z: v.st.z });
     return true;
   }
 
