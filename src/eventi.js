@@ -34,6 +34,10 @@
 //   briscola        { vinta, tuoi, suoi }      partita a briscola con Tarcisio
 //   trovato         { id, dove }               raccolto l'oggetto nascosto indicato dal Consulente
 //   consulente      { livello }                sale l'amicizia col Consulente
+//   buca            { mezzo, danno, x, z }     un mezzo prende una buca (src/imprevisti.js)
+//   randagio        { esito }                  il cane randagio: 'scacciato' | 'amico' | 'battuto'
+//   impiccione      { png, scelta }            un paesano attacca bottone: 'ascolta' | 'taglia' | 'telefono'
+//   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }

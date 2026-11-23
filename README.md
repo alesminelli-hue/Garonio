@@ -27,6 +27,10 @@ Il design completo è in [GDD.md](GDD.md).
 - **Personaggi del paese**: la Mamma, il Consulente, Zeno, il Bubetto, la Vigilessa, il Patata, il Postino e Mister Frank. Avvicinati e premi **E** per parlarci. Chi ha un fumetto «!» ha una missione secondaria da darti o da ritirare.
 - **Cascine dei vicini**: la Cascina del Patata, la Cascina del Postino e il Ranch di Mister Frank stanno a sud della capezzagna, accanto ai loro campi. I vicini fanno battute quando passi, il Patata vende patate (e una bollita al giorno è gratis), il Postino vende voci di paese (alcune vere e utili per le truffe), Frank compra il mais a 14 €. Ogni cascina ha un cane (accarezzalo: per quel giorno non abbaia contro di te) e, di giorno, a volte un garzone.
 - **Missioni truffaldine del Gigante**: parlando col Gigante scegli 🤫 «Hai qualche lavoretto... speciale?». Rubare l'acqua col trattore rosso e la turbina, abbattere alberi con la motosega prestata, spostare i paletti del confine, «prendere in prestito» l'erpice. Durante la truffa vedi i coni di vista (giallo → rosso) e i cerchi d'udito di vicino, cane e garzone, più le barre di sospetto e rumore. Di notte (dopo le 20) vedono meno ma sentono tutto. Se ti beccano: scuse, bugia (Parlantina), fuga o rissa. Il ramo Furbizia fa meno rumore.
+- **Il paese è vivo**: i paesani (la Sciura Ines, il Bepi, il Gino del tabacchi, la Giusy, il Moreno, il veterinario, l'Ornella col barboncino, il Walter) girano per il paese di giorno e la sera tornano a casa. Sulla provinciale passano auto, Ape e il camion del latte (di più all'ora di punta, di notte coi fari): se Garonio sta in mezzo frenano e suonano (stress), se le tamponi coi mezzi è un urto vero. Gatti da accarezzare (stress −3, a volte graffiano), corvi che volano via, anatre sul laghetto, lucciole nelle notti d'estate, lampioni che si accendono al tramonto.
+- **Imprevisti** che alzano lo stress: **buche** sulle strade (rovinano Vespa, Punto e trattori: poi paghi Zeno; la Punto può forare), **pozzanghere** nei giorni di pioggia (calzini bagnati, la Vespa scoda, le auto ti fanno la doccia), **cantieri** con transenne, operai e umarell, il **cane randagio** che ti insegue (scappa correndo, scaccialo, lanciagli un uovo o affrontalo), i **paesani impiccioni** che attaccano bottone e le **zanzare** la sera vicino all'acqua.
+- **Night Paradiso** (accanto al paese, aperto dalle 20): il catalogo, con descrizioni ironiche. Più spendi, più scende lo stress e più esperienza prendi. Una sera sola al giorno. Occhio al **tranvione**: a volte va male e perdi tutti i soldi, il rispetto al bar e la reputazione in paese.
+- Per provare dalla console: `garonio.imprevisti.prova('cane' | 'buca' | 'pozze' | 'cantiere' | 'impiccione')`.
 - **Livelli e abilità**: a ogni livello (fino al 20) guadagni un punto abilità da spendere nel menu (**J**) in uno dei sette rami.
 - Il gioco si salva da solo nel browser.
 
@@ -77,6 +81,7 @@ Per aggiungere una traccia: copia il file `.mp3` nella cartella e scrivi il suo 
 | `src/racconto.js` | Collega i testi di `src/data/` ai dialoghi del gioco |
 | `src/combat.js`, `src/combat.css` | Combattimento a turni stile JRPG: nemici, abilità, oggetti. In cima c'è `COMBAT` per bilanciare |
 | `src/world.js` | Mappa, edifici, terreno |
+| `src/vita.js`, `src/imprevisti.js`, `src/paradiso.js` | Mondo vivo: paesani, traffico, animali, luci; buche, pozzanghere, cantieri, randagio, impiccioni, zanzare; Night Paradiso. Testi in `src/data/vita.js`, sprite in `src/sprite_vita.js` |
 | `src/pixel.js` | Grafica segnaposto disegnata via codice (verrà sostituita dagli sprite veri) |
 | `src/audio.js` | Musica ed effetti sonori |
 | `lib/three.module.min.js` | Three.js 0.170 (licenza MIT, `lib/THREE-LICENSE`) |

@@ -25,6 +25,9 @@ import { Maiali } from './maiali.js';
 import { Stagioni } from './stagioni.js';
 import { GRANO_MINUTI } from './data/stagioni.js';
 import { Pilot } from './pilot.js';
+import { Vita } from './vita.js';
+import { Imprevisti } from './imprevisti.js';
+import { Paradiso } from './paradiso.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -158,6 +161,10 @@ export class Game {
     this.cascine.init();
     this.bar.init();
     this.consulente.init();
+    // il mondo vivo: paesani, traffico, animali, imprevisti e Night Paradiso (src/vita.js, src/imprevisti.js, src/paradiso.js)
+    this.vita = new Vita(this); this.vita.init();
+    this.imprevisti = new Imprevisti(this); this.imprevisti.init();
+    this.paradiso = new Paradiso(this); this.paradiso.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();

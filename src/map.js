@@ -78,6 +78,7 @@ export const BUILDINGS = [
   { id: 'casa-azzurra', label: '', x0: 3, z0: 62, w: 6, d: 4, h: 2.8, wall: '#a8c8e0', roof: '#8a3a2a', windows: 2, decor: true },
   { id: 'tabacchi', label: 'TABACCHI', x0: 13, z0: 62, w: 6, d: 4, h: 2.8, wall: '#f0e0b0', roof: '#b8432e', windows: 1, decor: true },
   { id: 'municipio', label: 'MUNICIPIO', x0: 24.6, z0: 44.4, w: 5, d: 5, h: 3.2, wall: '#e8dcc0', roof: '#8a3a2a', windows: 1, decor: true }, // ufficio multe (src/vigilessa.js)
+  { id: 'paradiso', label: 'NIGHT PARADISO', x0: 44, z0: 61, w: 8, d: 5, h: 3, wall: '#6a3a7a', roof: '#2a2030', windows: 1, decor: true }, // svago serale (src/paradiso.js)
   { id: 'tettoia', label: '', x0: 88, z0: 61, w: 5, d: 4, h: 2.2, wall: 'legno', roof: '#6a7078', windows: 0, decor: true, noDoor: true },
   // cascine dei vicini (GDD 19.5): la logica è in src/cascine.js, i dati in src/data/vicini.js
   { id: 'cascina-patata', label: 'CASCINA DEL PATATA', x0: 97, z0: 34, w: 8, d: 5, h: 2.8, wall: '#e0c48a', roof: '#a8462e', windows: 2, decor: true },
@@ -123,6 +124,7 @@ export const LANDMARKS = [
   { name: 'Casa', x: 65.5, z: 63.5 }, { name: 'Officina', x: 83.5, z: 63 }, { name: 'Bar', x: 13.5, z: 47.5 },
   { name: 'Maiali', x: 134, z: 65 }, { name: 'Campo', x: 74, z: 17 }, { name: 'Orto', x: 65.5, z: 75 },
   { name: 'Pollaio', x: 81, z: 76.5 }, { name: 'Laghetto', x: 35, z: 83.5 },
+  { name: 'Paradiso', x: 48, z: 63.5 },
   { name: 'Patata', x: 101, z: 36.5 }, { name: 'Postino', x: 36.5, z: 36.5 }, { name: 'Frank', x: 144.5, z: 35.5 },
 ];
 
