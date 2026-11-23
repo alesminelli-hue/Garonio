@@ -416,6 +416,59 @@ export function paintTile(g, ch, x, y, seed, plot) {
   }
 }
 
+// Bordi morbidi tra terreni diversi: il terreno "più forte" (erba, grano...) sconfina
+// di qualche pixel irregolare in quello vicino, così i confini non sono più a quadretti.
+const BLEND = { g: 6, y: 5, f: 4, o: 4, r: 4, s: 3, c: 3, q: 2, p: 2, a: 1, w: 0 };
+function hash2(a, b) { let h = (a * 374761393 + b * 668265263) >>> 0; h = ((h ^ (h >>> 13)) * 1274126177) >>> 0; return (h ^ (h >>> 16)) / 4294967296; }
+// rumore liscio lungo un bordo: valori casuali ogni 4 px, interpolati
+function edgeNoise(line, t) {
+  const i = Math.floor(t / 4), f = (t % 4) / 4;
+  const a = hash2(line, i), b = hash2(line, i + 1);
+  return a + (b - a) * (f * f * (3 - 2 * f));
+}
+export function blendTile(g, grid, x, y) {
+  const me = grid[y]?.[x], pm = BLEND[me];
+  if (pm === undefined) return;
+  const X = x * PX, Y = y * PX;
+  const nb = (dx, dy) => grid[y + dy]?.[x + dx];
+  const stronger = ch => ch !== undefined && BLEND[ch] !== undefined && BLEND[ch] > pm;
+  const dot = (col, px, py) => { g.fillStyle = col; g.fillRect(X + px, Y + py, 1, 1); };
+  const sides = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+  for (const [dx, dy] of sides) {
+    const ch = nb(dx, dy);
+    if (!stronger(ch)) continue;
+    const pal = GROUND[ch];
+    const horiz = dy !== 0;
+    // id univoco della linea di confine, uguale da entrambe le parti
+    const line = horiz ? (y + Math.max(0, dy)) * 7919 + 1 : (x + Math.max(0, dx)) * 7919 + 2;
+    for (let i = 0; i < PX; i++) {
+      const t = horiz ? X + i : Y + i;
+      const d = 2 + Math.floor(edgeNoise(line, t) * 4.5);
+      for (let k = 0; k < d; k++) {
+        const col = hash2(t * 31 + k, line) < 0.8 ? pal[0] : pal[2];
+        const px = horiz ? i : (dx < 0 ? k : PX - 1 - k), py = horiz ? (dy < 0 ? k : PX - 1 - k) : i;
+        dot(col, px, py);
+      }
+      if (hash2(t, line * 3) < 0.35) { // pixel sparso oltre il bordo: sfumatura a retino
+        const k = d + 1 + (hash2(line, t * 7) * 2 | 0);
+        const px = horiz ? i : (dx < 0 ? k : PX - 1 - k), py = horiz ? (dy < 0 ? k : PX - 1 - k) : i;
+        dot(pal[0], px, py);
+      }
+    }
+  }
+  // angoli: se solo la diagonale è più forte, arrotonda l'angolo
+  for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    const ch = nb(dx, dy);
+    if (!stronger(ch) || stronger(nb(dx, 0)) || stronger(nb(0, dy))) continue;
+    const pal = GROUND[ch];
+    const r = 4 + (hash2(x * 3 + dx, y * 5 + dy) * 3 | 0);
+    for (let j = 0; j < r; j++) for (let i = 0; i < r; i++) {
+      if ((r - i - 0.5) ** 2 + (r - j - 0.5) ** 2 > r * r) continue;
+      dot(pal[0], dx < 0 ? i : PX - 1 - i, dy < 0 ? j : PX - 1 - j);
+    }
+  }
+}
+
 // ---------- Garonio: sprite disegnati da Alessandro ----------
 // assets/sprites/garonio.png = 13 fotogrammi in fila (vedi tools/taglia_sprite.py)
 export const GARONIO_ANIM = { idle: [0], walk: [1, 2, 3, 4], run: [5, 6, 7], jump: [8, 9, 10], attack: [11], ko: [12] };

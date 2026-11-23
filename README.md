@@ -8,7 +8,7 @@ Il design completo è in [GDD.md](GDD.md).
 ## Come si gioca
 
 - **Frecce / WASD**: muoversi · **Shift**: correre · **E / Spazio / Invio**: agire · **M**: musica on/off
-- Su telefono: levetta a sinistra, pulsante **E** a destra.
+- Su telefono: appoggia il pollice sulla metà sinistra dello schermo e compare la levetta (spinta fino in fondo = corsa); pulsante **E** a destra per agire, **Q** per saltare. Un tocco a sinistra fa anche avanzare i dialoghi. Si gioca sia in verticale sia in orizzontale.
 - Ogni mattina il Gigante ti dà una missione con scadenza. Se fallisci arriva Mister Mountain.
 - Lavorare alza **stanchezza** e **stress**. Il **bar** abbassa lo stress, la **casa** fa dormire (dopo le 20:00) o fare un pisolino.
 - Se resti fermo qualche secondo Garonio si appisola: recupera stanchezza, ma se il Gigante è vicino ti becca.
@@ -73,3 +73,8 @@ Per aggiungere una traccia: copia il file `.mp3` nella cartella e scrivi il suo 
 | `src/pixel.js` | Grafica segnaposto disegnata via codice (verrà sostituita dagli sprite veri) |
 | `src/audio.js` | Musica ed effetti sonori |
 | `lib/three.module.min.js` | Three.js 0.170 (licenza MIT, `lib/THREE-LICENSE`) |
+
+## Grafica
+
+Lo stile è "HD-2D": la pixel art resta nitida, ma il mondo è disegnato alla risoluzione piena dello schermo, con luce che cambia con l'ora (sole che si sposta, ombre lunghe all'alba e al tramonto), foschia in lontananza e bordi dello schermo leggermente sfocati.
+Se il telefono fatica (meno di 30 fotogrammi al secondo), il gioco spegne da solo ombre e sfocature. Per forzare la qualità piena aggiungi `?qualita=alta` all'indirizzo.

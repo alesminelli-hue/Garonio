@@ -12,25 +12,35 @@ export class UI {
 
   busy() { return !!this.queue; }
 
+  // Scrive nel DOM solo se il valore è cambiato: su telefono riscrivere tutto a ogni fotogramma costa batteria.
+  _set(id, prop, val) {
+    const c = (this._hud ??= {}), k = id + prop;
+    if (c[k] === val) return;
+    c[k] = val;
+    const el = $(id);
+    if (prop === 'text') el.textContent = val; else if (prop === 'html') el.innerHTML = val; else el.style[prop] = val;
+  }
+
   hud(s, mission) {
     const hh = String(Math.floor(s.minutes / 60) % 24).padStart(2, '0');
     const mm = String(Math.floor(s.minutes % 60 / 10) * 10).padStart(2, '0');
-    $('clock').textContent = `Giorno ${s.day} · ${hh}:${mm}`;
-    $('money').textContent = `€ ${Math.floor(s.money)}`;
-    $('level').textContent = `Lv ${s.level}`;
-    $('xp').style.width = `${Math.min(100, s.xp / (s.level * 20) * 100)}%`;
+    this._set('clock', 'text', `Giorno ${s.day} · ${hh}:${mm}`);
+    this._set('money', 'text', `€ ${Math.floor(s.money)}`);
+    this._set('level', 'text', `Lv ${s.level}`);
+    this._set('xp', 'width', `${Math.min(100, s.xp / (s.level * 20) * 100).toFixed(1)}%`);
     for (const k of ['health', 'stress', 'tired']) {
       const v = Math.max(0, Math.min(100, s[k]));
-      $('bar-' + k).style.width = v + '%';
-      $('bar-' + k).parentElement.classList.toggle('danger', k === 'health' ? v < 25 : v > 80);
-      $('val-' + k).textContent = Math.round(v);
+      this._set('bar-' + k, 'width', v.toFixed(1) + '%');
+      const danger = k === 'health' ? v < 25 : v > 80;
+      if (this._hud['d' + k] !== danger) { this._hud['d' + k] = danger; $('bar-' + k).parentElement.parentElement.classList.toggle('danger', danger); }
+      this._set('val-' + k, 'text', String(Math.round(v)));
     }
-    $('inv').textContent = `🥚 ${s.inv.uova}  🍅 ${s.inv.pomodoro}  🌽 ${s.inv.mais}`;
+    this._set('inv', 'text', `🥚 ${s.inv.uova}  🍅 ${s.inv.pomodoro}  🌽 ${s.inv.mais}`);
     const m = $('mission');
     if (mission) {
       const dl = `${String(Math.floor(mission.deadline / 60)).padStart(2, '0')}:00`;
       const st = mission.done ? '✅ completata' : mission.failed ? '❌ fallita' : `${Math.min(mission.progress, mission.n)}/${mission.n} · entro le ${dl}`;
-      m.innerHTML = `<b>Missione del Gigante</b><span>${mission.text}</span><em>${st}</em>`;
+      this._set('mission', 'html', `<b>Missione del Gigante</b><span>${mission.text}</span><em>${st}</em>`);
       m.classList.toggle('done', !!mission.done);
       m.classList.toggle('failed', !!mission.failed);
       m.hidden = false;

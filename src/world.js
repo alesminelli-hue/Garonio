@@ -26,6 +26,7 @@ export class World {
     this._makeBridges();
     this._makeTrees();
     this._makeProps();
+    this._setupShadows();
     // bordi mappa
     this.solids.push({ x0: -5, z0: -5, x1: MAP_W + 5, z1: 0.6 });
     this.solids.push({ x0: -5, z0: -5, x1: 0.6, z1: MAP_H + 5 });
@@ -100,14 +101,48 @@ export class World {
 
   paint(x, z, plot) {
     PIX.paintTile(this.groundCtx, this.grid[z][x], x, z, x * 131 + z * 977 + 7, plot);
+    if (!plot) PIX.blendTile(this.groundCtx, this.grid, x, z);
     if (this.groundTex) this.groundTex.needsUpdate = true;
   }
 
   _makeLights() {
-    this.amb = new THREE.AmbientLight(0xffffff, 1.6);
-    this.sun = new THREE.DirectionalLight(0xfff2d8, 1.6);
+    // luce in stile HD-2D: cielo azzurro dall'alto, riflesso caldo della terra dal basso, sole che fa ombre morbide
+    this.amb = new THREE.AmbientLight(0xffffff, 0.8);
+    this.hemi = new THREE.HemisphereLight(0xcfe8ff, 0x6a5a30, 0.9);
+    this.sun = new THREE.DirectionalLight(0xffe2b0, 2.2);
     this.sun.position.set(-10, 20, 14);
-    this.scene.add(this.amb, this.sun);
+    const sh = this.sun.shadow;
+    this.sun.castShadow = true;
+    sh.mapSize.set(2048, 2048);
+    Object.assign(sh.camera, { left: -24, right: 24, top: 24, bottom: -24, near: 1, far: 90 });
+    sh.bias = -0.0008; sh.normalBias = 0.02; sh.radius = 4;
+    this.sunOff = new THREE.Vector3(-10, 20, 8);
+    this.scene.add(this.amb, this.hemi, this.sun, this.sun.target);
+  }
+
+  // Il sole (e la sua zona d'ombra) segue Garonio, così le ombre restano nitide vicino a lui.
+  followSun(x, z) {
+    this.sun.position.set(x + this.sunOff.x, this.sunOff.y, z + this.sunOff.z);
+    this.sun.target.position.set(x, 0, z);
+  }
+
+  // Dopo aver costruito tutto: gli oggetti 3D fanno ombra, il terreno la riceve.
+  _setupShadows() {
+    this.scene.traverse(o => {
+      if (!o.isMesh) return;
+      const flat = o.geometry.type === 'PlaneGeometry' || o.geometry.type === 'CircleGeometry';
+      o.castShadow = !flat; o.receiveShadow = true;
+    });
+  }
+
+  // Ombra morbida dipinta sul terreno sotto alberi e cespugli (gli sprite non fanno ombra da soli).
+  _paintBlobShadow(x, z, rx, rz) {
+    const g = this.groundCtx, P = PIX.PX;
+    const cx = (x + 0.15) * P, cz = (z - 0.05) * P;
+    for (const [k, a] of [[1, 0.10], [0.75, 0.10], [0.5, 0.10]]) {
+      g.fillStyle = `rgba(20,30,10,${a})`;
+      g.beginPath(); g.ellipse(Math.round(cx), Math.round(cz), rx * P * k, rz * P * k, 0, 0, Math.PI * 2); g.fill();
+    }
   }
 
   _makeBuilding(b) {
@@ -206,6 +241,7 @@ export class World {
       const s = this.sprite(tex, { w, h });
       s.position.set(x + 0.5 + (R() - 0.5) * jitter, 0, z + 0.5 + (R() - 0.5) * jitter);
       this.scene.add(s);
+      this._paintBlobShadow(s.position.x, s.position.z, w * 0.42, w * 0.22);
       this.solids.push({ x0: s.position.x - 0.3, z0: s.position.z - 0.2, x1: s.position.x + 0.3, z1: s.position.z + 0.2 });
     };
     const oak = (x, z) => plant(x, z, texs[(R() * 3) | 0], 2, 2.75);
@@ -230,7 +266,9 @@ export class World {
       used.add(x + ',' + z);
       const s = this.sprite(bt, { w: 1, h: 0.62 });
       s.position.set(x + 0.5, 0, z + 0.5); this.scene.add(s);
+      this._paintBlobShadow(x + 0.5, z + 0.5, 0.45, 0.2);
     }
+    this.groundTex.needsUpdate = true;
   }
 
   _makeProps() {
@@ -364,11 +402,22 @@ export class World {
   }
 
   // Luce del giorno: k = 0 (notte) .. 1 (pieno giorno); warm = tramonto
-  setDaylight(k, warm = 0) {
+  setDaylight(k, warm = 0, hour = 12) {
     const night = new THREE.Color('#5868a8'), day = new THREE.Color('#ffffff'), dusk = new THREE.Color('#ffb070');
     this.tint.copy(night).lerp(day, k).lerp(dusk, warm * 0.5);
-    this.amb.color.copy(this.tint); this.amb.intensity = 0.7 + 0.9 * k;
-    this.sun.intensity = 0.3 + 1.3 * k;
+    this.amb.color.copy(this.tint); this.amb.intensity = 0.3 + 0.4 * k;
+    this.hemi.intensity = 0.3 + 0.45 * k;
+    this.sun.intensity = 0.25 + 1.6 * k;
+    this.sun.color.set('#ffe2b0').lerp(dusk, warm * 0.6);
+    // il sole va da est (mattina) a ovest (sera): ombre lunghe all'alba e al tramonto
+    const t = Math.max(0, Math.min(1, (hour - 6) / 14));
+    this.sunOff.set(18 - 36 * t, 8 + 14 * Math.sin(t * Math.PI), 7);
+    // cielo e foschia cambiano con l'ora
+    const sky = this._sky ??= new THREE.Color();
+    sky.set('#1c2448').lerp(new THREE.Color('#a8d4ea'), k).lerp(new THREE.Color('#f0b088'), warm * 0.55);
+    if (this.scene.background?.isColor) this.scene.background.copy(sky);
+    if (this.scene.fog) this.scene.fog.color.copy(sky);
     for (const m of this.spriteMats) m.color.copy(this.tint);
   }
+
 }
