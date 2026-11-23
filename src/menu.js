@@ -15,6 +15,7 @@
 import { RAMI, GRADI_LIVELLO, LIVELLI } from './data/progressione.js';
 import { ARMI, VESTITI, OGGETTI, SLOT, NOMI_SLOT } from './data/armi.js';
 import { PNG } from './data/png.js';
+import { portrait } from './pixel.js';
 
 const pallini = (g, max = 4) => '●'.repeat(g) + '○'.repeat(max - g);
 
@@ -30,20 +31,6 @@ const barra = (v, max, cls = '') => {
   f.style.width = `${Math.max(0, Math.min(100, v / (max || 1) * 100)).toFixed(1)}%`; t.appendChild(f); return t;
 };
 
-// descrizione breve degli effetti di un oggetto
-function effetti(o) {
-  const e = o.effetto || {}, r = [];
-  if (e.health) r.push(`Vita +${e.health}`);
-  if (e.tired) r.push(`Stanchezza ${e.tired}`);
-  if (e.stress) r.push(`Stress ${e.stress}`);
-  if (e.danno) r.push(`lancialo: ${e.danno} danni`);
-  if (e.stordisce) r.push('stordisce un nemico');
-  if (e.guarisce) r.push('cura (anche i maiali)');
-  if (o.missione) r.push('per una missione');
-  if (o.vendita) r.push(`vale ${o.vendita}€`);
-  return r.join(' · ') || '—';
-}
-
 export class Menu {
   constructor(game) {
     this.game = game;
@@ -52,7 +39,7 @@ export class Menu {
     this.sel = 0;
     this.extraStat = [];
     this.schede = {
-      missioni: { icona: '📋', nome: 'Missioni', render: () => this._missioni() },
+      missioni: { icona: '📋', nome: 'Lavori', render: () => this._missioni() },
       zaino: { icona: '🎒', nome: 'Zaino', render: () => this._zaino() },
       equip: { icona: '🧥', nome: 'Equip', render: () => this._vestiario() },
       abilita: { icona: '⭐', nome: 'Abilità', render: () => this._abilita() },
@@ -106,10 +93,11 @@ export class Menu {
     this.tabsEl = h('div', 'mn-tabs');
     const close = h('button', 'mn-close', '✕'); close.title = 'Chiudi (J o Esc)';
     close.addEventListener('click', e => { e.stopPropagation(); this.chiudi(); });
-    this.head = h('div', 'mn-head', null, [h('div', 'mn-title', 'Garonio'), close]);
+    this.titolo = h('div', 'mn-title');
+    this.head = h('div', 'mn-head', null, [this.titolo, close]);
     this.msgEl = h('div', 'mn-msg');
     this.body = h('div', 'mn-body');
-    const hint = h('div', 'mn-hint', '←/→ schede · ↑/↓ scegli · E usa · J o Esc chiude');
+    const hint = h('div', 'mn-hint', '← → schede · ↑ ↓ scegli · E usa · J chiude');
     box.append(this.head, this.tabsEl, this.msgEl, this.body, hint);
     el.appendChild(box);
     el.addEventListener('pointerdown', e => { if (e.target === el) this.chiudi(); });
@@ -139,8 +127,9 @@ export class Menu {
   }
 
   _render() {
-    const titolo = `Garonio · Lv ${this.s.level} «${this.prog.titolo()}» · € ${Math.floor(this.s.money)}`;
-    this.head.firstChild.textContent = titolo;
+    this.titolo.innerHTML = '';
+    this.titolo.append(this._faccia('garonio', '🧑‍🌾'), h('span', 'mn-insegna', 'GARONIO'),
+      h('span', 'chip lv', `Lv ${this.s.level}`), h('span', 'chip soldi', `💶 ${Math.floor(this.s.money)}`));
     this.msgEl.textContent = this.msg; this.msgEl.hidden = !this.msg;
     const top = this.body.scrollTop;
     this.body.innerHTML = '';
@@ -183,132 +172,189 @@ export class Menu {
     if (['KeyE', 'Enter', 'Space'].includes(code) && n) this.acts[this.sel].click();
   }
 
+  // ritratto pixel di un personaggio (o un'icona se non c'è)
+  _faccia(who, icona = '👤') {
+    try { const src = portrait(who); if (src) { const i = h('img', 'mn-face'); i.src = src; i.alt = ''; return i; } } catch {}
+    return h('span', 'mn-face ic', icona);
+  }
+
+  _cartello(testo) { return h('div', 'mn-cartello', testo); }
+
   // ---------- 📋 Missioni ----------
   _missioni() {
     const s = this.s, g = this.game, out = [];
     const m = s.mission;
-    out.push(h('h3', null, '👹 Il Gigante'));
+    out.push(this._cartello('Ordini del Gigante'));
     if (m) {
       const dl = `${String(Math.floor(m.deadline / 60)).padStart(2, '0')}:00`;
-      const st = m.done ? '✅ fatta' : m.failed ? '❌ fallita' : `${Math.min(m.progress, m.n)}/${m.n} · entro le ${dl}`;
-      out.push(h('div', 'mn-card' + (m.done ? ' ok' : m.failed ? ' ko' : ''), null, [
-        h('b', null, m.text), barra(Math.min(m.progress, m.n), m.n), h('small', null, st)]));
-    } else out.push(h('p', 'mn-vuoto', 'Oggi niente ordini dal Gigante. Per ora. Non abituarti.'));
+      out.push(h('div', 'mn-nota' + (m.done ? ' ok' : m.failed ? ' ko' : ''), null, [
+        this._faccia('gigante', '👹'),
+        h('div', 'mn-nota-c', null, [
+          h('b', null, m.text), barra(Math.min(m.progress, m.n), m.n),
+          h('div', 'mn-chips', null, [h('span', 'chip', `${Math.min(m.progress, m.n)}/${m.n}`), h('span', 'chip', m.done ? '✅' : m.failed ? '❌' : `⏰ ${dl}`)]),
+        ]),
+        m.done ? h('span', 'mn-timbro ok', 'FATTA') : m.failed ? h('span', 'mn-timbro ko', 'FALLITA') : null,
+      ]));
+    } else out.push(h('p', 'mn-vuoto', '😴 Oggi niente ordini.'));
 
     const attive = g.quests.attive();
-    out.push(h('h3', null, `❗ Missioni secondarie in corso (${attive.length})`));
-    if (!attive.length) out.push(h('p', 'mn-vuoto', 'Nessuna. Chi in giro ha un ❗ sopra la testa ha un lavoretto per te.'));
+    out.push(this._cartello(`Lavoretti (${attive.length})`));
+    if (!attive.length) out.push(h('p', 'mn-vuoto', 'Cerca chi ha il ❗ sopra la testa.'));
     for (const q of attive) {
       const d = q.def, da = PNG[d.da]?.nome || (d.da === 'gigante' ? 'Il Gigante' : d.da);
-      const dest = PNG[d.obiettivo.a || d.da]?.nome || da;
-      let st;
-      if (q.stato === 'pronta') st = `✅ Fatto! Torna da ${da} a riscuotere.`;
-      else if (d.obiettivo.consegna) st = `Da portare a ${dest}: ` + Object.entries(d.obiettivo.consegna).map(([o, n]) => `${OGGETTI[o]?.icona || ''} ${Math.min(n, s.inv[o] || 0)}/${n}`).join('  ');
-      else if (d.obiettivo.parla) st = `Vai a parlare con ${PNG[d.obiettivo.parla]?.nome || d.obiettivo.parla}.`;
-      else st = `${q.progresso}/${q.n}`;
-      const scad = d.giorni ? ` · scade tra ${Math.max(0, d.giorni - (s.day - (s.quests.attive[q.id]?.giorno ?? s.day)))} giorni` : '';
-      out.push(h('div', 'mn-card' + (q.stato === 'pronta' ? ' ok' : ''), null, [
-        h('b', null, `${d.truffaldina ? '🤫 ' : ''}${d.titolo}`), h('small', 'mn-da', `da ${da}${scad}`),
-        d.offerta ? h('p', 'mn-desc', `«${d.offerta}»`) : null,
-        q.n > 1 && q.stato !== 'pronta' ? barra(q.progresso, q.n) : null,
-        h('small', null, st)]));
+      const dest = d.obiettivo.a || d.da;
+      const chips = [];
+      if (q.stato === 'pronta') chips.push(h('span', 'chip ok', `💰 da ${da}`));
+      else if (d.obiettivo.consegna) for (const [o, n] of Object.entries(d.obiettivo.consegna)) chips.push(h('span', 'chip', `${OGGETTI[o]?.icona || '📦'} ${Math.min(n, s.inv[o] || 0)}/${n}`));
+      else if (d.obiettivo.parla) chips.push(h('span', 'chip', `💬 ${PNG[d.obiettivo.parla]?.nome || d.obiettivo.parla}`));
+      else chips.push(h('span', 'chip', `${q.progresso}/${q.n}`));
+      if (d.obiettivo.consegna && dest !== d.da) chips.push(h('span', 'chip', `➜ ${PNG[dest]?.nome || dest}`));
+      if (d.giorni) chips.push(h('span', 'chip warn', `⏳ ${Math.max(0, d.giorni - (s.day - (s.quests.attive[q.id]?.giorno ?? s.day)))}g`));
+      if (d.truffaldina) chips.push(h('span', 'chip', '🤫'));
+      out.push(h('div', 'mn-nota' + (q.stato === 'pronta' ? ' ok' : ''), null, [
+        this._faccia(d.da),
+        h('div', 'mn-nota-c', null, [h('b', null, d.titolo), q.n > 1 && q.stato !== 'pronta' ? barra(q.progresso, q.n) : null, h('div', 'mn-chips', null, chips)]),
+        q.stato === 'pronta' ? h('span', 'mn-timbro ok', 'FATTO') : null,
+      ]));
     }
 
-    // chi ha un lavoretto da offrire (solo i nomi: i dettagli li dice lui)
     const chi = Object.keys(PNG).filter(p => g.quests.disponibili(p).length);
     if (chi.length) {
-      out.push(h('h3', null, '💬 Chi ha un lavoretto per te'));
-      out.push(h('p', 'mn-desc', chi.map(p => `❗ ${PNG[p].nome}`).join('   ')));
+      out.push(this._cartello('Chi ti cerca'));
+      out.push(h('div', 'mn-facce', null, chi.map(p => h('div', 'mn-chi', null, [this._faccia(p), h('span', 'bang', '❗'), h('small', null, PNG[p].nome.replace(/^(Il|La|Lo) /, ''))]))));
     }
-
-    const fatte = s.quests.fatte.map(id => g.quests.defs[id]?.titolo).filter(Boolean);
-    const fallite = s.quests.fallite.map(id => g.quests.defs[id]?.titolo).filter(Boolean);
-    if (fatte.length || fallite.length) {
-      out.push(h('h3', null, `📜 Archivio (${fatte.length} fatte${fallite.length ? `, ${fallite.length} fallite` : ''})`));
-      const ul = h('ul', 'mn-list');
-      for (const t of fatte) ul.appendChild(h('li', 'ok', `✔ ${t}`));
-      for (const t of fallite) ul.appendChild(h('li', 'ko', `✘ ${t}`));
-      out.push(ul);
-    }
+    const fatte = s.quests.fatte.length, fallite = s.quests.fallite.length;
+    if (fatte || fallite) out.push(h('p', 'mn-vuoto', `📜 Completate ${fatte}${fallite ? ` · fallite ${fallite}` : ''}`));
     return out;
   }
 
   // ---------- 🎒 Zaino ----------
+  _chipsEffetto(o) {
+    const e = o.effetto || {}, c = [];
+    if (e.health) c.push(`❤️+${e.health}`);
+    if (e.tired) c.push(`💤${e.tired}`);
+    if (e.stress) c.push(`⚡${e.stress}`);
+    if (e.danno) c.push(`💥${e.danno}`);
+    if (e.stordisce) c.push('💫');
+    if (e.guarisce) c.push('🩹');
+    if (o.vendita) c.push(`💶${o.vendita}`);
+    return h('div', 'mn-chips', null, c.map(t => h('span', 'chip', t)));
+  }
+
   _zaino() {
-    const s = this.s, out = [];
+    const s = this.s;
     const items = Object.entries(s.inv).filter(([id, n]) => n > 0 && OGGETTI[id]);
-    const altri = Object.entries(s.inv).filter(([id, n]) => n > 0 && !OGGETTI[id]);
-    if (!items.length && !altri.length) return [h('p', 'mn-vuoto', 'Lo zaino è vuoto. C\'è solo una caramella del 2014, incollata al fondo.')];
-    const grid = h('div', 'mn-grid');
+    const out = [this._cartello('Lo zaino')];
+    if (!items.length) { out.push(h('p', 'mn-vuoto', '🍬 Solo una caramella del 2014.')); return out; }
+    const grid = h('div', 'mn-cassette');
     for (const [id, n] of items) {
       const o = OGGETTI[id], e = o.effetto || {};
       const usabile = !!(e.health || e.tired || e.stress);
-      const cell = h('div', 'mn-item', null, [
-        h('div', 'mn-icon', o.icona || '📦'), h('b', null, `${o.nome} ×${n}`), h('small', null, effetti(o)),
+      const cell = h('div', 'mn-cassetta', null, [
+        h('div', 'mn-icon', o.icona || '📦'), h('span', 'mn-qta', `×${n}`), h('small', 'mn-nome', o.nome), this._chipsEffetto(o),
         usabile ? this._azione('Usa', () => {
           const prima = { v: Math.round(s.health), st: Math.round(s.stress), f: Math.round(s.tired) };
           if (!this.prog.usa(id)) return 'Non si può usare adesso.';
           this.game.audio.sfx('eat');
-          const d = [Math.round(s.health) - prima.v && `Vita ${Math.round(s.health) - prima.v > 0 ? '+' : ''}${Math.round(s.health) - prima.v}`,
-            Math.round(s.stress) - prima.st && `Stress ${Math.round(s.stress) - prima.st}`,
-            Math.round(s.tired) - prima.f && `Stanchezza ${Math.round(s.tired) - prima.f}`].filter(Boolean);
-          return `Garonio usa: ${o.nome}. ${d.join(', ') || 'Non succede niente, ma era buono.'}`;
-        }, { cls: 'small' }) : null]);
+          const d = [Math.round(s.health) - prima.v && `❤️ ${Math.round(s.health) - prima.v > 0 ? '+' : ''}${Math.round(s.health) - prima.v}`,
+            Math.round(s.stress) - prima.st && `⚡ ${Math.round(s.stress) - prima.st}`,
+            Math.round(s.tired) - prima.f && `💤 ${Math.round(s.tired) - prima.f}`].filter(Boolean);
+          return `${o.icona || ''} ${o.nome}: ${d.join('  ') || 'buono!'}`;
+        }, { cls: 'timbro' }) : null]);
       grid.appendChild(cell);
     }
-    for (const [id, n] of altri) grid.appendChild(h('div', 'mn-item', null, [h('div', 'mn-icon', '❔'), h('b', null, `${id} ×${n}`)]));
     out.push(grid);
-    out.push(h('p', 'mn-desc', `Vita ${Math.round(s.health)}/${s.maxHealth} · Stress ${Math.round(s.stress)} · Stanchezza ${Math.round(s.tired)}`));
+    out.push(this._misuratori(true));
     return out;
   }
 
   // ---------- 🧥 Equipaggiamento ----------
   _vestiario() {
     const p = this.prog, s = this.s, out = [];
-    out.push(h('h3', null, `🗡️ Arma · attacco totale ${p.atk()}`));
-    const armi = h('div', 'mn-rows');
+    out.push(this._cartello(`Attrezzi · 🗡️ ${p.atk()}`));
+    const armi = h('div', 'mn-cassette');
     for (const id of s.prog.armi) {
       const a = ARMI[id]; if (!a) continue;
       const su = p.arma().id === id, aff = s.prog.affilatura?.[id];
-      armi.appendChild(this._azione(`${su ? '✔ ' : ''}${a.nome} · attacco +${a.atk}${aff ? ` · affilata ${aff}` : ''}${a.fuori ? ` · fuori: ${a.fuori}` : ''}`,
-        () => { if (su) return `${a.nome}: ce l'hai già in mano.`; p.impugna(id); return `Garonio impugna: ${a.nome}.`; }, { cls: su ? 'on' : '' }));
+      const b = this._azione('', () => { if (su) return `${a.nome}: già in mano.`; p.impugna(id); return `🪓 ${a.nome}`; }, { cls: 'mn-cassetta scelta' + (su ? ' on' : '') });
+      b.append(h('div', 'mn-icon', ICONE_ARMI[id] || '🔧'), h('small', 'mn-nome', a.nome), h('div', 'mn-chips', null, [h('span', 'chip', `🗡️+${a.atk}`), aff ? h('span', 'chip', `✨${aff}`) : null]));
+      if (su) b.appendChild(h('span', 'mn-spunta', '✔'));
+      armi.appendChild(b);
     }
     out.push(armi);
-    out.push(h('h3', null, `🧥 Vestiti · difesa totale ${p.def()}`));
+    out.push(this._cartello(`Vestiti · 🛡️ ${p.def()}`));
+    const grid = h('div', 'mn-cassette');
     for (const slot of SLOT) {
-      const cur = p.indossato(slot);
       const mie = s.prog.vestiti.filter(x => VESTITI[x]?.slot === slot);
-      const rows = h('div', 'mn-rows', null, [h('div', 'mn-slot', `${NOMI_SLOT[slot]}: ${cur ? VESTITI[cur].nome : '—'}`)]);
-      if (!mie.length) rows.appendChild(h('small', 'mn-vuoto', 'Niente. Il Bubetto vende, le missioni regalano.'));
+      if (!mie.length) { grid.appendChild(h('div', 'mn-cassetta vuota', null, [h('div', 'mn-icon', ICONE_SLOT[slot]), h('small', 'mn-nome', NOMI_SLOT[slot])])); continue; }
       for (const id of mie) {
-        const v = VESTITI[id], su = cur === id;
-        rows.appendChild(this._azione(`${su ? '✔ ' : ''}${v.nome} · ${v.desc}`, () => {
-          if (su) { p.togli(slot); return `Garonio si toglie: ${v.nome}.`; }
-          p.indossa(id); return `Garonio indossa: ${v.nome}.`;
-        }, { cls: su ? 'on' : '' }));
+        const v = VESTITI[id], su = p.indossato(slot) === id;
+        const b = this._azione('', () => { if (su) { p.togli(slot); return `Tolto: ${v.nome}`; } p.indossa(id); return `${ICONE_SLOT[slot]} ${v.nome}`; }, { cls: 'mn-cassetta scelta' + (su ? ' on' : '') });
+        b.append(h('div', 'mn-icon', ICONE_SLOT[slot]), h('small', 'mn-nome', v.nome), h('small', 'mn-desc2', v.desc));
+        if (su) b.appendChild(h('span', 'mn-spunta', '✔'));
+        grid.appendChild(b);
       }
-      out.push(rows);
     }
-    out.push(h('p', 'mn-desc', 'Tocca un vestito indossato per toglierlo.'));
+    out.push(grid);
     return out;
   }
 
   // ---------- ⭐ Abilità ----------
   _abilita() {
     const p = this.prog, s = this.s, out = [];
-    out.push(h('p', 'mn-desc' + (s.prog.punti ? ' gold' : ''), s.prog.punti
-      ? `Hai ${s.prog.punti} punt${s.prog.punti === 1 ? 'o' : 'i'} abilità da spendere!`
-      : `Nessun punto da spendere. Ne guadagni uno a ogni livello (gradi 2, 3 e 4 chiedono livello ${GRADI_LIVELLO.slice(1).join(', ')}).`));
+    out.push(this._cartello(s.prog.punti ? `🌱 ${s.prog.punti} da piantare` : 'Abilità'));
     for (const [id, r] of Object.entries(RAMI)) {
-      const gr = p.grado(id);
-      const lista = h('ul', 'mn-gradi');
-      r.gradi.forEach((x, i) => lista.appendChild(h('li', i < gr ? 'ok' : s.level < GRADI_LIVELLO[i] ? 'lock' : '', `${i < gr ? '●' : '○'} ${x.desc}${i >= gr && s.level < GRADI_LIVELLO[i] ? ` (Lv ${GRADI_LIVELLO[i]})` : ''}`)));
-      const next = r.gradi[gr];
-      const card = h('div', 'mn-card', null, [h('b', null, `${r.nome} ${pallini(gr)}`), lista]);
-      if (gr < 4) card.appendChild(this._azione(`+ ${next.desc}`, () => {
-        p.alza(id); this.game.audio.sfx('level'); return `${r.nome} grado ${gr + 1}: ${next.desc}.`;
-      }, { off: !p.puoiAlzare(id), cls: 'small' }));
-      out.push(card);
+      const gr = p.grado(id), next = r.gradi[gr];
+      const semi = h('div', 'mn-semi', null, r.gradi.map((x, i) => {
+        const e = h('span', i < gr ? 'on' : s.level < GRADI_LIVELLO[i] ? 'lock' : '', i < gr ? '🌳' : s.level < GRADI_LIVELLO[i] ? '🔒' : '🌱');
+        e.title = x.desc + (i >= gr && s.level < GRADI_LIVELLO[i] ? ` (Lv ${GRADI_LIVELLO[i]})` : ''); return e;
+      }));
+      const riga = h('div', 'mn-ramo', null, [
+        h('div', 'mn-icon', ICONE_RAMI[id] || '⭐'),
+        h('div', 'mn-nota-c', null, [h('b', null, r.nome), semi, next ? h('small', 'mn-desc2', `➜ ${next.desc}${s.level < GRADI_LIVELLO[gr] ? ` · Lv ${GRADI_LIVELLO[gr]}` : ''}`) : h('small', 'mn-desc2', '🏆 completo')]),
+        gr < 4 ? this._azione('+', () => { p.alza(id); this.game.audio.sfx('level'); return `${ICONE_RAMI[id] || '⭐'} ${r.nome} ${gr + 1}: ${next.desc}`; }, { off: !p.puoiAlzare(id), cls: 'piu' }) : null,
+      ]);
+      out.push(riga);
+    }
+    return out;
+  }
+
+  // ---------- 📊 Scheda ----------
+  _misuratori(corto = false) {
+    const s = this.s;
+    const r = (ic, v, max, cls, t) => h('div', 'mn-mis', null, [h('span', 'ic', ic), barra(v, max, cls), h('b', null, t)]);
+    return h('div', 'mn-misuratori' + (corto ? ' corto' : ''), null, [
+      r('❤️', s.health, s.maxHealth, 'health', `${Math.round(s.health)}`),
+      r('⚡', s.stress, 100, 'stress', `${Math.round(s.stress)}`),
+      r('💤', s.tired, 100, 'tired', `${Math.round(s.tired)}`),
+    ]);
+  }
+
+  _scheda() {
+    const s = this.s, p = this.prog, g = this.game, out = [];
+    const xpNext = s.level >= LIVELLI.max ? 0 : p.xpNext();
+    out.push(h('div', 'mn-tessera', null, [
+      this._faccia('garonio', '🧑‍🌾'),
+      h('div', 'mn-nota-c', null, [h('b', null, `«${p.titolo()}»`), h('small', null, `Livello ${s.level} · Giorno ${s.day}`),
+        xpNext ? barra(s.xp, xpNext, 'xp') : null, h('small', null, xpNext ? `⭐ ${Math.floor(s.xp)}/${xpNext}` : '⭐ MAX')]),
+    ]));
+    out.push(this._misuratori());
+    const tile = (ic, v, t) => h('div', 'mn-tile', null, [h('span', 'ic', ic), h('b', null, String(v)), h('small', null, t)]);
+    const tiles = [tile('🗡️', p.atk(), 'attacco'), tile('🛡️', p.def(), 'difesa'), tile('💶', Math.floor(s.money), 'euro'),
+      tile('🥵', `${Math.round(p.fatica() * 100)}%`, 'fatica'), tile('👟', `+${Math.round(p.bonus('velocita') * 100)}%`, 'passo')];
+    const crit = p.bonus('critico'); if (crit) tiles.push(tile('🎯', `${Math.round(crit * 100)}%`, 'critico'));
+    const ann = s.flags?.annata; if (ann?.fiducia != null) tiles.push(tile('🤝', Math.round(ann.fiducia), 'Gigante'));
+    try { const r = g.bar?.rispetto?.(); if (r != null) tiles.push(tile('🍺', Math.round(r), 'bar')); } catch {}
+    const t = s.today; if (t) tiles.push(tile('🌽', t.raccolti || 0, 'oggi'), tile('🥚', t.uova || 0, 'uova'));
+    for (const fn of this.extraStat) { try { for (const [k, v] of fn(g) || []) tiles.push(tile(String(k).split(' ')[0], v, String(k).split(' ').slice(1).join(' '))); } catch {} }
+    out.push(h('div', 'mn-tiles', null, tiles));
+    const amici = Object.entries(PNG).filter(([id]) => s.png?.[id]);
+    if (amici.length) {
+      out.push(this._cartello('Amici e nemici'));
+      out.push(h('div', 'mn-facce', null, amici.map(([id, d]) => {
+        const v = Math.round(g.png.amicizia(id));
+        return h('div', 'mn-chi', null, [this._faccia(id), h('span', 'cuore', v >= 50 ? '❤️' : v >= 20 ? '🧡' : v >= 0 ? '🤍' : '💔'), h('small', null, `${d.nome.replace(/^(Il|La|Lo) /, '')} ${v}`)]);
+      })));
     }
     return out;
   }
@@ -316,55 +362,19 @@ export class Menu {
   // ---------- ⚙️ Opzioni ----------
   _opzioni() {
     const g = this.game, out = [];
-    out.push(h('h3', null, '🖐️ Pannelli'));
-    out.push(h('p', 'mn-desc', 'Tocca ✥ Sposta (in alto a destra) e trascina barre, missione, minimappa e pulsanti dove vuoi, poi ✔ Fatto. Col mouse si possono trascinare anche senza. Il pulsantino ▾ riduce barre e missione a una riga.'));
+    out.push(this._cartello('Pannelli'));
     out.push(this._azione('✥ Sposta i pannelli', () => { this.chiudi(); setTimeout(() => g.pannelli?.sposta(true), 50); return ''; }));
-    out.push(this._azione('↺ Rimetti i pannelli al loro posto', () => { g.pannelli?.ripristina(); return 'Pannelli rimessi al loro posto.'; }));
-    out.push(h('h3', null, '🎵 Audio'));
-    out.push(this._azione('♪ Musica on/off', () => { document.getElementById('btn-music')?.click(); return 'Musica cambiata.'; }));
-    out.push(h('h3', null, '⌨️ Comandi su PC'));
-    out.push(h('p', 'mn-desc', 'Frecce/WASD muovi · Shift corri · E/Spazio agisci · Q salta (clacson sui mezzi) · J menu · N mappa · M musica'));
-    out.push(h('h3', null, '📱 Comandi su telefono'));
-    out.push(h('p', 'mn-desc', 'Levetta a sinistra (spingi fino in fondo per correre) · E agisci · Q salta · in alto a destra: Menu, Mappa, Musica'));
-    return out;
-  }
-
-  // ---------- 📊 Scheda ----------
-  _scheda() {
-    const s = this.s, p = this.prog, g = this.game, out = [];
-    const xpNext = s.level >= LIVELLI.max ? 0 : p.xpNext();
-    out.push(h('div', 'mn-card', null, [
-      h('b', null, `Livello ${s.level} · «${p.titolo()}»`),
-      xpNext ? barra(s.xp, xpNext, 'xp') : null,
-      h('small', null, xpNext ? `Esperienza ${Math.floor(s.xp)}/${xpNext}` : 'Livello massimo'),
-    ]));
-    const bars = h('div', 'mn-bars', null, [
-      h('label', null, '❤ Vita'), barra(s.health, s.maxHealth, 'health'), h('span', null, `${Math.round(s.health)}/${s.maxHealth}`),
-      h('label', null, '⚡ Stress'), barra(s.stress, 100, 'stress'), h('span', null, String(Math.round(s.stress))),
-      h('label', null, '💤 Stanch.'), barra(s.tired, 100, 'tired'), h('span', null, String(Math.round(s.tired))),
-    ]);
-    out.push(bars);
-    const righe = [
-      ['🗡️ Attacco', p.atk()], ['🛡️ Difesa', p.def()], ['🪓 Arma', p.arma().nome],
-      ['🥵 Fatica dei lavori', `${Math.round(p.fatica() * 100)}%`],
-      ['👟 Velocità', `+${Math.round(p.bonus('velocita') * 100)}%`],
-      ['💰 Soldi', `€ ${Math.floor(s.money)}`], ['📅 Giorno', s.day],
-    ];
-    const crit = p.bonus('critico'); if (crit) righe.push(['🎯 Critico', `${Math.round(crit * 100)}%`]);
-    const ann = s.flags?.annata; if (ann?.fiducia != null) righe.push(['🤝 Fiducia del Gigante', Math.round(ann.fiducia)]);
-    try { const r = g.bar?.rispetto?.(); if (r != null) righe.push(['🍺 Rispetto al bar', Math.round(r)]); } catch {}
-    const t = s.today; if (t) righe.push(['🌾 Oggi', `${t.raccolti || 0} raccolti · ${t.uova || 0} uova · ${t.nutrie || 0} nutrie`]);
-    for (const fn of this.extraStat) { try { righe.push(...(fn(g) || [])); } catch {} }
-    const tab = h('div', 'mn-kv');
-    for (const [k, v] of righe) tab.append(h('span', null, k), h('b', null, String(v)));
-    out.push(tab);
-    const amici = Object.entries(PNG).filter(([id]) => s.png?.[id]);
-    if (amici.length) {
-      out.push(h('h3', null, '👥 Amicizie'));
-      const am = h('div', 'mn-bars');
-      for (const [id, d] of amici) { const v = g.png.amicizia(id), max = d.amicizia?.[1] ?? 100; am.append(h('label', null, d.nome), barra(v, max, 'friend'), h('span', null, String(Math.round(v)))); }
-      out.push(am);
-    }
+    out.push(this._azione('↺ Rimetti a posto', () => { g.pannelli?.ripristina(); return '↺ Fatto.'; }));
+    out.push(this._cartello('Audio'));
+    out.push(this._azione('♪ Musica on/off', () => { document.getElementById('btn-music')?.click(); return '♪'; }));
+    out.push(this._cartello('Comandi'));
+    out.push(h('div', 'mn-tasti', null, [
+      ['WASD', 'muovi'], ['Shift', 'corri'], ['E', 'agisci'], ['Q', 'salta'], ['J', 'menu'], ['N', 'mappa'], ['M', 'musica'], ['R', 'attrezzo'],
+    ].map(([k, t]) => h('span', null, null, [h('kbd', null, k), h('small', null, t)]))));
     return out;
   }
 }
+
+const ICONE_RAMI = { resistenza: '💪', nervi: '🧘', agricoltore: '🌽', allevatore: '🐖', furbizia: '🦊', lottatore: '👊', parlantina: '🗣️', meccanico: '🔧' };
+const ICONE_SLOT = { testa: '🧢', corpo: '🦺', piedi: '🥾', portafortuna: '🍀' };
+const ICONE_ARMI = { zappa: '⛏️', rastrello: '🧹', badile: '🪏', forcone: '🔱', falce: '🌙', roncola: '🔪', motosega: '🪚', zappaFolgorata: '⚡' };

@@ -81,6 +81,9 @@ export class Pannelli {
       });
       el.appendChild(b);
     }
+    // se un modulo riscrive il pannello con innerHTML, rimette maniglia e pulsantino ▾
+    const tieni = [...el.querySelectorAll(':scope > .grip, :scope > .rid-btn')];
+    new MutationObserver(() => { for (const k of tieni) if (k.parentNode !== el) el.appendChild(k); }).observe(el, { childList: true });
     this.applica(id);
   }
 

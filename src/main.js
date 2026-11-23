@@ -155,6 +155,7 @@ async function begin(cont) {
   audio.setScene(cont ? 'base' : 'intro');
   await game.start(cont);
   pannelli.aggiungi($('veh'), 'veh'); // il pannello di guida nasce con la partita
+  pannelli.aggiungi($('truffa'), 'truffa', { riducibile: true }); // missioni truffaldine (cascine)
 }
 // la musica dell'intro parte al primo tocco sulla schermata del titolo
 $('title').addEventListener('pointerdown', () => { audio.unlock(); if (!started) audio.setScene('intro'); });
