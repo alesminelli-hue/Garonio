@@ -19,6 +19,8 @@ import { Cabina } from './cabina.js';
 import { Cascine } from './cascine.js';
 import { Bar } from './bar.js';
 import { Consulente } from './consulente.js';
+import { Negozio } from './negozio.js';
+import { Abilita } from './abilita.js';
 import { puoComparire } from './data/nemici.js';
 import { Attrezzi } from './attrezzi.js';
 import { Maiali } from './maiali.js';
@@ -57,12 +59,6 @@ const ACTIONS = {
 };
 
 // Missioni e dialoghi stanno in src/data/missioni.js e src/data/dialoghi.js
-
-const UPGRADES = [
-  { id: 'zappa', label: 'Zappa affilata', desc: 'zappare stanca la metà', price: 40 },
-  { id: 'stivali', label: 'Stivali nuovi', desc: 'cammini più veloce', price: 30 },
-  { id: 'rete', label: 'Rete anti-nutria', desc: 'meno nutrie nel campo', price: 60 },
-];
 
 const rand = (a, b) => a + Math.random() * (b - a);
 const randi = (a, b) => Math.floor(rand(a, b + 1));
@@ -111,6 +107,8 @@ export class Game {
     this.consulente = new Consulente(this); // consigli e oggetti nascosti (src/consulente.js)
     this.interni = new Interni(this);   // interni degli edifici (src/interni.js)
     this.salvataggi = new Salvataggi(this); // slot multipli e salvataggio automatico (src/salvataggi.js)
+    this.negozio = new Negozio(this);   // magazzino del Bubetto e affilatura (src/negozio.js)
+    this.abilita = new Abilita(this);   // effetti dei rami di abilità e delle armi fuori dal combattimento
   }
 
   on(name, fn) { return this.ev.on(name, fn); }
@@ -177,6 +175,8 @@ export class Game {
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
     this.salvataggi.init();
+    this.negozio.init();
+    this.abilita.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
@@ -265,10 +265,13 @@ export class Game {
       if (Math.abs(ix) > 0.2) this.facing = ix > 0 ? 1 : -1;
       this.walkT += dt * (this.input.run ? 12 : 8);
       this.idle = 0; this._wake();
-      if (this.input.run) this.s.tired += dt * CONFIG.minutesPerSecond / H * 3;
+      if (this.input.run && !this.prog.bonus('corsaGratis')) this.s.tired += dt * CONFIG.minutesPerSecond / H * 3;
     } else {
       this.idle += dt;
-      if (this.idle > CONFIG.idleDozeSeconds && !this.dozing) { this.dozing = true; this.zzz.visible = true; }
+      if (this.idle > CONFIG.idleDozeSeconds && !this.dozing) {
+        this.dozing = true; this.zzz.visible = true;
+        this.dozeHidden = Math.random() < this.prog.bonus('pisolinoNascosto');   // Furbizia 1: il Gigante non ti vede
+      }
     }
     this.moving = moving;
 
@@ -289,13 +292,14 @@ export class Game {
     const hr = dm / H;
     if (this.dozing) s.tired -= 12 * hr; else s.tired += CONFIG.tiredPerHour * hr;
     if (s.tired > 75) s.stress += 2 * hr;
-    if (s.stress >= 100) s.health -= 8 * hr;
+    if (s.stress >= 100 && !this.prog.bonus('stressImmune')) s.health -= 8 * hr;
     else if (s.stress < 50) s.health += 1 * hr;
-    s.tired = clamp(s.tired, 0, 100); s.stress = clamp(s.stress, 0, 100); s.health = clamp(s.health, 0, s.maxHealth);
+    const tiredMax = 100 + this.prog.bonus('stanchezzaMax');
+    s.tired = clamp(s.tired, 0, tiredMax); s.stress = clamp(s.stress, 0, 100); s.health = clamp(s.health, 0, s.maxHealth);
 
     // il Gigante ti becca a dormire
     const gp = this.gigante.group.position, pp = this.player.group.position;
-    if (this.dozing && s.minutes < 20 * H && gp.distanceTo(pp) < 7 && s.minutes - this.caughtAt > 60) {
+    if (this.dozing && !this.dozeHidden && s.minutes < 20 * H && gp.distanceTo(pp) < 7 && s.minutes - this.caughtAt > 60) {
       this.caughtAt = s.minutes; s.stress += 8; this._wake(); this.idle = 0;
       this.ui.toast(`${NOMI.gigante}: «${pick(GIGANTE.beccatoDormire)}»  Stress +8`, 'bad'); this.audio.sfx('bad');
     }
@@ -303,7 +307,7 @@ export class Game {
     // piante
     for (const [k, p] of Object.entries(s.plots)) {
       if (!p.crop || !p.water || p.stage >= 3) continue;
-      p.g = (p.g || 0) + dm;
+      p.g = (p.g || 0) + dm * (1 + this.prog.bonus('crescita'));
       const G = CONFIG.growMinutes[p.crop];
       const st = p.g >= G ? 3 : p.g >= G * 0.5 ? 2 : p.g >= G * 0.08 ? 1 : 0;
       if (st !== p.stage) { p.stage = st; const [x, z] = k.split(',').map(Number); this.world.setPlot(x, z, p); }
@@ -320,7 +324,7 @@ export class Game {
     if (hNow !== this.saveHour) { this.saveHour = hNow; this.save(); this.emit('ora', { ora: hNow % 24 }); }
 
     if (s.health <= 0) this._faint();
-    else if (s.tired >= 100) this._collapse();
+    else if (s.tired >= tiredMax) this._collapse();
     else if (s.minutes >= 24 * H) { this.ui.toast('È mezzanotte: Garonio crolla dove si trova.', 'bad'); this.sleep(true); }
   }
 
@@ -335,6 +339,7 @@ export class Game {
     } else if (this.s.minutes >= m.deadline) {
       m.failed = true;
       this.emit('missioneFallita', { id: m.id });
+      if (this.abilita.perdona()) return;   // Furbizia 4: il Gigante «non vede» la prima missione fallita della settimana
       this.mountain('missione', d?.stressFallimento ?? 30, d && fill(pick(d.rimprovero), variabiliMissione(m)));
     }
   }
@@ -398,7 +403,7 @@ export class Game {
   _cost(kind) {
     const a = ACTIONS[kind];
     let tired = a.tired * this.prog.fatica();
-    if (kind === 'zappa' && this.s.upgrades.zappa) tired *= 0.5;
+    if (kind === 'zappa') tired *= 1 - 0.2 * (this.s.prog.affilatura.zappa || 0);   // zappa affilata da Zeno
     this.s.tired += tired;
     this.s.stress += a.stress + (this.s.tired > 70 ? 0.5 : 0);
     this.s.minutes += a.min;
@@ -421,14 +426,17 @@ export class Game {
     if (area === 'field') this.s.today.seminaCampo++;
     else this.s.today.seminaOrto = (this.s.today.seminaOrto || 0) + 1;
   }
-  water(key, x, z) { const p = this.s.plots[key]; p.water = true; this.world.setPlot(x, z, p); this._cost('annaffia'); this.s.today.annaffiate++; }
+  water(key, x, z) {
+    const p = this.s.plots[key]; p.water = true; this.world.setPlot(x, z, p); this._cost('annaffia'); this.s.today.annaffiate++;
+    this.emit('annaffiato', { x, z });
+  }
   harvest(key, x, z) {
     const p = this.s.plots[key];
     this.s.inv[p.crop]++; this.ui.float(p.crop === 'mais' ? '+1 pannocchia' : '+1 pomodoro');
     const crop = p.crop;
     this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 };
     this.world.setPlot(x, z, this.s.plots[key]); this._cost('raccogli'); this.s.today.raccolti++;
-    this.emit('raccolto', { crop });
+    this.emit('raccolto', { crop, x, z });
   }
   pickEgg(e) {
     this.s.eggs.splice(this.s.eggs.indexOf(e), 1);
@@ -473,6 +481,7 @@ export class Game {
       if (this.nutrie.filter(n => n.state !== 'flee').length < max) this._spawnNutria();
       let gap = Math.max(35, 110 - s.day * 10) * rand(0.7, 1.3);
       if (s.upgrades.rete) gap *= 2;
+      if (this.prog.arma().id === 'badile') gap *= 1.3;   // il badile ha scavato le tane: meno nutrie
       s.nextNutria = s.minutes + gap;
     }
     for (const n of [...this.nutrie]) {
@@ -610,7 +619,9 @@ export class Game {
 
   // ---------- Riposo, crolli e nuovo giorno ----------
   async _collapse() {
-    if (this.locked) return; this.locked = true;
+    if (this.locked) return;
+    if (this.abilita.rialzati()) return;   // Resistenza 4: una volta al giorno si rialza da solo
+    this.locked = true;
     this.ui.toast('Garonio è sfinito e crolla a dormire per terra...', 'bad');
     this.vehicles.crashAsleep();
     this.ko = true; this.player.setFrame((this.facing > 0 ? 0 : PIX.GARONIO_N) + PIX.GARONIO_ANIM.ko[0]);
@@ -695,12 +706,8 @@ export class Game {
       }
       this.inBar = false;
     } else if (id === 'officina') {
-      const choices = UPGRADES.map(u => ({
-        label: s.upgrades[u.id] ? `${u.label} ✔` : `${u.label} (${u.price}€): ${u.desc}`,
-        disabled: !!s.upgrades[u.id] || s.money < u.price,
-        fn: () => { s.money -= u.price; s.upgrades[u.id] = true; if (u.id === 'stivali') this.prog.daiVestito('stivali', true); this.audio.sfx('coin'); this.ui.toast(`Comprato: ${u.label}!`, 'good'); },
-      }));
-      choices.push(...this.vehicles.workshopChoices());
+      // gli attrezzi ora si comprano dal Bubetto; qui si affila l'arma (src/negozio.js) e si sistemano i mezzi
+      const choices = [...this.negozio.scelteOfficina(), ...this.vehicles.workshopChoices()];
       choices.push({ label: 'Esci', fn: null });
       await this.ui.dialog([{ name: 'Officina', text: pick(OFFICINA.benvenuto), choices }]);
     } else if (id === 'maiali') {
@@ -809,6 +816,7 @@ export class Game {
     this.vehicles.animate(dt);
     this.png.update(dt);
     for (const m of this.moduli) m.animate?.(dt);
+    this.negozio.update(dt);
     const P = this.player.group.position;
     this.zzz.position.set(P.x + 0.5, 1.6 + Math.sin(performance.now() / 400) * 0.08, P.z);
     // galline
