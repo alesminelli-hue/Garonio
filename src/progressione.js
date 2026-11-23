@@ -37,6 +37,8 @@ export class Progressione {
       s.prog.punti = Math.max(s.prog.punti, s.level - 1); // punti per i livelli già fatti
       if (s.upgrades?.stivali && !s.prog.vestiti.includes('stivali')) { s.prog.vestiti.push('stivali'); s.prog.equip.piedi = 'stivali'; }
     }
+    // la vecchia "zappa affilata" dell'officina diventa il primo grado di affilatura (Zeno)
+    if (s.upgrades?.zappa && !s.prog.affilatura.zappa) s.prog.affilatura.zappa = 1;
     if (s.maxHealth == null) s.maxHealth = this.maxHealth();
   }
 
@@ -82,8 +84,7 @@ export class Progressione {
   atk() {
     const s = this.s, a = ARMI[this.p.arma] || ARMI.zappa;
     const affil = (this.p.affilatura[this.p.arma] || 0) * AFFILATURA.atk;
-    const vecchiaZappa = this.p.arma === 'zappa' && s.upgrades?.zappa ? 2 : 0; // "zappa affilata" del prototipo
-    return 7 + s.level * LIVELLI.perLivello.atk + a.atk + affil + vecchiaZappa + this.bonus('atk');
+    return 7 + s.level * LIVELLI.perLivello.atk + a.atk + affil + this.bonus('atk');
   }
   def() { return 1 + this.s.level * LIVELLI.perLivello.def + this.bonus('def'); }
 

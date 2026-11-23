@@ -119,7 +119,7 @@ export class UI {
   }
 
   _mark() {
-    [...$('dlg-choices').children].forEach((b, i) => b.classList.toggle('sel', i === this.queue.sel));
+    [...$('dlg-choices').children].forEach((b, i) => { b.classList.toggle('sel', i === this.queue.sel); if (i === this.queue.sel) b.scrollIntoView?.({ block: 'nearest' }); });
   }
 
   _pick() {
