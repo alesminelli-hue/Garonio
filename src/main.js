@@ -12,8 +12,11 @@ const $ = id => document.getElementById(id);
 const TARGET_H = 270; // risoluzione verticale interna: più bassa = pixel più grossi
 
 const canvas = $('game');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
-renderer.setPixelRatio(1);
+// PROVA STILI (solo anteprima): ?stile=b (pixel morbido) o ?stile=c (HD-2D)
+const STILE = new URLSearchParams(location.search).get('stile') || 'a';
+document.body.classList.add('stile-' + STILE);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: STILE !== 'a' });
+renderer.setPixelRatio(STILE === 'a' ? 1 : Math.min(devicePixelRatio, 2));
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('#8fc8e8');
 const camera = new THREE.PerspectiveCamera(30, 16 / 9, 0.1, 200);
@@ -22,10 +25,11 @@ const CAM_OFF = new THREE.Vector3(0, 15, 21);
 function resize() {
   const w = window.innerWidth, h = window.innerHeight;
   const scale = Math.max(1, Math.round(h / TARGET_H));
-  renderer.setSize(Math.ceil(w / scale), Math.ceil(h / scale), false);
+  if (STILE === 'a') renderer.setSize(Math.ceil(w / scale), Math.ceil(h / scale), false);
+  else renderer.setSize(w, h, false);
   camera.aspect = w / h; camera.updateProjectionMatrix();
   // in verticale (telefono) la camera si allontana per vedere abbastanza mappa
-  const dist = Math.max(26, 9 / (Math.tan(THREE.MathUtils.degToRad(15)) * camera.aspect));
+  const dist = Math.max(26, (STILE === 'a' ? 9 : 6.5) / (Math.tan(THREE.MathUtils.degToRad(15)) * camera.aspect));
   CAM_OFF.set(0, 15, 21).setLength(dist);
 }
 window.addEventListener('resize', resize); resize();
@@ -36,6 +40,24 @@ await loadGaronio();
 const world = new World(scene);
 world.build();
 const game = new Game(world, ui, audio);
+if (STILE !== 'a') {
+  scene.fog = new THREE.Fog('#a8d4ea', 34, 75);
+  scene.background = new THREE.Color('#a8d4ea');
+  canvas.style.imageRendering = 'auto';
+}
+if (STILE === 'c') {
+  world.amb.intensity = 0.9;
+  scene.add(new THREE.HemisphereLight(0xcfe8ff, 0x6a5a30, 0.9));
+  world.sun.intensity = 2.3; world.sun.color.set('#ffe2b0');
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const sun = world.sun; sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 80 });
+  sun.shadow.bias = -0.0008; sun.shadow.radius = 4;
+  scene.add(sun.target);
+  scene.traverse(o => { if (o.isMesh) { const flat = o.geometry.type === 'PlaneGeometry' || o.geometry.type === 'CircleGeometry'; o.castShadow = !flat; o.receiveShadow = true; } });
+  world._followSun = (x, z) => { sun.position.set(x - 10, 20, z + 8); sun.target.position.set(x, 0, z); };
+}
 const minimap = new Minimap(world.grid);
 
 // ---------- Input ----------
@@ -117,6 +139,8 @@ function frame() {
     game.update(dt);
     const p = game.player.group.position;
     world.updateOcclusion(p.x, p.z);
+    world._followSun?.(p.x, p.z);
+    if (scene.fog) { const d = CAM_OFF.length(); scene.fog.near = d + 12; scene.fog.far = d + 55; }
     minimap.update(p.x, p.z, dt);
     const tx = Math.max(7, Math.min(MAP_W - 7, p.x)), tz = Math.max(4, Math.min(MAP_H - 3, p.z));
     camPos.set(tx, 0.8, tz);
