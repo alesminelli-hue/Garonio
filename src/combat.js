@@ -6,6 +6,13 @@
 //
 // Uso dal gioco:  const esito = await game.combat.start({ enemies: ['nutria', 'nutria'], place: 'campo' });
 // esito: 'win' | 'lose' | 'flee'
+//
+// Opzioni in più (lavoro E, bestie): heroFirst = Garonio agisce per primo nel primo round;
+// script = oggetto con ganci facoltativi per scontri speciali (i re delle bestie, le mosse strane):
+//   start(c) · heroTurn(c) → true salta il turno di Garonio · enemyTurn(c, e) → true = turno gestito dallo script
+//   enemyMove(c, e, mossa) dopo una mossa nemica · roundEnd(c) · immune(e) → true = non si può colpire
+//   hit(c, e, danno) · skill(c, id) · item(c, id, bersaglio)
+// c.addEnemy(id, { noXp }) aggiunge un nemico a scontro in corso (es. il Re dei Ratti chiama rinforzi).
 import * as PIX from './pixel.js';
 
 const rand = (a, b) => a + Math.random() * (b - a);
@@ -176,12 +183,12 @@ export class Combat {
   get s() { return this.game.s; }
 
   // ---------- Avvio e fine ----------
-  async start({ enemies, place = 'campo', canFlee = true, intro = null }) {
+  async start({ enemies, place = 'campo', canFlee = true, intro = null, script = null, heroFirst = false }) {
     if (this.active) return 'flee';
     const { game } = this;
     this.active = true; game.locked = true;
     this._build();
-    this.place = place; this.canFlee = canFlee; this.round = 1;
+    this.place = place; this.canFlee = canFlee; this.round = 1; this.script = script; this.heroFirst = heroFirst;
     this.root.className = 'place-' + place;
     document.body.classList.add('in-battle');
 
@@ -196,24 +203,7 @@ export class Combat {
     // nemici, con lettere se sono più di uno dello stesso tipo
     this.enemies = [];
     this.enemyBox.innerHTML = '';
-    const count = {};
-    enemies.forEach(id => count[id] = (count[id] || 0) + 1);
-    const seen = {};
-    enemies.forEach((id, i) => {
-      const d = ENEMIES[id];
-      seen[id] = (seen[id] || 0) + 1;
-      const name = count[id] > 1 ? `${d.name} ${'ABC'[seen[id] - 1]}` : d.name;
-      const wrap = el('div', 'b-enemy', this.enemyBox);
-      wrap.style.setProperty('--size', d.size);
-      wrap.style.setProperty('--row', i);
-      const info = el('div', 'b-einfo', wrap, `<span>${name}</span><div class="track"><div class="fill"></div></div>`);
-      const cv = el('canvas', 'b-sprite', wrap);
-      const frames = d.frames();
-      drawFrame(cv, frames[0]);
-      const e = { id, def: d, name, hp: d.hp, max: d.hp, atk: d.atk, def_: d.def, spd: d.spd, scared: 0, sleep: 0, frames, wrap, cv, fill: info.querySelector('.fill'), alive: true };
-      wrap.addEventListener('click', () => this.input && this.input('target', e));
-      this.enemies.push(e);
-    });
+    enemies.forEach(id => this.addEnemy(id));
     this._refresh();
     this._anim = setInterval(() => this._idleAnim(), 260);
 
@@ -228,11 +218,35 @@ export class Combat {
     await this._sleep(700);
     this.root.classList.remove('intro');
     await this._say(intro || this._introText(), 1400);
+    await this._hook('start');
 
     let result = null;
     while (!result) result = await this._round();
     await this._end(result);
     return result;
+  }
+
+  // nemico nuovo nello scontro; le lettere (A, B, C...) distinguono quelli dello stesso tipo
+  addEnemy(id, { noXp = false } = {}) {
+    const d = ENEMIES[id];
+    const wrap = el('div', 'b-enemy', this.enemyBox);
+    wrap.style.setProperty('--size', d.size);
+    wrap.style.setProperty('--row', this.enemies.length);
+    const info = el('div', 'b-einfo', wrap, `<span>${d.name}</span><div class="track"><div class="fill"></div></div>`);
+    const cv = el('canvas', 'b-sprite', wrap);
+    const frames = d.frames();
+    drawFrame(cv, frames[0]);
+    const e = { id, def: d, name: d.name, hp: d.hp, max: d.hp, atk: d.atk, def_: d.def, spd: d.spd, scared: 0, sleep: 0, frames, wrap, cv, fill: info.querySelector('.fill'), alive: true, noXp, label: info.querySelector('span') };
+    wrap.addEventListener('click', () => this.input && this.input('target', e));
+    this.enemies.push(e);
+    const same = this.enemies.filter(o => o.id === id);
+    if (same.length > 1) same.forEach((o, i) => { o.name = `${d.name} ${'ABCDEFGH'[i] || i + 1}`; o.label.textContent = o.name; });
+    return e;
+  }
+
+  async _hook(name, ...args) {
+    const f = this.script?.[name];
+    try { return f ? await f.call(this.script, this, ...args) : undefined; } catch (err) { console.error('[combat script]', name, err); }
   }
 
   _introText() {
@@ -246,8 +260,8 @@ export class Combat {
     const { game } = this, s = this.s;
     clearInterval(this._anim);
     if (result === 'win') {
-      const xp = this.enemies.reduce((a, e) => a + e.def.xp, 0);
-      const money = this.enemies.reduce((a, e) => a + e.def.money, 0);
+      const xp = this.enemies.reduce((a, e) => a + (e.noXp ? 0 : e.def.xp), 0);
+      const money = this.enemies.reduce((a, e) => a + (e.noXp ? 0 : e.def.money), 0);
       const calm = this.place === 'bar' ? 10 : 3;
       game.audio.sfx('level');
       this._heroPose('win');
@@ -284,6 +298,7 @@ export class Combat {
     if (s.tired >= 80) heroSpd -= 3;
     this.hero.spd = heroSpd;
     const units = [this.hero, ...this.enemies.filter(e => e.alive)];
+    if (this.heroFirst && this.round === 1) return [this.hero, ...units.slice(1).sort((a, b) => b.spd - a.spd)];
     return units.map(u => ({ u, k: u.spd + rand(0, 3) })).sort((a, b) => b.k - a.k).map(x => x.u);
   }
 
@@ -294,13 +309,18 @@ export class Combat {
       if (!u.hero && !u.alive) continue;
       this._renderOrder(order, i);
       if (u.hero) {
+        if (await this._hook('heroTurn')) { this._clampStats(); this._refresh(); if (this.s.health <= 0) return 'lose'; continue; }
         const r = await this._heroTurn();
         if (r === 'flee') return 'flee';
-      } else await this._enemyTurn(u);
+      } else if (!(await this._hook('enemyTurn', u))) await this._enemyTurn(u);
       this._clampStats(); this._refresh();
       if (this.enemies.every(e => !e.alive)) return 'win';
       if (this.s.health <= 0) return 'lose';
     }
+    await this._hook('roundEnd');
+    this._clampStats(); this._refresh();
+    if (this.enemies.every(e => !e.alive)) return 'win';
+    if (this.s.health <= 0) return 'lose';
     this.round++;
     for (const e of this.enemies) if (e.scared > 0) e.scared--;
     return null;
@@ -401,11 +421,13 @@ export class Combat {
     if (s.tired >= 80) acc -= 0.1;
     for (const t of targets) {
       if (!t.alive) continue;
+      if (this.script?.immune?.(t)) { this._float(t.wrap, 'Immune!', 'miss'); continue; }
       if (!sure && Math.random() > acc) { this._float(t.wrap, 'Mancato!', 'miss'); continue; }
       let d = this._dmg(this._heroAtk(), pow, t.def_);
       const crit = Math.random() < 0.1;
       if (crit) d = Math.round(d * 1.5);
       this._hitEnemy(t, d, crit);
+      await this._hook('hit', t, d);
     }
     this.game.audio.sfx('dig');
     await this._sleep(500);
@@ -425,7 +447,7 @@ export class Combat {
     for (const e of this.enemies) if (e.alive && e.hp <= 0) {
       e.alive = false;
       e.wrap.classList.add('dead');
-      const line = e.def.bar ? `${e.name} se ne torna al bancone, umiliato.` : `${e.name} scappa nel canale!`;
+      const line = e.def.bar ? `${e.name} se ne torna al bancone, umiliato.` : e.def.fuga ? `${e.name} ${e.def.fuga}` : `${e.name} scappa nel canale!`;
       await this._say(line, 1000);
     }
   }
@@ -433,6 +455,7 @@ export class Combat {
   async _useSkill(k, targets) {
     const s = this.s, h = this.hero;
     s.tired += k.tired;
+    await this._hook('skill', k.id);
     if (k.id === 'zappata') return this._heroStrike(targets, k.pow, 'Garonio: ZAPPATA!');
     if (k.id === 'spazzata') return this._heroStrike(this.enemies.filter(e => e.alive), k.pow, 'Spazzata col forcone!');
     if (k.id === 'rabbia') {
@@ -466,12 +489,14 @@ export class Combat {
   async _useItem(it, target) {
     const s = this.s;
     s.inv[it.id]--;
+    await this._hook('item', it.id, target);
     if (it.id === 'uova') {
       this._msg('Garonio lancia un uovo!');
       this._heroPose('attack');
       this.game.audio.sfx('shoo');
       await this._sleep(350);
-      this._hitEnemy(target, 12, false);
+      if (this.script?.immune?.(target)) this._float(target.wrap, 'Immune!', 'miss');
+      else this._hitEnemy(target, 12, false);
       this._float(target.wrap, 'Splat!', 'miss');
       await this._sleep(500);
       this._heroPose('idle');
@@ -515,6 +540,7 @@ export class Combat {
     if (stress) setTimeout(() => this._float(this.heroWrap, `Stress +${stress}`, 'stress'), dmg ? 250 : 0);
     if (!dmg) this.game.audio.sfx('bad');
     if (mv.steal && s.inv[mv.steal] > 0) { s.inv[mv.steal]--; this._float(e.wrap, '+1 uovo', 'miss'); }
+    await this._hook('enemyMove', e, mv, dmg);
     if (!h.napping && !h.defending) this._heroPose('hurt');
     this._clampStats(); this._refresh();
     await this._sleep(800);
