@@ -1,7 +1,7 @@
 // Pixel art dei mezzi: Vespa carta da zucchero, Punto bianca e trattori, tutti un po' scassati.
 // Ogni mezzo ha tre viste (lato verso destra, davanti, dietro), vuoto o con Garonio alla guida.
 // Scala: 20 pixel = 1 casella, come gli sprite di Garonio.
-import { makeCanvas, mirror } from './pixel.js';
+import { makeCanvas, mirror, garonioFrames, GARONIO_ANIM } from './pixel.js';
 
 export const VPX = 20;
 
@@ -45,53 +45,61 @@ function wheel(d, cx, cy, r, hub = '#9a9aa0', cap = true) {
   d.P('#404046', cx - r + 1, cy - 1, 1, 2);
 }
 
-// ---------- Garonio seduto (lato, verso destra) ----------
-function riderSide(d, x, y, reachX, reachY) {
-  // x,y = punto del sedere sul sellino
-  const { P } = d;
-  // gamba: coscia in avanti, stinco giù
-  P(G.jeans, x, y - 3, 9, 4); P(G.jeansD, x, y, 9, 1);
-  P(G.jeans, x + 7, y, 3, 7); P(G.shoe, x + 7, y + 6, 5, 2);
-  // busto con pancia
-  P(G.shirt, x - 3, y - 13, 8, 11); P(G.shirt, x + 4, y - 10, 2, 8); P(G.shirtD, x - 3, y - 13, 2, 11);
-  // braccio verso il manubrio
-  const ax = x + 3, ay = y - 11;
-  const len = reachX - ax;
-  for (let i = 0; i <= len; i++) P(i > len - 3 ? G.skin : G.shirt, ax + i, ay + Math.round((reachY - ay) * i / Math.max(1, len)), 1, 3);
-  // testa
-  const hx = x - 3, hy = y - 22;
-  P(G.skin, hx, hy + 2, 8, 8); P(G.skinD, hx, hy + 2, 2, 8);
-  P(G.hair, hx - 1, hy, 9, 3); P(G.hair, hx - 1, hy + 2, 3, 5); P(G.hair, hx + 3, hy - 1, 4, 1);
-  P(G.skin, hx + 8, hy + 5, 1, 2);            // naso
-  P(INK, hx + 6, hy + 4, 1, 1);               // occhio
-  P(G.must, hx + 5, hy + 7, 4, 1);            // baffi
+// ---------- Garonio vero (dal suo foglio sprite) ----------
+let BUST = null;
+function garonioBust() {
+  if (BUST) return BUST;
+  const f = garonioFrames().frames[GARONIO_ANIM.idle[0]];
+  const dat = f.getContext('2d').getImageData(0, 0, f.width, f.height).data;
+  let x0 = f.width, y0 = f.height, x1 = 0, y1 = 0;
+  for (let y = 0; y < f.height; y++) for (let x = 0; x < f.width; x++) if (dat[(y * f.width + x) * 4 + 3] > 0) {
+    x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+  }
+  return (BUST = { c: f, x0, y0, w: x1 - x0 + 1, h: y1 - y0 + 1 });
+}
+const WAIST = 0.78; // fino a dove si vede quando è seduto (frazione dell'altezza)
+
+// Disegna lo sprite di Garonio (fermo) centrato in cx, con la cima dei capelli a top.
+// clip = [x, y, w, h] per farlo vedere solo dal finestrino; rows = quante righe (seduto).
+function drawGaronio(d, cx, top, { clip, seated = true } = {}) {
+  const B = garonioBust(), g = d.g;
+  const h = seated ? Math.round(B.h * WAIST) : B.h;
+  g.save();
+  if (clip) { g.beginPath(); g.rect(...clip); g.clip(); }
+  g.drawImage(B.c, B.x0, B.y0, B.w, h, Math.round(cx - B.w / 2), top, B.w, h);
+  g.restore();
+  return h;
+}
+function clipped(d, rect, fn) { d.g.save(); d.g.beginPath(); d.g.rect(...rect); d.g.clip(); fn(); d.g.restore(); }
+
+// Garonio visto da dietro, alla stessa scala del suo sprite
+function bigBack(d, cx, top, { arms = 0, armY = 0 } = {}) {
+  const { P, ellipse } = d;
+  P(G.shirt, cx - 10, top + 19, 20, 14); P(G.shirtD, cx - 10, top + 19, 3, 14);
+  if (arms) { P(G.shirt, cx - arms, armY - 1, arms - 8, 3); P(G.shirt, cx + 8, armY - 1, arms - 8, 3); P(G.skin, cx - arms, armY - 1, 2, 3); P(G.skin, cx + arms - 2, armY - 1, 2, 3); }
+  else { P(G.shirt, cx - 13, top + 20, 4, 8); P(G.shirt, cx + 9, top + 20, 4, 8); P(G.skin, cx - 13, top + 28, 4, 3); P(G.skin, cx + 9, top + 28, 4, 3); }
+  P(G.skin, cx - 4, top + 16, 8, 4);
+  P(G.skin, cx - 10, top + 9, 2, 5); P(G.skin, cx + 8, top + 9, 2, 5);
+  ellipse(cx, top + 9, 8, 8, G.hair);
+  P('#6a4430', cx - 4, top + 3, 5, 2); P('#6a4430', cx + 2, top + 7, 3, 1);
+  P(G.hair, cx - 3, top - 1, 3, 2); P(G.hair, cx + 1, top - 2, 2, 2);
 }
 
-// Garonio di fronte, a mezzo busto (dietro un parabrezza o lo scudo)
-function riderFront(d, cx, top, { arms = 0, armY = 0 } = {}) {
+// gambe e braccio quando è seduto di lato sulla Vespa
+function sideLegsArm(d, x, y, armX, armY, reachX, reachY) {
   const { P } = d;
-  P(G.shirt, cx - 5, top + 9, 10, 9); P(G.shirtD, cx + 3, top + 9, 2, 9);
-  if (arms) { P(G.shirt, cx - arms, armY - 1, arms - 4, 3); P(G.shirt, cx + 4, armY - 1, arms - 4, 3); P(G.skin, cx - arms, armY - 1, 2, 3); P(G.skin, cx + arms - 2, armY - 1, 2, 3); }
-  P(G.skin, cx - 4, top + 1, 8, 8); P(G.skinD, cx + 3, top + 1, 1, 8);
-  P(G.hair, cx - 5, top - 1, 10, 3); P(G.hair, cx - 5, top + 1, 1, 3); P(G.hair, cx + 4, top + 1, 1, 3); P(G.hair, cx - 2, top - 2, 4, 1);
-  P(INK, cx - 2, top + 4); P(INK, cx + 1, top + 4);
-  P(G.must, cx - 2, top + 6, 4, 1);
-}
-
-function riderBack(d, cx, top, { arms = 0, armY = 0 } = {}) {
-  const { P } = d;
-  P(G.shirt, cx - 5, top + 9, 10, 10); P(G.shirtD, cx - 5, top + 9, 2, 10);
-  if (arms) { P(G.shirt, cx - arms, armY - 1, arms - 4, 3); P(G.shirt, cx + 4, armY - 1, arms - 4, 3); P(G.skin, cx - arms, armY - 1, 2, 3); P(G.skin, cx + arms - 2, armY - 1, 2, 3); }
-  P(G.skin, cx - 4, top + 1, 8, 8); P(G.skin, cx - 5, top + 4, 1, 2); P(G.skin, cx + 4, top + 4, 1, 2);
-  P(G.hair, cx - 5, top - 1, 10, 7); P(G.hair, cx - 4, top + 6, 8, 1); P(G.hair, cx - 2, top - 2, 4, 1);
+  P(G.jeans, x, y - 4, 10, 5); P(G.jeansD, x, y, 10, 1);
+  P(G.jeans, x + 8, y, 4, 8); P(G.shoe, x + 8, y + 7, 6, 2);
+  const len = reachX - armX;
+  for (let i = 0; i <= len; i++) P(i > len - 3 ? G.skin : G.shirt, armX + i, armY + Math.round((reachY - armY) * i / Math.max(1, len)), 1, 3);
 }
 
 // ---------- Vespa blu carta da zucchero ----------
 const VB = { base: '#9cc3dd', light: '#c6deee', dark: '#6990ad', rust: '#9a5a32', rustD: '#6e3c20', seat: '#3a2a22', chrome: '#c8ccd0', lamp: '#fff4b0' };
 
 function vespaSide(occ) {
-  const d = pen(48, 48); const { P, ellipse } = d;
-  const gy = 47;
+  const d = pen(48, 60); const { P, ellipse } = d;
+  const gy = 59;
   wheel(d, 12, gy - 5, 5); wheel(d, 38, gy - 5, 5, '#9a9aa0', false);
   // scocca posteriore tondeggiante
   ellipse(13, gy - 13, 10, 7, VB.base);
@@ -118,12 +126,16 @@ function vespaSide(occ) {
   P(VB.seat, 6, gy - 22, 15, 3); P('#5a4232', 7, gy - 22, 6, 1); P('#7a6040', 16, gy - 21, 2, 1); // strappo
   // targa e fanale
   P('#d03030', 2, gy - 17, 2, 2); P('#e8e8d8', 2, gy - 12, 2, 3);
-  if (occ) riderSide(d, 12, gy - 22, 30, gy - 36);
+  if (occ) {
+    const h = drawGaronio(d, 12, gy - 21 - Math.round(garonioBust().h * WAIST));
+    sideLegsArm(d, 13, gy - 21, 17, gy - 21 - h + 25, 30, gy - 36);
+  }
   return outline(d.c);
 }
 
 function vespaFront(occ) {
-  const d = pen(30, 48); const { P, ellipse } = d; const cx = 15, gy = 47;
+  const d = pen(30, 60); const { P, ellipse } = d; const cx = 15, gy = 59;
+  if (occ) drawGaronio(d, cx, gy - 23 - Math.round(garonioBust().h * WAIST));
   P('#26262a', cx - 2, gy - 9, 4, 9); P('#404046', cx - 2, gy - 9, 1, 9);
   ellipse(cx, gy - 10, 4, 2, VB.base);
   // scudo
@@ -133,7 +145,6 @@ function vespaFront(occ) {
   // pedana ai lati con gambe
   if (occ) { P(G.jeans, cx - 10, gy - 25, 4, 12); P(G.jeans, cx + 6, gy - 25, 4, 12); P(G.shoe, cx - 11, gy - 14, 5, 2); P(G.shoe, cx + 6, gy - 14, 5, 2); }
   // manubrio e faro
-  if (occ) riderFront(d, cx, gy - 47);
   P(VB.base, cx - 9, gy - 35, 18, 3); P(VB.light, cx - 8, gy - 35, 16, 1);
   P('#222', cx - 13, gy - 35, 4, 2); P('#222', cx + 9, gy - 35, 4, 2);
   if (occ) { P(G.skin, cx - 13, gy - 36, 3, 2); P(G.skin, cx + 10, gy - 36, 3, 2); }
@@ -143,7 +154,7 @@ function vespaFront(occ) {
 }
 
 function vespaBack(occ) {
-  const d = pen(30, 48); const { P, ellipse } = d; const cx = 15, gy = 47;
+  const d = pen(30, 60); const { P, ellipse } = d; const cx = 15, gy = 59;
   P('#26262a', cx - 2, gy - 8, 4, 8);
   P(VB.dark, cx - 6, gy - 34, 12, 14); P(VB.base, cx - 2, gy - 36, 4, 4); // retro dello scudo
   // scocca larga
@@ -156,7 +167,7 @@ function vespaBack(occ) {
   if (occ) { P(G.jeans, cx - 7, gy - 26, 14, 5); P(G.shoe, cx - 9, gy - 14, 3, 3); P(G.shoe, cx + 6, gy - 14, 3, 3); }
   P(VB.base, cx - 9, gy - 35, 18, 2);
   P('#222', cx - 13, gy - 35, 4, 2); P('#222', cx + 9, gy - 35, 4, 2);
-  if (occ) riderBack(d, cx, gy - 46, { arms: 12, armY: gy - 34 });
+  if (occ) bigBack(d, cx, gy - 56, { arms: 15, armY: gy - 35 });
   P(VB.chrome, cx - 10, gy - 40, 1, 5); P(VB.chrome, cx - 11, gy - 41, 3, 2);
   return outline(d.c);
 }
@@ -165,25 +176,24 @@ function vespaBack(occ) {
 const PB = { base: '#ecebe4', light: '#ffffff', dark: '#b8b8b0', darker: '#8c8c86', glass: '#7fa8c0', glassL: '#b8d6e6', rust: '#a0643a', rustD: '#6e4022', black: '#2a2a2e', lamp: '#fff4c0', tail: '#d03030' };
 
 function puntoSide(occ) {
-  const d = pen(86, 42); const { P, ellipse } = d; const gy = 41;
+  const d = pen(86, 48); const { P, ellipse } = d; const gy = 47;
   // fiancata
   P(PB.base, 3, gy - 24, 80, 15);
   ellipse(80, gy - 15, 4, 6, PB.base);
   P(PB.dark, 3, gy - 12, 80, 3); P(PB.light, 4, gy - 23, 74, 1);
   // cofano inclinato e lunotto
   for (let i = 0; i < 6; i++) P(PB.base, 62 + i * 3, gy - 26 + i, 22 - i * 3, 2);
-  // abitacolo: tetto, montanti, vetri
-  P(PB.base, 14, gy - 37, 42, 3);
-  for (let i = 0; i < 12; i++) { P(PB.base, 55 + i, gy - 35 + i, 3, 1); P(PB.base, 13 - Math.floor(i * 0.7), gy - 35 + i, 5, 1); }
-  P(PB.glass, 17, gy - 34, 18, 10); for (let i = 0; i < 10; i++) P(PB.glass, 17 - Math.floor(i * 0.7), gy - 34 + i, 1, 1); P(PB.glass, 39, gy - 34, 15, 10);
-  for (let i = 0; i < 10; i++) P(PB.glass, 54, gy - 34 + i, 1 + i, 1);
-  P(PB.glassL, 18, gy - 33, 6, 1); P(PB.glassL, 41, gy - 33, 4, 1);
-  P(PB.base, 35, gy - 34, 4, 10); // montante B
-  if (occ) { // Garonio al volante
-    P(G.hair, 43, gy - 34, 8, 3); P(G.skin, 44, gy - 31, 7, 6); P(G.hair, 43, gy - 32, 2, 4);
-    P(INK, 49, gy - 30); P(G.must, 48, gy - 28, 4, 1); P(G.shirt, 42, gy - 25, 10, 1);
-    P('#333', 53, gy - 29, 1, 4); // volante
+  // abitacolo: vetri, Garonio al volante, poi tetto e montanti sopra
+  P(PB.glass, 17, gy - 40, 18, 16); for (let i = 0; i < 16; i++) P(PB.glass, 17 - Math.floor(i * 0.5), gy - 40 + i, 1, 1);
+  P(PB.glass, 39, gy - 40, 16, 16); for (let i = 0; i < 16; i++) P(PB.glass, 55, gy - 40 + i, 1 + Math.floor(i * 0.65), 1);
+  P(PB.glassL, 18, gy - 39, 6, 1); P(PB.glassL, 19, gy - 38, 3, 1);
+  if (occ) {
+    drawGaronio(d, 48, gy - 43, { clip: [39, gy - 40, 26, 16] });
+    P('#333', 58, gy - 31, 1, 6); // volante
   }
+  P(PB.base, 14, gy - 43, 42, 3);
+  for (let i = 0; i < 18; i++) { P(PB.base, 55 + Math.floor(i * 0.65), gy - 41 + i, 3, 1); P(PB.base, 13 - Math.floor(i * 0.5), gy - 41 + i, 5, 1); }
+  P(PB.base, 35, gy - 40, 4, 16); // montante B
   // portiera, maniglia, linea
   P(PB.darker, 38, gy - 24, 1, 13); P(PB.darker, 59, gy - 24, 1, 12); P(PB.black, 52, gy - 21, 4, 1);
   // paraurti, fari
@@ -196,24 +206,25 @@ function puntoSide(occ) {
   // ruggine e ammaccature: è scassata
   P(PB.rust, 28, gy - 12, 5, 2); P(PB.rustD, 30, gy - 11, 2, 1); P(PB.rust, 75, gy - 16, 3, 2);
   P(PB.rust, 9, gy - 13, 2, 2); P(PB.dark, 46, gy - 20, 5, 2); P(PB.darker, 47, gy - 19, 3, 1);
-  P(PB.dark, 22, gy - 37, 6, 1); // tetto rigato
-  P('#333', 56, gy - 32, 2, 2); // specchietto
+  P(PB.dark, 22, gy - 43, 6, 1); // tetto rigato
+  P('#333', 58, gy - 33, 2, 2); // specchietto
   return outline(d.c);
 }
 
 function puntoFront(occ) {
-  const d = pen(48, 42); const { P } = d; const cx = 24, gy = 41;
+  const d = pen(48, 48); const { P } = d; const cx = 24, gy = 47;
   P(PB.black, 3, gy - 9, 7, 9); P(PB.black, 38, gy - 9, 7, 9); // gomme
   P(PB.base, 2, gy - 26, 44, 17); P(PB.dark, 2, gy - 12, 44, 3); P(PB.light, 3, gy - 25, 42, 1);
   // parabrezza e tetto
-  P(PB.base, 8, gy - 39, 32, 3);
-  for (let i = 0; i < 13; i++) P(PB.base, 7 - Math.floor(i / 5), gy - 37 + i, 34 + Math.floor(i / 5) * 2, 1);
-  P(PB.glass, 9, gy - 36, 30, 10); P(PB.glassL, 11, gy - 35, 8, 1); P(PB.glassL, 12, gy - 34, 4, 1);
+  P(PB.base, 8, gy - 45, 32, 3);
+  for (let i = 0; i < 19; i++) P(PB.base, 7 - Math.floor(i / 6), gy - 43 + i, 34 + Math.floor(i / 6) * 2, 1);
+  P(PB.glass, 9, gy - 42, 30, 16);
   if (occ) { // guida a sinistra: dal davanti lo vediamo a destra
-    P(G.hair, 27, gy - 36, 8, 3); P(G.skin, 28, gy - 34, 6, 6); P(INK, 29, gy - 32); P(INK, 32, gy - 32); P(G.must, 29, gy - 30, 4, 1); P(G.shirt, 26, gy - 28, 10, 2);
-    P('#333', 27, gy - 28, 8, 1);
+    drawGaronio(d, 30, gy - 44, { clip: [9, gy - 42, 30, 16] });
+    P('#333', 24, gy - 28, 12, 1);
   }
-  P('#555', 22, gy - 34, 1, 6); // tergicristallo
+  P(PB.glassL, 11, gy - 41, 8, 1); P(PB.glassL, 12, gy - 40, 4, 1);
+  P('#555', 22, gy - 33, 1, 6); // tergicristallo
   // fari, griglia, logo
   P(PB.lamp, 4, gy - 22, 9, 4); P(PB.lamp, 35, gy - 22, 9, 4); P('#d8c070', 4, gy - 19, 9, 1);
   P(PB.black, 16, gy - 21, 16, 3); P('#5070c0', 23, gy - 21, 2, 2);
@@ -224,12 +235,12 @@ function puntoFront(occ) {
 }
 
 function puntoBack(occ) {
-  const d = pen(48, 42); const { P } = d; const cx = 24, gy = 41;
+  const d = pen(48, 48); const { P } = d; const cx = 24, gy = 47;
   P(PB.black, 3, gy - 9, 7, 9); P(PB.black, 38, gy - 9, 7, 9);
   P(PB.base, 2, gy - 27, 44, 18); P(PB.dark, 2, gy - 12, 44, 3);
-  P(PB.base, 7, gy - 39, 34, 13);
-  P(PB.glass, 9, gy - 37, 30, 10); P(PB.glassL, 11, gy - 36, 6, 1);
-  if (occ) { P(G.hair, 13, gy - 36, 9, 7); P(G.skin, 13, gy - 29, 9, 2); }
+  P(PB.base, 7, gy - 45, 34, 19);
+  P(PB.glass, 9, gy - 43, 30, 16); P(PB.glassL, 31, gy - 42, 6, 1);
+  if (occ) clipped(d, [9, gy - 43, 30, 16], () => bigBack(d, 18, gy - 44));
   P('#555', 23, gy - 29, 1, 2); // tergilunotto
   // fanali verticali tipici
   P(PB.tail, 2, gy - 30, 4, 12); P('#f0a020', 2, gy - 22, 4, 2); P(PB.tail, 42, gy - 30, 4, 12); P('#f0a020', 42, gy - 22, 4, 2);
@@ -247,7 +258,7 @@ const TR = {
 };
 
 function tractorSide(occ, col) {
-  const C = TR[col]; const d = pen(76, 62); const { P, ellipse } = d; const gy = 61;
+  const C = TR[col]; const d = pen(76, 68); const { P, ellipse } = d; const gy = 67;
   // telaio
   P('#3a3a40', 14, gy - 20, 52, 6);
   // cofano motore
@@ -257,18 +268,15 @@ function tractorSide(occ, col) {
   P('#fff4c0', 68, gy - 34, 3, 2);
   // marmitta verticale
   P('#2a2a2e', 54, gy - 46, 3, 14); P('#4a4a50', 53, gy - 47, 5, 2);
-  // cabina
-  P('#2a2a2e', 8, gy - 58, 2, 28); P('#2a2a2e', 32, gy - 58, 2, 26);
-  P(C.base, 6, gy - 60, 30, 3); P(C.light, 6, gy - 60, 30, 1); P('#f0f0e8', 8, gy - 57, 26, 1);
-  P('#a8d0e0', 10, gy - 56, 22, 22); P('#cfe6f0', 12, gy - 54, 4, 1); P('#cfe6f0', 12, gy - 53, 2, 1);
-  P(C.dark, 10, gy - 34, 24, 4);
+  // cabina (alta, così Garonio si vede bene)
+  P('#2a2a2e', 8, gy - 64, 2, 34); P('#2a2a2e', 32, gy - 64, 2, 32);
+  P(C.base, 6, gy - 66, 30, 3); P(C.light, 6, gy - 66, 30, 1); P('#f0f0e8', 8, gy - 63, 26, 1);
+  P('#a8d0e0', 10, gy - 62, 22, 28); P('#cfe6f0', 12, gy - 60, 4, 1); P('#cfe6f0', 12, gy - 59, 2, 1);
   if (occ) {
-    const hx = 17, hy = gy - 52;
-    P(G.shirt, hx - 2, hy + 9, 10, 9);
-    P(G.skin, hx, hy + 1, 8, 8); P(G.hair, hx - 1, hy - 1, 9, 3); P(G.hair, hx - 1, hy + 1, 2, 4);
-    P(INK, hx + 6, hy + 4); P(G.must, hx + 5, hy + 6, 3, 1); P(G.skin, hx + 8, hy + 4, 1, 2);
-    P('#333', hx + 9, hy + 10, 4, 1); P(G.skin, hx + 7, hy + 10, 2, 2); // volante e mano
+    drawGaronio(d, 20, gy - 60, { clip: [10, gy - 62, 22, 28] });
+    P('#333', 27, gy - 38, 5, 1); P('#333', 29, gy - 37, 1, 3); // volante
   }
+  P(C.dark, 10, gy - 34, 24, 4);
   // parafango e ruote
   P(C.base, 3, gy - 30, 34, 4); P(C.dark, 3, gy - 27, 34, 1);
   wheel(d, 20, gy - 14, 14, '#c8b020'); // ruote gialle come i trattori veri
@@ -281,16 +289,16 @@ function tractorSide(occ, col) {
 }
 
 function tractorFront(occ, col) {
-  const C = TR[col]; const d = pen(52, 62); const { P } = d; const cx = 26, gy = 61;
+  const C = TR[col]; const d = pen(52, 68); const { P } = d; const cx = 26, gy = 67;
   // ruote posteriori grandi ai lati
   P('#26262a', 0, gy - 28, 9, 28); P('#26262a', 43, gy - 28, 9, 28);
   for (let i = 0; i < 7; i++) { P('#18181a', 0, gy - 27 + i * 4, 9, 1); P('#18181a', 43, gy - 27 + i * 4, 9, 1); }
   P(C.base, 0, gy - 31, 12, 3); P(C.base, 40, gy - 31, 12, 3);
   // cabina
-  P('#2a2a2e', 9, gy - 58, 2, 30); P('#2a2a2e', 41, gy - 58, 2, 30);
-  P(C.base, 7, gy - 60, 38, 3); P('#f0f0e8', 9, gy - 57, 34, 1);
-  P('#a8d0e0', 11, gy - 56, 30, 25); P('#cfe6f0', 13, gy - 54, 5, 1);
-  if (occ) riderFront(d, cx, gy - 52, { arms: 9, armY: gy - 38 });
+  P('#2a2a2e', 9, gy - 64, 2, 36); P('#2a2a2e', 41, gy - 64, 2, 36);
+  P(C.base, 7, gy - 66, 38, 3); P('#f0f0e8', 9, gy - 63, 34, 1);
+  P('#a8d0e0', 11, gy - 62, 30, 31); P('#cfe6f0', 13, gy - 60, 5, 1);
+  if (occ) { drawGaronio(d, cx, gy - 60, { clip: [11, gy - 62, 30, 31] }); P('#333', cx - 6, gy - 35, 12, 2); }
   // cofano stretto e griglia
   P(C.base, 17, gy - 34, 18, 20); P(C.light, 17, gy - 34, 18, 2); P(C.dark, 33, gy - 32, 2, 18);
   P('#2a2a2e', 19, gy - 30, 14, 12); for (let i = 0; i < 6; i++) P('#5a5a60', 19, gy - 29 + i * 2, 14, 1);
@@ -304,14 +312,14 @@ function tractorFront(occ, col) {
 }
 
 function tractorBack(occ, col) {
-  const C = TR[col]; const d = pen(52, 62); const { P } = d; const cx = 26, gy = 61;
+  const C = TR[col]; const d = pen(52, 68); const { P } = d; const cx = 26, gy = 67;
   P('#26262a', 0, gy - 30, 11, 30); P('#26262a', 41, gy - 30, 11, 30);
   for (let i = 0; i < 7; i++) { P('#18181a', 0, gy - 29 + i * 4, 11, 1); P('#18181a', 41, gy - 29 + i * 4, 11, 1); }
   P(C.base, 0, gy - 33, 15, 4); P(C.base, 37, gy - 33, 15, 4); P(C.dark, 0, gy - 30, 15, 1); P(C.dark, 37, gy - 30, 15, 1);
-  P('#2a2a2e', 9, gy - 58, 2, 30); P('#2a2a2e', 41, gy - 58, 2, 30);
-  P(C.base, 7, gy - 60, 38, 3); P('#f0f0e8', 9, gy - 57, 34, 1);
-  P('#a8d0e0', 11, gy - 56, 30, 24); P('#cfe6f0', 34, gy - 54, 4, 1);
-  if (occ) riderBack(d, cx, gy - 52);
+  P('#2a2a2e', 9, gy - 64, 2, 36); P('#2a2a2e', 41, gy - 64, 2, 36);
+  P(C.base, 7, gy - 66, 38, 3); P('#f0f0e8', 9, gy - 63, 34, 1);
+  P('#a8d0e0', 11, gy - 62, 30, 30); P('#cfe6f0', 34, gy - 60, 4, 1);
+  if (occ) clipped(d, [11, gy - 62, 30, 30], () => bigBack(d, cx, gy - 59));
   P(C.base, 13, gy - 32, 26, 12); P(C.dark, 13, gy - 22, 26, 2);
   P('#d03030', 14, gy - 31, 3, 3); P('#d03030', 35, gy - 31, 3, 3);
   // attacco a tre punti e presa di forza
