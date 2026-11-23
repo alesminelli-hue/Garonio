@@ -6,6 +6,7 @@ import { MISSIONI, MISSIONI_FISSE, SALUTI_GIGANTE } from './data/missioni.js';
 import { INTRO, STORIA, GIGANTE, MOUNTAIN, CASA, OFFICINA, BAR, NOMI } from './data/dialoghi.js';
 import { pick, fill, pagina, pagine, ora, variabiliMissione } from './racconto.js';
 import { PLACES, MAP_VERSION, coopSpot } from './map.js';
+import { Combat } from './combat.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -65,6 +66,7 @@ export class Game {
     this.actT = 0; this.actName = 'attack'; this.jumpT = 0; this.ko = false; this.animT = 0;
     this.locked = false; this.mm = null; this.hop = 0; this.caughtAt = -999; this.saveHour = 6;
     this.inBar = false;
+    this.combat = new Combat(this);
   }
 
   // ---------- Avvio ----------
@@ -270,7 +272,7 @@ export class Game {
     const d = (x, z) => Math.hypot(P.x - x, P.z - z);
     const gp = this.gigante.group.position;
     if (d(gp.x, gp.z) < 1.5) return { label: 'Parla col Gigante', fn: () => this.talkGigante() };
-    for (const n of this.nutrie) if (n.state !== 'flee' && d(n.x, n.z) < 1.6) return { label: 'Scaccia la nutria!', fn: () => this.shoo(n) };
+    for (const n of this.nutrie) if (n.state !== 'flee' && d(n.x, n.z) < 1.6) return { label: 'Affronta la nutria!', fn: () => this.shoo(n) };
     for (const e of this.s.eggs) if (d(e.x, e.z) < 0.9) return { label: 'Raccogli l\'uovo', fn: () => this.pickEgg(e) };
     for (const b of BUILDINGS) if (b.door && !b.noDoor && d(b.door.x, b.door.z) < 1.1) {
       const lab = { casa: 'Entra in casa', officina: 'Entra in officina', bar: 'Entra al bar', maiali: 'Capannone dei maiali' }[b.id];
@@ -322,7 +324,11 @@ export class Game {
     }
   }
 
-  till(key, x, z) { this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 }; this.world.setPlot(x, z, this.s.plots[key]); this._cost('zappa'); this.s.today.zappate = (this.s.today.zappate || 0) + 1; }
+  till(key, x, z) {
+    this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 }; this.world.setPlot(x, z, this.s.plots[key]); this._cost('zappa');
+    this.s.today.zappate = (this.s.today.zappate || 0) + 1;
+    if (this.s.day >= 4 && this.world.areaAt(x, z) === 'field' && Math.random() < 0.05) setTimeout(() => this.ambush('cinghiale'), 400);
+  }
   sow(key, x, z, area) {
     const p = this.s.plots[key]; p.crop = AREAS[area].crop; p.stage = 0; p.g = 0;
     this.world.setPlot(x, z, p); this._cost('semina');
@@ -341,6 +347,7 @@ export class Game {
     const sp = this.eggSprites.find(x => x.userData.egg === e);
     if (sp) { this.world.scene.remove(sp); this.eggSprites.splice(this.eggSprites.indexOf(sp), 1); }
     this.s.inv.uova++; this.s.today.uova++; this._cost('uovo'); this.ui.float('+1 uovo');
+    if (this.s.day >= 2 && Math.random() < 0.1) setTimeout(() => this.ambush('volpe'), 400);
   }
   feed() { this.s.fedToday = true; this.s.today.galline = 1; this.s.lastLay = this.s.minutes; this._cost('nutri'); this.ui.toast('Galline sfamate: oggi e domani faranno più uova.'); }
   sell() {
@@ -439,7 +446,28 @@ export class Game {
     if (byPlayer) { this.s.today.nutrie++; }
   }
 
-  shoo(n) { this._flee(n, true); this._cost('scaccia'); this.ui.float('Sciò! Via di qua!'); }
+  // Scontro a turni con la nutria (e con quelle vicine, fino a 3). Vedi src/combat.js
+  async shoo(n) {
+    const group = [n, ...this.nutrie.filter(o => o !== n && o.state !== 'flee' && Math.hypot(o.x - n.x, o.z - n.z) < 3.5)].slice(0, 3);
+    const enemies = group.map(() => 'nutria');
+    if (this.s.day >= 3 && enemies.length < 3 && Math.random() < 0.2) enemies.push('nutria_gigante');
+    this._wake(); this.idle = 0;
+    const res = await this.combat.start({ enemies, place: 'campo' });
+    if (res === 'win') {
+      group.forEach(o => this._flee(o, true));
+      this.ui.toast(`Campo difeso! Nutrie scacciate: ${group.length}`, 'good');
+    } else if (res === 'lose') {
+      await this.mountain('sconfitta', 20);
+    }
+  }
+
+  // Imboscata di un animale (volpe al pollaio, cinghiale nei campi)
+  async ambush(kind) {
+    if (this.locked || this.mm || this.combat.active || this.ui.busy()) return;
+    this._wake(); this.idle = 0;
+    const res = await this.combat.start({ enemies: [kind], place: 'campo' });
+    if (res === 'lose') await this.mountain('sconfitta', 20);
+  }
 
   // ---------- Il Gigante ----------
   async talkGigante() {
@@ -551,7 +579,15 @@ export class Game {
       }]);
     } else if (id === 'bar') {
       this.inBar = true; this.audio.setScene('bar');
+      this._barFight = null;
       await this._barMenu(true);
+      while (this._barFight) { // il cliente ostile va affrontato in uno scontro a turni
+        const foe = this._barFight; this._barFight = null;
+        const res = await this.combat.start({ enemies: [foe], place: 'bar' });
+        if (res === 'lose') { await this.mountain('sconfitta', 15); break; }
+        this.audio.setScene('bar');
+        await this.ui.dialog([this._barMenu(false)]);
+      }
       this.inBar = false;
     } else if (id === 'officina') {
       const choices = UPGRADES.map(u => ({
@@ -600,6 +636,7 @@ export class Game {
     return [{
       ...pagina({ chi: b.id, testo: b.battute }),
       choices: [
+        { label: 'Affrontalo (scontro a turni)', fn: () => { this._barFight = b.id === 'bullo' ? 'bullo' : 'ubriaco'; return null; } },
         { label: R.etichetta, fn: () => {
           if (Math.random() < (b.riuscita ?? 0.5)) {
             s.stress = clamp(s.stress + R.stressBene, 0, 100); this._xp(R.xpBene);

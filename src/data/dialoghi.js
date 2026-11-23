@@ -165,6 +165,10 @@ export const MOUNTAIN = {
       "Ti hanno trovato a dormire in mezzo al lavoro. DI NUOVO.",
       "Sei crollato per terra come un sacco di patate. Almeno le patate si vendono.",
     ],
+    sconfitta: [
+      "Ti sei fatto mettere sotto da una bestiola?! Una BESTIOLA!",
+      "Domani ti mando a combattere con le galline, così almeno pareggi.",
+    ],
     svenuto: [
       "Sei svenuto! Lo stress ti ha steso, scansafatiche.",
       "Il Gigante ha dovuto chiamare il medico. Il medico ha riso. Poi ha mandato il conto.",
