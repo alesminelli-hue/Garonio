@@ -2,6 +2,9 @@
 import * as THREE from 'three';
 import * as PIX from './pixel.js';
 import { AREAS, BUILDINGS } from './world.js';
+import { MISSIONI, MISSIONI_FISSE, SALUTI_GIGANTE } from './data/missioni.js';
+import { INTRO, STORIA, GIGANTE, MOUNTAIN, CASA, OFFICINA, BAR, NOMI } from './data/dialoghi.js';
+import { pick, fill, pagina, pagine, ora, variabiliMissione } from './racconto.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -27,27 +30,7 @@ const ACTIONS = {
   nutri: { tired: 2, stress: 0, xp: 2, min: 10, sfx: 'pick' },
 };
 
-const MISSIONS = {
-  semina: { text: n => `Zappa e semina ${n} zolle nel campo`, stat: 'seminaCampo', range: [6, 10], deadline: 17, pay: 25 },
-  uova: { text: n => `Raccogli ${n} uova al pollaio`, stat: 'uova', range: [3, 5], deadline: 12, pay: 15 },
-  nutrie: { text: n => `Scaccia ${n} nutrie dal campo`, stat: 'nutrie', range: [2, 4], deadline: 19, pay: 30 },
-  annaffia: { text: n => `Annaffia ${n} piante`, stat: 'annaffiate', range: [4, 10], deadline: 14, pay: 15 },
-  raccolto: { text: n => `Raccogli ${n} tra pomodori e pannocchie`, stat: 'raccolti', range: [2, 5], deadline: 18, pay: 30 },
-  vendi: { text: n => `Guadagna ${n}€ vendendo alla cassa`, stat: 'venduto', range: [15, 35], deadline: 20, pay: 20 },
-};
-
-const MM_LINES = {
-  missione: ['GARONIO! Il Gigante ti aveva dato UN compito. UNO!', 'Mio nonno a novant\'anni lavorava più di te. E aveva una gamba sola.'],
-  nutrie: ['Le nutrie si stanno mangiando il campo e tu dov\'eri?!', 'Lavorano più loro di te, e almeno loro si fanno la tana.'],
-  dormito: ['Ti hanno trovato a dormire in mezzo al lavoro. DI NUOVO.', 'Questa la racconto in tutto il paese.'],
-  svenuto: ['Sei svenuto! Lo stress ti ha steso, scansafatiche.', 'Il Gigante ha dovuto pagare il medico coi TUOI soldi.'],
-};
-
-const BAR_BULLIES = [
-  { name: 'Il Bullo del paese', text: 'Ehi Garonio! È vero che tuo padre ti paga per dormire?' },
-  { name: 'Il Bullo del paese', text: 'Guarda chi c\'è, il re delle nutrie! Quante ne hai scacciate oggi, zero?' },
-  { name: 'Cliente ubriaco', text: 'Questo è il mio sgabello. Lo era anche ieri. E domani.' },
-];
+// Missioni e dialoghi stanno in src/data/missioni.js e src/data/dialoghi.js
 
 const UPGRADES = [
   { id: 'zappa', label: 'Zappa affilata', desc: 'zappare stanca la metà', price: 40 },
@@ -60,7 +43,7 @@ const randi = (a, b) => Math.floor(rand(a, b + 1));
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const fmtH = m => `${String(Math.floor(m / 60)).padStart(2, '0')}:00`;
 
-function newStats() { return { uova: 0, seminaCampo: 0, nutrie: 0, annaffiate: 0, raccolti: 0, venduto: 0, persi: 0, mmNutrie: false }; }
+function newStats() { return { uova: 0, seminaCampo: 0, seminaOrto: 0, zappate: 0, galline: 0, nutrie: 0, annaffiate: 0, raccolti: 0, venduto: 0, persi: 0, mmNutrie: false }; }
 function fresh() {
   return {
     day: 1, minutes: 6 * H, health: 100, stress: 15, tired: 0, money: 20, xp: 0, level: 1,
@@ -128,58 +111,51 @@ export class Game {
 
   // ---------- Storia ----------
   async intro() {
-    await this.ui.dialog([
-      { text: 'Pianura padana, ore 6:00. Il gallo canta. Garonio no.' },
-      { who: 'gigante', name: 'Il Gigante', text: 'GARONIO! Sono le sei! I campi non si zappano da soli!' },
-      { who: 'garonio', name: 'Garonio', text: 'Mmh... cinque minuti, papà...' },
-      { who: 'gigante', name: 'Il Gigante', text: 'Cinque minuti li hai chiesti nel 2009. Ogni mattina ti do un lavoro. Se non lo fai... chiamo Mister Mountain.' },
-      { who: 'garonio', name: 'Garonio', text: '(No, Mister Mountain no...)' },
-      { text: 'Muoviti con FRECCE/WASD (Shift per correre). Agisci con E o SPAZIO sulla casella evidenziata o vicino a persone, porte e oggetti.' },
-      { text: 'Occhio alle barre: lavorare alza STANCHEZZA e STRESS. Il bar abbassa lo stress, dormire a casa recupera tutto.' },
-    ]);
+    await this.ui.dialog(pagine(INTRO));
     this.s.introDone = true;
-    this._newMission('semina', 6);
+    this._pickMission();
     await this._announceMission();
   }
 
   async morning() {
     this._pickMission();
+    await this._story();
     await this._announceMission();
   }
 
+  // scena di storia della mattina (src/data/dialoghi.js → STORIA), una volta sola per giorno
+  async _story() {
+    const scene = STORIA[this.s.day];
+    if (!scene || this.s.storyDay === this.s.day) return;
+    this.s.storyDay = this.s.day;
+    await this.ui.dialog(pagine(scene));
+  }
+
   _pickMission() {
-    const plants = this._plants().length;
-    const pool = ['semina', 'uova', 'nutrie', 'vendi'];
-    if (plants >= 4) pool.push('annaffia', 'annaffia');
-    if (plants >= 2 && this.s.day > 2) pool.push('raccolto');
-    if (this.s.day === 2) pool.splice(0, pool.length, 'uova');
-    const id = pool[randi(0, pool.length - 1)];
-    const m = MISSIONS[id];
-    const t = clamp((this.s.day - 1) / 6, 0, 1);
-    let n = Math.round(m.range[0] + (m.range[1] - m.range[0]) * t);
-    if (id === 'annaffia') n = Math.min(n, plants);
-    if (id === 'raccolto') n = Math.min(n, plants);
-    if (id === 'uova') n = Math.min(n, this.s.eggs.length + (this.s.fedYesterday ? 2 : 1));
+    const s = this.s, plants = this._plants().length;
+    const fixed = MISSIONI_FISSE[s.day];
+    let id = fixed?.id;
+    if (!id) {
+      const pool = Object.entries(MISSIONI).filter(([, m]) => (m.daGiorno || 1) <= s.day && plants >= (m.servePiante || 0));
+      let r = Math.random() * pool.reduce((t, [, m]) => t + (m.peso ?? 1), 0);
+      id = pool.find(([, m]) => (r -= m.peso ?? 1) < 0)?.[0] || pool[0][0];
+    }
+    const m = MISSIONI[id];
+    const t = clamp((s.day - 1) / 6, 0, 1);
+    let n = fixed?.n ?? Math.round(m.quantita[0] + (m.quantita[1] - m.quantita[0]) * t);
+    if (m.limite === 'piante') n = Math.min(n, plants);
+    if (m.limite === 'uova') n = Math.min(n, s.eggs.length + (s.fedYesterday ? 2 : 1));
     this._newMission(id, Math.max(1, n));
   }
 
   _newMission(id, n) {
-    const m = MISSIONS[id];
-    this.s.mission = { id, n, text: m.text(n), stat: m.stat, deadline: m.deadline * H, pay: m.pay, progress: 0, done: false, failed: false };
+    const m = MISSIONI[id];
+    this.s.mission = { id, n, text: fill(m.testo, { n }), stat: m.stat, deadline: m.scadenza * H, pay: m.paga, progress: 0, done: false, failed: false };
   }
 
   async _announceMission() {
-    const m = this.s.mission;
-    const intro = ['Sveglia, scansafatiche!', 'Ancora a letto? Fuori!', 'Oggi niente scuse.', 'Il sole è su da un pezzo. Tu no.'][randi(0, 3)];
-    const tips = {
-      uova: 'Le galline stanno nel pollaio. Dagli da mangiare alla mangiatoia e ne faranno di più.',
-      semina: 'Il campo è a nord, oltre la casa. Prima zappi, poi semini.',
-      nutrie: 'Le nutrie escono dal canale e puntano alle piante del campo. Avvicinati e scacciale.',
-      annaffia: 'Le piante bagnate crescono. Ogni mattina tornano asciutte.',
-      raccolto: 'Quando la pianta è matura, raccoglila e portala alla cassa vicino a casa.',
-      vendi: 'La cassa di legno vicino alla porta di casa compra uova, pomodori e mais.',
-    };
-    await this.ui.dialog([{ who: 'gigante', name: 'Il Gigante', text: `${intro} Oggi devi: ${m.text} entro le ${fmtH(m.deadline)}. ${tips[m.id]}` }]);
+    const m = this.s.mission, d = MISSIONI[m.id], v = variabiliMissione(m);
+    await this.ui.dialog([pagina({ chi: 'gigante', testo: `${pick(SALUTI_GIGANTE)} ${fill(pick(d.richieste), v)} ${d.consiglio}` })]);
   }
 
   // ---------- Ciclo principale ----------
@@ -234,7 +210,7 @@ export class Game {
     const gp = this.gigante.group.position, pp = this.player.group.position;
     if (this.dozing && s.minutes < 20 * H && gp.distanceTo(pp) < 7 && s.minutes - this.caughtAt > 60) {
       this.caughtAt = s.minutes; s.stress += 8; this._wake(); this.idle = 0;
-      this.ui.toast('Il Gigante: «GARONIO! Non si dorme sul lavoro!»  Stress +8', 'bad'); this.audio.sfx('bad');
+      this.ui.toast(`${NOMI.gigante}: «${pick(GIGANTE.beccatoDormire)}»  Stress +8`, 'bad'); this.audio.sfx('bad');
     }
 
     // piante
@@ -263,14 +239,14 @@ export class Game {
 
   _checkMission() {
     const m = this.s.mission; if (!m || m.done || m.failed) return;
-    m.progress = this.s.today[m.stat];
+    const d = MISSIONI[m.id];
+    m.progress = this.s.today[m.stat] || 0;
     if (m.progress >= m.n) {
-      m.done = true; this.s.money += m.pay; this._xp(10); this.audio.sfx('coin');
-      const lines = ['Hmpf. Per una volta non hai fatto danni.', 'Bene. Non abituarti ai complimenti.', 'Visto? Non si muore a lavorare.'];
-      this.ui.toast(`Missione completata! +${m.pay}€  Il Gigante: «${lines[randi(0, 2)]}»`, 'good');
+      m.done = true; this.s.money += m.pay; this._xp(d?.xp ?? 10); this.audio.sfx('coin');
+      this.ui.toast(`Missione completata! +${m.pay}€  ${NOMI.gigante}: «${pick(d?.successo || GIGANTE.missioneFatta)}»`, 'good');
     } else if (this.s.minutes >= m.deadline) {
       m.failed = true;
-      this.mountain('missione', 30);
+      this.mountain('missione', d?.stressFallimento ?? 30, d && fill(pick(d.rimprovero), variabiliMissione(m)));
     }
   }
 
@@ -340,11 +316,12 @@ export class Game {
     }
   }
 
-  till(key, x, z) { this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 }; this.world.setPlot(x, z, this.s.plots[key]); this._cost('zappa'); }
+  till(key, x, z) { this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 }; this.world.setPlot(x, z, this.s.plots[key]); this._cost('zappa'); this.s.today.zappate = (this.s.today.zappate || 0) + 1; }
   sow(key, x, z, area) {
     const p = this.s.plots[key]; p.crop = AREAS[area].crop; p.stage = 0; p.g = 0;
     this.world.setPlot(x, z, p); this._cost('semina');
     if (area === 'field') this.s.today.seminaCampo++;
+    else this.s.today.seminaOrto = (this.s.today.seminaOrto || 0) + 1;
   }
   water(key, x, z) { const p = this.s.plots[key]; p.water = true; this.world.setPlot(x, z, p); this._cost('annaffia'); this.s.today.annaffiate++; }
   harvest(key, x, z) {
@@ -359,7 +336,7 @@ export class Game {
     if (sp) { this.world.scene.remove(sp); this.eggSprites.splice(this.eggSprites.indexOf(sp), 1); }
     this.s.inv.uova++; this.s.today.uova++; this._cost('uovo'); this.ui.float('+1 uovo');
   }
-  feed() { this.s.fedToday = true; this.s.lastLay = this.s.minutes; this._cost('nutri'); this.ui.toast('Galline sfamate: oggi e domani faranno più uova.'); }
+  feed() { this.s.fedToday = true; this.s.today.galline = 1; this.s.lastLay = this.s.minutes; this._cost('nutri'); this.ui.toast('Galline sfamate: oggi e domani faranno più uova.'); }
   sell() {
     const s = this.s, pr = CONFIG.prices;
     const tot = s.inv.uova * pr.uova + s.inv.pomodoro * pr.pomodoro + s.inv.mais * pr.mais;
@@ -461,17 +438,27 @@ export class Game {
 
   // ---------- Il Gigante ----------
   async talkGigante() {
-    const m = this.s.mission;
+    const s = this.s, m = s.mission, G = GIGANTE, sc = G.scelte;
     let text;
-    if (!m) text = 'Che vuoi? Vai a lavorare.';
-    else if (m.done) text = ['Hai finito? Allora vai al bar, prima che ci ripensi.', 'Bravo... per modo di dire. Non montarti la testa.'][randi(0, 1)];
-    else if (m.failed) text = 'Non parlarmi. Mister Mountain ti ha già detto tutto.';
-    else text = `Ancora qui? Devi: ${m.text}. Sei a ${m.progress}/${m.n} e la scadenza è alle ${fmtH(m.deadline)}.`;
-    await this.ui.dialog([{ who: 'gigante', name: 'Il Gigante', text }]);
+    if (!m) text = pick(G.nessunaMissione);
+    else if (m.done) text = pick(G.missioneFatta);
+    else if (m.failed) text = pick(G.missioneFallita);
+    else text = fill(pick(s.tired > 70 ? G.inCorsoStanco : G.inCorso), variabiliMissione(m));
+    const reply = (opt) => () => {
+      s.minutes += opt.minuti || 0;
+      s.stress = clamp(s.stress + (opt.stress || 0), 0, 100);
+      return [pagina({ chi: 'gigante', testo: opt.risposte })];
+    };
+    await this.ui.dialog([{ ...pagina({ chi: 'gigante', testo: text }), choices: [
+      { label: sc.aumento.etichetta, fn: reply(sc.aumento) },
+      { label: sc.lamentati.etichetta, fn: reply(sc.lamentati) },
+      { label: sc.niente.etichetta, fn: null },
+    ] }]);
   }
 
   // ---------- Mister Mountain ----------
-  async mountain(reason, stress) {
+  // reason: chiave di MOUNTAIN.motivi in src/data/dialoghi.js; first: prima frase già pronta (facoltativa)
+  async mountain(reason, stress, first = null) {
     if (this.mm) return;
     const P = this.player.group.position;
     this.mm = this.world.actor(PIX.characterFrames('mountain'), { w: 30 / 16 * 1.25, h: 42 / 16 * 1.25, shadow: 0.8 });
@@ -482,13 +469,15 @@ export class Game {
     this.facing = side; this.player.setFrame(side > 0 ? 0 : PIX.GARONIO_N);
     this.player.spr.position.y = 0;
     this.audio.setScene('mister_mountain'); this.audio.sfx('bad'); this.ui.shake();
-    const lines = MM_LINES[reason];
-    await this.ui.dialog([
-      { text: 'Il terreno trema... arriva MISTER MOUNTAIN!' },
-      { who: 'mountain', name: 'Mister Mountain', text: lines[0] },
-      { who: 'mountain', name: 'Mister Mountain', text: lines[1] },
-      { who: 'garonio', name: 'Garonio', text: ['...scusa.', 'Ma io stavo per farlo!', '(Fingi di essere un albero.)'][randi(0, 2)] },
-    ]);
+    const lines = MOUNTAIN.motivi[reason] || MOUNTAIN.motivi.missione;
+    await this.ui.dialog(pagine([
+      { testo: MOUNTAIN.arrivo },
+      { chi: 'mountain', testo: first || lines[0] },
+      { chi: 'mountain', testo: first ? lines[0] : lines[1] },
+      { chi: 'mountain', testo: MOUNTAIN.rincari },
+      { chi: 'garonio', testo: MOUNTAIN.risposteGaronio },
+      { testo: MOUNTAIN.uscita },
+    ]));
     this.s.stress = clamp(this.s.stress + stress, 0, 100);
     this.ui.toast(`Stress +${stress}`, 'bad');
     this.mm.remove(); this.mm = null;
@@ -538,6 +527,7 @@ export class Game {
     await this.ui.fade(false);
     this.locked = false;
     this.ui.toast(`Giorno ${s.day}`, 'good');
+    await this._story();
     await this._announceMission();
   }
 
@@ -547,10 +537,10 @@ export class Game {
     if (id === 'casa') {
       const late = s.minutes >= 20 * H;
       await this.ui.dialog([{
-        name: 'Casa', text: late ? 'Il letto ti chiama. Ed è la voce più dolce del mondo.' : 'Il divano è lì. Il Gigante pure, da qualche parte.',
+        name: 'Casa', text: pick(late ? CASA.sera : CASA.giorno),
         choices: [
           { label: late ? 'Dormire fino a domani' : 'Dormire (solo dopo le 20:00)', disabled: !late, fn: () => { this.sleep(false); } },
-          { label: 'Pisolino di un\'ora (stanchezza -20)', fn: () => { s.minutes += 60; s.tired = clamp(s.tired - 20, 0, 100); s.stress = clamp(s.stress - 3, 0, 100); this.ui.toast('Zzz... un\'ora di pace.'); } },
+          { label: 'Pisolino di un\'ora (stanchezza -20)', fn: () => { s.minutes += 60; s.tired = clamp(s.tired - 20, 0, 100); s.stress = clamp(s.stress - 3, 0, 100); this.ui.toast(pick(CASA.pisolino)); } },
           { label: 'Esci', fn: null },
         ],
       }]);
@@ -565,26 +555,31 @@ export class Game {
         fn: () => { s.money -= u.price; s.upgrades[u.id] = true; this.audio.sfx('coin'); this.ui.toast(`Comprato: ${u.label}!`, 'good'); },
       }));
       choices.push({ label: 'Esci', fn: null });
-      await this.ui.dialog([{ name: 'Officina', text: 'Attrezzi, ricambi e odore di gasolio. Qui un giorno sistemerai la Vespa, la Punto e i trattori.', choices }]);
+      await this.ui.dialog([{ name: 'Officina', text: pick(OFFICINA.benvenuto), choices }]);
     } else if (id === 'maiali') {
       await this.ui.dialog([{ name: 'Capannone dei maiali', text: 'Si sentono grugniti. I maiali arriveranno nella prossima versione del gioco!' }]);
     }
   }
 
   _barMenu(first) {
-    const s = this.s;
+    const s = this.s, O = BAR.ordini, V = BAR.voci;
+    const fix = () => { s.stress = clamp(s.stress, 0, 100); s.tired = clamp(s.tired, 0, 100); s.health = clamp(s.health, 0, 100); };
     const buy = (price, fx, msg) => () => {
-      s.money -= price; fx(); s.minutes += 30; this.audio.sfx('eat'); this.ui.toast(msg);
-      s.stress = clamp(s.stress, 0, 100); s.tired = clamp(s.tired, 0, 100); s.health = clamp(s.health, 0, 100);
-      if (Math.random() < 0.3) return this._bully();
-      return [this._barPage(false)];
+      s.money -= price; fx(); s.minutes += 30; this.audio.sfx('eat'); this.ui.toast(pick(msg)); fix();
+      if (Math.random() < BAR.probabilitaAvventore) return this._bully();
+      return [this._barMenu(false)];
+    };
+    const gossip = () => {
+      s.minutes += V.minuti; s.stress += V.stress; fix();
+      return [pagina(pick(V.frasi)), this._barMenu(false)];
     };
     const page = {
-      name: 'Bar', text: first ? 'La barista ti saluta con un cenno. «Il solito, Garonio?»' : 'Qualcos\'altro?', who: 'barista',
+      ...pagina({ chi: 'barista', testo: first ? BAR.saluti : BAR.ancora }),
       choices: [
-        { label: 'Panino e bibita (6€): stress -15, vita +10', disabled: s.money < 6, fn: buy(6, () => { s.stress -= 15; s.health += 10; }, 'Gnam. Stress -15') },
-        { label: 'Caffè (2€): stanchezza -12', disabled: s.money < 2, fn: buy(2, () => { s.tired -= 12; }, 'Caffè doppio. Stanchezza -12') },
-        { label: 'Birra (4€): stress -22, stanchezza +6', disabled: s.money < 4, fn: buy(4, () => { s.stress -= 22; s.tired += 6; }, 'Ahh. Stress -22') },
+        { label: 'Panino e bibita (6€): stress -15, vita +10', disabled: s.money < 6, fn: buy(6, () => { s.stress -= 15; s.health += 10; }, O.panino) },
+        { label: 'Caffè (2€): stanchezza -12', disabled: s.money < 2, fn: buy(2, () => { s.tired -= 12; }, O.caffe) },
+        { label: 'Birra (4€): stress -22, stanchezza +6', disabled: s.money < 4, fn: buy(4, () => { s.stress -= 22; s.tired += 6; }, O.birra) },
+        { label: V.etichetta, fn: gossip },
         { label: 'Esci', fn: null },
       ],
     };
@@ -592,19 +587,21 @@ export class Game {
     return page;
   }
 
-  _barPage(first) { return this._barMenu(first); }
-
   _bully() {
-    const s = this.s;
-    const b = BAR_BULLIES[randi(0, BAR_BULLIES.length - 1)];
+    const s = this.s, b = pick(BAR.avventori), R = BAR.rispondi, I = BAR.ignora;
+    const v = { nome: b.nome };
     return [{
-      who: 'bullo', name: b.name, text: b.text,
+      ...pagina({ chi: b.id, testo: b.battute }),
       choices: [
-        { label: 'Rispondi a tono', fn: () => {
-          if (Math.random() < 0.5) { s.stress = clamp(s.stress - 5, 0, 100); this._xp(3); return [{ who: 'garonio', name: 'Garonio', text: 'Almeno io un padre che mi dà lavoro ce l\'ho. Tu hai solo quello sgabello.' }, { text: 'Il bar ride. Il bullo se ne va borbottando. Stress -5', }, this._barPage(false)]; }
-          s.stress = clamp(s.stress + 12, 0, 100); return [{ text: 'La risposta ti esce storta e tutti ridono di te. Stress +12' }, this._barPage(false)];
+        { label: R.etichetta, fn: () => {
+          if (Math.random() < (b.riuscita ?? 0.5)) {
+            s.stress = clamp(s.stress + R.stressBene, 0, 100); this._xp(R.xpBene);
+            return [pagina({ chi: 'garonio', testo: b.risposteBuone }), pagina({ testo: R.bene }, v), this._barMenu(false)];
+          }
+          s.stress = clamp(s.stress + R.stressMale, 0, 100);
+          return [pagina({ testo: R.male }, v), this._barMenu(false)];
         } },
-        { label: 'Ignoralo', fn: () => { s.stress = clamp(s.stress + 6, 0, 100); return [{ text: 'Fai finta di niente, ma ti rode. Stress +6' }, this._barPage(false)]; } },
+        { label: I.etichetta, fn: () => { s.stress = clamp(s.stress + I.stress, 0, 100); return [pagina({ testo: I.testi }, v), this._barMenu(false)]; } },
       ],
     }];
   }

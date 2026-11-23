@@ -54,6 +54,9 @@ Per aggiungere una traccia: copia il file `.mp3` nella cartella e scrivi il suo 
 | `index.html`, `style.css` | Pagina, interfaccia, dialoghi |
 | `src/main.js` | Avvio, camera, comandi tastiera e touch |
 | `src/game.js` | Regole: tempo, barre, missioni, nutrie, Mister Mountain, bar, officina. In cima c'è `CONFIG` per bilanciare velocità e valori |
+| `src/data/missioni.js` | Missioni del Gigante: testi, quantità, scadenze, paghe, frasi di successo e rimproveri. Si modifica senza toccare il codice |
+| `src/data/dialoghi.js` | Tutti i dialoghi: intro, scene di storia per giorno, il Gigante, Mister Mountain, casa, officina, bar e i suoi avventori |
+| `src/racconto.js` | Collega i testi di `src/data/` ai dialoghi del gioco |
 | `src/world.js` | Mappa, edifici, terreno |
 | `src/pixel.js` | Grafica segnaposto disegnata via codice (verrà sostituita dagli sprite veri) |
 | `src/audio.js` | Musica ed effetti sonori |
