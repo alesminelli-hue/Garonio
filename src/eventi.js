@@ -24,6 +24,16 @@
 //   alberoAbbattuto { vicino }                 albero del confine abbattuto con la motosega del Gigante
 //   palettoSpostato { vicino }                 paletto del confine spostato
 //   truffaScoperta  { vicino, missione, esito }  un vicino ti ha beccato: esito 'scusa' | 'bugia' | 'scappa' | 'rissa'
+//   rispetto        { valore, delta, rango }   Rispetto al bar cambiato (src/bar.js)
+//   voce            { bestia, da }             un avventore racconta di una bestia leggendaria ('re_lupi', 're_nutrie')
+//   avventore       { id, passo, fine }        avanza la storia di un avventore del bar
+//   mappaCatastale  {}                         il Geometra dà la mappa catastale (tane sulla mappa grande)
+//   rimorchio       {}                         Ermes presta il rimorchio
+//   reBancone       {}                         Garonio batte Bruno: Re del bancone
+//   bandoBar        { fino }                   regola di Loredana: bar chiuso per Garonio fino al giorno "fino"
+//   briscola        { vinta, tuoi, suoi }      partita a briscola con Tarcisio
+//   trovato         { id, dove }               raccolto l'oggetto nascosto indicato dal Consulente
+//   consulente      { livello }                sale l'amicizia col Consulente
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }
