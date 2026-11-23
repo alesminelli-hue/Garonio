@@ -253,7 +253,8 @@ export class World {
     // filari di pioppi lungo la provinciale, la capezzagna e l'argine del canale
     const signs = PROPS.filter(p => p.kind === 'cartello');
     const pop = (x, z) => { if (!signs.some(c => Math.abs(c.x - x - 0.5) < 3 && Math.abs(c.z - z - 0.5) < 2)) plant(x, z, pops[(R() * 2) | 0], 1, 3.25, 0.1); };
-    for (let x = 4; x < MAP_W - 2; x += 3) { pop(x, 50); pop(x, 58); pop(x, 31); pop(x, 7); }
+    // (i pioppi del canale stanno a due caselle e mezza dall'acqua: fra argine e alberi deve passare un trattore che gira)
+    for (let x = 4; x < MAP_W - 2; x += 3) { pop(x, 50); pop(x, 58); pop(x, 31); pop(x, 8); }
     // boschetti sparsi
     const groves = [[10, 72, 6], [50, 92, 5], [100, 85, 7], [150, 90, 6], [105, 40, 5], [45, 38, 4], [140, 42, 5], [12, 22, 5], [95, 70, 3]];
     for (const [gx, gz, r] of groves) for (let i = 0; i < r * 3; i++) oak(gx + (R() - 0.5) * r * 2, gz + (R() - 0.5) * r * 2);
