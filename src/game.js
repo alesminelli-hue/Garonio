@@ -631,7 +631,7 @@ export class Game {
     const attack = this.nutrie.some(n => n.state !== 'flee') && P.z < 12;
     const nearBar = Math.hypot(P.x - 6.5, P.z - 16.5) < 4;
     const angry = this.s.stress >= 85;
-    const scene = attack ? 'nemico' : angry ? 'rabbia' : nearBar ? 'bar' : this.s.minutes >= 20 * H ? 'notte' : 'base';
+    const scene = this.vehicles?.driving ? 'guida' : attack ? 'nemico' : angry ? 'rabbia' : nearBar ? 'bar' : this.s.minutes >= 20 * H ? 'notte' : 'base';
     this.audio.setScene(scene);
   }
 
