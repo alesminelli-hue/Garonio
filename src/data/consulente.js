@@ -85,8 +85,8 @@ export const BATTUTE_CONSULENTE = {
     "Un mio contatto ha perso qualcosa {dove}. Il mio contatto sono io. Vai.",
   ],
   nemici: [
-    "Nella zona {zona} girano {nemici}. Portano esperienza e a volte qualche moneta. Vai preparato.",
-    "Occhio: {zona} ci sono {nemici}. Io non ci andrei, ma io sono un consulente, non un eroe.",
+    "{Zona} gira brutta gente: {nemici}. Portano esperienza e a volte qualche moneta. Vai preparato.",
+    "Occhio: {zona} ho visto {nemici}. Io non ci andrei, ma io sono un consulente, non un eroe.",
   ],
   bestie: {
     re_nutrie: "La Pina ha parlato. Il Re delle Nutrie sta dove il canale fa la curva. Le tracce sono impronte grandi come piatti.",

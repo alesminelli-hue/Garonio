@@ -148,7 +148,7 @@ export class Consulente {
     if (!zone.length) return "Oggi è tranquillo. Troppo tranquillo. Io girerei con la zappa lo stesso.";
     const [z, l] = pick(zone);
     const nomi = [...new Set(l)].slice(0, 3).map(id => (NEMICI[id]?.nome || id).toLowerCase());
-    return fill(pick(T.nemici), { zona: ZONE[z], nemici: nomi.join(', ') });
+    return fill(pick(T.nemici), { zona: ZONE[z], Zona: ZONE[z].charAt(0).toUpperCase() + ZONE[z].slice(1), nemici: nomi.join(', ') });
   }
 
   _bestie() {
