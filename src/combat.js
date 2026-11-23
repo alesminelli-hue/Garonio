@@ -587,7 +587,12 @@ export class Combat {
       <div class="bar stress"><label>Stress</label><div class="track"><div class="fill"></div></div><span></span></div>
       <div class="bar tired"><label>Stanch.</label><div class="track"><div class="fill"></div></div><span></span></div>`);
     this.partyBox = party;
-    this.msgBox.addEventListener('click', () => this.input && this.input('ok'));
+    // Su telefono si tocca dove capita: un tocco ovunque (fuori dai pulsanti e dai nemici) fa avanzare i messaggi.
+    r.addEventListener('click', e => {
+      if (!this.active || !this.saying || !this.input) return;
+      if (e.target.closest('button, .b-enemy')) return;
+      this.input('ok');
+    });
     const btn = document.getElementById('btn-a');
     if (btn) btn.addEventListener('pointerdown', () => this.active && this.input && this.input('ok'));
   }
@@ -619,8 +624,10 @@ export class Combat {
     this.cmdBox.innerHTML = '';
     return new Promise(res => {
       let done = false;
-      const finish = () => { if (done) return; done = true; clearTimeout(t); this.input = null; this.msgBox.classList.remove('more'); res(); };
-      const t = wait ? null : setTimeout(finish, ms);
+      const finish = () => { if (done) return; done = true; clearTimeout(t); this.saying = false; this.input = null; this.msgBox.classList.remove('more'); res(); };
+      // anche i messaggi che aspettano un tocco vanno avanti da soli dopo qualche secondo: lo scontro non resta mai fermo
+      const t = setTimeout(finish, wait ? Math.max(ms, 4500) : ms);
+      this.saying = true;
       if (wait) { this.msgBox.classList.add('more'); }
       setTimeout(() => { if (!done) this.input = k => { if (k === 'ok') finish(); }; }, wait ? 400 : 150);
     });
@@ -670,9 +677,14 @@ export class Combat {
     return new Promise(res => {
       let i = 0;
       const base = this.msgBox.textContent;
-      const mark = () => { alive.forEach((e, j) => e.wrap.classList.toggle('target', j === i)); this._msg(`Bersaglio: ${alive[i].name}  (◀ ▶ per cambiare)`); };
+      const mark = () => { alive.forEach((e, j) => e.wrap.classList.toggle('target', j === i)); this._msg(`Chi colpisci? ${alive[i].name}  (◀ ▶ o tocca il nemico)`); };
       const done = v => { alive.forEach(e => e.wrap.classList.remove('target')); this.input = null; this._msg(base); res(v); };
       this.cmdBox.innerHTML = '';
+      // su telefono: un pulsante per ogni nemico, oltre al tocco diretto sul nemico
+      alive.forEach(e => {
+        const t = el('button', '', this.cmdBox, `<span>${e.name}</span>`);
+        t.addEventListener('click', ev => { ev.stopPropagation(); this.game.audio.sfx('blip'); done(e); });
+      });
       const b = el('button', 'back', this.cmdBox, '<span>◀ Indietro</span>');
       b.addEventListener('click', ev => { ev.stopPropagation(); done(null); });
       this.input = (k, e) => {
