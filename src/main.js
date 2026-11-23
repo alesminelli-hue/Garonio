@@ -4,6 +4,7 @@ import { World, MAP_W, MAP_H } from './world.js';
 import { Game, CONFIG, hasSave } from './game.js';
 import { UI } from './ui.js';
 import { Audio } from './audio.js';
+import { loadGaronio } from './pixel.js';
 
 const $ = id => document.getElementById(id);
 const TARGET_H = 270; // risoluzione verticale interna: più bassa = pixel più grossi
@@ -29,6 +30,7 @@ window.addEventListener('resize', resize); resize();
 
 const audio = new Audio();
 const ui = new UI(audio);
+await loadGaronio();
 const world = new World(scene);
 world.build();
 const game = new Game(world, ui, audio);
@@ -48,6 +50,7 @@ window.addEventListener('keydown', e => {
   if (k) keys.add(k);
   if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') keys.add('run');
   if (['KeyE', 'Space', 'Enter'].includes(e.code) && !e.repeat) game.action();
+  if (e.code === 'KeyQ' && !e.repeat) game.jump();
   if (e.code === 'KeyM') toggleMusic();
   if (e.code.startsWith('Arrow') || e.code === 'Space') e.preventDefault();
 });
@@ -73,6 +76,7 @@ function moveStick(e) {
   knob.style.transform = `translate(${dx}px, ${dy}px)`;
 }
 $('btn-a').addEventListener('pointerdown', e => { e.preventDefault(); audio.unlock(); if (ui.busy()) ui.key('ok'); else game.action(); });
+$('btn-jump').addEventListener('pointerdown', e => { e.preventDefault(); audio.unlock(); game.jump(); });
 $('btn-music').addEventListener('click', e => { e.stopPropagation(); toggleMusic(); });
 function toggleMusic() { const on = audio.toggle(); $('btn-music').textContent = on ? '♪' : '✕'; }
 if (matchMedia('(pointer: coarse)').matches) document.body.classList.add('touch');

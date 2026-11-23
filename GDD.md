@@ -144,8 +144,12 @@ Per aggiungere una traccia nuova basta mettere il file `.mp3` nella cartella e s
 
 ## 12. Controlli
 
-- PC: frecce o WASD per muoversi, **E / Spazio** per agire, **Shift** per correre.
-- Telefono: levetta virtuale e pulsante azione sullo schermo.
+- PC: frecce o WASD per muoversi, **Shift** per correre, **E / Spazio** per agire, **Q** per saltare, **M** musica.
+- Telefono: levetta virtuale (spinta fino in fondo = corsa), pulsante **E** per agire e **Q** per saltare.
+
+### Animazioni di Garonio (dal foglio personaggio)
+
+Fermo, cammina (4 fotogrammi), corre (3), salta (3), attacco (quando scaccia le nutrie), a terra (quando dorme in piedi o crolla). Il ritratto è l'icona nell'interfaccia e nei dialoghi. Mancano ancora le viste di spalle e di fronte per quando cammina su e giù.
 
 ## 13. Cosa c'è nel prototipo (versione 0.1)
 
@@ -160,7 +164,7 @@ Per aggiungere una traccia nuova basta mettere il file `.mp3` nella cartella e s
 ## 14. Prossimi passi proposti
 
 1. Provare il prototipo e decidere il "feeling" (velocità delle barre, durata del giorno).
-2. Inserire lo stile e l'icona di Garonio che hai già in mente (per ora ci sono segnaposti) e poi gli sprite veri del Gigante e di Mister Mountain.
+2. ✅ Garonio ha i suoi sprite e il ritratto. Mancano gli sprite veri del Gigante e di Mister Mountain, e le viste di Garonio di spalle e di fronte.
 3. Mezzi: Vespa e Punto per muoversi, trattori dell'azienda che si possono rompere.
 4. Aggiungere maiali, officina vera e bar con eventi.
 5. Sistema di livelli e abilità.

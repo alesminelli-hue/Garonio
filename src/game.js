@@ -78,6 +78,7 @@ export class Game {
     this.input = { x: 0, z: 0, run: false };
     this.facing = 1; this.walkT = 0; this.idle = 0; this.dozing = false;
     this.nutrie = []; this.chickens = []; this.eggSprites = [];
+    this.actT = 0; this.actName = 'attack'; this.jumpT = 0; this.ko = false; this.animT = 0;
     this.locked = false; this.mm = null; this.hop = 0; this.caughtAt = -999; this.saveHour = 6;
     this.inBar = false;
   }
@@ -88,8 +89,9 @@ export class Game {
     if (continueSave) { try { s = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch { s = null; } }
     this.s = Object.assign(fresh(), s || {});
     const W = this.world;
-    this.player = W.actor(PIX.characterFrames('garonio'), { w: 1, h: 1.5 });
-    this.gigante = W.actor(PIX.characterFrames('gigante'), { w: 22 / 16, h: 2 });
+    const gf = PIX.garonioFrames();
+    this.player = W.actor(gf.frames, { w: gf.w, h: gf.h, shadow: 0.45 });
+    this.gigante = W.actor(PIX.characterFrames('gigante'), { w: 22 / 16 * 1.3, h: 2.6, shadow: 0.55 });
     this.gigante.group.position.set(14.4, 0, 17.3);
     W.solids.push({ x0: 14.1, z0: 17.1, x1: 14.7, z1: 17.5 });
     const chick = [PIX.chicken(0), PIX.chicken(1)];
@@ -206,8 +208,7 @@ export class Game {
       this.idle += dt;
       if (this.idle > CONFIG.idleDozeSeconds && !this.dozing) { this.dozing = true; this.zzz.visible = true; }
     }
-    const base = this.facing > 0 ? 0 : 3;
-    this.player.setFrame(base + (moving ? 1 + (Math.floor(this.walkT) % 2) : 0));
+    this.moving = moving;
 
     // tempo
     const dm = dt * CONFIG.minutesPerSecond;
@@ -328,7 +329,7 @@ export class Game {
     this.s.minutes += a.min;
     this._xp(a.xp);
     this.audio.sfx(a.sfx);
-    this.hop = 0.25;
+    this.actT = 0.3; this.actName = kind === 'scaccia' ? 'attack' : 'work';
   }
 
   _xp(n) {
@@ -473,12 +474,13 @@ export class Game {
   async mountain(reason, stress) {
     if (this.mm) return;
     const P = this.player.group.position;
-    this.mm = this.world.actor(PIX.characterFrames('mountain'), { w: 30 / 16, h: 42 / 16 });
+    this.mm = this.world.actor(PIX.characterFrames('mountain'), { w: 30 / 16 * 1.25, h: 42 / 16 * 1.25, shadow: 0.8 });
     const side = P.x > 30 ? -1 : 1;
-    this.mm.group.position.set(P.x + side * 2, 0, P.z + 0.3);
+    this.mm.group.position.set(P.x + side * 2.6, 0, P.z + 0.3);
     if (side < 0) this.mm.setFrame(0); else this.mm.setFrame(3);
-    this.facing = side; this.player.setFrame(side > 0 ? 0 : 3);
-    this._wake();
+    this._wake(); this.actT = 0; this.jumpT = 0;
+    this.facing = side; this.player.setFrame(side > 0 ? 0 : PIX.GARONIO_N);
+    this.player.spr.position.y = 0;
     this.audio.setScene('mister_mountain'); this.audio.sfx('bad'); this.ui.shake();
     const lines = MM_LINES[reason];
     await this.ui.dialog([
@@ -497,7 +499,10 @@ export class Game {
   async _collapse() {
     if (this.locked) return; this.locked = true;
     this.ui.toast('Garonio è sfinito e crolla a dormire per terra...', 'bad');
+    this.ko = true; this.player.setFrame((this.facing > 0 ? 0 : PIX.GARONIO_N) + PIX.GARONIO_ANIM.ko[0]);
+    await new Promise(r => setTimeout(r, 1200));
     await this.ui.fade(true);
+    this.ko = false;
     this.s.minutes += 180; this.s.tired = 45; this.s.stress += 5;
     await this.ui.fade(false);
     this.locked = false;
@@ -507,6 +512,7 @@ export class Game {
   async _faint() {
     if (this.locked) return;
     this.s.money = Math.floor(this.s.money * 0.7);
+    this.player.setFrame((this.facing > 0 ? 0 : PIX.GARONIO_N) + PIX.GARONIO_ANIM.ko[0]);
     await this.sleep(true, true);
     await this.mountain('svenuto', 15);
   }
@@ -613,12 +619,38 @@ export class Game {
     this.audio.setScene(scene);
   }
 
+  // ---------- Animazioni di Garonio ----------
+  jump() {
+    if (this.ui.busy() || this.locked || this.jumpT > 0) return;
+    this.idle = 0; this._wake(); this.jumpT = 0.6; this.audio.sfx('blip');
+    this.s.tired = clamp(this.s.tired + 0.5, 0, 100);
+  }
+
+  _animatePlayer(dt) {
+    const A = PIX.GARONIO_ANIM;
+    this.actT = Math.max(0, this.actT - dt);
+    this.jumpT = Math.max(0, this.jumpT - dt);
+    this.animT += dt;
+    let f, y = 0;
+    if (this.ko || this.dozing) f = A.ko[0];
+    else if (this.jumpT > 0) {
+      const k = 1 - this.jumpT / 0.6;
+      f = A.jump[k < 0.15 || k > 0.9 ? 0 : k < 0.6 ? 1 : 2];
+      if (k >= 0.15 && k <= 0.9) y = Math.sin((k - 0.15) / 0.75 * Math.PI) * 0.7;
+    } else if (this.actT > 0) f = this.actName === 'attack' ? A.attack[0] : A.jump[0];
+    else if (this.moving) {
+      const seq = this.input.run ? A.run : A.walk;
+      f = seq[Math.floor(this.walkT / 1.6) % seq.length];
+    } else f = A.idle[0];
+    this.player.setFrame((this.facing > 0 ? 0 : PIX.GARONIO_N) + f);
+    this.player.spr.position.y = y;
+  }
+
   // ---------- Animazioni del mondo ----------
   _animateWorld(dt) {
     const s = this.s;
     // salto quando si lavora
-    this.hop = Math.max(0, this.hop - dt);
-    this.player.spr.position.y = Math.sin(this.hop / 0.25 * Math.PI) * 0.15;
+    this._animatePlayer(dt);
     const P = this.player.group.position;
     this.zzz.position.set(P.x + 0.5, 1.6 + Math.sin(performance.now() / 400) * 0.08, P.z);
     // galline

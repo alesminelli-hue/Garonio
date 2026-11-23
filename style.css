@@ -11,9 +11,11 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color:
 
 .panel { background: var(--panel); border: 3px solid var(--edge); border-radius: 6px; box-shadow: 0 0 0 3px var(--ink), 4px 4px 0 3px rgba(0,0,0,.4); padding: 8px 10px; }
 #hud { position: fixed; inset: 0; pointer-events: none; }
-#stats { position: absolute; top: 12px; left: 12px; width: 230px; font-size: 13px; }
+#stats { position: absolute; top: 12px; left: 12px; width: 260px; font-size: 13px; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.row.top { margin-bottom: 6px; } #money { color: var(--gold); }
+.row.top { margin-bottom: 6px; }
+#hud-face { width: 34px; height: 34px; image-rendering: pixelated; border: 2px solid var(--edge); border-radius: 3px; flex: none; }
+#clock { flex: 1; white-space: nowrap; } #money { color: var(--gold); }
 .bar { display: grid; grid-template-columns: 52px 1fr 28px; align-items: center; gap: 6px; margin: 3px 0; font-size: 12px; }
 .bar span { text-align: right; }
 .track { height: 10px; background: #0c0c18; border: 2px solid var(--ink); position: relative; }
@@ -42,7 +44,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color:
   background: linear-gradient(#2a3a8a, #141c4a); border: 3px solid var(--edge); border-radius: 8px; box-shadow: 0 0 0 3px var(--ink), 6px 6px 0 3px rgba(0,0,0,.45); padding: 12px; cursor: pointer; z-index: 5; }
 #dialog.angry { background: linear-gradient(#7a1a1a, #3a0a0a); }
 #dialog[hidden], #prompt[hidden], #mission[hidden] { display: none; }
-#dlg-portrait { width: 96px; height: 96px; image-rendering: pixelated; border: 3px solid var(--edge); flex: none; }
+#dlg-portrait { width: 96px; height: 96px; object-fit: cover; object-position: top; image-rendering: pixelated; border: 3px solid var(--edge); flex: none; }
 #dialog .body { flex: 1; min-height: 96px; position: relative; }
 #dlg-name { color: var(--gold); font-size: 15px; margin-bottom: 4px; }
 #dlg-text { font-size: 16px; line-height: 1.35; white-space: pre-wrap; }
@@ -57,6 +59,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color:
 body.touch #touch { display: block; }
 #pad { position: fixed; left: 24px; bottom: 24px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,.12); border: 3px solid rgba(255,255,255,.35); pointer-events: auto; touch-action: none; }
 #knob { position: absolute; left: 35px; top: 35px; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.55); }
+#btn-jump { position: fixed; right: 118px; bottom: 24px; width: 56px; height: 56px; border-radius: 50%; font: inherit; font-size: 20px; color: var(--paper); background: #4a5a8a; border: 4px solid var(--ink); pointer-events: auto; }
 #btn-a { position: fixed; right: 28px; bottom: 36px; width: 80px; height: 80px; border-radius: 50%; font: inherit; font-size: 26px; color: var(--ink); background: var(--gold); border: 4px solid var(--ink); pointer-events: auto; }
 body.touch #prompt { bottom: 150px; }
 body.touch #dialog { bottom: 150px; }

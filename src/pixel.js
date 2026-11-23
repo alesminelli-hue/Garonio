@@ -347,9 +347,40 @@ export function paintTile(g, ch, x, y, seed, plot) {
   }
 }
 
+// ---------- Garonio: sprite disegnati da Alessandro ----------
+// assets/sprites/garonio.png = 13 fotogrammi in fila (vedi tools/taglia_sprite.py)
+export const GARONIO_ANIM = { idle: [0], walk: [1, 2, 3, 4], run: [5, 6, 7], jump: [8, 9, 10], attack: [11], ko: [12] };
+export const GARONIO_N = 13;
+let garonioSheet = null;
+
+function loadImage(src) {
+  return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+}
+
+export async function loadGaronio() {
+  try {
+    const img = await loadImage('assets/sprites/garonio.png');
+    const cw = img.width / GARONIO_N, ch = img.height;
+    const right = [];
+    for (let i = 0; i < GARONIO_N; i++) { const [c, g] = makeCanvas(cw, ch); g.drawImage(img, i * cw, 0, cw, ch, 0, 0, cw, ch); right.push(c); }
+    garonioSheet = { frames: [...right, ...right.map(mirror)], w: cw / 20, h: ch / 20, portrait: 'assets/sprites/garonio_ritratto.png' };
+  } catch { garonioSheet = null; }
+}
+
+// Fotogrammi di Garonio: i 13 a destra seguiti dai 13 a sinistra.
+// Se l'immagine non c'è, usa il segnaposto disegnato via codice.
+export function garonioFrames() {
+  if (garonioSheet) return garonioSheet;
+  const r = [0, 1, 2].map(f => humanoid(CHARACTERS.garonio, f));
+  const map = [0, 1, 0, 2, 0, 1, 0, 2, 0, 1, 2, 1, 0];
+  const right = map.map(i => r[i]);
+  return { frames: [...right, ...right.map(mirror)], w: 1, h: 1.5 };
+}
+
 // Ritratti per i dialoghi (data URL)
 const portraitCache = {};
 export function portrait(key) {
+  if (key === 'garonio' && garonioSheet) return garonioSheet.portrait;
   if (portraitCache[key]) return portraitCache[key];
   const src = humanoid(CHARACTERS[key], 0);
   const headH = Math.round(src.height * 0.5);
