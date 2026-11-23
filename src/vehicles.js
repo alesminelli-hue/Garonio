@@ -163,6 +163,7 @@ export class Vehicles {
     let html = `<div class="row"><b>${v.T.icon} ${v.T.name}</b><span>${kmh} km/h</span></div>` + bar('Stato', v.st.cond, v.st.cond < 30 ? 'low' : '');
     if (v.kind === 'punto') html += bar('Benz.', v.st.fuel, v.st.fuel < 20 ? 'low' : 'fuel');
     if (v.st.flat) html += '<div class="warn">Gomma a terra!</div>';
+    if (v.kind === 'trattore') html += this.game.attrezzi?.hud(v) || '';
     if (v.kind === 'trattore' && this.s.tired > 70) html += '<div class="warn">Sei stanco: occhio a non romperlo!</div>';
     if (html !== this._hudHtml) { this.hud.innerHTML = html; this._hudHtml = html; }
   }
@@ -267,6 +268,7 @@ export class Vehicles {
     const M = this._mod(v);
     let max = T.maxSpeed * (st.flat ? 0.45 : 1) * M.vel;
     if (s.tired > 80) max *= 0.85;
+    max *= this.game.attrezzi?.velocita(v) ?? 1;   // gasolio finito, attrezzo giù
     // fondo stradale: sull'asfalto si va a tutta, nei campi e nell'erba si rallenta (il trattore no)
     const ch = this.world.tile(Math.floor(v.st.x), Math.floor(v.st.z));
     const surf = { a: 'asfalto', q: 'piazza', b: 'ponte', p: 'sterrato', g: 'erba', f: 'campo', o: 'campo', r: 'campo', y: 'campo', c: 'erba', s: 'fango', w: 'acqua' }[ch];
@@ -316,7 +318,8 @@ export class Vehicles {
       this._breakTractor(v, 'Ti si chiudono gli occhi, il trattore finisce nel fosso. Il motore fuma!');
       return;
     }
-    if (T.plows && Math.abs(v.speed) > 0.5) this._plow(v);
+    if (this.game.attrezzi) this.game.attrezzi.guida(v, dist, dt);   // il lavoro lo fa l'attrezzo agganciato (src/attrezzi.js)
+    else if (T.plows && Math.abs(v.speed) > 0.5) this._plow(v);
     this._scareNutrie(v);
 
     // Garonio "viaggia" col mezzo: camera, salvataggio e Mister Mountain lo trovano lì
@@ -354,6 +357,7 @@ export class Vehicles {
     }
     // trattore
     s.stress = clamp(s.stress + 4, 0, 100);
+    this.game.attrezzi?.urto(v, dmg);
     if (v.st.cond <= 0) this._breakTractor(v, 'CRACK! Qualcosa si è spezzato sotto il trattore. Il motore fuma!');
     else this.ui.toast(`Hai urtato col trattore! Stato -${dmg}%. Se lo rompi, il Gigante...`, 'bad');
   }

@@ -64,7 +64,7 @@ export const BUILDINGS = [
   { id: 'casa', label: 'CASA', x0: 62, z0: 61, w: 7, d: 5, h: 2.8, wall: 'casa', roof: '#b8432e', windows: 2 },
   { id: 'officina', label: 'OFFICINA', x0: 80, z0: 60, w: 7, d: 6, h: 3, wall: 'metallo', roof: '#6a7078', windows: 1 },
   { id: 'bar', label: 'BAR', x0: 10, z0: 45, w: 7, d: 5, h: 2.8, wall: 'bar', roof: '#3a7a4a', windows: 2 },
-  { id: 'maiali', label: 'MAIALI (presto)', x0: 128, z0: 62, w: 12, d: 6, h: 2.6, wall: 'metallo', roof: '#8a4a32', windows: 0 },
+  { id: 'maiali', label: 'MAIALI', x0: 128, z0: 62, w: 12, d: 6, h: 2.6, wall: 'metallo', roof: '#8a4a32', windows: 0 },
   { id: 'gallinaio', label: '', x0: 82, z0: 73.5, w: 2.5, d: 2, h: 1.4, wall: 'legno', roof: '#7a4a26', windows: 0, noDoor: true },
   // scenografia
   { id: 'capannone2', label: '', x0: 142, z0: 62, w: 10, d: 6, h: 2.6, wall: 'metallo', roof: '#8a4a32', windows: 0, decor: true },

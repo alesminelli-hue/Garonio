@@ -22,19 +22,22 @@
 //    consiglio  suggerimento pratico dopo la richiesta
 //    successo   cosa dice il Gigante quando la finisci
 //    rimprovero prima frase di Mister Mountain se la fallisci
+//    stagione   'primavera' | 'estate' | 'autunno' | 'inverno' (o una lista): esce solo in quelle stagioni
+//    serveAttrezzo  esce solo se Garonio ha quell'attrezzo del trattore (src/attrezzi.js)
+//    serveMaiali    esce solo dopo che sono arrivati i maiali (src/maiali.js)
 // =====================================================================
 
 export const MISSIONI = {
   semina: {
-    testo: "Zappa e semina {n} zolle nel campo",
-    stat: 'seminaCampo', quantita: [6, 10], scadenza: 17, paga: 25, xp: 10, peso: 2,
+    testo: "Ara e semina {n} zolle di mais col trattore",
+    stat: 'seminaCampo', quantita: [6, 10], scadenza: 17, paga: 25, xp: 10, peso: 2, stagione: ['primavera', 'estate'],
     stressFallimento: 30,
     richieste: [
-      "Il campo nord è lì che aspetta da tre giorni. Zappa e semina {n} zolle entro le {ora}.",
+      "Il campo nord è lì che aspetta da tre giorni. Ara e semina {n} zolle entro le {ora}.",
       "Il mais non si pianta da solo, e nemmeno tu ti alzi da solo. Voglio {n} zolle seminate entro le {ora}.",
       "Oggi semina. {n} zolle nel campo grande, entro le {ora}. E dritte, non a zig-zag come l'altra volta.",
     ],
-    consiglio: "Il campo è a nord, oltre la casa. Prima zappi, poi semini.",
+    consiglio: "Trattori sotto la tettoia, accanto all'officina: il rosso ha l'aratro, il verde la seminatrice. Il campo di mais è a nord: prima ari, poi semini.",
     successo: [
       "Le file sono storte, ma almeno ci sono. Hmpf.",
       "Seminato? Bene. Fra due mesi vediamo se è nato mais o vergogna.",
@@ -46,14 +49,14 @@ export const MISSIONI = {
   },
 
   zappa: {
-    testo: "Zappa {n} zolle tra campo e orto",
+    testo: "Ara col trattore o zappa nell'orto {n} zolle",
     stat: 'zappate', quantita: [8, 14], scadenza: 13, paga: 20, xp: 8, peso: 1, daGiorno: 3,
     stressFallimento: 25,
     richieste: [
       "Prendi la zappa. Sì, quella cosa col manico che non hai mai visto. Voglio {n} zolle zappate entro le {ora}.",
       "La terra è dura come la tua testa. Zappa {n} zolle entro le {ora}, almeno una delle due si ammorbidisce.",
     ],
-    consiglio: "Zappare stanca parecchio: in officina vendono una zappa affilata che fa faticare la metà.",
+    consiglio: "Nel campo grande si ara col trattore e l'aratro; nell'orto si zappa a mano. Contano tutte e due.",
     successo: [
       "Hai sudato? Fammi vedere. Oh, una goccia! Chiamo il giornale.",
       "Zappato. Visto che le braccia ce le hai anche tu?",
@@ -150,7 +153,7 @@ export const MISSIONI = {
       "Non piove da una settimana e le piante hanno la lingua fuori. Annaffiane {n} entro le {ora}.",
       "Acqua alle piante: {n} entro le {ora}. L'acqua, Garonio. Non la birra.",
     ],
-    consiglio: "Le piante bagnate crescono. Ogni mattina tornano asciutte.",
+    consiglio: "L'orto si annaffia a mano; il campo di mais con la turbina sul trattore rosso, vicino all'acqua. Ogni mattina tornano asciutte.",
     successo: [
       "Piante annaffiate. Guarda come sono contente. Loro.",
       "Bene. Adesso bevi un bicchiere d'acqua anche tu, che hai la faccia secca.",
@@ -169,7 +172,7 @@ export const MISSIONI = {
       "È roba matura, Garonio. Come dovresti essere tu. Raccogline {n} entro le {ora}.",
       "Il raccolto non aspetta. {n} pezzi raccolti entro le {ora}, prima che ci pensino le nutrie.",
     ],
-    consiglio: "Quando la pianta è matura, raccoglila e portala alla cassa vicino a casa.",
+    consiglio: "Nell'orto raccogli a mano; nel campo serve la falciatrice sul trattore verde. Poi tutto alla cassa vicino a casa.",
     successo: [
       "Ecco, questo è lavoro vero. Una volta ogni tanto non fa male, eh?",
       "Raccolto fatto. Quasi quasi stasera ti offro un caffè. Quasi.",
@@ -199,6 +202,96 @@ export const MISSIONI = {
     ],
   },
 };
+
+// ---------------------------------------------------------------------
+//  MISSIONI DELL'ANNATA (stagioni, attrezzi dei trattori, maiali)
+// ---------------------------------------------------------------------
+Object.assign(MISSIONI, {
+  trebbia: {
+    testo: "Trebbia {n} zolle di grano col trattore verde",
+    stat: 'trebbiate', quantita: [20, 45], scadenza: 19, paga: 40, xp: 15, peso: 3, stagione: 'estate', serveAttrezzo: 'falciatrice',
+    stressFallimento: 30,
+    richieste: [
+      "Il grano è giallo come i denti di Zeno. Si trebbia! {n} zolle entro le {ora}.",
+      "Oggi trebbiatura. {n} zolle di grano entro le {ora}, e il cassone si scarica al fienile, non al bar.",
+    ],
+    consiglio: "Falciatrice sul trattore verde (tettoia). Campo del grano a ovest, accanto al fienile: lì si scarica il cassone.",
+    successo: ["Trebbiato. Senti che profumo? È il profumo dei soldi. E della polvere.", "Bene. Il consorzio paga. Io incasso. Tu guardi."],
+    rimprovero: ["Il grano è ancora in piedi! Sta lì, dorato, a ridere di noi!", "{fatto} zolle trebbiate. Le ha fatte il vento, il resto?"],
+  },
+  irriga: {
+    testo: "Irriga {n} zolle con la turbina",
+    stat: 'irrigate', quantita: [8, 20], scadenza: 15, paga: 30, xp: 12, peso: 2, stagione: ['primavera', 'estate'], serveAttrezzo: 'turbina', servePiante: 8, limite: 'piante',
+    stressFallimento: 30,
+    richieste: [
+      "Il mais ha sete e tu hai la turbina. Fate amicizia. {n} zolle irrigate entro le {ora}.",
+      "Irrigazione! {n} zolle bagnate entro le {ora}. Pesca dal canale, non dal pozzo dei vicini. Per oggi.",
+    ],
+    consiglio: "Turbina sul trattore rosso: spruzza da sola intorno al trattore quando sei vicino al canale o al laghetto.",
+    successo: ["Il mais beve, tu sudi. Equilibrio perfetto.", "Bagnato tutto. Anche te, vedo."],
+    rimprovero: ["Le piante hanno la lingua fuori e tu la turbina spenta!", "Solo {fatto} zolle bagnate. Il deserto avanza, Garonio."],
+  },
+  maiali: {
+    testo: "Dai da mangiare ai maiali e pulisci i box",
+    stat: 'maialiAccuditi', quantita: [2, 2], scadenza: 13, paga: 22, xp: 10, peso: 3, serveMaiali: true,
+    stressFallimento: 30,
+    richieste: [
+      "I maiali hanno fame e i box puzzano fino a casa. Mangime e pala entro le {ora}.",
+      "Capannone: mangime ai maiali e box puliti entro le {ora}. Se ti lamenti della puzza, pensa a loro che ci vivono.",
+    ],
+    consiglio: "Capannone dei maiali a est, oltre i silos. Il mangime si ordina lì se è finito.",
+    successo: ["I maiali sono contenti. Più di me, ma meno di quanto meritano.", "Box puliti. Adesso lavati tu, però."],
+    rimprovero: ["I maiali hanno urlato tutta la mattina! Si sentivano dal bar!", "Box sporchi, maiali affamati. Sembra camera tua."],
+  },
+  seminaGrano: {
+    testo: "Ara e semina {n} zolle di grano per l'anno prossimo",
+    stat: 'seminaGrano', quantita: [15, 35], scadenza: 18, paga: 35, xp: 14, peso: 3, stagione: 'autunno',
+    stressFallimento: 30,
+    richieste: [
+      "Il grano dell'anno prossimo si semina adesso. {n} zolle nel campo del grano entro le {ora}. Prima ari le stoppie, poi semini.",
+      "Autunno: si semina il grano. {n} zolle entro le {ora}. Pensa al futuro, Garonio. Lo so che è un concetto nuovo.",
+    ],
+    consiglio: "Campo del grano accanto al fienile: aratro per le stoppie, poi seminatrice. Serve la semente (Bubetto o tettoia).",
+    successo: ["Seminato. Fra un anno mangiamo pane. Grazie a te. Quasi.", "Bene, il grano è sotto terra. Come le mie speranze, ma il grano spunta."],
+    rimprovero: ["Il campo del grano è pieno di stoppie! L'anno prossimo cosa mangiamo, le stoppie?", "{fatto} zolle su {n}. Il pane quest'anno lo fai tu, con la farina immaginaria."],
+  },
+  raccoltaMais: {
+    testo: "Raccogli {n} pannocchie con la falciatrice",
+    stat: 'raccoltiMais', quantita: [10, 25], scadenza: 18, paga: 35, xp: 14, peso: 3, stagione: ['estate', 'autunno'], serveAttrezzo: 'falciatrice', servePiante: 10, limite: 'piante',
+    stressFallimento: 30,
+    richieste: [
+      "Il mais è maturo e i cinghiali lo sanno. Raccogline {n} pannocchie prima di loro, entro le {ora}.",
+      "Raccolto del mais: {n} pannocchie entro le {ora}. Falciatrice sul verde, cassone al fienile.",
+    ],
+    consiglio: "Falciatrice sul trattore verde. Il cassone si scarica al fienile: le pannocchie finiscono nello zaino, da vendere alla cassa.",
+    successo: ["Pannocchie! Le guardo e mi commuovo. Poi le vendo.", "Raccolto. Le nutrie piangono, io no."],
+    rimprovero: ["Il mais è ancora sulla pianta! Lo stai facendo invecchiare apposta?", "{fatto} pannocchie. Le altre le hanno prese i cinghiali, con la tua benedizione."],
+  },
+  salumificio: {
+    testo: "Vendi {n} maiale al salumificio",
+    stat: 'maialiVenduti', quantita: [1, 1], scadenza: 18, paga: 20, xp: 10, peso: 2, stagione: 'inverno', serveMaiali: true,
+    stressFallimento: 25,
+    richieste: [
+      "È inverno, Garonio. Lo sai cosa vuol dire. Un maiale al salumificio entro le {ora}. Scegli tu, io non ce la faccio.",
+      "Il salumificio aspetta. Uno dei maiali grassi, entro le {ora}. Non dare nomi ai maiali, te l'avevo detto.",
+    ],
+    consiglio: "Dal capannone dei maiali: «Vendi un maiale al salumificio». D'inverno pagano di più.",
+    successo: ["Fatto. Non ne parliamo più. A Natale però il cotechino lo mangi.", "Bravo. Il salumificio paga bene. Il maiale un po' meno contento."],
+    rimprovero: ["Il camion del salumificio è ripartito vuoto! Vuoto!", "Il salumificio ha chiamato. Due volte. Ha chiesto se sei vivo."],
+  },
+  manutenzione: {
+    testo: "Manutenzione: pieno di gasolio o un attrezzo riparato",
+    stat: 'manutenzione', quantita: [1, 1], scadenza: 17, paga: 18, xp: 8, peso: 2, stagione: ['autunno', 'inverno'],
+    stressFallimento: 25,
+    richieste: [
+      "D'inverno i mezzi si sistemano. Pieno di gasolio ai trattori o un attrezzo da Zeno, entro le {ora}.",
+      "I trattori hanno sete e gli attrezzi cigolano. Sistema qualcosa entro le {ora}.",
+    ],
+    consiglio: "Cisterna del gasolio sotto la tettoia, accanto all'officina. Le riparazioni degli attrezzi le fa Zeno.",
+    successo: ["Mezzi sistemati. Zeno ti ha fregato? Sì. Ma meno del solito.", "Bene. Un trattore con il pieno è un trattore felice."],
+    rimprovero: ["Il trattore è a secco e tu sei al bar. Indovina chi arriva?", "Niente manutenzione. A primavera si rompe tutto e la colpa è tua."],
+  },
+});
 
 // Missioni fisse dei primi giorni (il tutorial). Dopo si sceglie a caso.
 export const MISSIONI_FISSE = {

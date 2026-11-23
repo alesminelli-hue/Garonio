@@ -198,6 +198,13 @@ export function crop(type, stage) {
     P(D, 6, 17 - h, 2, h);
     P(G, 3, 17 - h + 3, 3, 2); P(G, 8, 17 - h + 5, 3, 2); P(G, 2, 17 - h + 8, 4, 2); P(G, 8, 17 - h + 10, 4, 2);
     if (stage === 3) { P('#f2c232', 8, 4, 3, 6); P('#d9a520', 10, 5, 1, 4); P('#c9b060', 6, 0, 2, 2); }
+  } else if (type === 'grano') { // spighe fitte: verdi in primavera, dorate d'estate
+    const ripe = stage === 3, h = ripe ? 13 : 10;
+    const stem = ripe ? '#c8a030' : G, ear = ripe ? '#f0d060' : '#7ac050', dk = ripe ? '#a07818' : D;
+    for (const [x, o] of [[1, 2], [3, 0], [5, 3], [7, 1], [9, 2], [11, 0]]) {
+      P(stem, x, 17 - h + o, 1, h - o); P(dk, x + 1, 17 - h + o + 3, 1, h - o - 3);
+      P(ear, x, 17 - h + o - 3, 2, 4);
+    }
   } else { // pomodoro
     const h = stage === 2 ? 8 : 11;
     P(D, 6, 17 - h, 2, h);
@@ -409,6 +416,10 @@ export function paintTile(g, ch, x, y, seed, plot) {
     g.fillStyle = wet ? '#4a2e1a' : '#7a5232'; g.fillRect(X + 1, Y + 1, PX - 2, PX - 2);
     g.fillStyle = wet ? '#3a2212' : '#64401f';
     for (let r = 3; r < PX - 1; r += 4) g.fillRect(X + 2, Y + r, PX - 4, 1);
+    if (plot.stoppie) { // stoppie dopo il raccolto: vanno riarate
+      g.fillStyle = '#c8a850';
+      for (let r = 2; r < PX - 1; r += 4) for (let i = 2 + (r % 3); i < PX - 2; i += 3) g.fillRect(X + i, Y + r - 1, 1, 2);
+    }
     if (plot.stage === 0 && plot.crop) { // semi
       g.fillStyle = '#e8d8a0';
       g.fillRect(X + 4, Y + 5, 1, 1); g.fillRect(X + 10, Y + 6, 1, 1); g.fillRect(X + 7, Y + 10, 1, 1); g.fillRect(X + 5, Y + 12, 1, 1);

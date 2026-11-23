@@ -17,13 +17,17 @@ import { Officina } from './officina.js';
 import { Vigilessa } from './vigilessa.js';
 import { Cabina } from './cabina.js';
 import { puoComparire } from './data/nemici.js';
+import { Attrezzi } from './attrezzi.js';
+import { Maiali } from './maiali.js';
+import { Stagioni } from './stagioni.js';
+import { GRANO_MINUTI } from './data/stagioni.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
   minutesPerSecond: 1.5,       // quanti minuti di gioco passano in 1 secondo reale
   walkSpeed: 3.2,
   runSpeed: 5.0,
-  growMinutes: { pomodoro: 6 * 60, mais: 10 * 60 },
+  growMinutes: { pomodoro: 6 * 60, mais: 10 * 60, grano: GRANO_MINUTI },
   prices: { uova: 3, pomodoro: 6, mais: 10 },
   idleDozeSeconds: 6,          // dopo quanti secondi fermo Garonio si appisola
   tiredPerHour: 1.5,           // stanchezza che sale solo stando svegli
@@ -87,6 +91,10 @@ export class Game {
     // agganci generici per i moduli dei lavori: moduli = [{ update(dt), animate(dt) }], bersagli = [() => { label, fn } | null]
     this.moduli = [];
     this.bersagli = [];
+    // l'annata: stagioni, attrezzi dei trattori, maiali (src/stagioni.js, src/attrezzi.js, src/maiali.js)
+    this.stagioni = new Stagioni(this);
+    this.attrezzi = new Attrezzi(this);
+    this.maiali = new Maiali(this);
   }
 
   on(name, fn) { return this.ev.on(name, fn); }
@@ -135,6 +143,9 @@ export class Game {
     this.officina = new Officina(this);    // Zeno, riparazioni ed elaborazioni
     this.vigilessa = new Vigilessa(this);  // multe, municipio, sequestro
     this.cabina = new Cabina(this);        // easter egg della cabina della corrente
+    this.stagioni.init();   // per primo: il meteo del giorno serve agli altri
+    this.attrezzi.init();
+    this.maiali.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
@@ -175,7 +186,7 @@ export class Game {
     const fixed = MISSIONI_FISSE[s.day];
     let id = fixed?.id;
     if (!id) {
-      const pool = Object.entries(MISSIONI).filter(([, m]) => (m.daGiorno || 1) <= s.day && plants >= (m.servePiante || 0));
+      const pool = Object.entries(MISSIONI).filter(([, m]) => (m.daGiorno || 1) <= s.day && plants >= (m.servePiante || 0) && (this.stagioni?.missionePossibile(m) ?? true));
       let r = Math.random() * pool.reduce((t, [, m]) => t + (m.peso ?? 1), 0);
       id = pool.find(([, m]) => (r -= m.peso ?? 1) < 0)?.[0] || pool[0][0];
     }
@@ -328,6 +339,9 @@ export class Game {
     // casella sotto i piedi
     const tx = Math.floor(P.x), tz = Math.floor(P.z);
     const area = this.world.areaAt(tx, tz);
+    if (area === 'field' && this.attrezzi) { // nel campo grande si lavora col trattore (GDD 20.1)
+      return { tile: [tx, tz], label: 'Campo di mais: qui si lavora col trattore', fn: () => this.ui.toast('Aratro, seminatrice, falciatrice e turbina si agganciano sotto la tettoia, accanto all\'officina.') };
+    }
     if (area === 'field' || area === 'orto') {
       const key = tx + ',' + tz, p = this.s.plots[key];
       const tile = [tx, tz];
@@ -645,7 +659,7 @@ export class Game {
       choices.push({ label: 'Esci', fn: null });
       await this.ui.dialog([{ name: 'Officina', text: pick(OFFICINA.benvenuto), choices }]);
     } else if (id === 'maiali') {
-      await this.ui.dialog([{ name: 'Capannone dei maiali', text: 'Si sentono grugniti. I maiali arriveranno nella prossima versione del gioco!' }]);
+      await this.maiali.apri();
     }
   }
 
