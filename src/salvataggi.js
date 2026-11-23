@@ -67,7 +67,10 @@ export class Salvataggi {
     if (id === AUTO) s.slotOrigine = Salvataggi.attivo();
     return ls.set(chiave(id), JSON.stringify(s));
   }
-  static cancella(id) { ls.del(chiave(id)); }
+  static cancella(id) { ls.del(chiave(id)); ls.del(chiave(id) + '-alba'); }
+  // «alba»: copia della partita all'inizio della giornata, per rifarla se le missioni vanno male
+  static scriviAlba(s) { return ls.set(chiave(Salvataggi.attivo()) + '-alba', JSON.stringify(s)); }
+  static leggiAlba() { try { return JSON.parse(ls.get(chiave(Salvataggi.attivo()) + '-alba')); } catch { return null; } }
   static info(id) {
     const s = Salvataggi.leggi(id);
     if (!s) return null;

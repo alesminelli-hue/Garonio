@@ -50,6 +50,16 @@ export function defaultParking() {
   };
 }
 
+// Stress alla guida: sopra «da» il mezzo risponde peggio (al massimo a stress 100).
+// I trattori ne soffrono di più: sbandano, rallentano, sterzano male, si ingolfano e si rompono più facilmente.
+export const STRESS_GUIDA = {
+  da: 40,
+  trattore: { vel: 0.25, sterzo: 0.4, sbanda: 0.9, urti: 0.8, ingolfa: 0.05, rompe: 0.004 },
+  altri:    { vel: 0.1,  sterzo: 0.2, sbanda: 0.4, urti: 0.4, ingolfa: 0,    rompe: 0 },
+};
+// Rimorchio: dopo quanti secondi fermo contro un ostacolo (tenendo premuto) compare l'aiuto
+export const BLOCCATO_SECONDI = 2.5;
+
 const IDS = ['vespa', 'punto', 'trattore1', 'trattore2'];
 const kindOf = id => id.startsWith('trattore') ? 'trattore' : id;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -71,6 +81,13 @@ export class Vehicles {
   }
 
   get s() { return this.game.s; }
+
+  // 0 (calmo) .. 1 (stress 100): quanto lo stress rovina la guida
+  _nervi() { return clamp((this.s.stress - STRESS_GUIDA.da) / (100 - STRESS_GUIDA.da), 0, 1); }
+  _stressFx(v) { return v.kind === 'trattore' ? STRESS_GUIDA.trattore : STRESS_GUIDA.altri; }
+
+  // il mezzo è a secco? (Punto senza benzina, trattore senza gasolio)
+  aSecco(v) { return v.kind === 'punto' ? v.st.fuel <= 0 : v.kind === 'trattore' ? (this.game.attrezzi?.gasolio?.(v.id) ?? 100) <= 0 : false; }
 
   // Crea gli sprite e lo stato (nuova partita o salvataggio)
   init() {
@@ -119,6 +136,36 @@ export class Vehicles {
     return !this._hitsVehicle(x0, z0, x1, z1, v);
   }
 
+  // quanto il mezzo affonda negli ostacoli in (x, z): somma delle aree sovrapposte
+  _affondo(v, x, z) {
+    const [x0, z0, x1, z1] = this._box(v, x, z);
+    let a = 0;
+    for (const s of this.world.solids) {
+      const w = Math.min(x1, s.x1) - Math.max(x0, s.x0), h = Math.min(z1, s.z1) - Math.max(z0, s.z0);
+      if (w > 0 && h > 0) a += w * h;
+    }
+    return a;
+  }
+
+  // Il mezzo è già incastrato (argine del canale, transenne spuntate, sprite girato contro un muro):
+  // lascia passare le mosse che lo tirano fuori invece di bloccarlo per sempre.
+  _incastrato(v, dx, dz) {
+    const { x, z } = v.st;
+    if (this._free(v, x, z)) return false;
+    const ora = this._affondo(v, x, z);
+    return ora > 0 && this._affondo(v, x + dx, z + dz) < ora + 1e-4 && !this._hitsVehicle(...this._box(v, x + dx, z + dz), v);
+  }
+
+  // posto libero più vicino a (x, z) entro r caselle, con l'orientamento vert; null se non c'è
+  _vicinoLibero(v, x, z, vert = v.vert, r = 0.6) {
+    if (this._free(v, x, z, vert)) return { x, z };
+    for (let d = 0.08; d <= r + 1e-6; d += 0.08) for (let a = 0; a < 12; a++) {
+      const nx = x + Math.cos(a / 12 * Math.PI * 2) * d, nz = z + Math.sin(a / 12 * Math.PI * 2) * d;
+      if (this._free(v, nx, nz, vert)) return { x: nx, z: nz };
+    }
+    return null;
+  }
+
   _findFree(v) {
     const { x, z } = v.st;
     for (let r = 0.5; r < 8; r += 0.5) for (let a = 0; a < 16; a++) {
@@ -139,7 +186,11 @@ export class Vehicles {
       view = Math.abs(cx) >= Math.abs(cz) ? (cx >= 0 ? 'R' : 'L') : (cz > 0 ? 'F' : 'B');
     }
     const vert = view === 'F' || view === 'B';
-    if (vert !== !!v.vert && this._free(v, st.x, st.z, vert)) v.vert = vert;
+    if (vert !== !!v.vert) {
+      // girando, l'ingombro cambia: chi guida viene spostato di poco se serve (fra alberi e argini non resta incastrato)
+      const q = v === this.driving ? this._vicinoLibero(v, st.x, st.z, vert, 0.5) : (this._free(v, st.x, st.z, vert) ? st : null);
+      if (q) { st.x = q.x; st.z = q.z; v.vert = vert; }
+    }
     const occ = v === this.driving ? 1 : 0;
     if (view !== v.view || occ !== v.occ) {
       v.view = view; v.occ = occ;
@@ -183,6 +234,8 @@ export class Vehicles {
     if (v.st.flat) html += '<div class="warn">Gomma a terra!</div>';
     if (v.kind === 'trattore') html += this.game.attrezzi?.hud(v) || '';
     if (v.kind === 'trattore' && this.s.tired > 70) html += '<div class="warn">Sei stanco: occhio a non romperlo!</div>';
+    if (this._nervi() > 0.3) html += `<div class="warn">Stress ${Math.round(this.s.stress)}: ${v.kind === 'trattore' ? 'il trattore' : 'il mezzo'} non ti ascolta</div>`;
+    if ((v.bloccatoT || 0) > BLOCCATO_SECONDI || this.aSecco(v)) html += `<div class="warn">${this.aSecco(v) ? 'A secco!' : 'Bloccato?'} E: chiama il rimorchio</div>`;
     if (html !== this._hudHtml) { this.hud.innerHTML = html; this._hudHtml = html; }
   }
 
@@ -190,8 +243,19 @@ export class Vehicles {
   // Bersaglio per il tasto azione (lo chiama game._findTarget)
   target() {
     if (this.driving) {
-      const v = this.driving;
-      return { label: `Scendi ${v.T.article === 'il' ? 'dal' : 'dalla'} ${v.T.label ?? v.T.name}`, fn: () => this.dismount() };
+      const v = this.driving, scendi = `Scendi ${v.T.article === 'il' ? 'dal' : 'dalla'} ${v.T.label ?? v.T.name}`;
+      // bloccato o a secco: scendi oppure chiama Zeno col rimorchio
+      if (this.game.officina && ((v.bloccatoT || 0) > BLOCCATO_SECONDI || this.aSecco(v))) {
+        return { label: `📞 ${this.aSecco(v) ? 'A secco' : 'Bloccato'}: rimorchio o scendi`, fn: () => this.game.ui.dialog([{
+          name: v.T.icon + ' ' + (v.T.label ?? v.T.name), text: this.aSecco(v) ? 'Il motore tossisce e muore. Serbatoio vuoto.' : 'Le ruote girano a vuoto. Di qui non esce.',
+          choices: [
+            { label: this.game.officina.etichettaRimorchio(v), fn: () => this.game.officina.rimorchio(v) },
+            { label: scendi, fn: () => { this.dismount(); } },
+            { label: 'Riprovo ancora', fn: () => { v.bloccatoT = 0; } },
+          ],
+        }]) };
+      }
+      return { label: scendi, fn: () => this.dismount() };
     }
     const P = this.game.player.group.position;
     let best = null, bd = Infinity;
@@ -203,7 +267,8 @@ export class Vehicles {
     }
     if (!best) return null;
     const v = best, name = v.T.label ?? v.T.name, sul = v.T.article === 'il' ? 'sul' : 'sulla';
-    if (v.st.cond <= 0 && this.game.officina) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore rotto' : name + ' rotta'}: chiama Zeno (traino e riparazione)`, fn: () => this.game.officina.chiama(v) };
+    if (v.st.cond <= 0 && this.game.officina) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore rotto' : name + ' rotta'}: chiama Zeno (riparazione o rimorchio)`, fn: () => this.game.officina.chiama(v) };
+    if (this.aSecco(v) && this.game.officina && !this.game.officina.aCasa(v)) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore' : name} a secco: chiama il rimorchio`, fn: () => this.game.officina.chiama(v) };
     if (v.st.cond <= 0) return { label: v.kind === 'trattore' ? 'Trattore rotto: va riparato in officina' : `${name} rotta: va riparata in officina`, fn: () => this._brokenMsg(v) };
     if (v.kind === 'punto' && v.st.fuel <= 0) return { label: 'Punto a secco: fai il pieno in officina', fn: () => this._brokenMsg(v) };
     if (v.kind === 'vespa') return { label: 'Sali sulla Vespa e prova a metterla in moto', fn: () => this.tryMount(v) };
@@ -295,6 +360,8 @@ export class Vehicles {
     const M = this._mod(v);
     let max = T.maxSpeed * (st.flat ? 0.45 : 1) * M.vel;
     if (s.tired > 80) max *= 0.85;
+    const nervi = this._nervi(), SF = this._stressFx(v);
+    max *= 1 - SF.vel * nervi;   // stressato: il piede non sa cosa fare
     max *= this.game.attrezzi?.velocita(v) ?? 1;   // gasolio finito, attrezzo giù
     // fondo stradale: sull'asfalto si va a tutta, nei campi e nell'erba si rallenta (il trattore no)
     const ch = this.world.tile(Math.floor(v.st.x), Math.floor(v.st.z));
@@ -316,13 +383,15 @@ export class Vehicles {
         target = -max * 0.4 * inp;
         diff = wrap(want + Math.PI - st.h);
       } else target = max * inp * clamp(1 - Math.abs(diff) / 4.5, 0.45, 1);
-      const k = T.turn * M.sterzo * clamp(0.55 + Math.abs(v.speed) / T.maxSpeed, 0.55, 1.2);
+      const k = T.turn * M.sterzo * (1 - SF.sterzo * nervi) * clamp(0.55 + Math.abs(v.speed) / T.maxSpeed, 0.55, 1.2);
       wantRate = clamp(diff * 5, -k, k);
     } else { v.oppT = 0; v.rev = false; }
     v.angV = (v.angV || 0) + (wantRate - (v.angV || 0)) * (1 - Math.exp(-dt * 12));
     st.h = wrap(st.h + v.angV * dt);
     // stanco: il mezzo sbanda un po'
     if (s.tired > 70 && Math.abs(v.speed) > 1) st.h = wrap(st.h + Math.sin(this.t * 2.3) * 0.35 * dt * (s.tired - 70) / 30);
+    // stressato: strattoni al volante
+    if (nervi > 0 && Math.abs(v.speed) > 1) st.h = wrap(st.h + (Math.sin(this.t * 3.7) + Math.sin(this.t * 6.1) * 0.6) * SF.sbanda * nervi * dt);
     const braking = Math.sign(target) !== Math.sign(v.speed) && Math.abs(v.speed) > 0.05;
     const rate = (target === 0 ? T.accel * 1.2 : braking ? T.accel * 1.8 : T.accel) * dt;
     v.speed += clamp(target - v.speed, -rate, rate);
@@ -330,7 +399,10 @@ export class Vehicles {
     // movimento con scivolamento sui muri
     const dx = Math.cos(st.h) * v.speed * dt, dz = Math.sin(st.h) * v.speed * dt;
     const before = Math.abs(v.speed);
-    if (this._free(v, st.x + dx, st.z + dz)) { st.x += dx; st.z += dz; }
+    // già incastrato in un ostacolo: lo spinge fuori di poco, se c'è un posto libero lì vicino
+    if (!this._free(v, st.x, st.z)) { const q = this._vicinoLibero(v, st.x, st.z, v.vert, 0.7); if (q) { st.x = q.x; st.z = q.z; } }
+    const x0 = st.x, z0 = st.z;
+    if (this._free(v, st.x + dx, st.z + dz) || this._incastrato(v, dx, dz)) { st.x += dx; st.z += dz; }
     else {
       const okX = this._free(v, st.x + dx, st.z), okZ = this._free(v, st.x, st.z + dz);
       if (okX && Math.abs(dx) > Math.abs(dz) * 0.3) { st.x += dx; v.speed *= 0.97; }
@@ -338,6 +410,12 @@ export class Vehicles {
       else { v.speed = -v.speed * 0.25; v.stuckT = 1; this._crash(v, before); if (this.driving !== v) return; }
     }
     const dist = Math.hypot(dx, dz);
+    // fermo contro qualcosa mentre si preme: dopo un po' compare l'aiuto del rimorchio
+    const mosso = Math.hypot(st.x - x0, st.z - z0);
+    if (len > 0.3 && mosso < 0.4 * dt) v.bloccatoT = (v.bloccatoT || 0) + dt;
+    else if (mosso > 1.2 * dt) v.bloccatoT = 0;
+    if (v.bloccatoT > BLOCCATO_SECONDI && !v.avvisoBloccato) { v.avvisoBloccato = true; this.ui.toast('Sei bloccato? Premi E: Zeno ti viene a prendere col rimorchio (anche a debito).', 'bad'); }
+    if (!v.bloccatoT) v.avvisoBloccato = false;
 
     // consumi e guasti
     if (v.kind === 'punto') {
@@ -351,6 +429,16 @@ export class Vehicles {
       this.ui.toast('La Vespa si è spenta di colpo. Garonio scende imprecando.', 'bad');
       this.s.stress = clamp(this.s.stress + 2, 0, 100);
       this.dismount(true); return;
+    }
+    if (nervi > 0.4 && Math.abs(v.speed) > 1.5 && SF.ingolfa && Math.random() < SF.ingolfa * dt * nervi) {
+      v.speed *= 0.2; this.audio.sfx('stall');
+      this.ui.toast(['Garonio pesta tutto insieme: il trattore si ingolfa.', 'Ingrana la marcia sbagliata. CRRRK.', 'Trema tutto: il motore singhiozza.'][Math.random() * 3 | 0], 'bad');
+      this.s.stress = clamp(this.s.stress + 1, 0, 100);
+    }
+    if (nervi > 0.5 && SF.rompe && Math.abs(v.speed) > 2 && Math.random() < SF.rompe * dt * nervi) {
+      st.cond = clamp(st.cond - 8, 0, 100);
+      if (st.cond <= 0) { this._breakTractor(v, 'Garonio tira la leva sbagliata per il nervoso. Il cambio esplode!'); return; }
+      this.ui.toast(`Sei così nervoso che strappi la frizione. ${v.T.name} -8%`, 'bad');
     }
     if (v.kind === 'trattore' && s.tired > 75 && Math.abs(v.speed) > 1 && Math.random() < T.tiredBreakPerSec * dt * (s.tired - 70) / 10) {
       this._breakTractor(v, 'Ti si chiudono gli occhi, il trattore finisce nel fosso. Il motore fuma!');
@@ -366,7 +454,7 @@ export class Vehicles {
 
   _crash(v, speed) {
     if (speed < 2) return;
-    const dmg = speed < v.T.crashSpeed ? 0 : Math.round((speed - v.T.crashSpeed + 1) * v.T.crashDamage);
+    const dmg = speed < v.T.crashSpeed ? 0 : Math.round((speed - v.T.crashSpeed + 1) * v.T.crashDamage * (1 + this._stressFx(v).urti * this._nervi()));
     // chi ascolta (Vigilessa, cabina della corrente) può prendersi lo schianto: gestito = true
     const ev = { mezzo: v.id, tipo: v.kind, danno: dmg, x: v.st.x, z: v.st.z, velocita: speed, gestito: false };
     this.game.emit('urto', ev);
@@ -381,7 +469,7 @@ export class Vehicles {
         s.health = clamp(s.health - 6, 0, s.maxHealth || 100); s.stress = clamp(s.stress + 4, 0, 100);
         this.ui.toast(`Botta! Garonio vola giù dalla Vespa. Vita -6, Vespa -${dmg}%`, 'bad');
       } else this.ui.toast(`Strisciata! Vespa -${dmg}%`, 'bad');
-      if (v.st.cond <= 0) this.ui.toast('La Vespa non ne vuole più sapere. Serve l\'officina.', 'bad');
+      if (v.st.cond <= 0) { this.ui.toast('La Vespa non ne vuole più sapere. Serve l\'officina.', 'bad'); this._rotto(v); }
       if (fall) this.dismount(true);
       return;
     }
@@ -390,7 +478,7 @@ export class Vehicles {
       let msg = `Sbam! Un'altra ammaccatura sulla Punto (-${dmg}%)`;
       if (!v.st.flat && Math.random() < v.T.flatChance * this._mod(v).fora) { v.st.flat = true; msg += ' e una gomma a terra!'; }
       this.ui.toast(msg, 'bad');
-      if (v.st.cond <= 0) { this.ui.toast('La Punto si spegne e non riparte più.', 'bad'); this.dismount(true); }
+      if (v.st.cond <= 0) { this.ui.toast('La Punto si spegne e non riparte più.', 'bad'); this.dismount(true); this._rotto(v); }
       return;
     }
     // trattore
@@ -405,9 +493,13 @@ export class Vehicles {
     this.audio.sfx('crash');
     this.ui.toast(msg, 'bad');
     this.dismount(true);
+    this._rotto(v);
     this.s.today.trattoriRotti = (this.s.today.trattoriRotti || 0) + 1;
     this.game.mountain('trattore', 35);
   }
+
+  // un mezzo si è appena rotto: chi è lì attorno lo vede (src/derisione.js)
+  _rotto(v) { this.game.emit('mezzoRotto', { mezzo: v.id, tipo: v.kind, x: v.st.x, z: v.st.z }); }
 
   // il trattore ara le zolle del campo dove passa
   _plow(v) {
@@ -505,6 +597,7 @@ export class Vehicles {
     v.st.cond = clamp(v.st.cond - 35, 0, 100);
     this.ui.toast(`Garonio si addormenta al volante! ${v.T.name} -35%`, 'bad');
     this.dismount(true);
+    if (v.st.cond <= 0) this._rotto(v);
   }
 
   // Quando Garonio viene "teletrasportato" (dormire, svenire): il mezzo resta dov'è

@@ -1,4 +1,6 @@
-# Garonio — Documento di Game Design (pilot)
+# Grand Theft Tractor: Goodville City — Documento di Game Design (pilot)
+
+> Titolo del gioco: **Grand Theft Tractor: Goodville City**. Il protagonista resta **Garonio**.
 
 > Versione 0.3 · documento vivo: lo approfondiremo pezzo per pezzo.
 
@@ -42,7 +44,11 @@ Un **survival gestionale con elementi da JRPG** in pixel art semi‑3D: guidi **
 |---|---|---|---|
 | **Vita** (0‑100) | Mangia, dorme bene, cure | Stress al massimo, scontri con animali, incidenti | A 0 Garonio sviene: perde la giornata e una parte dei soldi |
 | **Stanchezza** (0‑100) | Ogni lavoro (zappare, raccogliere, scacciare nutrie, correre) | Dormire a casa, pisolini, caffè al bar | A 100 crolla addormentato dove si trova e passano ore |
-| **Stress** (0‑100) | Rimproveri di Mister Mountain, missioni fallite, lavorare troppo, clienti molesti al bar | Bar (mangiare), dormire, serate di svago, tempo libero | A 100 perde Vita ogni ora e lavora peggio |
+| **Stress** (0‑100) | Rimproveri di Mister Mountain, missioni fallite, lavorare troppo, clienti molesti al bar, paesani che ti deridono | Bar (mangiare), dormire, serate di svago, tempo libero | Già da 40 guida peggio (soprattutto i trattori) e da 30 manca più colpi; a 100 perde Vita ogni ora |
+
+**Lo stress pesa davvero** (valori in `STRESS_GUIDA` di `src/vehicles.js` e `stressDa`/`stressMira` di `src/combat.js`):
+- **Alla guida**, sopra 40: il mezzo rallenta, sterza peggio e dà strattoni al volante; gli urti fanno più danni. I trattori ne soffrono di più: sopra 64 circa si ingolfano, sopra 70 Garonio può strappare la frizione (−8%) fino a romperli. L'HUD del mezzo lo avvisa.
+- **In combattimento**, sopra 30 la mira cala sempre di più: a stress 100 circa un colpo su tre va a vuoto. La Rabbia Incontrollata non sbaglia mai.
 
 Regola chiave: **lavorare stanca e stressa, riposare costa tempo**. Il giocatore deve trovare l'equilibrio fra fare abbastanza per il Gigante e non crollare.
 
@@ -53,6 +59,7 @@ Regola chiave: **lavorare stanca e stressa, riposare costa tempo**. Il giocatore
 - Il giocatore lavora tra orto, galline, campi, maiali e officina.
 - Può andare al bar o a riposare quando vuole, ma il tempo scorre.
 - Alla scadenza: missione riuscita → soldi ed esperienza. Missione fallita → **arriva Mister Mountain** (stress molto alto).
+- **Giornata da rifare**: se la missione del giorno è fallita, quando la giornata finisce (letto, mezzanotte o svenimento) non si passa al giorno dopo. Il Gigante lo dice chiaro e si riparte da capo dalla mattina stessa, con la stessa missione e lo stato di quella mattina (copia «alba» salvata al risveglio, in `src/salvataggi.js`).
 - 22:00 in poi: a casa a dormire, oppure uscita serale (bar, svago).
 
 ### Ciclo lungo
@@ -121,6 +128,9 @@ Idea: con stanchezza alta aumenta la probabilità di guasti e incidenti con tutt
 - **Trattori** (rosso e verde, vicino all'officina): lenti, arano automaticamente le zolle del campo dove passano. Si danneggiano molto con gli urti; a zero, o guidando con stanchezza sopra 75, si rompono → arriva Mister Mountain (stress +35).
 - Con stanchezza alta tutti i mezzi sbandano un po'. Se Garonio crolla mentre guida, il mezzo si danneggia.
 - **Officina**: riparazione (prezzo in base al danno), cambio gomma e pieno alla Punto. Il meccanico va a prendere il mezzo dove l'hai lasciato.
+- **Rimorchio di Zeno** (`RIMORCHIO` in `src/data/officina.js`): se il mezzo è bloccato (fermo contro qualcosa per qualche secondo), rotto o a secco, con **E** chiami Zeno che lo riporta al suo posto in azienda, con Garonio a bordo. Costa poco (Vespa 4€, Punto 6€, trattore 8€, il doppio di notte quando viene il nipote) e si può fare anche senza soldi: quello che manca va **sul conto di Zeno** (debito da saldare prima delle riparazioni). Se era a secco ti lascia un goccio di carburante. Riparare resta un'altra cosa.
+- **Derisione** (`src/derisione.js`): se rompi un mezzo e qualcuno ti vede (paesani, personaggi del paese, vicini e garzoni nel raggio di 10 caselle), ride di te: reputazione in paese −3 per testimone (massimo −9) e stress +3 per testimone.
+- I mezzi incastrati negli ostacoli (argine del canale, transenne) possono sempre uscire con una manovra che li tira fuori.
 - I mezzi sono parcheggiati vicino a casa e officina, calcolati dalla posizione degli edifici: con la mappa nuova basta aggiornare `defaultParking()`.
 
 ## 9. Nemici e combattimento (stile JRPG leggero)

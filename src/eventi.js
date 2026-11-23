@@ -29,6 +29,9 @@
 //   avventore       { id, passo, fine }        avanza la storia di un avventore del bar
 //   mappaCatastale  {}                         il Geometra dà la mappa catastale (tane sulla mappa grande)
 //   rimorchio       {}                         Ermes presta il rimorchio
+//   carroAttrezzi   { mezzo, prezzo, debito }  Zeno riporta in azienda un mezzo bloccato, rotto o a secco (src/officina.js)
+//   mezzoRotto      { mezzo, tipo, x, z }      un mezzo si è appena rotto (vehicles.js); chi lo vede ride (src/derisione.js)
+//   derisione       { chi, mezzo, reputazione } i paesani ti hanno visto rompere un mezzo
 //   reBancone       {}                         Garonio batte Bruno: Re del bancone
 //   bandoBar        { fino }                   regola di Loredana: bar chiuso per Garonio fino al giorno "fino"
 //   briscola        { vinta, tuoi, suoi }      partita a briscola con Tarcisio
