@@ -25,6 +25,8 @@ import { Maiali } from './maiali.js';
 import { Stagioni } from './stagioni.js';
 import { GRANO_MINUTI } from './data/stagioni.js';
 import { Pilot } from './pilot.js';
+import { Interni } from './interni.js';
+import { PORTE } from './data/interni.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -102,6 +104,7 @@ export class Game {
     this.pilot = new Pilot(this);         // ?pilot nell'indirizzo: scorciatoie per provare l'annata
     this.bar = new Bar(this);               // trama del bar (src/bar.js)
     this.consulente = new Consulente(this); // consigli e oggetti nascosti (src/consulente.js)
+    this.interni = new Interni(this);   // interni degli edifici (src/interni.js)
   }
 
   on(name, fn) { return this.ev.on(name, fn); }
@@ -158,6 +161,7 @@ export class Game {
     this.cascine.init();
     this.bar.init();
     this.consulente.init();
+    this.interni.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
@@ -224,6 +228,7 @@ export class Game {
   update(dt) {
     const P = this.player.group.position;
     this._animateWorld(dt);
+    this.interni.update(dt);
     if (this.ui.busy() || this.locked) { this.ui.prompt(null); this.cursor.visible = false; return; }
 
     // movimento: alla guida di un mezzo, oppure a piedi
@@ -331,6 +336,7 @@ export class Game {
     const P = this.player.group.position;
     const d = (x, z) => Math.hypot(P.x - x, P.z - z);
     if (this.vehicles.driving) return this.cascine.target() || this.vehicles.target();
+    if (this.interni.attivo) return this.interni.bersaglio();
     const gp = this.gigante.group.position;
     if (d(gp.x, gp.z) < 1.5) return { label: 'Parla col Gigante', fn: () => this.talkGigante() };
     const pt = this.png.bersaglio();
@@ -339,7 +345,7 @@ export class Game {
     for (const e of this.s.eggs) if (d(e.x, e.z) < 0.9) return { label: 'Raccogli l\'uovo', fn: () => this.pickEgg(e) };
     for (const fn of this.bersagli) { const t = fn(); if (t) return t; }
     for (const b of BUILDINGS) if (b.door && !b.noDoor && d(b.door.x, b.door.z) < 1.1) {
-      const lab = { casa: 'Entra in casa', officina: 'Entra in officina', bar: 'Entra al bar', maiali: 'Capannone dei maiali' }[b.id];
+      const lab = PORTE[b.id] || 'Entra';
       return { label: lab, fn: () => this.enter(b.id) };
     }
     const pr = this.world.props;
@@ -624,7 +630,7 @@ export class Game {
     s.today = newStats(); s.mission = null;
     this.nutrie.forEach(n => n.a.remove()); this.nutrie = [];
     s.nextNutria = (8 + rand(0, 2)) * H;
-    this.player.group.position.set(PLACES.spawn.x, 0, PLACES.spawn.z);
+    if (!this.interni.svegliaDentro()) this.player.group.position.set(PLACES.spawn.x, 0, PLACES.spawn.z);
     this._wake(); this.idle = 0;
     this._pickMission();
     this.save();
@@ -637,9 +643,11 @@ export class Game {
   }
 
   // ---------- Edifici ----------
-  async enter(id) {
+  // menu = true: il vecchio menu dell'edificio (usato dagli interni, es. gli armadietti dell'officina)
+  async enter(id, menu = false) {
+    if (!menu && await this.interni.entra(id)) return;
     const s = this.s;
-    this.emit('entrato', { edificio: id });
+    if (!menu) this.emit('entrato', { edificio: id });
     if (id === 'casa') {
       const late = s.minutes >= 20 * H;
       await this.ui.dialog([{
@@ -737,6 +745,7 @@ export class Game {
   // ---------- Musica ----------
   _music() {
     if (this.mm || this.inBar) return;
+    if (this.interni.attivo) { this.audio.setScene(this.interni.musica()); return; }
     const P = this.player.group.position;
     const f = AREAS.field, bar = BUILDINGS.find(b => b.id === 'bar');
     const nearField = P.x > f.x0 - 8 && P.x < f.x1 + 8 && P.z < f.z1 + 6;
