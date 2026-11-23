@@ -681,6 +681,32 @@ Garonio può far elaborare la Vespa o la Punto da Zeno. Ogni elaborazione ha una
 
 L'umore di Zeno sposta la riuscita di ±15%. Un'elaborazione andata male si può riprovare pagando di nuovo, dopo aver pagato la riparazione.
 
+### 20.5 Easter egg: la cabina della corrente
+
+Lungo una strada sterrata fuori mano c'è una **cabina elettrica** grigia, col cartello «Pericolo di morte» e un teschio. Non serve a niente. O quasi.
+
+- Se Garonio ci si **schianta con la Punto** (o con la Vespa) sopra una certa velocità, il mezzo è **distrutto del tutto** (stato 0%, rotto), lampi e scintille, lo schermo diventa bianco per un attimo e Garonio esce dalle lamiere coi capelli dritti (Vita −20).
+- Dalla cabina sbuffata esce **un bottino**, con queste probabilità:
+
+| Probabilità | Cosa esce |
+|---|---|
+| 60% | niente, solo il conto di Zeno e una multa della Vigilessa se è nei paraggi |
+| 30% | soldi (20‑80 €) e oggetti comuni |
+| 10% | **bottino leggendario** (uno a caso tra quelli non ancora trovati) |
+
+**Bottino leggendario** (unico, non si compra da nessuna parte):
+
+| Oggetto | Tipo | Effetto |
+|---|---|---|
+| **Zappa folgorata** | arma | attacco +12, la mossa «Scossa» colpisce tutti e stordisce |
+| **Casco di Nonno Fulmine** | testa | difesa +5, cadute dalla Vespa senza danni, la Vigilessa non ti vede |
+| **Tuta isolante del tecnico** | corpo | difesa +7, immune alle scosse e alla pioggia |
+| **Stivali a 380 volt** | piedi | velocità +35% |
+| **Fusibile fortunato** | portafortuna | una volta al giorno, a Vita 0 si rialza col 50% |
+
+- La cabina si «ricarica» dopo 3 giorni (ronzio e lucina rossa): prima, schiantarsi rompe solo il mezzo.
+- Nessuno spiega niente: lo si scopre per caso, o da una battuta del Consulente («Mio cugino ha preso in pieno la cabina della corrente e ha trovato... no, lascia stare.»).
+
 ## 21. Come dividere il lavoro di sviluppo
 
 Proposta: **un lavoro di base, poi gli altri in parallelo**. Ogni lavoro tocca file diversi, così non si pestano i piedi. Il lavoro su grafica e fluidità è finito, quindi anche gli interni possono partire.
@@ -693,10 +719,26 @@ Proposta: **un lavoro di base, poi gli altri in parallelo**. Ogni lavoro tocca f
 | **C** | **Trama dell'annata e attrezzi dei trattori** | Stagioni, obiettivi, maiali veri, fiducia del Gigante; aratro, seminatrice, falciatrice e turbina, gasolio | `src/stagioni.js`, `src/maiali.js`, `src/attrezzi.js`, `src/data/missioni.js` | lavoro 0 |
 | **D** | **Trama del bar e Consulente** | Rispetto, Orgoglio e Rabbia, storie degli avventori, risse; il Consulente coi consigli e gli oggetti nascosti sulla mappa | `src/data/dialoghi.js`, `src/bar.js`, `src/consulente.js` | lavoro 0 |
 | **E** | **Bestie leggendarie e spawn** | Nemici nuovi, gruppi visibili sulla mappa, tracce, tane e re | `src/spawn.js`, `src/data/bestie.js`, sprite in `src/combat.js` | lavoro 0; le tane usano gli interni (A) |
-| **F** | **Zeno e la Vigilessa** | Riparazioni a fasce, fregature di Zeno, elaborazioni che possono andare male; la Vigilessa che gira, il cono di vista, le multe e il sequestro | `src/vehicles.js` (officina), `src/vigilessa.js`, `src/data/officina.js` | lavoro 0 |
+| **F** | **Zeno, la Vigilessa e la cabina** | Riparazioni a fasce, fregature di Zeno, elaborazioni che possono andare male; la Vigilessa che gira, il cono di vista, le multe e il sequestro; la cabina della corrente con il bottino leggendario | `src/vehicles.js` (officina), `src/vigilessa.js`, `src/data/officina.js` | lavoro 0 |
 | **G** | **Cascine e missioni truffaldine** | Le tre cascine sulla mappa coi vicini e le battute, amicizia, missioni del Gigante contro i vicini con rischio di farsi beccare | `src/map.js` (cascine), `src/cascine.js`, `src/data/vicini.js` | lavoro 0; la turbina viene da C, la Vigilessa da F (si può partire con dei segnaposto) |
 
-Ordine consigliato: **0 subito**, poi **A, B, C, D, F in parallelo**; **E** e **G** appena A, C e F hanno le prime versioni.
+### 21.1 La base è pronta: come agganciarsi
+
+Il lavoro 0 è fatto. Ogni lavoro parallelo usa questi pezzi **senza riscriverli**:
+
+| Pezzo | File | Cosa offre |
+|---|---|---|
+| **Eventi** | `src/eventi.js` | `game.on(nome, fn)` e `game.emit(nome, dati)`. L'elenco degli eventi già mandati è in cima al file; ogni lavoro può aggiungerne e li scrive lì. |
+| **Progressione** | `src/progressione.js` (`game.prog`), dati in `src/data/progressione.js` e `src/data/armi.js` | livelli fino al 20, punti abilità, `prog.bonus('chiave')`, `atk()`, `def()`, `maxHealth()`, armi (`daiArma`, `impugna`), vestiti (`daiVestito`, `indossa`), zaino (`dai`, `togliOggetto`, `ha`). Il combattimento usa già `atk()` e `def()`. |
+| **Nemici per livello** | `src/data/nemici.js` | `puoComparire(id, livello)` e `nemiciDisponibili(zona, livello)`. I nemici nuovi vanno aggiunti con sprite e mosse in `ENEMIES` di `src/combat.js`. |
+| **Personaggi (PNG)** | `src/png.js` (`game.png`), dati in `src/data/png.js` | compaiono sulla mappa secondo l'ora, camminano lungo un giro, si parla con E, amicizia. Per aggiungere scelte a un personaggio: `game.png.aggiungiScelte('zeno', ctx => [{ label, fn }])`. Per un dialogo tutto suo: `sostituisciDialogo`. |
+| **Missioni secondarie** | `src/secondarie.js` (`game.quests`), dati in `src/data/secondarie.js` | offerta, accettazione, progressi dagli eventi, consegne, premi, scadenze, fumetto «!» sopra chi ha qualcosa. Missioni generate da codice: `game.quests.aggiungi(id, def)`. Il campo `truffaldina: true` segna quelle del Gigante. |
+| **Menu di Garonio** | `src/menu.js` (tasto **J** o 📓) | scheda, abilità, arma ed equipaggiamento, zaino, diario delle missioni. |
+| **Salvataggio** | `game.js` → `fresh()` | campi nuovi: `prog`, `png`, `quests`, `flags` (libero per i lavori: `s.flags.nomeLavoro = {...}`), `maxHealth`. I salvataggi vecchi vengono sistemati da soli. |
+
+Per provare dal browser: la console ha `garonio` (il gioco), per esempio `garonio.prog.addXp(200)` o `garonio.quests.accetta('bubetto_nutrie')`.
+
+Ordine consigliato: **0 fatto**, poi **A, B, C, D, F in parallelo**; **E** e **G** appena A, C e F hanno le prime versioni.
 
 **Più avanti (dopo questi lavori)**: ritratti dei personaggi in **PNG** disegnati a mano, da usare nei dialoghi al posto dei ritratti generati dal codice, e **dialoghi di vita quotidiana** («slice of life»): chiacchiere con la Mamma, il Gigante, Zeno, il Consulente, i vicini e gli avventori che non fanno parte delle missioni ma raccontano il paese e i personaggi.
 
