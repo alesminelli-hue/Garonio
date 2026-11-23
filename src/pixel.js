@@ -225,6 +225,51 @@ export function tree(seed = 1) {
   return outline(c);
 }
 
+// Pioppo: alto e stretto, tipico dei filari della Bassa.
+export function poplar(seed = 1) {
+  const R = rng(seed * 31 + 5);
+  const [c, g] = makeCanvas(16, 52);
+  g.fillStyle = '#5a3a22'; g.fillRect(7, 40, 3, 11);
+  for (let y = 2; y < 44; y++) {
+    const half = Math.round(Math.sin((y - 2) / 42 * Math.PI) * 6) + 1;
+    g.fillStyle = '#2f7036'; g.fillRect(8 - half, y, half * 2, 1);
+    g.fillStyle = '#4a9244'; g.fillRect(8 - half + 1, y, Math.max(1, half - 1), 1);
+  }
+  for (let i = 0; i < 26; i++) { g.fillStyle = R() < 0.5 ? '#245a2a' : '#6ab060'; g.fillRect(4 + R() * 8 | 0, 4 + R() * 38 | 0, 1, 2); }
+  return outline(c);
+}
+
+// Rotoballa di fieno vista di fronte.
+export function hayBale() {
+  const [c, g] = makeCanvas(20, 16);
+  g.fillStyle = '#c8a040'; g.fillRect(1, 2, 18, 13);
+  g.fillStyle = '#e0bc58'; g.fillRect(1, 2, 18, 3);
+  g.fillStyle = '#a88030'; for (let x = 3; x < 19; x += 4) g.fillRect(x, 5, 1, 10);
+  return outline(c);
+}
+
+// Cartello stradale su palo.
+export function signpost(text) {
+  const w = Math.max(28, text.length * 6 + 6);
+  const [c, g] = makeCanvas(w, 26);
+  g.fillStyle = '#5a3a22'; g.fillRect(w / 2 - 1, 10, 3, 16);
+  g.fillStyle = '#f4f0e0'; g.fillRect(0, 0, w, 11);
+  g.fillStyle = '#2a6a3a'; g.fillRect(1, 1, w - 2, 9);
+  g.fillStyle = '#ffffff'; g.font = 'bold 8px monospace'; g.textBaseline = 'middle'; g.textAlign = 'center';
+  g.fillText(text, w / 2, 5.5);
+  return c;
+}
+
+// Lamiera ondulata per i silos (texture ripetibile).
+export function siloTexture() {
+  const [c, g] = makeCanvas(32, 32);
+  g.fillStyle = '#b8c0c8'; g.fillRect(0, 0, 32, 32);
+  g.fillStyle = '#8a949c'; for (let x = 0; x < 32; x += 4) g.fillRect(x, 0, 1, 32);
+  g.fillStyle = '#d8e0e8'; for (let x = 2; x < 32; x += 4) g.fillRect(x, 0, 1, 32);
+  g.fillStyle = '#6e7880'; g.fillRect(0, 15, 32, 1);
+  return c;
+}
+
 export function bush() {
   const [c, g] = makeCanvas(16, 10);
   g.fillStyle = '#2f7a32'; g.fillRect(1, 3, 14, 7); g.fillRect(3, 1, 10, 2);
@@ -284,6 +329,10 @@ export function wallTexture(kind, wTiles, hTiles, door = false, windows = 0) {
     P('#a0703e', 0, 0, W, H);
     for (let y = 0; y < H; y += 5) P('#7a5430', 0, y, W, 1);
     for (let i = 0; i < W * H / 50; i++) P('#8a5e34', R() * W | 0, R() * H | 0, 3, 1);
+  } else if (kind[0] === '#') { // intonaco colorato (case del paese)
+    P(kind, 0, 0, W, H);
+    for (let i = 0; i < W * H / 40; i++) P(shade(kind, R() < 0.5 ? 0.92 : 1.06), R() * W | 0, R() * H | 0, 2, 1);
+    P(shade(kind, 0.75), 0, H - 4, W, 4);
   } else if (kind === 'bar') {
     P('#d9884a', 0, 0, W, H);
     for (let y = 3; y < H; y += 6) for (let x = (y / 6 | 0) % 2 * 4; x < W; x += 8) P('#c27038', x, y, 7, 1);
@@ -325,7 +374,12 @@ const GROUND = {
   o: ['#86a84a', '#7a9c40', '#93b452'],   // orto incolto
   c: ['#c8b070', '#b09858', '#d8c080'],   // paglia del pollaio
   w: ['#3a78c0', '#3068aa', '#5a98d8'],   // acqua del canale
-  s: ['#6a8a3a', '#5a7a30', '#789a44'],   // zona maiali
+  s: ['#7a6a3a', '#6a5a30', '#8a7a48'],   // recinto maiali (fango)
+  a: ['#5a5e66', '#50545c', '#666a72'],   // asfalto
+  q: ['#a89a88', '#968878', '#b8aa98'],   // piazza in ciottoli
+  b: ['#9a6a3a', '#7a5430', '#a8784a'],   // ponte di legno
+  y: ['#d8b850', '#c8a840', '#e4c868'],   // grano maturo
+  r: ['#8a5e36', '#7a5030', '#966a40'],   // campo arato
 };
 export function paintTile(g, ch, x, y, seed, plot) {
   const pal = GROUND[ch] || GROUND.g;
@@ -334,6 +388,21 @@ export function paintTile(g, ch, x, y, seed, plot) {
   g.fillStyle = pal[0]; g.fillRect(X, Y, PX, PX);
   for (let i = 0; i < 10; i++) { g.fillStyle = pal[1 + (R() * 2 | 0)]; g.fillRect(X + (R() * PX | 0), Y + (R() * PX | 0), 1 + (R() * 2 | 0), 1); }
   if (ch === 'w') { g.fillStyle = '#9ac8f0'; g.fillRect(X + (R() * 10 | 0), Y + 4 + (R() * 8 | 0), 4, 1); }
+  else if (ch === 'y') { // spighe a file
+    for (let r = 1; r < PX; r += 4) for (let i = 0; i < PX; i += 2) {
+      g.fillStyle = R() < 0.5 ? '#b89030' : '#f0d878'; g.fillRect(X + i, Y + r + (R() * 2 | 0), 1, 2);
+    }
+  } else if (ch === 'r') { // solchi
+    g.fillStyle = '#5e3c20'; for (let r = 2; r < PX; r += 4) g.fillRect(X, Y + r, PX, 1);
+    g.fillStyle = '#a87c50'; for (let r = 0; r < PX; r += 4) g.fillRect(X, Y + r, PX, 1);
+  } else if (ch === 'q') { // ciottoli
+    g.fillStyle = '#7a6e62'; for (let r = 0; r < PX; r += 4) g.fillRect(X, Y + r, PX, 1);
+    for (let r = 0; r < PX; r += 4) for (let i = ((r / 4) % 2) * 3; i < PX; i += 6) g.fillRect(X + i, Y + r, 1, 4);
+  } else if (ch === 'b') { // assi del ponte
+    g.fillStyle = '#5e3c20'; for (let i = 0; i < PX; i += 4) g.fillRect(X + i, Y, 1, PX);
+  } else if (ch === 'a') { // ghiaino dell'asfalto
+    for (let i = 0; i < 4; i++) { g.fillStyle = '#74787e'; g.fillRect(X + (R() * PX | 0), Y + (R() * PX | 0), 1, 1); }
+  }
   if (plot) {
     // zolla lavorata
     const wet = plot.water;

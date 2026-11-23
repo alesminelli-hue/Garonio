@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import * as PIX from './pixel.js';
 import { AREAS, BUILDINGS } from './world.js';
+import { PLACES, MAP_VERSION, coopSpot } from './map.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -66,7 +67,7 @@ function fresh() {
     day: 1, minutes: 6 * H, health: 100, stress: 15, tired: 0, money: 20, xp: 0, level: 1,
     inv: { uova: 0, pomodoro: 0, mais: 0 }, upgrades: {}, plots: {}, eggs: [],
     fedToday: false, fedYesterday: false, mission: null, today: newStats(),
-    px: 18.5, pz: 17.4, introDone: false, lastLay: 6 * H, nextNutria: 10 * H,
+    px: PLACES.spawn.x, pz: PLACES.spawn.z, mapVersion: MAP_VERSION, introDone: false, lastLay: 6 * H, nextNutria: 10 * H,
   };
 }
 
@@ -88,16 +89,21 @@ export class Game {
     let s = null;
     if (continueSave) { try { s = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch { s = null; } }
     this.s = Object.assign(fresh(), s || {});
+    if (this.s.mapVersion !== MAP_VERSION) { // salvataggio fatto con una mappa vecchia: campi e uova ripartono da zero
+      Object.assign(this.s, { plots: {}, eggs: [], px: PLACES.spawn.x, pz: PLACES.spawn.z, mapVersion: MAP_VERSION });
+    }
     const W = this.world;
     const gf = PIX.garonioFrames();
     this.player = W.actor(gf.frames, { w: gf.w, h: gf.h, shadow: 0.45 });
     this.gigante = W.actor(PIX.characterFrames('gigante'), { w: 22 / 16 * 1.3, h: 2.6, shadow: 0.55 });
-    this.gigante.group.position.set(14.4, 0, 17.3);
-    W.solids.push({ x0: 14.1, z0: 17.1, x1: 14.7, z1: 17.5 });
+    const G = PLACES.gigante;
+    this.gigante.group.position.set(G.x, 0, G.z);
+    W.solids.push({ x0: G.x - 0.3, z0: G.z - 0.2, x1: G.x + 0.3, z1: G.z + 0.2 });
     const chick = [PIX.chicken(0), PIX.chicken(1)];
     for (let i = 0; i < 4; i++) {
       const a = W.actor([chick[0], chick[1], PIX.mirror(chick[0]), PIX.mirror(chick[1])], { w: 0.75, h: 0.75 });
-      const c = { a, x: rand(23, 25.5), z: rand(22.5, 25), tx: 0, tz: 0, wait: rand(0, 3) };
+      const p = coopSpot();
+      const c = { a, x: p.x, z: p.z, tx: 0, tz: 0, wait: rand(0, 3) };
       c.tx = c.x; c.tz = c.z;
       this.chickens.push(c);
     }
@@ -370,8 +376,7 @@ export class Game {
 
   // ---------- Galline e uova ----------
   _layEgg() {
-    const e = { x: rand(22.6, 25.6), z: rand(20.8, 25.5) };
-    if (Math.random() < 0.4) { e.x = rand(22.6, 28.4); e.z = rand(23, 25.5); }
+    const e = coopSpot();
     this.s.eggs.push(e); this._eggSprite(e);
   }
   _eggSprite(e) {
@@ -433,7 +438,7 @@ export class Game {
   _spawnNutria() {
     const fr = [PIX.nutria(0), PIX.nutria(1)];
     const a = this.world.actor([fr[0], fr[1], PIX.mirror(fr[0]), PIX.mirror(fr[1])], { w: 18 / 16, h: 0.75 });
-    const n = { a, x: rand(AREAS.field.x0, AREAS.field.x1), z: 2.6, state: 'come', anim: 0, dir: 0, t: 0 };
+    const n = { a, x: rand(AREAS.field.x0, AREAS.field.x1), z: PLACES.nutriaSpawnZ, state: 'come', anim: 0, dir: 0, t: 0 };
     this._retarget(n);
     this.nutrie.push(n);
     if (this.nutrie.length === 1) this.ui.toast('Una nutria è uscita dal canale! Difendi il campo.', 'bad');
@@ -453,7 +458,7 @@ export class Game {
   }
 
   _flee(n, byPlayer) {
-    n.state = 'flee'; n.key = null; n.tx = n.x + rand(-2, 2); n.tz = 1.6;
+    n.state = 'flee'; n.key = null; n.tx = n.x + rand(-2, 2); n.tz = PLACES.nutriaFleeZ;
     if (byPlayer) { this.s.today.nutrie++; }
   }
 
@@ -531,7 +536,7 @@ export class Game {
     s.today = newStats(); s.mission = null;
     this.nutrie.forEach(n => n.a.remove()); this.nutrie = [];
     s.nextNutria = (8 + rand(0, 2)) * H;
-    this.player.group.position.set(18.5, 0, 17.4);
+    this.player.group.position.set(PLACES.spawn.x, 0, PLACES.spawn.z);
     this._wake(); this.idle = 0;
     this._pickMission();
     this.save();
@@ -660,7 +665,7 @@ export class Game {
       if (c.wait <= 0 && d > 0.05) {
         const st = Math.min(d, 0.9 * dt); c.x += dx / d * st; c.z += dz / d * st;
         c.a.setFrame((dx >= 0 ? 0 : 2) + (Math.floor(performance.now() / 150) % 2));
-      } else if (c.wait <= 0) { c.tx = rand(22.6, 28.4); c.tz = rand(22.8, 25.6); if (c.tx < 25.8) c.tz = rand(20.6, 25.6); c.wait = rand(1, 4); }
+      } else if (c.wait <= 0) { const p = coopSpot(); c.tx = p.x; c.tz = p.z; c.wait = rand(1, 4); }
       c.a.group.position.set(c.x, 0, c.z);
     }
     // luce del giorno

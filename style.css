@@ -78,6 +78,15 @@ body.touch #dialog { bottom: 150px; }
 #title .help { font-size: 12px; opacity: .8; margin-top: 18px; }
 #title .ver { font-size: 11px; opacity: .5; margin: 4px 0 0; }
 
+#minimap { position: absolute; right: 12px; bottom: 12px; padding: 4px; pointer-events: auto; cursor: pointer; width: 200px; transition: width .2s; }
+#minimap canvas { display: block; width: 100%; image-rendering: pixelated; }
+#minimap .mm-labels { display: none; position: absolute; inset: 4px; pointer-events: none; }
+#minimap .mm-labels span { position: absolute; transform: translate(-50%, -50%); font-size: 11px; color: #fff; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; white-space: nowrap; }
+#minimap.big { width: min(640px, calc(100vw - 24px)); right: 50%; bottom: 50%; transform: translate(50%, 50%); z-index: 5; }
+#minimap.big .mm-labels { display: block; }
+body.touch #minimap { right: 8px; bottom: auto; top: 54px; width: 130px; }
+body.touch #minimap.big { width: calc(100vw - 16px); top: 50%; bottom: auto; transform: translate(50%, -50%); }
+
 @media (max-width: 640px) {
   #stats { width: 180px; font-size: 11px; padding: 6px 8px; top: 8px; left: 8px; }
   .bar { grid-template-columns: 44px 1fr 24px; font-size: 10px; }

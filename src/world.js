@@ -1,23 +1,10 @@
 // Il mondo: mappa, edifici, terreno e sprite.
 import * as THREE from 'three';
 import * as PIX from './pixel.js';
+import { MAP_W, MAP_H, AREAS, BUILDINGS, ZONES, ROADS, PROPS, PLACES, CANAL, buildTileGrid, inZone } from './map.js';
 
-export const MAP_W = 40, MAP_H = 30;
-
-// Zone coltivabili e speciali (coordinate in caselle, x1/z1 esclusi)
-export const AREAS = {
-  field: { x0: 12, x1: 28, z0: 4, z1: 10, crop: 'mais', name: 'Campo' },
-  orto: { x0: 13, x1: 19, z0: 20, z1: 23, crop: 'pomodoro', name: 'Orto' },
-  coop: { x0: 22, x1: 29, z0: 20, z1: 26, name: 'Pollaio' },
-};
-
-export const BUILDINGS = [
-  { id: 'casa', label: 'CASA', x0: 15, z0: 12, w: 5, d: 4, h: 2.6, wall: 'casa', roof: '#b8432e', windows: 2 },
-  { id: 'officina', label: 'OFFICINA', x0: 23, z0: 12, w: 5, d: 4, h: 2.8, wall: 'metallo', roof: '#6a7078', windows: 1 },
-  { id: 'bar', label: 'BAR', x0: 4, z0: 12, w: 5, d: 4, h: 2.6, wall: 'bar', roof: '#3a7a4a', windows: 2 },
-  { id: 'maiali', label: 'MAIALI (presto)', x0: 31, z0: 20, w: 6, d: 5, h: 2.4, wall: 'metallo', roof: '#8a4a32', windows: 0 },
-  { id: 'gallinaio', label: '', x0: 26, z0: 20.5, w: 2.5, d: 2, h: 1.4, wall: 'legno', roof: '#7a4a26', windows: 0, noDoor: true },
-];
+// I dati della mappa (luoghi, strade, zone) stanno in map.js.
+export { MAP_W, MAP_H, AREAS, BUILDINGS } from './map.js';
 
 export class World {
   constructor(scene) {
@@ -31,37 +18,35 @@ export class World {
   }
 
   build() {
-    this._makeGrid();
+    this.grid = buildTileGrid();
     this._makeGround();
     this._makeLights();
     BUILDINGS.forEach(b => this._makeBuilding(b));
-    this._makeFence();
+    this._makeFences();
+    this._makeBridges();
     this._makeTrees();
     this._makeProps();
-    // bordi mappa e canale
+    // bordi mappa
     this.solids.push({ x0: -5, z0: -5, x1: MAP_W + 5, z1: 0.6 });
     this.solids.push({ x0: -5, z0: -5, x1: 0.6, z1: MAP_H + 5 });
     this.solids.push({ x0: MAP_W - 0.6, z0: -5, x1: MAP_W + 5, z1: MAP_H + 5 });
     this.solids.push({ x0: -5, z0: MAP_H - 0.6, x1: MAP_W + 5, z1: MAP_H + 5 });
-    this.solids.push({ x0: 0, z0: 1, x1: MAP_W, z1: 3 }); // canale
-  }
-
-  _makeGrid() {
-    for (let z = 0; z < MAP_H; z++) {
-      const row = [];
-      for (let x = 0; x < MAP_W; x++) {
-        let ch = 'g';
-        if (z >= 1 && z < 3) ch = 'w';
-        if (z >= 17 && z < 19) ch = 'p';
-        if (x >= 21 && x < 23 && z >= 10 && z < 17) ch = 'p';
-        if (x >= 24 && x < 26 && z >= 19 && z < 20) ch = 'p';
-        if (x >= 16 && x < 17 && z >= 19 && z < 20) ch = 'p';
-        if (x >= 33 && x < 35 && z >= 19 && z < 20) ch = 'p';
-        for (const k of ['field', 'orto']) { const a = AREAS[k]; if (x >= a.x0 && x < a.x1 && z >= a.z0 && z < a.z1) ch = k[0]; }
-        const c = AREAS.coop; if (x >= c.x0 && x < c.x1 && z >= c.z0 && z < c.z1) ch = 'c';
-        row.push(ch);
+    // canale (con i varchi dei ponti) e acque ferme
+    let cx = 0;
+    for (const br of [...CANAL.bridges].sort((a, b) => a.x0 - b.x0)) {
+      this.solids.push({ x0: cx, z0: CANAL.z0 - 2, x1: br.x0, z1: CANAL.z1 - 0.2 });
+      cx = br.x1;
+    }
+    this.solids.push({ x0: cx, z0: CANAL.z0 - 2, x1: MAP_W, z1: CANAL.z1 - 0.2 });
+    for (const zn of ZONES) if (zn.solid) {
+      for (let z = zn.z0; z < zn.z1; z++) {
+        let a = null;
+        for (let x = zn.x0; x <= zn.x1; x++) {
+          const on = x < zn.x1 && inZone(zn, x, z);
+          if (on && a === null) a = x;
+          if (!on && a !== null) { this.solids.push({ x0: a + 0.15, z0: z + 0.15, x1: x - 0.15, z1: z + 0.85 }); a = null; }
+        }
       }
-      this.grid.push(row);
     }
   }
 
@@ -69,6 +54,7 @@ export class World {
     const [c, g] = PIX.makeCanvas(MAP_W * PIX.PX, MAP_H * PIX.PX);
     this.groundCanvas = c; this.groundCtx = g;
     for (let z = 0; z < MAP_H; z++) for (let x = 0; x < MAP_W; x++) this.paint(x, z, null);
+    this._paintRoadMarks(g);
     this.groundTex = PIX.toTexture(c);
     const geo = new THREE.PlaneGeometry(MAP_W, MAP_H);
     geo.rotateX(-Math.PI / 2);
@@ -76,9 +62,40 @@ export class World {
     mesh.position.set(MAP_W / 2, 0, MAP_H / 2);
     this.scene.add(mesh);
     // fondale oltre i bordi
-    const far = new THREE.Mesh(new THREE.PlaneGeometry(200, 200).rotateX(-Math.PI / 2), new THREE.MeshLambertMaterial({ color: '#3f7a2e' }));
+    const far = new THREE.Mesh(new THREE.PlaneGeometry(MAP_W + 400, MAP_H + 400).rotateX(-Math.PI / 2), new THREE.MeshLambertMaterial({ color: '#3f7a2e' }));
     far.position.set(MAP_W / 2, -0.02, MAP_H / 2);
     this.scene.add(far);
+  }
+
+  // Strisce bianche sull'asfalto (solo tratti dritti orizzontali o verticali).
+  _paintRoadMarks(g) {
+    const P = PIX.PX;
+    for (const r of ROADS) {
+      if (r.type !== 'asfalto') continue;
+      for (let i = 0; i < r.points.length - 1; i++) {
+        const [ax, az] = r.points[i], [bx, bz] = r.points[i + 1];
+        const horiz = Math.abs(bz - az) < 1e-6, half = r.width / 2;
+        if (!horiz && Math.abs(bx - ax) > 1e-6) continue;
+        const lo = Math.max(0, Math.min(horiz ? ax : az, horiz ? bx : bz)) * P;
+        const hi = Math.min(horiz ? MAP_W : MAP_H, Math.max(horiz ? ax : az, horiz ? bx : bz)) * P;
+        const c = (horiz ? az : ax) * P;
+        g.fillStyle = '#e8e8e0';
+        for (let t = lo; t < hi; t += 2) {
+          const edge = [c - half * P + 2, c + half * P - 3];
+          for (const e of edge) horiz ? g.fillRect(t, e, 2, 1) : g.fillRect(e, t, 1, 2);
+        }
+        g.fillStyle = '#f0f0e8';
+        for (let t = lo + 4; t < hi; t += 24) horiz ? g.fillRect(t, c - 1, 12, 2) : g.fillRect(c - 1, t, 2, 12);
+        // incroci: niente strisce dove entra un'altra strada
+        g.fillStyle = '#5a5e66';
+        for (const o of ROADS) if (o !== r && horiz) o.points.forEach(([px, pz], k) => {
+          if (Math.abs(pz - az) > half + 0.01) return;
+          const nb = o.points[k + 1] || o.points[k - 1];
+          const e = nb[1] < az ? (az - half) * P + 1 : (az + half) * P - 4;
+          g.fillRect((px - o.width / 2) * P, e, o.width * P, 3);
+        });
+      }
+    }
   }
 
   paint(x, z, plot) {
@@ -95,7 +112,8 @@ export class World {
 
   _makeBuilding(b) {
     const front = PIX.toTexture(PIX.wallTexture(b.wall, b.w, b.h, !b.noDoor, b.windows));
-    const side = PIX.toTexture(PIX.wallTexture(b.wall, b.d, b.h, false, b.id === 'casa' ? 1 : 0));
+    const sideWin = b.id === 'casa' || (b.decor && b.wall[0] === '#') ? 1 : 0;
+    const side = PIX.toTexture(PIX.wallTexture(b.wall, b.d, b.h, false, sideWin));
     const back = PIX.toTexture(PIX.wallTexture(b.wall, b.w, b.h, false, 0));
     const M = t => new THREE.MeshLambertMaterial({ map: t });
     const box = new THREE.Mesh(new THREE.BoxGeometry(b.w, b.h, b.d), [M(side), M(side), M(back), M(back), M(front), M(back)]);
@@ -122,11 +140,11 @@ export class World {
     this.solids.push({ x0: b.x0, z0: b.z0, x1: b.x0 + b.w, z1: b.z0 + b.d });
     b.mats = [...box.material, roof.material];
     b.mats.forEach(m => { m.transparent = true; });
-    b.door = { x: b.x0 + b.w / 2, z: b.z0 + b.d + 0.5 };
+    if (!b.decor) b.door = { x: b.x0 + b.w / 2, z: b.z0 + b.d + 0.5 };
   }
 
-  _makeFence() {
-    const c = AREAS.coop;
+  // Staccionate: pollaio e recinto dei maiali, con un cancello aperto sul lato nord.
+  _makeFences() {
     const mat = new THREE.MeshLambertMaterial({ color: '#c8a070' });
     const post = new THREE.MeshLambertMaterial({ color: '#8a6038' });
     const seg = (x0, z0, x1, z1) => {
@@ -143,36 +161,73 @@ export class World {
       }
       this.solids.push({ x0: Math.min(x0, x1) - 0.08, z0: Math.min(z0, z1) - 0.08, x1: Math.max(x0, x1) + 0.08, z1: Math.max(z0, z1) + 0.08 });
     };
-    seg(c.x0, c.z0, 24, c.z0); seg(26, c.z0, c.x1, c.z0);           // lato nord con cancello
-    seg(c.x0, c.z1, c.x1, c.z1);
-    seg(c.x0, c.z0, c.x0, c.z1); seg(c.x1, c.z0, c.x1, c.z1);
+    const pens = [AREAS.coop, ...ZONES.filter(z => z.fence)];
+    for (const c of pens) {
+      const [g0, g1] = c.gate;
+      seg(c.x0, c.z0, g0, c.z0); seg(g1, c.z0, c.x1, c.z0);
+      seg(c.x0, c.z1, c.x1, c.z1);
+      seg(c.x0, c.z0, c.x0, c.z1); seg(c.x1, c.z0, c.x1, c.z1);
+    }
+  }
+
+  // Parapetti di legno sui ponti del canale.
+  _makeBridges() {
+    const mat = new THREE.MeshLambertMaterial({ color: '#7a5430' });
+    for (const br of CANAL.bridges) for (const x of [br.x0 - 0.05, br.x1 + 0.05]) {
+      const len = CANAL.z1 - CANAL.z0 + 1;
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, len), mat);
+      rail.position.set(x, 0.55, (CANAL.z0 + CANAL.z1) / 2); this.scene.add(rail);
+      for (let i = 0; i <= len; i += 1) {
+        const p = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.6, 0.14), mat);
+        p.position.set(x, 0.3, CANAL.z0 - 0.5 + i); this.scene.add(p);
+      }
+    }
   }
 
   _makeTrees() {
     const R = PIX.rng(42);
     const texs = [1, 2, 3].map(s => PIX.toTexture(PIX.tree(s)));
-    const free = (x, z) => {
-      if (this.grid[z][x] !== 'g') return false;
-      for (const s of this.solids) if (x + 1 > s.x0 - 1 && x < s.x1 + 1 && z + 1 > s.z0 - 1 && z < s.z1 + 1) return false;
+    const pops = [1, 2].map(s => PIX.toTexture(PIX.poplar(s)));
+    const clear = (x, z, m = 1) => {
+      for (let dz = -m; dz <= m; dz++) for (let dx = -m; dx <= m; dx++) {
+        const ch = this.grid[z + dz]?.[x + dx];
+        if (ch !== undefined && ch !== 'g') return false;
+      }
+      for (const s of this.solids) if (x + 1 > s.x0 - m && x < s.x1 + m && z + 1 > s.z0 - m && z < s.z1 + m) return false;
       return true;
     };
-    const spots = [];
-    for (let x = 0; x < MAP_W; x += 2) { spots.push([x, 0]); spots.push([x, MAP_H - 1]); spots.push([x + 1, MAP_H - 2]); }
-    for (let z = 3; z < MAP_H; z += 2) { spots.push([0, z]); spots.push([MAP_W - 1, z]); spots.push([1, z + 1]); spots.push([MAP_W - 2, z + 1]); }
-    for (let i = 0; i < 26; i++) spots.push([R() * MAP_W | 0, 3 + (R() * (MAP_H - 4) | 0)]);
-    for (const [x, z] of spots) {
-      if (x < 0 || z < 0 || x >= MAP_W || z >= MAP_H) continue;
-      if (z > 0 && z < MAP_H - 2 && x > 1 && x < MAP_W - 2 && !free(x, z)) continue;
-      if (this.grid[z][x] !== 'g') continue;
-      const s = this.sprite(texs[(R() * 3) | 0], { w: 2, h: 2.75 });
-      s.position.set(x + 0.5 + (R() - 0.5) * 0.4, 0, z + 0.5 + (R() - 0.5) * 0.4);
+    const used = new Set();
+    const plant = (x, z, tex, w, h, jitter = 0.4) => {
+      x = Math.round(x); z = Math.round(z);
+      if (x < 0 || z < 0 || x >= MAP_W || z >= MAP_H || used.has(x + ',' + z)) return;
+      const edge = x < 2 || z < 2 || x >= MAP_W - 2 || z >= MAP_H - 2;
+      if (this.grid[z][x] !== 'g' || (!edge && !clear(x, z))) return;
+      used.add(x + ',' + z);
+      const s = this.sprite(tex, { w, h });
+      s.position.set(x + 0.5 + (R() - 0.5) * jitter, 0, z + 0.5 + (R() - 0.5) * jitter);
       this.scene.add(s);
       this.solids.push({ x0: s.position.x - 0.3, z0: s.position.z - 0.2, x1: s.position.x + 0.3, z1: s.position.z + 0.2 });
-    }
+    };
+    const oak = (x, z) => plant(x, z, texs[(R() * 3) | 0], 2, 2.75);
+    // cornice di alberi sui bordi
+    for (let x = 0; x < MAP_W; x += 2) { oak(x, 0); oak(x + 1, MAP_H - 1); oak(x, MAP_H - 2); }
+    for (let z = 0; z < MAP_H; z += 2) { oak(0, z); oak(MAP_W - 1, z + 1); oak(1, z + 1); oak(MAP_W - 2, z); }
+    // bosco a sud
+    for (let i = 0; i < 260; i++) oak(R() * MAP_W, MAP_H - 2 - Math.pow(R(), 1.6) * 16);
+    // filari di pioppi lungo la provinciale, la capezzagna e l'argine del canale
+    const signs = PROPS.filter(p => p.kind === 'cartello');
+    const pop = (x, z) => { if (!signs.some(c => Math.abs(c.x - x - 0.5) < 3 && Math.abs(c.z - z - 0.5) < 2)) plant(x, z, pops[(R() * 2) | 0], 1, 3.25, 0.1); };
+    for (let x = 4; x < MAP_W - 2; x += 3) { pop(x, 50); pop(x, 58); pop(x, 31); pop(x, 7); }
+    // boschetti sparsi
+    const groves = [[10, 72, 6], [50, 92, 5], [100, 85, 7], [150, 90, 6], [105, 40, 5], [45, 38, 4], [140, 42, 5], [12, 22, 5], [95, 70, 3]];
+    for (const [gx, gz, r] of groves) for (let i = 0; i < r * 3; i++) oak(gx + (R() - 0.5) * r * 2, gz + (R() - 0.5) * r * 2);
+    for (let i = 0; i < 70; i++) oak(2 + R() * (MAP_W - 4), 8 + R() * (MAP_H - 10));
+    // cespugli
     const bt = PIX.toTexture(PIX.bush());
-    for (let i = 0; i < 18; i++) {
-      const x = 2 + (R() * (MAP_W - 4) | 0), z = 3 + (R() * (MAP_H - 5) | 0);
-      if (!free(x, z)) continue;
+    for (let i = 0; i < 160; i++) {
+      const x = 2 + (R() * (MAP_W - 4) | 0), z = 7 + (R() * (MAP_H - 9) | 0);
+      if (this.grid[z][x] !== 'g' || !clear(x, z, 0) || used.has(x + ',' + z)) continue;
+      used.add(x + ',' + z);
       const s = this.sprite(bt, { w: 1, h: 0.62 });
       s.position.set(x + 0.5, 0, z + 0.5); this.scene.add(s);
     }
@@ -180,13 +235,37 @@ export class World {
 
   _makeProps() {
     this.props = {};
+    const { cassa: cp, mangiatoia: mp } = PLACES;
     const crate = this.sprite(PIX.toTexture(PIX.crate()), { w: 1, h: 0.875 });
-    crate.position.set(15.9, 0, 16.6); this.scene.add(crate);
-    this.props.cassa = { x: 15.9, z: 16.6 };
-    this.solids.push({ x0: 15.5, z0: 16.3, x1: 16.3, z1: 16.8 });
+    crate.position.set(cp.x, 0, cp.z); this.scene.add(crate);
+    this.props.cassa = { x: cp.x, z: cp.z };
+    this.solids.push({ x0: cp.x - 0.4, z0: cp.z - 0.3, x1: cp.x + 0.4, z1: cp.z + 0.2 });
     const tr = this.sprite(PIX.toTexture(PIX.trough()), { w: 1, h: 0.5 });
-    tr.position.set(23.5, 0, 24.5); this.scene.add(tr);
-    this.props.mangiatoia = { x: 23.5, z: 24.5 };
+    tr.position.set(mp.x, 0, mp.z); this.scene.add(tr);
+    this.props.mangiatoia = { x: mp.x, z: mp.z };
+
+    const bale = PIX.toTexture(PIX.hayBale());
+    const silo = PIX.toTexture(PIX.siloTexture(), true);
+    for (const p of PROPS) {
+      if (p.kind === 'balla') {
+        const s = this.sprite(bale, { w: 1.25, h: 1 });
+        s.position.set(p.x, 0, p.z); this.scene.add(s);
+        this.solids.push({ x0: p.x - 0.55, z0: p.z - 0.3, x1: p.x + 0.55, z1: p.z + 0.2 });
+      } else if (p.kind === 'silo') {
+        const t = silo.clone(); t.needsUpdate = true; t.repeat.set(Math.round(p.r * 4), Math.round(p.h / 1.5));
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(p.r, p.r, p.h, 12), new THREE.MeshLambertMaterial({ map: t }));
+        body.position.set(p.x, p.h / 2, p.z);
+        const cap = new THREE.Mesh(new THREE.ConeGeometry(p.r * 1.05, p.r * 0.8, 12), new THREE.MeshLambertMaterial({ color: '#8a949c' }));
+        cap.position.set(p.x, p.h + p.r * 0.4, p.z);
+        this.scene.add(body, cap);
+        this.solids.push({ x0: p.x - p.r, z0: p.z - p.r * 0.8, x1: p.x + p.r, z1: p.z + p.r * 0.8 });
+      } else if (p.kind === 'cartello') {
+        const c = PIX.signpost(p.text);
+        const s = this.sprite(c, { w: c.width / PIX.PX, h: c.height / PIX.PX });
+        s.position.set(p.x, 0, p.z); this.scene.add(s);
+        this.solids.push({ x0: p.x - 0.1, z0: p.z - 0.1, x1: p.x + 0.1, z1: p.z + 0.1 });
+      }
+    }
   }
 
   // ---------- Sprite ----------
@@ -260,9 +339,28 @@ export class World {
     return null;
   }
 
+  // Collisioni: indice a celle 8x8, ricostruito quando cambia la lista dei solidi.
   blocked(x, z, r = 0.28) {
-    for (const s of this.solids) if (x + r > s.x0 && x - r < s.x1 && z + r * 0.6 > s.z0 && z - r * 0.6 < s.z1) return true;
+    if (this._idxN !== this.solids.length) this._indexSolids();
+    const cell = this._idx.get(((x / 8) | 0) + ',' + ((z / 8) | 0));
+    if (x < 0 || z < 0 || x >= MAP_W || z >= MAP_H) return true;
+    if (!cell) return false;
+    for (const s of cell) if (x + r > s.x0 && x - r < s.x1 && z + r * 0.6 > s.z0 && z - r * 0.6 < s.z1) return true;
     return false;
+  }
+
+  _indexSolids() {
+    this._idx = new Map(); this._idxN = this.solids.length;
+    const C = 8, m = 1;
+    for (const s of this.solids) {
+      const cx0 = Math.max(0, Math.floor((s.x0 - m) / C)), cx1 = Math.min(Math.floor(MAP_W / C), Math.floor((s.x1 + m) / C));
+      const cz0 = Math.max(0, Math.floor((s.z0 - m) / C)), cz1 = Math.min(Math.floor(MAP_H / C), Math.floor((s.z1 + m) / C));
+      for (let cz = cz0; cz <= cz1; cz++) for (let cx = cx0; cx <= cx1; cx++) {
+        const k = cx + ',' + cz;
+        if (!this._idx.has(k)) this._idx.set(k, []);
+        this._idx.get(k).push(s);
+      }
+    }
   }
 
   // Luce del giorno: k = 0 (notte) .. 1 (pieno giorno); warm = tramonto
