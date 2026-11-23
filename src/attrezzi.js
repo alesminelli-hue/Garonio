@@ -86,7 +86,8 @@ export class Attrezzi {
     return null;
   }
 
-  abbassato(v) { const a = v?.kind === 'trattore' && this.su(v.id); return !!a && a !== 'turbina'; }
+  // l'attrezzo si abbassa da solo nel campo; fuori dal campo si alza quando il trattore si ferma un attimo
+  abbassato(v) { const a = v?.kind === 'trattore' && this.su(v.id); return !!a && a !== 'turbina' && !!v._giu; }
 
   // ---------- Agganci per vehicles.js ----------
   velocita(v) {
@@ -106,6 +107,14 @@ export class Attrezzi {
     if (st.gasolio[id] <= 0) return;
     const a = this.su(id);
     if (!a) return;
+    if (a !== 'turbina') {
+      const inCampo = !!this.zonaCampo(v.st.x, v.st.z);
+      if (inCampo && !v._giu) { v._giu = true; v._avvisoAlza = false; }
+      else if (!inCampo && v._giu) {
+        if (Math.abs(v.speed) < 0.3) { v._giu = false; this.game.ui.float(`${ATTREZZI[a].icona} Attrezzo alzato`); }
+        else if (!v._avvisoAlza) { v._avvisoAlza = true; this.game.ui.toast('Attrezzo ancora giù: fermati un attimo per alzarlo prima della provinciale, sennò la Vigilessa ti multa.'); }
+      }
+    }
     if ((st.stato[a] ?? 100) <= 0) { if (!v._rottoAvvisato) { v._rottoAvvisato = true; this.game.ui.toast(B.attrezzoRotto, 'bad'); } return; }
     v._rottoAvvisato = false;
     if (a === 'turbina') { this._turbina(v, dt); return; }
@@ -143,6 +152,7 @@ export class Attrezzi {
     if (a === 'falciatrice') extra = st.upg.rimorchio ? ' · rimorchio' : ` · cassone ${st.cassone.mais + st.cassone.grano}/${L.cassone}`;
     if (a === 'turbina') extra = v._spray > 0 ? ' · 💦 spruzza' : this._acqua(v.st.x, v.st.z) > L.raggioAcqua ? ' · lontano dall\'acqua' : '';
     if (a === 'aratro' && st.upg.aratroLargo) extra = ' · largo';
+    if (a !== 'turbina') extra += v._giu ? ' · ⬇ giù' : ' · ⬆ alzato';
     return html + `<div class="att">${ATTREZZI[a].icona} ${ATTREZZI[a].nome} ${stato}%${extra}</div>`;
   }
 

@@ -21,6 +21,7 @@ import { Attrezzi } from './attrezzi.js';
 import { Maiali } from './maiali.js';
 import { Stagioni } from './stagioni.js';
 import { GRANO_MINUTI } from './data/stagioni.js';
+import { Pilot } from './pilot.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -95,6 +96,7 @@ export class Game {
     this.stagioni = new Stagioni(this);
     this.attrezzi = new Attrezzi(this);
     this.maiali = new Maiali(this);
+    this.pilot = new Pilot(this);         // ?pilot nell'indirizzo: scorciatoie per provare l'annata
   }
 
   on(name, fn) { return this.ev.on(name, fn); }
@@ -146,6 +148,7 @@ export class Game {
     this.stagioni.init();   // per primo: il meteo del giorno serve agli altri
     this.attrezzi.init();
     this.maiali.init();
+    this.pilot.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();

@@ -194,3 +194,36 @@ body.lowq #game { filter: none; }
 /* pulsante del menu di Garonio, sotto quello della musica */
 #btn-menu { top: 58px; font-size: 17px; }
 @media (max-width: 700px), (max-height: 500px) { #btn-menu { top: 52px; } }
+
+/* ---------- L'annata: stagione, meteo e fiducia (src/stagioni.js) ---------- */
+#annata-hud { pointer-events: auto; cursor: pointer; margin-top: 5px; padding-top: 4px; border-top: 1px solid rgba(232,224,255,.25); font-size: 12px; display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: center; }
+#annata-hud .st { color: var(--gold); }
+#annata-hud .obj { flex-basis: 100%; font-size: 11px; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.touch #annata-hud { font-size: 10px; margin-top: 3px; padding-top: 3px; gap: 1px 6px; }
+body.touch #annata-hud .obj { font-size: 10px; max-width: 58vw; }
+#capitolo-banner { position: fixed; left: 50%; top: 28%; transform: translate(-50%, -50%) scale(.9); z-index: 7; pointer-events: none; text-align: center;
+  background: var(--panel); border: 3px solid var(--gold); border-radius: 8px; padding: 14px 26px; opacity: 0; transition: opacity .6s, transform .6s; display: flex; flex-direction: column; gap: 4px; }
+#capitolo-banner[hidden] { display: none; }
+#capitolo-banner.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+#capitolo-banner.out { opacity: 0; }
+#capitolo-banner small { font-size: 12px; opacity: .8; letter-spacing: 2px; text-transform: uppercase; }
+#capitolo-banner b { font-size: 26px; color: var(--gold); }
+#capitolo-banner em { font-style: normal; font-size: 15px; }
+#meteo-fx { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+#meteo-fx.pioggia { background-image: repeating-linear-gradient(105deg, transparent 0 22px, rgba(200,220,255,.28) 22px 23px, transparent 23px 47px);
+  background-size: 120px 120px; animation: pioggia .35s linear infinite; }
+#meteo-fx.neve { background-image: radial-gradient(circle, rgba(255,255,255,.9) 1.5px, transparent 2.5px), radial-gradient(circle, rgba(255,255,255,.7) 1px, transparent 2px);
+  background-size: 70px 70px, 43px 43px; animation: neve 6s linear infinite; }
+#meteo-fx.caldo { background: radial-gradient(ellipse at 50% 0%, rgba(255,170,60,.18), transparent 70%); }
+#meteo-fx.grandine { background-image: radial-gradient(circle, rgba(235,245,255,.85) 2px, transparent 3px); background-size: 55px 55px; animation: neve 1.2s linear infinite; }
+@keyframes pioggia { to { background-position: -30px 120px; } }
+@keyframes neve { to { background-position: 20px 420px, -15px 300px; } }
+#veh .att { font-size: 11px; margin-top: 3px; color: var(--paper); opacity: .9; }
+#veh .warn.att { color: #ffd890; }
+
+/* ---------- Pilot di prova (?pilot) ---------- */
+#btn-pilot { position: absolute; bottom: 170px; right: 12px; width: 38px; height: 38px; pointer-events: auto; background: #5a2a6a; color: var(--paper); border: 3px solid var(--gold); border-radius: 6px; font: inherit; font-size: 18px; cursor: pointer; }
+#btn-pilot[hidden] { display: none; }
+body.touch #btn-pilot { bottom: auto; top: 50%; right: 8px; }
+@media (pointer: coarse) and (orientation: portrait) { body #mission { top: 150px; } }
+@media (pointer: coarse) and (orientation: landscape) { body.touch #btn-pilot { top: 108px; } }
