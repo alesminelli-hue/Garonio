@@ -8,6 +8,7 @@ import { pick, fill, pagina, pagine, ora, variabiliMissione } from './racconto.j
 import { PLACES, MAP_VERSION, coopSpot } from './map.js';
 import { Combat } from './combat.js';
 import { Vehicles } from './vehicles.js';
+import { Derisione } from './derisione.js';
 import { Eventi } from './eventi.js';
 import { Telefono } from './telefono.js';
 import { Progressione, freshProg } from './progressione.js';
@@ -177,12 +178,18 @@ export class Game {
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
     this.ragazze = new Ragazze(this); this.ragazze.init();   // le ragazze da corteggiare e gli appuntamenti (src/ragazze.js)
+    this.derisione = new Derisione(this);  // chi ti vede rompere un mezzo ride (src/derisione.js)
     this.telefono = new Telefono(this); this.telefono.init(); // telefonino a conchiglia (src/telefono.js)
     this.salvataggi.init();
     this.negozio.init();
     this.abilita.init();
 
     if (!this.s.introDone) await this.intro();
+    else if (this.s.rifaiGiornata) { // giornata ricominciata da capo (vedi _rifaiGiornata)
+      delete this.s.rifaiGiornata;
+      this.ui.toast(`Giorno ${this.s.day}, di nuovo. Stavolta vedi di non sbagliare.`, 'bad');
+      if (this.s.mission) await this._announceMission(); else await this.morning();
+    }
     else if (!this.s.mission) await this.morning();
   }
 
@@ -200,6 +207,7 @@ export class Game {
     await this.ui.dialog(pagine(INTRO));
     this.s.introDone = true;
     this._pickMission();
+    this._salvaAlba();
     await this._announceMission();
   }
 
@@ -646,8 +654,34 @@ export class Game {
     await this.mountain('svenuto', 15);
   }
 
+  // copia della partita all'inizio della giornata (missione già scelta): serve a rifarla se va male
+  _salvaAlba() {
+    const p = this.player.group.position;
+    this.s.px = p.x; this.s.pz = p.z;
+    Salvataggi.scriviAlba(this.s);
+  }
+
+  // La missione del giorno è saltata: a fine giornata si riparte da capo, dalla mattina stessa.
+  // Ricarica la pagina con la copia dell'alba (stessa missione, soldi e stato di quella mattina).
+  async _rifaiGiornata() {
+    const s = this.s, alba = Salvataggi.leggiAlba();
+    if (!s.mission?.failed || !alba || alba.day !== s.day) return false;
+    this.locked = true;
+    await this.ui.dialog(pagine([
+      { chi: 'gigante', testo: `Garonio. Oggi: «${s.mission.text}». Fatto? No. Allora la giornata non conta: domani non arriva finché non la fai giusta.` },
+      { testo: 'La giornata ricomincia da capo, dalla mattina. Come se niente fosse. Quasi.' },
+    ]));
+    await this.ui.fade(true);
+    alba.rifaiGiornata = true;
+    Salvataggi.scrivi(Salvataggi.attivo(), alba);
+    Salvataggi.ricaricaCon(Salvataggi.attivo());
+    return true;
+  }
+
   async sleep(forced = false, fainted = false) {
-    if (this.locked) return; this.locked = true;
+    if (this.locked) return;
+    if (await this._rifaiGiornata()) return;
+    this.locked = true;
     const s = this.s;
     await this.ui.fade(true);
     s.day++; s.minutes = 6 * H; this.saveHour = 6;
@@ -665,6 +699,7 @@ export class Game {
     this._wake(); this.idle = 0;
     this._pickMission();
     this.save();
+    this._salvaAlba();
     await this.ui.fade(false);
     this.locked = false;
     this.ui.toast(`Giorno ${s.day}`, 'good');

@@ -286,7 +286,10 @@ export class Telefono {
       await this.ui.dialog([this._pag('consulente', T.consulenteRisposta), this._pag('consulente', dritta)]);
     } else if (chi === 'zeno') {
       let u = 'normale'; try { u = g.officina?.umore?.() || 'normale'; } catch { u = 'normale'; }
-      await this.ui.dialog([this._pag('zeno', T.zeno[u] || T.zeno.normale)]);
+      // mezzi lasciati in giro: Zeno li riporta in azienda col rimorchio (anche a debito, src/officina.js)
+      const O = g.officina, lontani = O?.rimorchio ? g.vehicles.list.filter(v => !O.aCasa(v)) : [];
+      const choices = lontani.map(v => ({ label: `${O.etichettaRimorchio(v)} · ${v.T.label ?? v.T.name}${v.id === 'trattore1' ? ' rosso' : v.id === 'trattore2' ? ' verde' : ''}`, fn: () => O.rimorchio(v) }));
+      await this.ui.dialog([this._pag('zeno', T.zeno[u] || T.zeno.normale, choices.length ? { choices: [...choices, { label: 'Niente, ciao', fn: null }] } : {})]);
     } else if (chi === 'bubetto') {
       await this.ui.dialog([this._pag('bubetto', pick(T.bubetto))]);
     } else if (chi === 'mountain') {
