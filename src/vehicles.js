@@ -171,7 +171,8 @@ export class Vehicles {
   _updateHud() {
     const v = this.driving;
     this.hud.hidden = !v;
-    if (this.btnJump) this.btnJump.textContent = v ? '📯' : 'Q';
+    const jl = v ? '📯<small>Clacson</small>' : 'Q<small>Salta</small>';
+    if (this.btnJump && this._jl !== jl) { this._jl = jl; this.btnJump.innerHTML = jl; }
     const conAttrezzi = v?.kind === 'trattore' && !!this.game.attrezzi;
     if (this.btnAttrezzo && this.btnAttrezzo.hidden === conAttrezzi) this.btnAttrezzo.hidden = !conAttrezzi;
     if (!v) return;

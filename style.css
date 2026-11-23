@@ -230,6 +230,113 @@ body.touch #btn-pilot { bottom: auto; top: 50%; right: 8px; }
 /* dialoghi lunghi (menu del bar con tavoli e rispetto): il riquadro scorre invece di uscire dallo schermo */
 #dialog { max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; }
 body.touch #dialog { max-height: calc(100vh - 170px); max-height: calc(100dvh - 170px); }
+
+/* ===================================================================
+   Barra rapida (menu, mappa, musica) e menu di Garonio a schede (src/menu.js)
+   =================================================================== */
+#quickbar { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 8px; pointer-events: auto; z-index: 4; }
+#hud #quickbar > button { position: relative; top: auto; right: auto; width: 44px; height: 44px; padding: 0; display: grid; place-items: center;
+  background: var(--panel); color: var(--paper); border: 2px solid var(--edge); border-radius: 50%; font: inherit; cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,.35); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); -webkit-tap-highlight-color: transparent; }
+#quickbar .ic { font-size: 19px; line-height: 1; }
+#quickbar .lb { display: none; }
+#quickbar kbd { position: absolute; right: -4px; bottom: -4px; min-width: 16px; height: 16px; padding: 0 3px; border-radius: 4px; background: var(--gold); color: var(--ink);
+  font: bold 10px/16px "Courier New", monospace; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.5); }
+#quickbar > button:active { transform: scale(.92); }
+#quickbar > button.on { border-color: var(--gold); }
+/* su PC la colonna sta in alto a destra; la missione del Gigante le sta accanto */
+body:not(.touch) #mission { right: 68px; }
+/* su telefono: pulsanti più grandi con la scritta sotto, niente lettera del tasto */
+body.touch #quickbar kbd { display: none; }
+body.touch #hud #quickbar > button { width: 48px; height: 48px; border-radius: 14px; grid-template-rows: 1fr auto; padding: 4px 0 3px; }
+body.touch #quickbar .lb { display: block; font-size: 9px; line-height: 1; opacity: .9; }
+body.touch #quickbar .ic { font-size: 18px; }
+@media (orientation: portrait) {
+  body.touch #quickbar { top: max(8px, env(safe-area-inset-top)); right: 8px; flex-direction: row; gap: 6px; }
+  body.touch #minimap:not(.big) { top: calc(max(8px, env(safe-area-inset-top)) + 58px); width: 150px; max-width: 34vw; }
+  body.touch #stats { max-width: calc(100vw - 186px); }
+}
+@media (orientation: landscape) {
+  body.touch #quickbar { top: max(8px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right)); }
+  body.touch #mission { right: calc(max(8px, env(safe-area-inset-right)) + 58px); }
+}
+/* pulsanti E e Q: la scritta sotto la lettera */
+#btn-a, #btn-jump { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+#btn-a small, #btn-jump small { font-size: 9px; margin-top: 2px; opacity: .85; font-weight: bold; }
+
+#menu { position: fixed; inset: 0; z-index: 8; display: grid; place-items: center; background: rgba(8,10,28,.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); touch-action: pan-y; }
+#menu[hidden] { display: none; }
+.mn-box { width: min(720px, 100%); height: min(620px, 100%); display: flex; flex-direction: column; color: var(--paper);
+  background: linear-gradient(rgba(42,58,138,.96), rgba(20,28,74,.97)); border: 2px solid var(--edge); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.5); overflow: hidden; }
+.mn-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px 6px; }
+.mn-title { flex: 1; color: var(--gold); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mn-close { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--edge); background: rgba(0,0,0,.3); color: var(--paper); font: inherit; font-size: 16px; cursor: pointer; flex: none; }
+.mn-tabs { display: flex; gap: 4px; padding: 0 10px; border-bottom: 2px solid rgba(232,224,255,.25); }
+.mn-tab { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px 7px; border: none; border-radius: 10px 10px 0 0;
+  background: rgba(0,0,0,.2); color: var(--paper); font: inherit; font-size: 12px; cursor: pointer; opacity: .75; -webkit-tap-highlight-color: transparent; }
+.mn-tab .ic { font-size: 18px; line-height: 1; }
+.mn-tab .tx { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.mn-tab.on { background: rgba(240,208,80,.2); color: var(--gold); opacity: 1; box-shadow: inset 0 -3px 0 var(--gold); }
+.mn-badge { position: absolute; top: 2px; right: 6px; min-width: 16px; height: 16px; border-radius: 8px; background: #e04848; color: #fff; font-size: 10px; line-height: 16px; padding: 0 3px; }
+.mn-msg { margin: 8px 12px 0; padding: 6px 10px; border-radius: 8px; background: rgba(240,208,80,.18); color: var(--gold); font-size: 13px; }
+.mn-msg[hidden] { display: none; }
+.mn-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; padding: 6px 12px 12px; font-size: 13px; }
+.mn-hint { padding: 5px 12px 7px; font-size: 11px; opacity: .6; border-top: 1px solid rgba(232,224,255,.15); }
+body.touch .mn-hint { display: none; }
+.mn-body h3 { margin: 12px 0 6px; font-size: 13px; color: var(--gold); }
+.mn-card { background: rgba(0,0,0,.22); border: 2px solid transparent; border-radius: 10px; padding: 8px 10px; margin: 6px 0; display: flex; flex-direction: column; gap: 4px; }
+.mn-card.ok { border-color: rgba(128,224,128,.6); } .mn-card.ko { border-color: rgba(255,96,96,.6); }
+.mn-card small, .mn-item small { opacity: .85; font-size: 12px; }
+.mn-da { color: #b8c8ff; }
+.mn-desc { margin: 2px 0; font-size: 12px; opacity: .8; font-style: italic; }
+.mn-desc.gold { color: var(--gold); opacity: 1; font-style: normal; }
+.mn-vuoto { opacity: .7; font-size: 12px; margin: 4px 0; }
+.mn-track { height: 8px; border-radius: 99px; background: rgba(0,0,0,.45); overflow: hidden; }
+.mn-fill { height: 100%; border-radius: 99px; background: #80d080; }
+.mn-track.xp .mn-fill { background: var(--gold); } .mn-track.health .mn-fill { background: var(--health); }
+.mn-track.stress .mn-fill { background: var(--stress); } .mn-track.tired .mn-fill { background: var(--tired); }
+.mn-track.friend .mn-fill { background: #f08ab0; }
+.mn-list { list-style: none; padding: 0; margin: 4px 0; display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.mn-list .ok { color: #a8e8a8; } .mn-list .ko { color: #ffa0a0; }
+.mn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 8px; }
+.mn-item { background: rgba(0,0,0,.22); border-radius: 10px; padding: 8px; display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+.mn-icon { font-size: 26px; line-height: 1; }
+.mn-rows { display: flex; flex-direction: column; gap: 4px; margin: 4px 0 8px; }
+.mn-slot { font-size: 12px; color: #b8c8ff; margin-top: 2px; }
+.mn-act { text-align: left; font: inherit; font-size: 13px; color: var(--paper); background: rgba(255,255,255,.08); border: 2px solid transparent; border-radius: 8px; padding: 8px 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mn-act.small { padding: 5px 10px; font-size: 12px; align-self: flex-start; background: rgba(240,208,80,.22); }
+.mn-act.on { background: rgba(128,224,128,.18); }
+.mn-act.sel { border-color: var(--gold); color: var(--gold); }
+.mn-act.off { opacity: .4; cursor: default; }
+.mn-act:active:not(.off) { transform: scale(.98); }
+.mn-gradi { list-style: none; padding: 0; margin: 2px 0; font-size: 12px; display: flex; flex-direction: column; gap: 1px; }
+.mn-gradi .ok { color: var(--gold); } .mn-gradi .lock { opacity: .5; }
+.mn-bars { display: grid; grid-template-columns: auto 1fr auto; gap: 5px 8px; align-items: center; margin: 8px 0; font-size: 12px; }
+.mn-kv { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 8px 0; font-size: 13px; }
+.mn-kv b { color: var(--gold); text-align: right; }
+@media (max-width: 420px) { .mn-tab .tx { font-size: 10px; } .mn-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-height: 500px) { .mn-box { height: 100%; } .mn-head { padding: 6px 10px 4px; } .mn-tab { flex-direction: row; justify-content: center; gap: 5px; padding: 5px 2px; } .mn-tab .ic { font-size: 15px; } }
+
+/* ---------- Pannelli spostabili (src/pannelli.js) ---------- */
+#hud .spostabile { pointer-events: auto; }
+.spostabile.trascina { cursor: grabbing; opacity: .85; transition: none !important; }
+body:not(.touch) #stats.spostabile, body:not(.touch) #mission.spostabile { cursor: grab; }
+.mn-head { cursor: grab; touch-action: none; }
+#minimap.big { translate: none !important; }
+.rid-btn { position: absolute; top: -9px; right: -9px; width: 22px; height: 22px; border-radius: 50%; padding: 0; border: 2px solid var(--edge); background: #2a3a8a; color: var(--paper);
+  font: bold 12px/18px "Courier New", monospace; cursor: pointer; pointer-events: auto; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+body.touch .rid-btn { width: 26px; height: 26px; line-height: 22px; }
+#stats.ridotto .bar, #stats.ridotto .row.lvl, #stats.ridotto #inv, #stats.ridotto #annata-hud { display: none !important; }
+#mission.ridotto b, #mission.ridotto span { display: none !important; }
+#mission.ridotto em::before { content: '📋 '; }
+/* mappa grande su telefono: sempre al centro */
+body.touch #minimap.big { right: 50%; }
+/* telefono in orizzontale: la minimappa sta a sinistra della colonna dei pulsanti */
+@media (orientation: landscape) { body.touch #minimap:not(.big) { right: calc(max(8px, env(safe-area-inset-right)) + 60px); } }
+/* pulsanti di prova sotto la colonna dei pulsanti rapidi; missione sotto le barre in verticale */
+@media (pointer: coarse) and (orientation: landscape) { body.touch #btn-pilot, body.touch #btn-prova { top: 186px; } }
+@media (pointer: coarse) and (orientation: portrait) { body #mission { top: 162px; } }
 #btn-attrezzo { position: fixed; right: calc(max(28px, env(safe-area-inset-right)) + 93px); bottom: calc(max(24px, env(safe-area-inset-bottom)) + 66px); width: 50px; height: 50px; border-radius: 50%; font: inherit; font-size: 20px; background: #6a7a4a; border: 4px solid var(--ink); pointer-events: auto; }
 #btn-attrezzo[hidden] { display: none; }
 body:has(#dialog:not([hidden])) #btn-attrezzo { opacity: 0; pointer-events: none; }
