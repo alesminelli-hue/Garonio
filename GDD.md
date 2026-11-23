@@ -1,6 +1,6 @@
 # Garonio — Documento di Game Design (pilot)
 
-> Versione 0.1 · documento vivo: lo approfondiremo pezzo per pezzo.
+> Versione 0.2 · documento vivo: lo approfondiremo pezzo per pezzo.
 
 ## 1. In una frase
 
@@ -120,8 +120,8 @@ Idea: con stanchezza alta aumenta la probabilità di guasti e incidenti con tutt
 ## 9. Nemici e combattimento (stile JRPG leggero)
 
 - Nel prototipo: le nutrie entrano nel campo e mangiano le piante; Garonio le scaccia avvicinandosi e premendo il tasto azione (costa stanchezza).
-- Più avanti: piccoli scontri a turni o in tempo reale semplice, con attrezzi come "armi" (forcone, rete, trappole) e abilità sbloccabili.
-- Al bar: "scontri" verbali con clienti ostili, risolti con scelte di dialogo (rispondere male alza lo stress ma dà rispetto; ignorare costa meno).
+- Scontri a turni (già nel gioco, `src/combat.js`). Armi, mosse ed equipaggiamento sono nel capitolo 15, i nemici legati al livello nel capitolo 11.2, i gruppi casuali nel capitolo 18.4.
+- Al bar: "scontri" verbali con clienti ostili che possono finire in rissa (capitolo 18.2).
 
 ## 10. Economia
 
@@ -138,15 +138,78 @@ Con i soldi guadagnati Garonio può scegliere come scaricare lo stress:
 - **Potenziamenti personali**: comprare punti abilità o statistiche.
 - **Serata in compagnia**: un "catalogo" di serate con accompagnatrici, a fasce di prezzo. Più costa la serata, più **abbassa lo stress** e più **esperienza** dà. La scena è solo accennata: dialogo e dissolvenza al nero, nessun contenuto esplicito. Serve come grande ricompensa economica da pianificare.
 
-## 11. Progressione e abilità (bozza)
+## 11. Progressione: livelli, esperienza e punti abilità
 
-- **Livello**: sale con l'esperienza. Ogni livello dà 1 punto abilità.
-- **Rami di abilità**:
-  - *Resistenza*: meno stanchezza per azione.
-  - *Nervi saldi*: meno stress dai rimproveri.
-  - *Agricoltore*: raccolti migliori, colture più veloci.
-  - *Allevatore*: maiali più sani, vendite migliori.
-  - *Furbizia*: pisolini più efficaci senza farsi scoprire (in tema con Garonio).
+> Versione 0.2 della progressione. I numeri sono un punto di partenza da bilanciare giocando.
+
+### 11.1 Livelli ed esperienza
+
+- **Livello massimo: 20** nel pilot.
+- **Esperienza per salire**: resta la regola che c'è già nel codice, *livello attuale × 20* (dal 1 al 2 servono 20 punti, dal 10 all'11 ne servono 200). Per arrivare al 20 servono circa 3.800 punti in tutto.
+- **Da dove arriva**: lavori (1‑5 punti), missioni del Gigante (10‑40), combattimenti (5‑25 per nemico), dialoghi vinti al bar (3‑15), bestie leggendarie (150‑400). Le missioni pagano di più man mano che l'annata va avanti, così il ritmo non rallenta.
+- **Ritmo previsto**: livello 6 verso il giorno 7, livello 11 verso il giorno 20, livello 17 verso il giorno 45, livello 20 a fine annata (giorno 56 circa). Così ogni re delle bestie cade nella sua stagione (vedi capitolo 18).
+
+**A ogni livello Garonio guadagna:**
+
+| Cosa | Quanto |
+|---|---|
+| Punti abilità | +1 (vedi 11.3) |
+| Attacco | +2 (già nel codice) |
+| Difesa | +1 (già nel codice) |
+| Vita massima | +5 (100 al livello 1, 195 al 20) |
+| Fatica dei lavori | −4% (già nel codice, fino a −40%) |
+
+**Titoli di Garonio** (compaiono sotto il ritratto, i personaggi li usano nei dialoghi):
+
+| Livelli | Titolo | Cosa cambia |
+|---|---|---|
+| 1‑4 | **Lo Scansafatiche** | Il Gigante dà solo lavori semplici. Nemici: nutrie, ratti, ubriachi. |
+| 5‑9 | **Il Garzone** | Si sbloccano trattore da solo e capannoni. Volpi e topi grossi. |
+| 10‑14 | **Il Bracciante** | Missioni lunghe di due giorni, vendita in fiera. Cinghiali. |
+| 15‑19 | **Il Fattore** | Il Gigante chiede consiglio (quasi). Lupi. |
+| 20 | **La Leggenda della Bassa** | Titolo finale dopo i tre re. |
+
+### 11.2 Nemici legati al livello
+
+Ogni nemico ha un **livello minimo** sotto il quale non compare mai negli incontri casuali, e un **livello consigliato** per affrontarlo senza rischi. Gli incontri casuali scelgono solo nemici con livello minimo ≤ livello di Garonio, e mai più di 3 livelli sopra di lui. Le tane delle bestie leggendarie invece si possono raggiungere anche prima: Garonio sente un brivido («Qui non ci torno finché non sono più forte...») e si può fuggire, ma vincere è quasi impossibile.
+
+| Nemico | Dove | Liv. minimo | Liv. consigliato | Note |
+|---|---|---|---|---|
+| Nutria | Campi, canale | 1 | 1 | c'è già |
+| Ratto | Capannoni, silos, cantina | 1 | 2 | nuovo, a gruppi di 2‑4 |
+| Cliente ubriaco | Bar | 1 | 2 | c'è già |
+| Volpe | Pollaio, di notte | 2 | 3 | c'è già, ruba le uova |
+| Bullo del paese | Bar | 3 | 4 | c'è già |
+| Mamma Nutria | Campi, canale | 4 | 5 | c'è già |
+| Ratto di fogna gigante | Capannoni, silos | 5 | 6 | nuovo, morso che fa ammalare (Vita −2 per turno) |
+| **Re dei Ratti** | Tana sotto il silos | 6 | 8 | bestia leggendaria |
+| Gazza ladra | Ovunque, di giorno | 6 | 7 | nuovo, ruba un oggetto e scappa |
+| Cugino Ermes | Bar, fuori nella piazza | 7 | 8 | nuovo come nemico |
+| Cinghiale | Bosco, campi di mais in autunno | 8 | 10 | c'è già |
+| Nutria corazzata (di fango) | Canale | 9 | 11 | nuova, difesa alta |
+| Lupo giovane | Bosco, d'inverno | 10 | 12 | nuovo |
+| **Re delle Nutrie** | Tana sotto il ponte | 11 | 13 | bestia leggendaria |
+| Bruno «il Toro» | Bar | 12 | 13 | boss del bar |
+| Cinghiale maschio | Bosco | 13 | 15 | nuovo, carica che stordisce |
+| Lupo | Bosco, nebbia e notte | 14 | 16 | nuovo, a branchi |
+| Rocco il camionista | Bar | 15 | 17 | sfida finale del bar |
+| **Re dei Lupi** | Radura del bosco, notte d'inverno | 17 | 19 | bestia leggendaria |
+
+### 11.3 Punti abilità
+
+Un punto a ogni livello: 19 punti in tutto, ma i rami ne richiederebbero 28. **Non si può prendere tutto**, quindi ogni partita ha un Garonio un po' diverso. Altri punti si comprano con lo svago serale (capitolo 10).
+
+Sette rami, ognuno con 4 gradi. Il grado *n* richiede il livello indicato.
+
+| Ramo | Grado 1 (liv. 1) | Grado 2 (liv. 5) | Grado 3 (liv. 10) | Grado 4 (liv. 15) |
+|---|---|---|---|---|
+| **Resistenza** | Lavori −10% fatica | Corsa senza fatica extra | Stanchezza max 120 | Crollo: una volta al giorno si rialza da solo |
+| **Nervi saldi** | Rimproveri −15% stress | Prese in giro −25% stress | Mister Mountain −30% | Stress sopra 85: non perde Vita |
+| **Agricoltore** | Colture +10% veloci | Raccolto +1 per pianta | Annaffiare annaffia 3 zolle | Grandine e siccità danneggiano la metà |
+| **Allevatore** | Maiali +10% crescita | Malattie −30% | Prezzo maiali +20% | Maialini in più a ogni parto |
+| **Furbizia** | Pisolini −30% rischio di farsi beccare | Gli oggetti curano +25% | Più soldi da vendite e mance | Il Gigante «non vede» la prima missione fallita della settimana |
+| **Lottatore** | Attacco +3 | Colpo critico 10% | Mossa extra dell'arma sbloccata | Due azioni nel primo turno |
+| **Parlantina** | Risposte a tono +10% riuscita | Nuova scelta: «Offri da bere» | Gli avventori si arrabbiano −25% | Si può vincere una rissa a parole prima di iniziare |
 
 ## 11b. Colonne sonore
 
@@ -188,8 +251,290 @@ Fermo, cammina (4 fotogrammi), corre (3), salta (3), attacco (quando scaccia le 
 1. Provare il prototipo e decidere il "feeling" (velocità delle barre, durata del giorno).
 2. ✅ Garonio ha i suoi sprite e il ritratto. Mancano gli sprite veri del Gigante e di Mister Mountain, e le viste di Garonio di spalle e di fronte.
 3. ✅ Mezzi: Vespa e Punto per muoversi, trattori dell'azienda che si possono rompere (prima versione).
-4. Aggiungere maiali, officina vera e bar con eventi.
-5. Sistema di livelli e abilità.
+4. Aggiungere maiali, officina vera e bar con eventi (interni: capitolo 17).
+5. Sistema di livelli e abilità (progettato: capitoli 11, 15, 16; lavori: capitolo 19).
 6. Svago serale e catalogo (versione non esplicita).
-7. Stagioni e nuovi nemici.
+7. Stagioni e nuovi nemici (progettati: capitolo 18).
 8. Versione app per telefono.
+
+## 15. Armi, mosse ed equipaggiamento
+
+### 15.1 Gli slot
+
+Garonio porta **un'arma** (un attrezzo da lavoro) e **quattro pezzi di equipaggiamento**: testa, corpo, piedi, portafortuna. Si cambiano dall'armadio in camera di Garonio o dal menu del combattimento prima di iniziare (non durante). Gli **oggetti consumabili** stanno nello zaino, come adesso.
+
+### 15.2 Armi (attrezzi)
+
+Ogni arma ha attacco, una **mossa propria** che si aggiunge al menu Abilità, e un piccolo effetto fuori dal combattimento (perché è anche un attrezzo). Si comprano in officina se Garonio ha il livello e il banco attrezzi giusto (capitolo 16), e si possono **affilare** tre volte (+2 attacco ogni volta).
+
+| Arma | Liv. | Attacco | Mossa propria | Fuori dal combattimento | Prezzo |
+|---|---|---|---|---|---|
+| Zappa vecchia | 1 | +0 | **Zappata**: colpo forte su uno | zappa le zolle | di partenza |
+| Rastrello | 3 | +2 | **Rastrellata**: colpisce due nemici vicini | raccoglie 2 piante alla volta | 50 € |
+| Badile | 5 | +4 | **Badilata**: stordisce un nemico per un turno | scava le tane delle nutrie (meno nutrie) | 90 € |
+| Forcone | 7 | +6 | **Spazzata col forcone**: colpisce tutti | pulisce i capannoni più in fretta | 140 € |
+| Falce | 10 | +8 | **Falciata**: tutti, con critico più facile | raccoglie il grano a mano | 220 € |
+| Roncola | 12 | +10 | **Fendente della Bassa**: uno, ignora metà difesa | taglia i rovi del bosco (apre sentieri) | 300 € |
+| Motosega | 16 | +15 | **Motosegata**: enorme a tutti, consuma benzina e alza lo stress dei nemici | taglia alberi (apre la radura del Re dei Lupi) | 600 € + benzina |
+
+**Al bar le armi restano fuori dalla porta** (lo dice Loredana). Nelle risse Garonio usa quello che trova:
+
+| Arma da bar | Effetto |
+|---|---|
+| A mani nude | attacco base |
+| Sgabello | colpo forte, poi si rompe (paghi 10 € a Loredana) |
+| Bottiglia vuota | stordisce, ma il rispetto sale meno (colpo «da vigliacchi») |
+| Stecca da biliardo | colpisce due avventori |
+
+### 15.3 Mosse di Garonio
+
+Alle mosse delle armi si aggiungono quelle che Garonio impara salendo di livello. Quelle che ci sono già restano.
+
+| Mossa | Liv. | Costo | Effetto | Stato |
+|---|---|---|---|---|
+| Pisolino tattico | 1 | −15 fatica | il prossimo colpo ricevuto fa più male | c'è già |
+| Rabbia Incontrollata | 1 | stress 60+ | colpo enorme a tutti, stress −35 | c'è già |
+| Urlo da campagna | 2 | 5 fatica | nemici più deboli per 3 turni | c'è già |
+| Lancio di letame | 4 | 6 fatica | un nemico sbaglia più spesso per 3 turni | nuova |
+| Colpo di clacson | 6 | solo se arrivato in mezzo | i nemici piccoli (ratti, nutrie) scappano | nuova |
+| Bestemmia trattenuta | 8 | 0 fatica, +10 stress | Garonio si carica: +50% danno al prossimo colpo | nuova |
+| Fischio al cane | 11 | 8 fatica | arriva il cane di casa e morde un nemico | nuova (serve il cane, vedi 16) |
+| Secondo fiato | 14 | 1 volta per scontro | fatica −40, Vita +20 | nuova |
+
+**Mosse a parole** (si usano nei dialoghi del bar e nelle risse, contro l'«Orgoglio» dell'avventore, vedi capitolo 18.2): *Battuta pungente*, *Offri da bere*, *Racconto epico*, *Silenzio gelido*.
+
+### 15.4 Equipaggiamento
+
+| Pezzo | Slot | Effetto | Dove si trova |
+|---|---|---|---|
+| Stivali nuovi | piedi | cammini +20% | officina (c'è già, diventa equipaggiamento) |
+| Stivali alti da canale | piedi | si entra nell'acqua bassa, serve per il Re delle Nutrie | officina, liv. 9 |
+| Cappellino del consorzio | testa | stress −10% | alimentari |
+| Casco da Vespa | testa | difesa +2, niente danno nelle cadute dalla Vespa | officina |
+| Tuta da lavoro | corpo | difesa +2, lavori −5% fatica | officina |
+| Giacca imbottita | corpo | difesa +4, d'inverno niente fatica extra per il freddo | officina, liv. 10 |
+| Grembiule di cuoio | corpo | difesa +6 | officina, liv. 14 |
+| Santino della nonna | portafortuna | una volta al giorno, a Vita 0 si rialza con 20 | in cantina, cap. 1 della trama principale |
+| Thermos di caffè | portafortuna | fatica −10 a inizio scontro | bar, rispetto 40 |
+| **Corona del Re dei Ratti** | testa | i ratti non rosicchiano più il mangime, attacco +3 | trofeo |
+| **Pelliccia del Re delle Nutrie** | corpo | difesa +8, nutrie −50% nei campi | trofeo |
+| **Mantello del Re dei Lupi** | corpo | difesa +10, stress −20% in combattimento | trofeo |
+
+### 15.5 Oggetti consumabili
+
+Ci sono già Uovo, Pomodoro e Pannocchia. Si aggiungono:
+
+| Oggetto | Effetto | Dove |
+|---|---|---|
+| Caffè | fatica −20 | bar |
+| Panino col salame | Vita +35 | bar, alimentari |
+| Grappa | stress −25, ma sbaglia più spesso per 3 turni | bar |
+| Trappola per ratti | un ratto salta il turno; fuori dal combattimento cattura ratti nei capannoni | officina |
+| Tanica di benzina | ricarica la motosega o la Punto | officina |
+| Pomata del veterinario | cura il «morso infetto» dei ratti | capannoni |
+
+## 16. Upgrade
+
+Gli upgrade si comprano con i soldi. Alcuni chiedono un livello minimo o un capitolo della trama.
+
+### 16.1 Officina (attrezzi e armi)
+
+| Upgrade | Effetto | Prezzo |
+|---|---|---|
+| Banco attrezzi 1 | si possono comprare armi fino al liv. 7 | gratis |
+| Banco attrezzi 2 | armi fino al liv. 12 | 250 € |
+| Banco attrezzi 3 | motosega | 500 € |
+| Mola per affilare | affilatura delle armi (3 gradi, 30/60/120 €) | 80 € |
+
+### 16.2 Mezzi
+
+| Mezzo | Upgrade | Effetto | Prezzo |
+|---|---|---|---|
+| Vespa | Motore revisionato | non si spegne più in corsa | 120 € |
+| Vespa | Portapacchi | trasporta 3 oggetti | 40 € |
+| Punto | Gomme nuove | non fora | 80 € |
+| Punto | Serbatoio grande | benzina doppia | 60 € |
+| Punto | Gancio traino | trasporta un maiale per la vendita | 100 € |
+| Trattori | Aratro largo | ara 3 zolle in larghezza | 200 € |
+| Trattori | Rimorchio | raccolta automatica di mais e grano | 300 € |
+| Trattori | Cabina | con stanchezza alta non si rompe più | 400 € |
+
+### 16.3 Azienda
+
+| Dove | Upgrade | Effetto | Prezzo |
+|---|---|---|---|
+| Campi | Nuovo campo di grano | più raccolto (si apre il campo a ovest) | 300 € |
+| Campi | Irrigazione a goccia | non serve annaffiare il campo di mais | 350 € |
+| Orto | Serra | l'orto produce anche d'inverno | 200 € |
+| Pollaio | Galline in più (+3) | più uova | 60 € |
+| Pollaio | Recinto anti‑volpe | volpi −70% | 120 € |
+| Capannoni | Box in più (+4 maiali) | più maiali | 250 € |
+| Capannoni | Mangiatoie automatiche | nutrire una volta al giorno basta | 220 € |
+| Capannoni | Ventilatori | d'estate i maiali non soffrono il caldo | 180 € |
+| Capannoni | Infermeria | malattie curate senza veterinario | 260 € |
+| Casa | Letto nuovo | dormire recupera più in fretta (6 ore invece di 8) | 150 € |
+| Casa | Il cane | sblocca «Fischio al cane», abbaia quando arrivano i nemici | gratis, cap. 2 della trama principale |
+
+## 17. Edifici visitabili (interni)
+
+Toccando la porta (tasto **E**) si entra in una **stanza a parte**, nello stesso stile pixel semi‑3D, con la camera fissa e più vicina. Dentro ci si muove con gli stessi comandi. Si esce dalla porta. Il tempo continua a scorrere. Gli altri edifici (fienile, alimentari, tabacchi, chiesa, municipio) restano chiusi per ora: verranno dopo.
+
+### 17.1 Casa
+
+| Stanza | Cosa si fa |
+|---|---|
+| **Camera di Garonio** | Letto: dormire e salvare. Armadio: cambiare arma ed equipaggiamento. Poster e trofei delle bestie appesi al muro. |
+| **Cucina** | La **Mamma** (personaggio nuovo, gentile, l'unica che difende Garonio): una volta al giorno dà un pasto (Vita +20, stress −5) e consigli sulle missioni. |
+| **Ufficio del Gigante** | Bacheca con la missione del giorno, **calendario della stagione** con l'obiettivo grande, registro dei conti (soldi e «fiducia del Gigante»). |
+| **Soggiorno** | TV: previsioni del tempo (pioggia, grandine, nebbia) e prezzi del mercato del giorno. Divano: pisolino rapido (rischio di farsi beccare). |
+| **Cantina** | Deposito del raccolto. È anche la **prima mini‑tana**: in primavera (primo capitolo dell'annata) ci sono ratti, e da qui partono le prime tracce del Re dei Ratti. |
+
+### 17.2 Officina
+
+| Zona | Cosa si fa |
+|---|---|
+| **Bancone del meccanico** | **Zeno**, il meccanico (personaggio nuovo): riparazioni, pieno e gomme (c'è già nel menu). |
+| **Banco attrezzi** | Comprare e affilare armi, comprare equipaggiamento. |
+| **Ponte sollevatore** | Upgrade di Vespa, Punto e trattori: si vede il mezzo sollevato. |
+| **Armadietti** | Upgrade dell'azienda (si ordinano qui). |
+| **Angolo della radio** | Zeno racconta voci di campagna (indizi sulle bestie leggendarie). |
+
+### 17.3 Capannoni dei maiali
+
+| Zona | Cosa si fa |
+|---|---|
+| **Box dei maiali** | Ogni maiale ha nome, peso, salute e umore. Si nutrono, si puliscono i box, si curano. |
+| **Magazzino del mangime** | Si prendono i sacchi; i ratti li rosicchiano se non ci sono trappole. |
+| **Sala parto** | In primavera nascono i maialini. Un evento da seguire (missione). |
+| **Infermeria** | Con l'upgrade si curano qui le malattie, senza il veterinario. |
+| **Grata nel pavimento** | Chiusa all'inizio. Nel capitolo del Re dei Ratti si apre e porta alla **tana sotto il silos**. |
+
+Di notte nei capannoni compaiono gruppi di ratti (vedi spawn, capitolo 18.4).
+
+### 17.4 Bar
+
+| Zona | Cosa si fa |
+|---|---|
+| **Bancone** | **Loredana**: ordini (c'è già), voci di paese, misuratore del **Rispetto**. |
+| **Tavoli** | Ogni avventore ha il suo posto. Si va a parlarci: è da qui che partono i dialoghi e le risse (trama del bar). |
+| **Tavolo delle carte** | Briscola con Tarcisio: mini‑gioco per soldi e rispetto. |
+| **Biliardo** | Sfide a soldi; la stecca diventa un'arma nelle risse. |
+| **Juke‑box** | Si sceglie la musica di sottofondo fra le tracce del gioco (usa `playlist.json`). |
+| **Bacheca degli annunci** | Lavoretti extra (missioni secondarie) e avvisi sulle bestie leggendarie. |
+| **Porta sul retro** | «Andiamo fuori a parlarne»: le risse grosse si fanno nella piazza. |
+
+## 18. Le tre trame
+
+Le tre trame vanno **in parallelo**. Il **calendario agricolo** dà il tempo a tutte: un'annata di **4 stagioni da 14 giorni** (56 giorni). Il giocatore sceglie ogni giorno quanto tempo dare all'azienda, al bar e alla caccia, sempre con le tre barre da tenere sotto controllo.
+
+Le tre trame si aiutano a vicenda:
+- l'**annata** dà soldi, che diventano upgrade e armi;
+- il **bar** dà le **voci** che aprono i capitoli delle bestie, e sconti;
+- le **bestie** danno trofei (equipaggiamento) e tolgono i parassiti dai campi, cosa che aiuta l'annata.
+
+### 18.1 Trama principale: «L'annata» (gestionale)
+
+Ogni stagione è un capitolo, con un **obiettivo di stagione** (grande, controllato dal Gigante l'ultimo giorno) più le missioni giornaliere che ci sono già. Lavori nuovi e nemici arrivano con le stagioni. I nemici di questa trama li definiamo meglio dopo; per ora ci sono i segnaposto.
+
+| Cap. | Stagione | Lavori della stagione | Obiettivo di stagione | Eventi | Nemici (segnaposto) |
+|---|---|---|---|---|---|
+| 1 | **Primavera: «Si semina»** | arare, seminare mais, orto, uova, arrivano i primi 4 maiali | 40 zolle di mais seminate e 4 maiali sani | pioggia (non serve annaffiare), parto delle scrofe | nutrie, ratti in cantina |
+| 2 | **Estate: «Acqua e caldo»** | irrigare, trebbiare il grano, maiali da tenere al fresco | raccolto del grano venduto per 400 € | caldo (fatica +20%), grandine, sagra del paese | volpi, gazze, ratti di fogna |
+| 3 | **Autunno: «Il raccolto»** | raccogliere il mais, vendere, seminare il grano per l'anno dopo | mais raccolto e 2 maiali premiati alla **fiera** | fiera di paese, prime nebbie | cinghiali nel mais |
+| 4 | **Inverno: «I conti»** | maiali venduti al salumificio, manutenzione dei mezzi, serra | bilancio dell'anno in attivo | nebbia fitta, neve, Natale in famiglia | lupi dal bosco |
+
+**Fiducia del Gigante** (0‑100): sale con missioni e obiettivi riusciti, scende coi fallimenti. Decide la paga, che missioni arrivano e il **finale**:
+- fiducia alta e conti in attivo: il Gigante affida a Garonio un campo tutto suo;
+- fiducia media: «Un altro anno così e ti metto a fare il garzone a vita»;
+- fiducia bassa: Mister Mountain si presenta alla cena di Natale.
+
+Missioni nuove da aggiungere ai tipi che ci sono già: **Trebbiatura** (col trattore e il rimorchio), **Irrigazione**, **Parto** (resta sveglio di notte nei capannoni), **Fiera** (porta i maiali più belli col gancio traino), **Manutenzione** (porta i mezzi da Zeno).
+
+### 18.2 Trama del bar: «Farsi rispettare»
+
+**Rispetto** (0‑100), mostrato al bancone. Sale vincendo dialoghi e risse, scende perdendo o scappando.
+
+| Rispetto | Rango | Cosa si sblocca |
+|---|---|---|
+| 0‑19 | Lo zimbello | tutti lo prendono in giro, prezzi pieni |
+| 20‑39 | Uno qualunque | tavolo delle carte |
+| 40‑59 | Uno che risponde | thermos di caffè, sconto 10%, prime voci sulle bestie |
+| 60‑79 | Uno da non provocare | i clienti deboli non lo sfidano più, sconto 20% |
+| 80‑100 | **Il Re del bancone** | posto fisso al bancone, Loredana offre il caffè ogni mattina |
+
+**Come funziona un dialogo con un avventore** (allarga quello che c'è già):
+- L'avventore provoca con una battuta. Ogni avventore ha un **Orgoglio** (quanto resiste) e una **Rabbia** (quanto è vicino a menare le mani).
+- Garonio sceglie fra: **Rispondi a tono** (toglie Orgoglio, alza la Rabbia), **Ignora** (stress +, niente rabbia), **Offri da bere** (abbassa la Rabbia, costa soldi, serve Parlantina 2), **Provoca** (alza molto la Rabbia, rischioso).
+- Orgoglio a 0: l'avventore se ne va umiliato, Garonio guadagna rispetto senza combattere.
+- Rabbia a 100: **rissa**. Si passa al combattimento a turni con le armi da bar. Vittoria: rispetto +, soldi «offre il bar». Sconfitta: rispetto −, stress +.
+- **Regola di Loredana**: tre risse nella stessa settimana e Garonio non può entrare per due giorni.
+
+**Gli avventori e la loro storia** (ognuno ha tre incontri che vanno in ordine, uno per volta):
+
+| Avventore | Liv. | Tipo | Come va la sua storia |
+|---|---|---|---|
+| **Sciur Tarcisio** | 1 | ubriaco, si mena male | Se gli offri da bere invece di picchiarlo diventa amico e racconta la leggenda del **Re dei Lupi** (apre il cap. 3 delle bestie). |
+| **La Pina** | 2 | solo a parole, non si picchia | Se la batti a parole smette di spargere voci che abbassano il rispetto. Se perdi, il rispetto scende in tutto il paese. Sa dov'è la tana del **Re delle Nutrie**. |
+| **Il Geometra Ballarin** | 5 | sfida a quiz e misure, poi rissa debole | Alla fine ti dà la mappa catastale: mostra le tane sulla mappa grande. |
+| **Il cugino Ermes** | 7 | rivale | Gara di trattori sulla capezzagna, poi rissa in piazza. Se vinci, ti presta il rimorchio. |
+| **Bruno «il Toro»** | 12 | boss del bar | Braccio di ferro, poi rissa vera con due amici. Vincere dà il titolo di **Re del bancone**. |
+| **Rocco il camionista** | 15 | forestiero, sfida finale | Arriva quando Garonio è il Re del bancone e vuole prendergli il posto. |
+
+### 18.3 Trama delle bestie: «I re della campagna»
+
+Tre bestie leggendarie, ognuna nella sua stagione. Ogni caccia ha tre passi:
+1. **La voce**: al bar (o da Zeno o dalla Mamma) si sente parlare della bestia.
+2. **Le tracce**: segni sulla mappa grande (simbolo nella minimappa), da seguire. Gruppi di suoi sottoposti compaiono più spesso.
+3. **La tana**: combattimento contro il re e i suoi seguaci, in due fasi.
+
+| | **Re dei Ratti** | **Re delle Nutrie** | **Re dei Lupi** |
+|---|---|---|---|
+| Stagione | primavera‑estate | estate‑autunno | inverno |
+| Livello | min. 6, consigliato 8 | min. 11, consigliato 13 | min. 17, consigliato 19 |
+| Voce | Mamma: «In cantina sparisce il salame» | La Pina (o la bacheca del bar) | Tarcisio, dopo il terzo bianchino |
+| Tracce | sacchi di mangime rosicchiati, maialini spaventati, la grata nei capannoni | argine bucato sotto il ponte, campo di grano allagato | impronte nella neve, un maiale sparito, ululati di notte |
+| Tana | sotto il silos (dalla grata dei capannoni) | sotto il ponte del canale (servono gli stivali alti) | radura del bosco (si apre con la roncola o la motosega), di notte |
+| Seguaci | ratti, ratti di fogna | nutrie, mamme nutrie, nutrie corazzate | lupi giovani, lupi |
+| Fase 1 | chiama 2 ratti ogni 3 turni | si tuffa: un turno senza poter essere colpito | il branco attacca insieme |
+| Fase 2 (sotto metà Vita) | si nasconde nel mucchio di grano: serve Urlo o un lancio per stanarlo | «Diga di fango»: si cura se non lo colpisci forte | si alza sotto la luna: ululato che alza lo stress di 15 a turno |
+| Trofeo | Corona del Re dei Ratti, 150 XP, 100 € | Pelliccia del Re delle Nutrie, 250 XP, 200 € | Mantello del Re dei Lupi, 400 XP, 300 € |
+| Dopo | meno ratti nei capannoni | meno nutrie nei campi | i lupi non attaccano più i maiali |
+
+Vinti i tre re, Garonio diventa **La Leggenda della Bassa** e in paese gli dedicano una targa al bar. Il Gigante non ci crede.
+
+### 18.4 Gruppi di nemici casuali (spawn)
+
+I nemici fuori dalle tane **si vedono sulla mappa**: girano nella loro zona, e se Garonio li tocca parte lo scontro. Si possono evitare, scacciare col clacson (quelli piccoli) o attaccare per primi (il primo turno è di Garonio).
+
+| Zona | Quando | Gruppi possibili |
+|---|---|---|
+| Campi e canale | di giorno, più all'alba | 1‑3 nutrie; mamma nutria con 2 nutrie |
+| Capannoni, silos, cantina | di notte | 2‑4 ratti; ratto di fogna con 2 ratti |
+| Pollaio | sera e notte | 1‑2 volpi |
+| Ovunque | di giorno | gazza ladra da sola |
+| Bosco e mais d'autunno | sempre, più di sera | 1‑2 cinghiali |
+| Bosco | inverno, notte e nebbia | 2‑3 lupi giovani; lupo con 2 lupi giovani |
+
+Regole:
+- Al massimo **3 gruppi** sulla mappa insieme, uno nuovo ogni 2 ore di gioco circa per zona.
+- Si scelgono solo nemici con livello minimo ≤ livello di Garonio. La grandezza del gruppo cresce coi livelli.
+- Durante le **tracce** di una bestia, i suoi seguaci compaiono il doppio.
+- Sconfitto un re, la sua specie compare la metà e solo in gruppi piccoli.
+- Con il cane, quando un gruppo si avvicina a casa o ai capannoni, abbaia.
+
+## 19. Come dividere il lavoro di sviluppo
+
+Proposta: **un lavoro di base, poi quattro in parallelo**. Ogni lavoro tocca file diversi, così non si pestano i piedi.
+
+| # | Lavoro | Cosa fa | File principali | Dipende da |
+|---|---|---|---|---|
+| **0** | **Base della progressione** (prima di tutti, breve) | Dati di livelli, punti abilità, armi, equipaggiamento, oggetti e nemici spostati in file di dati; salvataggio con i campi nuovi | `src/data/progressione.js`, `src/data/armi.js`, `src/data/nemici.js`, salvataggio in `game.js` | niente |
+| **A** | **Interni degli edifici** | Le quattro stanze (casa, officina, capannoni, bar), entrata e uscita dalle porte, personaggi dentro (Mamma, Zeno, Loredana, avventori ai tavoli) | `src/interni.js`, `src/data/interni.js` | lavoro 0; da coordinare col lavoro su grafica e fluidità che è in corso |
+| **B** | **Armi, abilità e upgrade** | Menu abilità e armadio, negozio armi e upgrade in officina, mosse nuove nel combattimento | `src/combat.js` (mosse), `src/progressione.js`, menu officina | lavoro 0 |
+| **C** | **Trama dell'annata** | Calendario e stagioni, obiettivi di stagione, maiali veri, missioni nuove, fiducia del Gigante, finale | `src/stagioni.js`, `src/maiali.js`, `src/data/missioni.js` | lavoro 0 |
+| **D** | **Trama del bar** | Rispetto, Orgoglio e Rabbia degli avventori, storie dei sei avventori, risse con armi da bar | `src/data/dialoghi.js`, `src/bar.js` | lavoro 0. Si può fare prima nel menu del bar attuale e poi spostare nell'interno |
+| **E** | **Bestie leggendarie e spawn** | Nemici nuovi con sprite, gruppi visibili sulla mappa, tracce, tre tane e tre re | `src/spawn.js`, `src/data/bestie.js`, sprite in `src/combat.js` | lavoro 0; le tane usano gli interni (A) |
+
+Ordine consigliato: **0 subito**, poi **B, C, D, E in parallelo**; **A** parte appena il lavoro su grafica e fluidità è finito, perché tocca la parte che disegna il mondo.
+
+Sprite nuovi da fare: Mamma, Zeno, Rocco il camionista, ratto, ratto di fogna, gazza, nutria corazzata, lupo giovane, lupo, cinghiale maschio, i tre re; armi in mano a Garonio; i quattro interni.
