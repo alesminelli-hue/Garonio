@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import * as PIX from './pixel.js';
 import { AREAS, BUILDINGS } from './world.js';
+import { Combat } from './combat.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -40,13 +41,14 @@ const MM_LINES = {
   missione: ['GARONIO! Il Gigante ti aveva dato UN compito. UNO!', 'Mio nonno a novant\'anni lavorava più di te. E aveva una gamba sola.'],
   nutrie: ['Le nutrie si stanno mangiando il campo e tu dov\'eri?!', 'Lavorano più loro di te, e almeno loro si fanno la tana.'],
   dormito: ['Ti hanno trovato a dormire in mezzo al lavoro. DI NUOVO.', 'Questa la racconto in tutto il paese.'],
+  sconfitta: ['Ti sei fatto mettere sotto da una bestiola?! Una BESTIOLA!', 'Domani ti mando a combattere con le galline, così almeno pareggi.'],
   svenuto: ['Sei svenuto! Lo stress ti ha steso, scansafatiche.', 'Il Gigante ha dovuto pagare il medico coi TUOI soldi.'],
 };
 
 const BAR_BULLIES = [
-  { name: 'Il Bullo del paese', text: 'Ehi Garonio! È vero che tuo padre ti paga per dormire?' },
-  { name: 'Il Bullo del paese', text: 'Guarda chi c\'è, il re delle nutrie! Quante ne hai scacciate oggi, zero?' },
-  { name: 'Cliente ubriaco', text: 'Questo è il mio sgabello. Lo era anche ieri. E domani.' },
+  { name: 'Il Bullo del paese', foe: 'bullo', text: 'Ehi Garonio! È vero che tuo padre ti paga per dormire?' },
+  { name: 'Il Bullo del paese', foe: 'bullo', text: 'Guarda chi c\'è, il re delle nutrie! Quante ne hai scacciate oggi, zero?' },
+  { name: 'Cliente ubriaco', foe: 'ubriaco', text: 'Questo è il mio sgabello. Lo era anche ieri. E domani.' },
 ];
 
 const UPGRADES = [
@@ -81,6 +83,7 @@ export class Game {
     this.actT = 0; this.actName = 'attack'; this.jumpT = 0; this.ko = false; this.animT = 0;
     this.locked = false; this.mm = null; this.hop = 0; this.caughtAt = -999; this.saveHour = 6;
     this.inBar = false;
+    this.combat = new Combat(this);
   }
 
   // ---------- Avvio ----------
@@ -288,7 +291,7 @@ export class Game {
     const d = (x, z) => Math.hypot(P.x - x, P.z - z);
     const gp = this.gigante.group.position;
     if (d(gp.x, gp.z) < 1.5) return { label: 'Parla col Gigante', fn: () => this.talkGigante() };
-    for (const n of this.nutrie) if (n.state !== 'flee' && d(n.x, n.z) < 1.6) return { label: 'Scaccia la nutria!', fn: () => this.shoo(n) };
+    for (const n of this.nutrie) if (n.state !== 'flee' && d(n.x, n.z) < 1.6) return { label: 'Affronta la nutria!', fn: () => this.shoo(n) };
     for (const e of this.s.eggs) if (d(e.x, e.z) < 0.9) return { label: 'Raccogli l\'uovo', fn: () => this.pickEgg(e) };
     for (const b of BUILDINGS) if (b.door && !b.noDoor && d(b.door.x, b.door.z) < 1.1) {
       const lab = { casa: 'Entra in casa', officina: 'Entra in officina', bar: 'Entra al bar', maiali: 'Capannone dei maiali' }[b.id];
@@ -340,7 +343,10 @@ export class Game {
     }
   }
 
-  till(key, x, z) { this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 }; this.world.setPlot(x, z, this.s.plots[key]); this._cost('zappa'); }
+  till(key, x, z) {
+    this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 }; this.world.setPlot(x, z, this.s.plots[key]); this._cost('zappa');
+    if (this.s.day >= 4 && this.world.areaAt(x, z) === 'field' && Math.random() < 0.05) setTimeout(() => this.ambush('cinghiale'), 400);
+  }
   sow(key, x, z, area) {
     const p = this.s.plots[key]; p.crop = AREAS[area].crop; p.stage = 0; p.g = 0;
     this.world.setPlot(x, z, p); this._cost('semina');
@@ -358,6 +364,7 @@ export class Game {
     const sp = this.eggSprites.find(x => x.userData.egg === e);
     if (sp) { this.world.scene.remove(sp); this.eggSprites.splice(this.eggSprites.indexOf(sp), 1); }
     this.s.inv.uova++; this.s.today.uova++; this._cost('uovo'); this.ui.float('+1 uovo');
+    if (this.s.day >= 2 && Math.random() < 0.1) setTimeout(() => this.ambush('volpe'), 400);
   }
   feed() { this.s.fedToday = true; this.s.lastLay = this.s.minutes; this._cost('nutri'); this.ui.toast('Galline sfamate: oggi e domani faranno più uova.'); }
   sell() {
@@ -457,7 +464,28 @@ export class Game {
     if (byPlayer) { this.s.today.nutrie++; }
   }
 
-  shoo(n) { this._flee(n, true); this._cost('scaccia'); this.ui.float('Sciò! Via di qua!'); }
+  // Scontro a turni con la nutria (e con quelle vicine, fino a 3). Vedi src/combat.js
+  async shoo(n) {
+    const group = [n, ...this.nutrie.filter(o => o !== n && o.state !== 'flee' && Math.hypot(o.x - n.x, o.z - n.z) < 3.5)].slice(0, 3);
+    const enemies = group.map(() => 'nutria');
+    if (this.s.day >= 3 && enemies.length < 3 && Math.random() < 0.2) enemies.push('nutria_gigante');
+    this._wake(); this.idle = 0;
+    const res = await this.combat.start({ enemies, place: 'campo' });
+    if (res === 'win') {
+      group.forEach(o => this._flee(o, true));
+      this.ui.toast(`Campo difeso! Nutrie scacciate: ${group.length}`, 'good');
+    } else if (res === 'lose') {
+      await this.mountain('sconfitta', 20);
+    }
+  }
+
+  // Imboscata di un animale (volpe al pollaio, cinghiale nei campi)
+  async ambush(kind) {
+    if (this.locked || this.mm || this.combat.active || this.ui.busy()) return;
+    this._wake(); this.idle = 0;
+    const res = await this.combat.start({ enemies: [kind], place: 'campo' });
+    if (res === 'lose') await this.mountain('sconfitta', 20);
+  }
 
   // ---------- Il Gigante ----------
   async talkGigante() {
@@ -556,7 +584,15 @@ export class Game {
       }]);
     } else if (id === 'bar') {
       this.inBar = true; this.audio.setScene('bar');
+      this._barFight = null;
       await this._barMenu(true);
+      while (this._barFight) { // il cliente ostile va affrontato in uno scontro a turni
+        const foe = this._barFight; this._barFight = null;
+        const res = await this.combat.start({ enemies: [foe], place: 'bar' });
+        if (res === 'lose') { await this.mountain('sconfitta', 15); break; }
+        this.audio.setScene('bar');
+        await this.ui.dialog([this._barPage(false)]);
+      }
       this.inBar = false;
     } else if (id === 'officina') {
       const choices = UPGRADES.map(u => ({
@@ -600,6 +636,7 @@ export class Game {
     return [{
       who: 'bullo', name: b.name, text: b.text,
       choices: [
+        { label: 'Affrontalo (scontro a turni)', fn: () => { this._barFight = b.foe; return null; } },
         { label: 'Rispondi a tono', fn: () => {
           if (Math.random() < 0.5) { s.stress = clamp(s.stress - 5, 0, 100); this._xp(3); return [{ who: 'garonio', name: 'Garonio', text: 'Almeno io un padre che mi dà lavoro ce l\'ho. Tu hai solo quello sgabello.' }, { text: 'Il bar ride. Il bullo se ne va borbottando. Stress -5', }, this._barPage(false)]; }
           s.stress = clamp(s.stress + 12, 0, 100); return [{ text: 'La risposta ti esce storta e tutti ridono di te. Stress +12' }, this._barPage(false)];

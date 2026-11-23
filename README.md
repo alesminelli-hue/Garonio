@@ -14,7 +14,7 @@ Il design completo è in [GDD.md](GDD.md).
 - Se resti fermo qualche secondo Garonio si appisola: recupera stanchezza, ma se il Gigante è vicino ti becca.
 - Campo (mais) e orto (pomodori): zappa, semina, annaffia ogni giorno, raccogli. Vendi tutto alla cassa di legno vicino a casa.
 - Pollaio: raccogli le uova, dai da mangiare alle galline alla mangiatoia per averne di più.
-- Le nutrie escono dal canale e mangiano le piante del campo: avvicinati e scacciale.
+- Le nutrie escono dal canale e mangiano le piante del campo: avvicinati e affrontale in uno scontro a turni (Attacca, Abilità, Oggetti, Difendi, Fuggi). Con lo stress sopra 60 si sblocca **Rabbia Incontrollata**.
 - Officina: attrezzi che rendono il lavoro meno faticoso.
 - Il gioco si salva da solo nel browser.
 
@@ -54,6 +54,7 @@ Per aggiungere una traccia: copia il file `.mp3` nella cartella e scrivi il suo 
 | `index.html`, `style.css` | Pagina, interfaccia, dialoghi |
 | `src/main.js` | Avvio, camera, comandi tastiera e touch |
 | `src/game.js` | Regole: tempo, barre, missioni, nutrie, Mister Mountain, bar, officina. In cima c'è `CONFIG` per bilanciare velocità e valori |
+| `src/combat.js`, `src/combat.css` | Combattimento a turni stile JRPG: nemici, abilità, oggetti. In cima c'è `COMBAT` per bilanciare |
 | `src/world.js` | Mappa, edifici, terreno |
 | `src/pixel.js` | Grafica segnaposto disegnata via codice (verrà sostituita dagli sprite veri) |
 | `src/audio.js` | Musica ed effetti sonori |
