@@ -339,7 +339,7 @@ export const TESTI = {
     pastoGia: "«Hai già mangiato, tesoro. Poi ingrassi e tuo padre dice che è colpa mia.»",
     consiglio: "Un consiglio?",
     consigli: {
-      missione: "«Tuo padre oggi vuole che tu {missione}. Fallo prima delle {ora}, così stasera non urla. Cioè, urla meno.»",
+      missione: "«Tuo padre oggi vuole questo: {missione}. Fallo prima delle {ora}, così stasera non urla. Cioè, urla meno.»",
       fatta: "«Hai già fatto quello che voleva tuo padre? Bravo! Ora riposati, prima che se ne inventi un'altra.»",
       fallita: "«Lo so, tuo padre è arrabbiato. Domani andrà meglio. Il sole sorge anche per gli scansafatiche.»",
       secondaria: "«Il {chi} ti aspetta per quella cosa: {titolo}. Non farlo aspettare, che poi parla in paese.»",

@@ -224,8 +224,8 @@ export class Interni {
         border: 2px solid var(--gold, #f0d050); color: var(--gold, #f0d050); padding: 4px 12px; border-radius: 4px; font-size: 14px;
         white-space: nowrap; pointer-events: none; transition: opacity .3s; }
       #stanza-nome[hidden] { display: block; opacity: 0; }
-      body.touch #stanza-nome { top: auto; bottom: 150px; font-size: 12px; }
-      @media (max-width: 700px) and (orientation: portrait) { #stanza-nome { top: auto; bottom: 150px; font-size: 12px; } }`;
+      @media (max-width: 700px), (max-height: 500px) { #stanza-nome { top: auto; bottom: 230px; font-size: 12px; } }
+      @media (max-height: 500px) { #stanza-nome { bottom: auto; top: 8px; } }`;
     document.head.appendChild(css);
     const el = document.createElement('div'); el.id = 'stanza-nome'; el.hidden = true;
     document.getElementById('hud').appendChild(el);
@@ -890,7 +890,7 @@ export class Interni {
     if (s !== this._stanza) {
       const prima = this._stanza;
       this._stanza = s;
-      if (this._label) {
+      if (this._label && !force) { // all'entrata parla già il messaggio di benvenuto
         this._label.textContent = def.stanze.length > 1 && !s.nome.startsWith(def.nome) ? `${def.nome} · ${s.nome}` : s.nome;
         this._label.hidden = false;
         clearTimeout(this._labelT); this._labelT = setTimeout(() => { if (this._label) this._label.hidden = true; }, 2500);
@@ -908,7 +908,7 @@ export class Interni {
     const dV = (span / 2 + 0.5) / tanV;
     const sw = s.x1 - s.x0;
     const dH = (sw / 2 + 0.3) / tanH;
-    const dist = clamp(dH, dV, dV * 1.45);
+    const dist = clamp(dH, dV, dV * (cam.aspect < 1 ? 1.9 : 1.45)); // in verticale (telefono) si allarga di più
     const half = dist * tanH;
     const cx = half * 2 >= sw ? s.x0 + sw / 2 : clamp(lx, s.x0 + half - 0.2, s.x1 - half + 0.2);
     const look = this._camL.set(o.x + cx, 0.9, o.z + def.d * 0.52);
