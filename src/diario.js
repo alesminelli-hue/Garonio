@@ -13,7 +13,7 @@
 //   meta()             { x, z, nome } verso cui punta la freccia, o null
 //   conta(chiave, n)   alza un contatore dei trofei (per altri lavori: es. conta('gare', 1))
 //   trofeo(id)         true se preso
-// Stato salvato: s.flags.diario. Eventi mandati: trofeo { id }, collezionabile { id, collezione, completa }.
+// Stato salvato: s.flags.bussola (s.flags.diario è il registro degli avvisi di src/menu.js). Eventi mandati: trofeo { id }, collezionabile { id, collezione, completa }.
 import * as THREE from 'three';
 import * as PIX from './pixel.js';
 import { BUILDINGS } from './map.js';
@@ -79,7 +79,7 @@ export class Diario {
   get s() { return this.game.s; }
   get st() {
     const f = this.s.flags ??= {};
-    return f.diario ??= { segui: { tipo: 'auto' }, cont: {}, trofei: {}, pezzi: {}, dritta: null };
+    return f.bussola ??= { segui: { tipo: 'auto' }, cont: {}, trofei: {}, pezzi: {}, dritta: null };
   }
 
   init() {
