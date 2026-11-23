@@ -63,6 +63,7 @@ export class Vehicles {
     this.driving = null;      // veicolo guidato in questo momento
     this.puffs = [];
     this.t = 0;
+    this.blocchi = [];        // [(v) => messaggio | null]: chi impedisce di salire (sequestro, batteria...)
     this._makeHud();
     // i mezzi parcheggiati sono ostacoli anche per chi va a piedi
     const base = this.world.blocked.bind(this.world);
@@ -195,8 +196,15 @@ export class Vehicles {
     else this.ui.toast(`${v.T.name}: il motore non dà segni di vita. Serve l'officina.`, 'bad');
   }
 
+  // effetti di danni ed elaborazioni (src/officina.js); senza officina, valori neutri
+  _mod(v) { return this.game.officina?.mod(v) ?? { vel: v.st.cond < 30 ? 0.75 : 1, sterzo: 1, spegni: 1, benzina: 1, fora: 1 }; }
+
   tryMount(v) {
     const s = this.s;
+    for (const fn of this.blocchi) {
+      const msg = fn(v);
+      if (msg) { this.audio.sfx('stall'); this.ui.toast(msg, 'bad'); s.minutes += 2; return; }
+    }
     if (v.kind === 'vespa') {
       s.minutes += 2;
       const fail = v.T.startFail + (100 - v.st.cond) / 300 + (s.tired > 70 ? 0.1 : 0);
@@ -256,7 +264,8 @@ export class Vehicles {
     let { x: ix, z: iz } = input;
     const len = Math.hypot(ix, iz);
     let target = 0;
-    let max = T.maxSpeed * (st.flat ? 0.45 : 1) * (st.cond < 30 ? 0.75 : 1);
+    const M = this._mod(v);
+    let max = T.maxSpeed * (st.flat ? 0.45 : 1) * M.vel;
     if (s.tired > 80) max *= 0.85;
     // fondo stradale: sull'asfalto si va a tutta, nei campi e nell'erba si rallenta (il trattore no)
     const ch = this.world.tile(Math.floor(v.st.x), Math.floor(v.st.z));
@@ -270,7 +279,7 @@ export class Vehicles {
         target = -max * 0.35 * Math.min(1, len);
         diff = wrap(want + Math.PI - st.h);
       } else target = max * Math.min(1, len) * clamp(1 - Math.abs(diff) / 3.2, 0.25, 1);
-      const steer = T.turn * clamp(Math.abs(v.speed) / 2, 0.35, 1) * dt;
+      const steer = T.turn * M.sterzo * clamp(Math.abs(v.speed) / 2, 0.35, 1) * dt;
       st.h = wrap(st.h + clamp(diff, -steer, steer));
     }
     // stanco: il mezzo sbanda un po'
@@ -292,12 +301,12 @@ export class Vehicles {
 
     // consumi e guasti
     if (v.kind === 'punto') {
-      st.fuel = clamp(st.fuel - dist * T.fuelPerUnit, 0, 100);
+      st.fuel = clamp(st.fuel - dist * T.fuelPerUnit * M.benzina, 0, 100);
       if (st.fuel <= 0) { this.ui.toast('La Punto tossisce e si ferma: benzina finita! Una tanica costa 10€ in officina.', 'bad'); this.audio.sfx('stall'); this.dismount(true); return; }
       if (st.fuel < 15 && !v.fuelWarned) { v.fuelWarned = true; this.ui.toast('Spia della riserva accesa!', 'bad'); }
       if (st.fuel >= 15) v.fuelWarned = false;
     }
-    if (v.kind === 'vespa' && Math.abs(v.speed) > 2 && Math.random() < T.stallPerSec * dt * (1 + (100 - st.cond) / 50)) {
+    if (v.kind === 'vespa' && Math.abs(v.speed) > 2 && Math.random() < T.stallPerSec * dt * (1 + (100 - st.cond) / 50) * M.spegni) {
       this.audio.sfx('stall');
       this.ui.toast('La Vespa si è spenta di colpo. Garonio scende imprecando.', 'bad');
       this.s.stress = clamp(this.s.stress + 2, 0, 100);
@@ -316,9 +325,13 @@ export class Vehicles {
 
   _crash(v, speed) {
     if (speed < 1.2) return;
+    const dmg = speed < v.T.crashSpeed ? 0 : Math.round((speed - v.T.crashSpeed + 1) * v.T.crashDamage);
+    // chi ascolta (Vigilessa, cabina della corrente) può prendersi lo schianto: gestito = true
+    const ev = { mezzo: v.id, tipo: v.kind, danno: dmg, x: v.st.x, z: v.st.z, velocita: speed, gestito: false };
+    this.game.emit('urto', ev);
+    if (ev.gestito) return;
     this.ui.shake(); this.audio.sfx('crash');
-    if (speed < v.T.crashSpeed) return;
-    const dmg = Math.round((speed - v.T.crashSpeed + 1) * v.T.crashDamage);
+    if (!dmg) return;
     v.st.cond = clamp(v.st.cond - dmg, 0, 100);
     const s = this.s;
     if (v.kind === 'vespa') {
@@ -334,7 +347,7 @@ export class Vehicles {
     if (v.kind === 'punto') {
       s.stress = clamp(s.stress + 3, 0, 100);
       let msg = `Sbam! Un'altra ammaccatura sulla Punto (-${dmg}%)`;
-      if (!v.st.flat && Math.random() < v.T.flatChance) { v.st.flat = true; msg += ' e una gomma a terra!'; }
+      if (!v.st.flat && Math.random() < v.T.flatChance * this._mod(v).fora) { v.st.flat = true; msg += ' e una gomma a terra!'; }
       this.ui.toast(msg, 'bad');
       if (v.st.cond <= 0) { this.ui.toast('La Punto si spegne e non riparte più.', 'bad'); this.dismount(true); }
       return;
@@ -422,6 +435,7 @@ export class Vehicles {
 
   // ---------- Officina ----------
   workshopChoices() {
+    if (this.game.officina) return this.game.officina.scelte(); // Zeno (src/officina.js)
     const s = this.s, out = [];
     const pay = (price, minutes, fx, msg) => () => {
       s.money -= price; s.minutes += minutes; fx(); this.audio.sfx('coin'); this.ui.toast(msg, 'good');

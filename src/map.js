@@ -73,6 +73,7 @@ export const BUILDINGS = [
   { id: 'casa-rosa', label: '', x0: 30, z0: 44, w: 6, d: 6, h: 3.4, wall: '#e8a8a0', roof: '#a83a2a', windows: 2, decor: true },
   { id: 'casa-azzurra', label: '', x0: 3, z0: 62, w: 6, d: 4, h: 2.8, wall: '#a8c8e0', roof: '#8a3a2a', windows: 2, decor: true },
   { id: 'tabacchi', label: 'TABACCHI', x0: 13, z0: 62, w: 6, d: 4, h: 2.8, wall: '#f0e0b0', roof: '#b8432e', windows: 1, decor: true },
+  { id: 'municipio', label: 'MUNICIPIO', x0: 24.6, z0: 44.4, w: 5, d: 5, h: 3.2, wall: '#e8dcc0', roof: '#8a3a2a', windows: 1, decor: true }, // ufficio multe (src/vigilessa.js)
   { id: 'tettoia', label: '', x0: 88, z0: 61, w: 5, d: 4, h: 2.2, wall: 'legno', roof: '#6a7078', windows: 0, decor: true, noDoor: true },
 ];
 

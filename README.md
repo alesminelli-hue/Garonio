@@ -19,7 +19,10 @@ Il design completo è in [GDD.md](GDD.md).
 - **Mezzi**: avvicinati alla Vespa, alla Punto o ai trattori e premi **E** per salire o scendere. Si guida con frecce/WASD o con la levetta, **Q** (o il pulsante 📯 sul telefono) suona il clacson.
   - La Vespa blu è veloce ma ogni tanto non parte o si spegne. La Punto bianca consuma benzina e può forare.
   - I trattori arano da soli le zolle del campo dove passano e spaventano le nutrie, ma con gli urti o guidando troppo stanco si rompono: arriva Mister Mountain.
-  - In officina si riparano i mezzi, si cambia la gomma e si fa il pieno.
+  - Le riparazioni le fa solo **Zeno** (in officina, dalle 7 alle 19), a pagamento e a fasce di danno: graffi, ammaccato (−15% velocità), messo male (−30%), rotto (serve il traino se è lontano). Ogni giorno ha un umore diverso e può fregarti: sovrapprezzo, lavoro a metà, pezzo «usato» che cede dopo 2 giorni. Con la **fattura** (+20%) niente fregature; la Parlantina riduce il rischio.
+  - **Elaborazioni** di Vespa e Punto (marmitta, motore, cilindro, gomme, serbatoio, assetto, stereo): possono riuscire o andare male, e Zeno si tiene i soldi.
+  - **La Vigilessa** gira in piazza col suo cono di vista giallo a terra (diventa rosso quando ti vede). Multa gli urti, la Vespa senza casco e chi corre in paese. Le multe si pagano a lei o al **municipio** entro 3 giorni, poi raddoppiano; con 3 multe non pagate mette la ganascia alla Vespa o alla Punto per un giorno. Con Parlantina 2 si può provare «Era un piccione, l'ho schivato!».
+  - C'è un segreto in fondo alla capezzagna. Non lo diciamo. (Il Consulente forse sì.)
   - Anteprima di tutti gli sprite dei mezzi: `tools/anteprima_mezzi.html`.
 - **Personaggi del paese**: la Mamma, il Consulente, Zeno, il Bubetto, la Vigilessa, il Patata, il Postino e Mister Frank. Avvicinati e premi **E** per parlarci. Chi ha un fumetto «!» ha una missione secondaria da darti o da ritirare.
 - **Livelli e abilità**: a ogni livello (fino al 20) guadagni un punto abilità da spendere nel menu (**J**) in uno dei sette rami.

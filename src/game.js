@@ -13,6 +13,9 @@ import { Progressione, freshProg } from './progressione.js';
 import { Personaggi } from './png.js';
 import { Secondarie } from './secondarie.js';
 import { Menu } from './menu.js';
+import { Officina } from './officina.js';
+import { Vigilessa } from './vigilessa.js';
+import { Cabina } from './cabina.js';
 import { puoComparire } from './data/nemici.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
@@ -81,6 +84,9 @@ export class Game {
     this.png = new Personaggi(this);
     this.quests = new Secondarie(this);
     this.menu = new Menu(this);
+    // agganci generici per i moduli dei lavori: moduli = [{ update(dt), animate(dt) }], bersagli = [() => { label, fn } | null]
+    this.moduli = [];
+    this.bersagli = [];
   }
 
   on(name, fn) { return this.ev.on(name, fn); }
@@ -126,6 +132,9 @@ export class Game {
     this.vehicles.init();
     this.png.init();
     this.quests.init();
+    this.officina = new Officina(this);    // Zeno, riparazioni ed elaborazioni
+    this.vigilessa = new Vigilessa(this);  // multe, municipio, sequestro
+    this.cabina = new Cabina(this);        // easter egg della cabina della corrente
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
@@ -222,6 +231,7 @@ export class Game {
     // tempo
     const dm = dt * CONFIG.minutesPerSecond;
     this._tick(dm);
+    for (const m of this.moduli) m.update?.(dt);
     this._updateTarget();
     this._music();
     this.ui.hud(this.s, this.s.mission);
@@ -304,6 +314,7 @@ export class Game {
     if (pt) return pt;
     for (const n of this.nutrie) if (n.state !== 'flee' && d(n.x, n.z) < 1.6) return { label: 'Affronta la nutria!', fn: () => this.shoo(n) };
     for (const e of this.s.eggs) if (d(e.x, e.z) < 0.9) return { label: 'Raccogli l\'uovo', fn: () => this.pickEgg(e) };
+    for (const fn of this.bersagli) { const t = fn(); if (t) return t; }
     for (const b of BUILDINGS) if (b.door && !b.noDoor && d(b.door.x, b.door.z) < 1.1) {
       const lab = { casa: 'Entra in casa', officina: 'Entra in officina', bar: 'Entra al bar', maiali: 'Capannone dei maiali' }[b.id];
       return { label: lab, fn: () => this.enter(b.id) };
@@ -735,6 +746,7 @@ export class Game {
     this._animatePlayer(dt);
     this.vehicles.animate(dt);
     this.png.update(dt);
+    for (const m of this.moduli) m.animate?.(dt);
     const P = this.player.group.position;
     this.zzz.position.set(P.x + 0.5, 1.6 + Math.sin(performance.now() / 400) * 0.08, P.z);
     // galline
