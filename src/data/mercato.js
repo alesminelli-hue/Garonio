@@ -158,7 +158,7 @@ export const GARE = {
 
   rivali: {
     patata: {
-      nome: 'Il Patata', colore: 'arancio', velocita: 4.9, posta: 10, rispetto: 2, daGiorno: 1, rispettoMinimo: 0,
+      nome: 'Il Patata', colore: 'arancio', velocita: 5.0, posta: 10, rispetto: 2, daGiorno: 1, rispettoMinimo: 0,
       sfida: "Il Patata arriva col suo trattore arancione, una patata bollita sul cruscotto. «Una gara? Va bene, ma piano, che si rovescia la patata.»",
       partenza: "Il Patata accarezza il volante. «Vai, Carolina.» Il trattore si chiama Carolina.",
       battute: ["«Piano, Carolina, piano!»", "Il Patata si ferma a raccogliere una patata caduta.", "«Ciao Garonio! Bella giornata, eh?» Saluta, invece di guidare."],
@@ -167,7 +167,7 @@ export const GARE = {
       premio: { patata: 1 },
     },
     ermes: {
-      nome: 'Il cugino Ermes', colore: 'giallo', velocita: 5.7, posta: 25, rispetto: 4, daGiorno: 3, rispettoMinimo: 15,
+      nome: 'Il cugino Ermes', colore: 'giallo', velocita: 6.0, posta: 25, rispetto: 4, daGiorno: 3, rispettoMinimo: 15,
       sfida: "Ermes arriva sgommando col trattore nuovo giallo, la radio a tutto volume. «Cugino! Vuoi perdere anche oggi? Ho l'aria condizionata, sai.»",
       partenza: "Ermes abbassa il finestrino. «Ci vediamo al traguardo. Cioè, io ti vedo dallo specchietto.»",
       battute: ["Ermes alza la radio: il trattore sbanda a ritmo di liscio.", "«Cugino, hai la gomma a terra!» Non è vero.", "Ermes si fa un selfie mentre guida. Perde terreno."],
@@ -175,7 +175,7 @@ export const GARE = {
       persa: "Ermes arriva primo e ti suona il clacson in faccia per un minuto intero. «Cugino, la prossima volta prova a pedalare!»",
     },
     frank: {
-      nome: 'Mister Frank', colore: 'blu', velocita: 6.05, posta: 50, rispetto: 6, daGiorno: 5, rispettoMinimo: 35,
+      nome: 'Mister Frank', colore: 'blu', velocita: 6.4, posta: 50, rispetto: 6, daGiorno: 5, rispettoMinimo: 35,
       sfida: "Mister Frank arriva col trattore blu e un cappello da cowboy grande come una ruota. «Howdy, boy! Una corsa? Nel Texas della Bassa non si dice mai di no!»",
       partenza: "Frank si cala il cappello sugli occhi. «Yee-haw! Let's go, Bessie!» Il trattore si chiama Bessie.",
       battute: ["«YEE-HAAAW!» Frank dà gas come un rodeo.", "Frank lancia il cappello in aria e lo deve recuperare.", "Frank fa ciao con la mano alle mucche. Le mucche non salutano."],
@@ -254,7 +254,7 @@ export const SCOMMESSE = {
     ],
     avventori: "Stasera {a} e {b} se le danno per {motivo}. Su chi punti?",
     cronaca: [
-      "{v} schiva un pugno, inciampa nello sgabello e cade addosso a {p}. Vince per peso.",
+      "{v} schiva un pugno, inciampa nello sgabello e travolge {p}. Vince per peso.",
       "{p} parte forte ma si ferma a finire la birra. {v} ne approfitta.",
       "{v} usa la tecnica segreta: la ciabatta. {p} si arrende ridendo.",
       "Loredana li divide col mestolo. Ai punti vince {v}, perché ha urlato di più.",

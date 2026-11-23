@@ -15,11 +15,12 @@ export function bancarella(tenda = '#c83a2a', merce = 'pomodori', insegna = '') 
     // insegna di legno
     if (insegna) { P('#8a5a30', 14, 0, 24, 5); P('#a8743e', 14, 0, 24, 1); }
     // banco
-    P('#8a5a30', 2, 28, 48, 14); P('#a8743e', 2, 28, 48, 2); P('#6a4626', 2, 40, 48, 2);
-    for (let x = 6; x < 50; x += 9) P('#7a4e28', x, 31, 1, 9);
+    P('#8a5a30', 2, 33, 48, 10); P('#a8743e', 2, 33, 48, 2); P('#6a4626', 2, 42, 48, 2);
+    for (let x = 6; x < 50; x += 9) P('#7a4e28', x, 36, 1, 6);
     // telo sul davanti
-    P('#e8dcc0', 4, 31, 44, 5); for (let x = 4; x < 48; x += 4) P('#c8b890', x, 35, 2, 1);
-    // merce
+    P('#e8dcc0', 4, 35, 44, 4); for (let x = 4; x < 48; x += 4) P('#c8b890', x, 38, 2, 1);
+    // merce (sul banco, più in basso: così il venditore dietro si vede)
+    const P0 = P; P = (c, x, y, w, h) => P0(c, x, y + 5, w, h);
     const M = {
       pomodori: () => { for (let i = 0; i < 9; i++) { const x = 5 + i * 4.7, y = 24 + (i % 2); P('#d8322a', x, y, 4, 4); P('#3a8a2a', x + 1, y - 1, 2, 1); P('#f07060', x + 1, y + 1, 1, 1); } P('#c8a050', 34, 21, 12, 7); for (let i = 0; i < 4; i++) P('#b8884a', 35 + i * 3, 22, 2, 2); },
       uova: () => { for (let k = 0; k < 3; k++) { const bx = 5 + k * 15; P('#b8a070', bx, 25, 13, 3); for (let i = 0; i < 4; i++) { P('#f8f0dc', bx + 1 + i * 3, 22, 2, 3); P('#fffaf0', bx + 1 + i * 3, 22, 1, 1); } } },

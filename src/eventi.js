@@ -43,6 +43,9 @@
 //   randagio        { esito }                  il cane randagio: 'scacciato' | 'amico' | 'battuto'
 //   impiccione      { png, scelta }            un paesano attacca bottone: 'ascolta' | 'taglia' | 'telefono'
 //   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
+//   mercato         { banco, prodotto, n, tot } vendita a un banco del mercato del giovedì (src/mercato.js)
+//   gara            { rivale, esito, tempo, posta }  gara di trattori: 'vinta' | 'persa' | 'ritirato' (src/gare.js)
+//   scommessa       { tipo, posta, vinta, soldi }   scommessa del Consulente pagata (src/scommesse.js)
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }

@@ -47,13 +47,13 @@ export class Mercato {
       const banco = W.sprite(tex, { w: tex.width / PIX.PX, h: tex.height / PIX.PX });
       banco.position.set(b.x, 0, b.z); W.scene.add(banco);
       const a = W.actor(PIX.characterFrames(key), { w: b.aspetto.w / 16, h: b.aspetto.h / 16, shadow: 0.35 });
-      a.group.position.set(b.x + (b.carretto ? 1.9 : 0), 0, b.z - (b.carretto ? -0.1 : 0.55));
+      a.group.position.set(b.x + (b.carretto ? 1.9 : 0), 0, b.z - (b.carretto ? -0.1 : 0.3));
       const hw = tex.width / PIX.PX / 2;
       const solido = { x0: b.x - hw + 0.1, z0: b.z - 0.9, x1: b.x + hw - 0.1, z1: b.z + 0.15 };
       this.banchi.push({ def: b, key, banco, a, solido, t: Math.random() * 3 });
     }
     // cartello sempre visibile all'angolo della piazzola
-    const c = PIX.signpost('MERCATO GIOVEDÌ');
+    const c = PIX.signpost('MERCATO');
     const cs = W.sprite(c, { w: c.width / PIX.PX, h: c.height / PIX.PX });
     cs.position.set(M.cartello.x, 0, M.cartello.z); W.scene.add(cs);
     W.solids.push({ x0: M.cartello.x - 0.1, z0: M.cartello.z - 0.1, x1: M.cartello.x + 0.1, z1: M.cartello.z + 0.1 });
@@ -155,7 +155,7 @@ export class Mercato {
     const P = this.game.player.group.position;
     for (const b of this.banchi) {
       const d = b.def;
-      if (Math.abs(P.x - d.x) < 1.6 && P.z > d.z && P.z - d.z < 1.5) return { label: `Mercato: ${d.nome}`, fn: () => this.apri(d.id) };
+      if (Math.abs(P.x - d.x) < (d.carretto ? 2.6 : 1.6) && P.z > d.z && P.z - d.z < 1.5) return { label: `Mercato: ${d.nome}`, fn: () => this.apri(d.id) };
     }
     return null;
   }

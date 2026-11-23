@@ -31,6 +31,9 @@ import { Bestie } from './bestie.js';
 import { Vita } from './vita.js';
 import { Imprevisti } from './imprevisti.js';
 import { Paradiso } from './paradiso.js';
+import { Mercato } from './mercato.js';
+import { Gare } from './gare.js';
+import { Scommesse } from './scommesse.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -172,6 +175,10 @@ export class Game {
     this.vita = new Vita(this); this.vita.init();
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
+    // mercato del giovedì, gare di trattori e scommesse del Consulente (src/mercato.js, src/gare.js, src/scommesse.js)
+    this.mercato = new Mercato(this); this.mercato.init();
+    this.gare = new Gare(this); this.gare.init();
+    this.scommesse = new Scommesse(this); this.scommesse.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();

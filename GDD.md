@@ -749,7 +749,7 @@ Sprite nuovi da fare: Mamma, Zeno, il Consulente, il Bubetto, la Vigilessa (a pi
 - **Diario di Garonio**: un elenco unico di missioni del Gigante, truffaldine, del Bubetto e delle bestie, con la freccia sulla minimappa verso quella scelta.
 - **Il telefonino a conchiglia**: il Gigante chiama per sgridare, il Consulente manda i consigli, il Bubetto avvisa quando arriva roba nuova. Toglie tanti viaggi a piedi.
 - **Reputazione in paese**: oltre al Rispetto al bar, un valore unico che sale coi favori e scende con multe e truffe scoperte. Con reputazione bassa i prezzi salgono ovunque.
-- **Mercato del giovedì in piazza**: si vendono uova, ortaggi e raccolto a prezzi che cambiano ogni settimana (la TV di casa li anticipa).
+- **Mercato del giovedì in piazza** (fatto: `src/mercato.js`): si vendono uova, ortaggi, mais e salami a prezzi che cambiano ogni settimana (la TV di casa li anticipa), si tratta coi venditori.
 - **Collezionabili**: tappi di birra, santini e figurine nascosti nei fossi, che il Consulente aiuta a trovare. Completare una collezione dà un portafortuna.
 - **Viaggio rapido coi mezzi**: con la Punto, scelta di destinazione dalla mappa grande (costa benzina e tempo, ma niente guida).
-- **Scommesse al bar**: il Consulente organizza scommesse sulle risse e sulle gare col trattore di Ermes e Mister Frank.
+- **Scommesse al bar** (fatto: `src/scommesse.js`, con le **gare di trattori** guidate davvero in `src/gare.js`): il Consulente organizza scommesse sulle risse e sulle gare col trattore di Ermes e Mister Frank.
