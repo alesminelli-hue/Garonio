@@ -15,6 +15,11 @@
 //   parlato         { png }                    finita una chiacchierata con un personaggio
 //   oggetto         { id, n }                  oggetto aggiunto (n > 0) o tolto (n < 0) dallo zaino
 //   secondaria      { id, stato }              missione secondaria: 'accettata' | 'pronta' | 'fatta' | 'fallita'
+//   urto            { mezzo, tipo, danno, x, z, velocita, gestito }   un mezzo sbatte (vehicles.js); gestito = true lo «prende» chi ascolta
+//   multa           { importo, tipo, pagata }  la Vigilessa fa una multa (src/vigilessa.js)
+//   riparato        { mezzo, prezzo, fattura } Zeno ripara un mezzo (src/officina.js)
+//   elaborazione    { mezzo, id, esito }       elaborazione di Zeno: 'ok' | 'male'
+//   cabina          { esito, id }              schianto contro la cabina della corrente: 'niente' | 'comune' | 'leggendario' | 'scarica'
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }
