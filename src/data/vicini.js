@@ -132,6 +132,8 @@ export const BERSAGLI = {
     tettoia: { x: 90.5, z: 65.8 } },
   // il pozzo di Frank: oggetto di scena (solido)
   pozzo: { x: 131.5, z: 37 },
+  // cartelli vicino all'acqua da rubare
+  cartelli: [{ x: 127.6, z: 37.6, testo: 'POZZO PRIVATO' }, { x: 117.2, z: 24.6, testo: 'FOSSO' }],
 };
 
 // Rumore delle azioni (in caselle, si somma all'udito di chi ascolta). Il ramo Furbizia lo riduce del 12% a grado.
