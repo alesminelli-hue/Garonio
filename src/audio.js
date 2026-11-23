@@ -3,6 +3,18 @@
 // tramite assets/music/playlist.json. Se manca una traccia, suona una musichetta 8-bit di riserva.
 
 const MUSIC_DIR = 'assets/music/';
+
+// Scene musicali del gioco. La traccia di ogni scena si sceglie in assets/music/playlist.json.
+//   intro          schermata del titolo e prologo
+//   base / notte   giornata in azienda / dopo le 20
+//   bar            dentro e vicino al bar
+//   rabbia         Garonio si arrabbia (stress alto, litigi al bar)
+//   guida          alla guida di Vespa, Punto o trattore
+//   nemico         appare un nemico (Mister Mountain, nutrie che attaccano)
+//   combattimento  scontro a turni
+export const MUSIC_SCENES = ['intro', 'base', 'notte', 'bar', 'rabbia', 'guida', 'nemico', 'combattimento'];
+// Nomi vecchi o alternativi che finiscono sulla stessa scena
+const ALIASES = { mister_mountain: 'nemico', nutrie: 'nemico', battaglia: 'combattimento', combat: 'combattimento', fight: 'combattimento', driving: 'guida', titolo: 'intro' };
 const FADE_MS = 900;
 
 export class Audio {
@@ -41,6 +53,7 @@ export class Audio {
 
   // Cambia la musica in base alla scena: base, notte, bar, nutrie, mister_mountain
   setScene(scene) {
+    scene = ALIASES[scene] || scene;
     if (scene === this.scene) return;
     this.scene = scene;
     if (!this.enabled) return;
@@ -88,10 +101,12 @@ export class Audio {
     const songs = {
       base: { bpm: 110, mel: [64, 67, 69, 67, 64, 62, 60, 62, 64, 64, 67, 72, 71, 69, 67, 0], bass: [48, 48, 43, 43, 45, 45, 41, 43] },
       notte: { bpm: 70, mel: [69, 0, 72, 0, 71, 69, 67, 0, 64, 0, 67, 0, 65, 64, 62, 0], bass: [45, 45, 41, 41, 43, 43, 40, 40] },
+      intro: { bpm: 96, mel: [60, 64, 67, 72, 71, 67, 64, 62, 60, 64, 67, 69, 67, 64, 60, 0], bass: [48, 43, 45, 41, 48, 43, 41, 43] },
+      rabbia: { bpm: 160, mel: [57, 60, 57, 63, 57, 60, 64, 63, 57, 60, 57, 63, 62, 60, 57, 0], bass: [33, 33, 36, 33, 33, 33, 31, 32] },
       bar: { bpm: 140, mel: [60, 63, 65, 66, 67, 0, 70, 67, 60, 63, 65, 66, 65, 63, 60, 0], bass: [36, 36, 39, 41, 36, 36, 34, 35] },
-      mister_mountain: { bpm: 150, mel: [52, 52, 0, 51, 52, 0, 55, 54, 52, 52, 0, 51, 48, 0, 47, 0], bass: [28, 28, 28, 27, 28, 28, 31, 30] },
+      nemico: { bpm: 150, mel: [52, 52, 0, 51, 52, 0, 55, 54, 52, 52, 0, 51, 48, 0, 47, 0], bass: [28, 28, 28, 27, 28, 28, 31, 30] },
     };
-    const song = songs[scene] || songs.base;
+    const song = songs[scene] || (scene === 'guida' ? songs.rabbia : scene === 'combattimento' ? songs.nemico : songs.base);
     const ctx = this.ctx;
     const beat = 60 / song.bpm / 2;
     let i = 0, next = ctx.currentTime + 0.05;

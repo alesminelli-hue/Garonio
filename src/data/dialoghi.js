@@ -98,7 +98,7 @@ export const GIGANTE = {
   inCorso: [
     "Ancora qui? Devi: {missione}. Sei a {fatto}/{n} e la scadenza è alle {ora}.",
     "{fatto} su {n}. Alle {ora} passo a controllare. E non nasconderti nel fienile, ti ho visto ieri.",
-    "Ti vedo fermo. Perché ti vedo fermo? {missione}, entro le {ora}. Sei a {fatto}/{n}.",
+    "Ti vedo fermo. Perché ti vedo fermo? Devi: {missione}, entro le {ora}. Sei a {fatto}/{n}.",
   ],
   // in corso, ma Garonio è stanchissimo (stanchezza oltre 70)
   inCorsoStanco: [

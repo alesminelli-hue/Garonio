@@ -468,7 +468,7 @@ export class Game {
     this._wake(); this.actT = 0; this.jumpT = 0;
     this.facing = side; this.player.setFrame(side > 0 ? 0 : PIX.GARONIO_N);
     this.player.spr.position.y = 0;
-    this.audio.setScene('mister_mountain'); this.audio.sfx('bad'); this.ui.shake();
+    this.audio.setScene('nemico'); this.audio.sfx('bad'); this.ui.shake();
     const lines = MOUNTAIN.motivi[reason] || MOUNTAIN.motivi.missione;
     await this.ui.dialog(pagine([
       { testo: MOUNTAIN.arrivo },
@@ -590,18 +590,20 @@ export class Game {
   _bully() {
     const s = this.s, b = pick(BAR.avventori), R = BAR.rispondi, I = BAR.ignora;
     const v = { nome: b.nome };
+    this.audio.setScene('rabbia');
+    const back = () => { this.audio.setScene('bar'); return this._barMenu(false); };
     return [{
       ...pagina({ chi: b.id, testo: b.battute }),
       choices: [
         { label: R.etichetta, fn: () => {
           if (Math.random() < (b.riuscita ?? 0.5)) {
             s.stress = clamp(s.stress + R.stressBene, 0, 100); this._xp(R.xpBene);
-            return [pagina({ chi: 'garonio', testo: b.risposteBuone }), pagina({ testo: R.bene }, v), this._barMenu(false)];
+            return [pagina({ chi: 'garonio', testo: b.risposteBuone }), pagina({ testo: R.bene }, v), back()];
           }
           s.stress = clamp(s.stress + R.stressMale, 0, 100);
-          return [pagina({ testo: R.male }, v), this._barMenu(false)];
+          return [pagina({ testo: R.male }, v), back()];
         } },
-        { label: I.etichetta, fn: () => { s.stress = clamp(s.stress + I.stress, 0, 100); return [pagina({ testo: I.testi }, v), this._barMenu(false)]; } },
+        { label: I.etichetta, fn: () => { s.stress = clamp(s.stress + I.stress, 0, 100); return [pagina({ testo: I.testi }, v), back()]; } },
       ],
     }];
   }
@@ -612,7 +614,8 @@ export class Game {
     const P = this.player.group.position;
     const attack = this.nutrie.some(n => n.state !== 'flee') && P.z < 12;
     const nearBar = Math.hypot(P.x - 6.5, P.z - 16.5) < 4;
-    const scene = attack ? 'nutrie' : nearBar ? 'bar' : this.s.minutes >= 20 * H ? 'notte' : 'base';
+    const angry = this.s.stress >= 85;
+    const scene = attack ? 'nemico' : angry ? 'rabbia' : nearBar ? 'bar' : this.s.minutes >= 20 * H ? 'notte' : 'base';
     this.audio.setScene(scene);
   }
 

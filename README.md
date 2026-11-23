@@ -39,11 +39,17 @@ poi apri <http://localhost:8000>.
 
 Le colonne sonore stanno in `assets/music/` e si collegano alle scene in `assets/music/playlist.json`:
 
-| Scena | Traccia |
-|---|---|
-| `base` e `notte` | Sunset Truciolone |
-| `bar` e `nutrie` | Rabbia Incontrollata |
-| `mister_mountain` | Mister Scarogna |
+| Scena (nel codice) | Traccia | Quando suona |
+|---|---|---|
+| `intro` | **Il Conte della Bassa** | Schermata del titolo e prologo |
+| `base` / `notte` | **Sunset Truciolone** | Giornata in azienda e sera |
+| `bar` | **Pappa Garonio** | Al bar |
+| `rabbia` | **Canaglia (Rabbia Incontrollata)** | Garonio si arrabbia: stress oltre 85, litigi al bar |
+| `guida` | **Canaglia (Rabbia Incontrollata)** | Alla guida di Vespa, Punto o trattore |
+| `nemico` | **Mister Scarogna** | Appare un nemico: Mister Mountain, nutrie all'attacco |
+| `combattimento` | **Rabbia Incontrollata** | Scontro a turni |
+
+Nel codice si usa sempre e solo `audio.setScene('nome-scena')` (elenco in `src/audio.js`, `MUSIC_SCENES`).
 
 Per aggiungere una traccia: copia il file `.mp3` nella cartella e scrivi il suo nome nella lista della scena. Se una lista è vuota suona una musichetta 8‑bit di riserva.
 

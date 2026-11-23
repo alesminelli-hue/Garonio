@@ -1,8 +1,11 @@
 {
-  "_info": "Collega ogni momento del gioco a uno o più file mp3/ogg di questa cartella. Se una lista è vuota parte la musichetta 8-bit di riserva.",
+  "_info": "MAPPA CENTRALE DELLE MUSICHE. Ogni scena punta a uno o più file di questa cartella. Il codice chiama audio.setScene('nome-scena'): per cambiare una musica si modifica solo questo file. Lista vuota = musichetta 8-bit di riserva.",
+  "intro": ["il_conte_della_bassa.mp3"],
   "base": ["sunset_truciolone.mp3"],
   "notte": ["sunset_truciolone.mp3"],
-  "bar": ["rabbia_incontrollata.mp3"],
-  "nutrie": ["rabbia_incontrollata.mp3"],
-  "mister_mountain": ["mister_scarogna.mp3"]
+  "bar": ["pappa_garonio.mp3"],
+  "rabbia": ["canaglia_rabbia_incontrollata.mp3"],
+  "guida": ["canaglia_rabbia_incontrollata.mp3"],
+  "nemico": ["mister_scarogna.mp3"],
+  "combattimento": ["rabbia_incontrollata.mp3"]
 }

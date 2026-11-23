@@ -132,15 +132,19 @@ Con i soldi guadagnati Garonio può scegliere come scaricare lo stress:
 
 ## 11b. Colonne sonore
 
-Le tracce originali stanno in `assets/music/` e sono collegate alle scene in `assets/music/playlist.json` (si può cambiare l'abbinamento senza toccare il codice):
+Le tracce originali stanno in `assets/music/`. La **mappa centrale** è `assets/music/playlist.json`: il codice chiede solo una *scena* (`audio.setScene('bar')`) e il file decide quale traccia suona. Per cambiare abbinamento si modifica solo quel file.
 
-| Traccia | Quando suona |
-|---|---|
-| **Sunset Truciolone** | Base: giornata in azienda e sera |
-| **Rabbia Incontrollata** | Al bar e quando le nutrie attaccano il campo (momenti di "scontro") |
-| **Mister Scarogna** | Quando compare Mister Mountain |
+| Scena (nel codice) | Traccia | Quando suona |
+|---|---|---|
+| `intro` | **Il Conte della Bassa** | Schermata del titolo e prologo |
+| `base` / `notte` | **Sunset Truciolone** | Giornata in azienda e sera |
+| `bar` | **Pappa Garonio** | Al bar |
+| `rabbia` | **Canaglia (Rabbia Incontrollata)** | Garonio si arrabbia: stress oltre 85, litigi al bar |
+| `guida` | **Canaglia (Rabbia Incontrollata)** | Alla guida di Vespa, Punto o trattore |
+| `nemico` | **Mister Scarogna** | Appare un nemico: Mister Mountain, nutrie all'attacco |
+| `combattimento` | **Rabbia Incontrollata** | Scontro a turni |
 
-Per aggiungere una traccia nuova basta mettere il file `.mp3` nella cartella e scriverne il nome nella lista della scena giusta.
+Per aggiungere una traccia basta mettere il file `.mp3` nella cartella e scriverne il nome nella lista della scena giusta (se ci sono più tracce, ne sceglie una a caso).
 
 ## 12. Controlli
 
