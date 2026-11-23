@@ -183,7 +183,7 @@ export class Cascine {
     // il vicino in persona (lo sprite lo muove src/png.js) e la "casa" che ascolta di notte
     for (const [vic, V] of Object.entries(VICINI)) {
       this.guardie.push(this._guardia(vic, 'vicino', V, null, { x: 0, z: 0 }));
-      this.guardie.push(this._guardia(vic, 'casa', { vista: [0, 0], udito: V.udito + 2, sguardo: 0, giro: 0 }, null, { x: V.porta.x, z: V.porta.z }));
+      this.guardie.push(this._guardia(vic, 'casa', { vista: [0, 0], udito: V.udito + 0.5, sguardo: 0, giro: 0 }, null, { x: V.porta.x, z: V.porta.z }));
     }
 
     // spruzzo della turbina
@@ -596,10 +596,11 @@ export class Cascine {
       if (gu.dorme) udito *= 0.35;
       // sguardo: si guarda intorno, oppure fissa Garonio se è allarmato
       const dx = P.x - gu.x, dz = P.z - gu.z, dist = Math.hypot(dx, dz), verso = Math.atan2(dz, dx);
-      const base = gu.tipo === 'garzone' && gu.base != null ? gu.base : def.sguardo;
+      // il vicino sul bordo del campo guarda i campi (nord), davanti alla cascina guarda l'aia (sud)
+      const base = gu.tipo === 'garzone' && gu.base != null ? gu.base : gu.tipo === 'vicino' ? (gu.z > 33 ? Math.PI / 2 : -Math.PI / 2) : def.sguardo;
       const target = (gu.allerta || 0) > 0.35 ? verso : base + Math.sin(this._t * 0.6 + gu.fase) * (def.giro || 50) * DEG;
       gu.look += wrapA(target - gu.look) * Math.min(1, dt * 3);
-      const visto = R > 0 && dist < R && Math.abs(wrapA(verso - gu.look)) < half * DEG;
+      const visto = R > 0 && ((dist < R && Math.abs(wrapA(verso - gu.look)) < half * DEG) || dist < 1.5);
       const sentito = dist < udito;
       let rate = 0;
       if (!calmo && dentro) {
@@ -615,16 +616,16 @@ export class Cascine {
       gu.cono.rotation.y = -gu.look;
       gu.cono.geometry !== gu._geo && this._geoCono(gu, half);
       gu.cono.material.color.set(gu.allerta > 0.6 ? 0xff5040 : gu.allerta > 0.25 ? 0xffa030 : 0xffe060);
-      gu.cono.material.opacity = 0.16 + gu.allerta * 0.2;
+      gu.cono.material.opacity = 0.28 + gu.allerta * 0.22;
       gu.ear.visible = !calmo; gu.ear.position.set(gu.x, 0.04, gu.z); gu.ear.scale.set(udito, 1, udito);
-      gu.ear.material.opacity = sentito && dentro ? 0.55 : 0.22;
+      gu.ear.material.opacity = sentito && dentro ? 0.5 : 0.16;
       const alto = gu.tipo === 'cane' ? 1.1 : gu.tipo === 'casa' ? 3.4 : 2.4;
       gu.segno.visible = gu.allerta > 0.2;
       gu.segno.material.map = gu.segnoTex[gu.allerta > 0.6 ? '!' : '?'];
       gu.segno.position.set(gu.x + 0.3, alto, gu.z);
       if (gu.tipo === 'cane' && gu.allerta > 0.45 && (this._t % 0.9) < dt) this._suono('abbaia');
     }
-    this.sospetto[vic] = max;
+    if (vic) this.sospetto[vic] = max;
     if (truffa) this._hudShow({ truffa, V, sospetto: max, chi, rumore, dentro, notte });
     else this._hudShow(null);
     if (max >= 1 && chi) this.scoperta(vic, chi);
@@ -788,15 +789,15 @@ export class Cascine {
 #truffa { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 250px; font-size: 12px; }
 #truffa[hidden] { display: none; }
 #truffa b { color: #e0a0ff; font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 3px; }
-#truffa .tr { display: grid; grid-template-columns: 62px 1fr; align-items: center; gap: 6px; margin: 3px 0; }
+#truffa .tr { display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: 6px; margin: 3px 0; }
 #truffa .track .fill { transition: width .15s; }
 #truffa .sus .fill { background: #ffb030; } #truffa .sus.hot .fill { background: #ff4a3a; }
 #truffa .rum .fill { background: #80c0ff; } #truffa .prg .fill { background: #80e080; }
 #truffa .nota { opacity: .85; font-size: 11px; margin-top: 2px; }
-@media (max-width: 640px) { #truffa { left: auto; right: 8px; transform: none; top: auto; bottom: 236px; width: 172px; font-size: 10px; padding: 5px 7px; }
-  #truffa .tr { grid-template-columns: 48px 1fr; } }
-body.touch #truffa { left: auto; right: 8px; transform: none; top: auto; bottom: 236px; width: 172px; font-size: 10px; padding: 5px 7px; }
-body.touch #truffa .tr { grid-template-columns: 48px 1fr; }
+@media (max-width: 640px) { #truffa { left: auto; right: 8px; transform: none; top: 156px; bottom: auto; width: 172px; font-size: 10px; padding: 5px 7px; }
+  #truffa .tr { grid-template-columns: 62px 1fr; } }
+body.touch #truffa { left: auto; right: 8px; transform: none; top: 156px; bottom: auto; width: 172px; font-size: 10px; padding: 5px 7px; }
+body.touch #truffa .tr { grid-template-columns: 62px 1fr; }
 body.in-battle #truffa { display: none; }`;
     document.head.appendChild(st);
     this.el = document.createElement('div');

@@ -116,7 +116,7 @@ export const VICINI = {
 export const BERSAGLI = {
   // dove si attacca la turbina per rubare l'acqua
   acqua: {
-    frank: { x: 135.5, z: 37.2, nome: 'il pozzo di Mister Frank' },
+    frank: { x: 131.5, z: 38, nome: 'il pozzo di Mister Frank' },
     patata: { x: 115, z: 22, nome: 'il fosso del Patata' },
   },
   alberi: {
@@ -128,14 +128,14 @@ export const BERSAGLI = {
   // paletti del confine tra il grano del Postino e il fienile del Gigante: si spostano di "sposta" verso ovest
   paletti: { vicino: 'postino', x: 49, z: [12, 16, 20, 24], sposta: -2.5 },
   // l'attrezzo da "prendere in prestito" e dove va portato
-  prestito: { vicino: 'patata', x: 104.6, z: 40.3, nome: 'l\'erpice del Patata', oggetto: 'erpice_patata',
+  prestito: { vicino: 'patata', x: 106.4, z: 37.6, nome: 'l\'erpice del Patata', oggetto: 'erpice_patata',
     tettoia: { x: 90.5, z: 65.8 } },
   // il pozzo di Frank: oggetto di scena (solido)
-  pozzo: { x: 135.5, z: 36.2 },
+  pozzo: { x: 131.5, z: 37 },
 };
 
 // Rumore delle azioni (in caselle, si somma all'udito di chi ascolta). Il ramo Furbizia lo riduce del 12% a grado.
-export const RUMORE = { cammina: 0, corre: 2.5, trattore: 6, turbina: 4.5, motosega: 11, paletto: 1.5, prestito: 2 };
+export const RUMORE = { cammina: 0, corre: 2.5, trattore: 6, turbina: 2.5, motosega: 11, paletto: 1.2, prestito: 1.2 };
 
 // Quanto in fretta sale il sospetto (al secondo) e quanto scende. A 1 ti scoprono.
 export const SOSPETTO = { vista: 1.3, udito: 0.4, cala: 0.22, notteVista: 0.55, giornoUdito: 0.8, odio: 1.4 };

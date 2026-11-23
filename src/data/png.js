@@ -95,7 +95,7 @@ export const PNG = {
   },
   patata: {
     nome: 'Il Patata', ruolo: 'Vicino grosso, lento e buono. Parla solo di patate.',
-    posti: [{ ore: [6, 20], x: 101.5, z: 40.4 }],   // davanti alla sua cascina (src/data/vicini.js)
+    posti: [{ ore: [6, 17], x: 101.5, z: 27.6 }, { ore: [17, 20], x: 101.5, z: 40.4 }],   // di giorno sul bordo del campo, la sera davanti alla cascina (src/data/vicini.js)
     aspetto: { w: 19, h: 25, skin: '#e8b090', hair: '#8a6a3a', hairStyle: 'bald', hat: '#c8a050', shirt: '#7a8a4a', overalls: '#6a5a3a', pants: '#6a5a3a', boots: '#3a2a1a', belly: true, eyes: 'sleepy' },
     amicizia: [-50, 50, 10],
     saluti: [
@@ -110,7 +110,8 @@ export const PNG = {
   },
   postino: {
     nome: 'Il Postino', ruolo: 'Sa tutto di tutti, legge le lettere degli altri.',
-    posti: [{ ore: [6, 20], x: 37.5, z: 40.4 }],
+    posti: [{ ore: [6, 20], x: 36.5, z: 27.6 }],
+    giro: [[30, 27.6], [47, 27.6]],   // passeggia sul bordo del suo grano (e tiene d'occhio i paletti)
     aspetto: { w: 16, h: 24, skin: '#f0c098', hair: '#3a2a1a', hairStyle: 'flat', hat: '#2a4a8a', shirt: '#6a8ac8', pants: '#2a3a6a', boots: '#1a1a1a', mustache: '#3a2a1a', eyes: 'normal' },
     amicizia: [-50, 50, 5],
     saluti: [
@@ -125,7 +126,7 @@ export const PNG = {
   },
   frank: {
     nome: 'Mister Frank', ruolo: 'Emiliano che si crede americano. Ha il pozzo più profondo.',
-    posti: [{ ore: [6, 21], x: 144.5, z: 40.4 }],
+    posti: [{ ore: [6, 17], x: 137.5, z: 27.6 }, { ore: [17, 21], x: 144.5, z: 40.4 }],
     aspetto: { w: 17, h: 25, skin: '#e8a080', hair: '#c8c8c8', hairStyle: 'flat', hat: '#8a5a2a', shirt: '#b84a3a', plaid: true, pants: '#3a5a8a', belt: '#c8a050', boots: '#6a3a1a', mustache: '#d8d8d8', eyes: 'normal' },
     amicizia: [-50, 50, 0],
     saluti: [
