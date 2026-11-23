@@ -58,9 +58,9 @@ export class UI {
 
   toast(text, kind = '') {
     const box = $('toasts');
-    const last = box.lastElementChild;
+    const tutti = box.querySelectorAll(':scope > .toast'), last = tutti[tutti.length - 1];
     if (last && last.textContent === text && !last.classList.contains('out')) return;
-    while (box.children.length >= 4) box.firstElementChild.remove();
+    for (let i = 0; i <= tutti.length - 4; i++) tutti[i].remove();
     const t = document.createElement('div');
     t.className = 'toast ' + kind;
     t.textContent = text;
