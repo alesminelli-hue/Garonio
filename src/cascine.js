@@ -118,6 +118,7 @@ export class Cascine {
     this._costruisci();
     this._hud();
     this._scelteVicini();
+    this._agganciaAcqua();
 
     const g = this.game;
     // agganci generici di game.js: il bersaglio a piedi e l'aggiornamento a ogni fotogramma
@@ -291,7 +292,9 @@ export class Cascine {
   _dopoAccetta(id) {
     const def = this.game.quests.defs[id];
     this.f.pompa = 0;
-    if (def.tipo === 'acqua' && !this.game.attrezzi) this.game.ui.toast('Prendi il trattore ROSSO (ha la turbina) e portalo all\'acqua del vicino.', '');
+    if (def.tipo === 'acqua') this.game.ui.toast(this._turbinaVera()
+      ? 'Aggancia la turbina al trattore rosso (tettoia) e portalo all\'acqua del vicino.'
+      : 'Il Gigante ti presta la sua turbina vecchia: prendi il trattore ROSSO e portalo all\'acqua del vicino.', '');
   }
 
   // fine di una truffa (fatta o fallita): restituisce gli attrezzi prestati
@@ -325,12 +328,16 @@ export class Cascine {
 
     if (g.vehicles.driving) {
       const v = g.vehicles.driving;
-      if (this.pompa) return { label: 'Stacca la turbina', fn: () => this._fermaPompa() };
+      if (this.pompa) return this.pompa.vero ? null : { label: 'Stacca la turbina', fn: () => this._fermaPompa() };
       if (truffa?.tipo === 'acqua') {
         const sp = BERSAGLI.acqua[truffa.vicino];
         if (Math.hypot(v.st.x - sp.x, v.st.z - sp.z) < 3.4) {
-          if (g.attrezzi?.turbinaAttiva) return null; // con gli attrezzi veri la turbina si accende da sé (lavoro C)
-          if (v.id !== 'trattore1') return { label: 'Qui serve il trattore rosso con la turbina', fn: () => g.ui.toast('La turbina è agganciata al trattore ROSSO, sotto la tettoia.', 'bad') };
+          // con la turbina vera (src/attrezzi.js) spruzza da sola; senza, il Gigante presta la sua turbina vecchia
+          if (this._turbinaVera()) {
+            if (g.attrezzi.su?.(v.id) === 'turbina') return null;
+            return { label: 'Serve la turbina: agganciala al trattore rosso sotto la tettoia', fn: () => g.ui.toast('Aggancia la turbina al trattore rosso sotto la tettoia, poi torna qui.', 'bad') };
+          }
+          if (v.id !== 'trattore1') return { label: 'Qui serve il trattore rosso con la turbina', fn: () => g.ui.toast('La turbina vecchia del Gigante va sul trattore ROSSO.', 'bad') };
           return { label: `Attacca la turbina a ${sp.nome}`, fn: () => this._attaccaPompa(v, truffa.vicino) };
         }
       }
@@ -426,6 +433,15 @@ export class Cascine {
     this.game.audio.sfx('water');
     this.game.ui.toast(`Turbina attaccata. Resta qui un'ora di gioco senza farti vedere. (${Math.round(this.f.pompa)}/${DURATE.turbinaMinuti} min)`, '');
   }
+  // c'è la turbina vera del lavoro C ed è di Garonio?
+  _turbinaVera() { const A = this.game.attrezzi; return !!A?.turbinaAttiva && (!A.ha || A.ha('turbina')); }
+  // il pozzo di Frank e il fosso del Patata contano come acqua per la turbina vera
+  _agganciaAcqua() {
+    const A = this.game.attrezzi; if (!A?._acqua || A._acquaCascine) return;
+    const base = A._acqua.bind(A);
+    A._acqua = (x, z) => Math.min(base(x, z), ...Object.values(BERSAGLI.acqua).map(p => Math.max(0, Math.hypot(x - p.x, z - p.z) - 2) * 4));
+    A._acquaCascine = true;
+  }
   _fermaPompa(silenzioso = false) {
     if (!this.pompa) return;
     this.pompa = null; this.spruzzo.visible = false;
@@ -434,14 +450,14 @@ export class Cascine {
   _aggiornaPompa() {
     const g = this.game, t = this.attiva();
     // con gli attrezzi veri (lavoro C): la turbina accesa vicino all'acqua del vicino conta da sola
-    if (!this.pompa && g.attrezzi?.turbinaAttiva && t?.a.stato === 'attiva' && t.def.tipo === 'acqua') {
+    if (!this.pompa && this._turbinaVera() && t?.a.stato === 'attiva' && t.def.tipo === 'acqua') {
       const sp = BERSAGLI.acqua[t.def.vicino];
-      if (g.attrezzi.turbinaAttiva(sp.x, sp.z) && g.vehicles.driving) this.pompa = { v: g.vehicles.driving, vicino: t.def.vicino, last: this.s.minutes, vero: true };
+      if (g.attrezzi.turbinaAttiva(sp.x, sp.z, 3.6) && g.vehicles.driving) this.pompa = { v: g.vehicles.driving, vicino: t.def.vicino, last: this.s.minutes, vero: true };
     }
     const p = this.pompa; if (!p) return;
     const sp = BERSAGLI.acqua[p.vicino];
     const lontano = g.vehicles.driving !== p.v || Math.hypot(p.v.st.x - sp.x, p.v.st.z - sp.z) > 3.6;
-    const spenta = p.vero && !g.attrezzi.turbinaAttiva(sp.x, sp.z);
+    const spenta = p.vero && !g.attrezzi.turbinaAttiva(sp.x, sp.z, 3.6);
     if (!t || t.def.tipo !== 'acqua' || lontano || spenta) { this._fermaPompa(!t); return; }
     this.f.pompa += Math.max(0, this.s.minutes - p.last); p.last = this.s.minutes;
     this.spruzzo.visible = true;
