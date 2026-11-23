@@ -116,6 +116,7 @@ export function humanoid(o, frame = 0) {
   if (o.hairStyle === 'messy') { P(hair, hx, hy, headW, 2); P(hair, hx - 1, hy + 1, 2, 3); P(hair, hx + headW - 1, hy + 1, 2, 3); }
   else if (o.hairStyle === 'flat') { P(hair, hx - 1, hy - 1, headW + 2, 3); }
   else if (o.hairStyle === 'bald') { P(hair, hx - 1, hy + 2, 1, 3); P(hair, hx + headW, hy + 2, 1, 3); }
+  else if (o.hairStyle === 'coda') { P(hair, hx - 1, hy - 1, headW + 2, 3); P(hair, hx - 1, hy, 2, 3); P(hair, hx - 3, hy + 1, 3, 2); P(hair, hx - 4, hy + 2, 2, 4); }  // coda di cavallo (ragazze che corrono)
   else if (o.hairStyle === 'long') { P(hair, hx - 1, hy, headW + 2, 2); P(hair, hx - 1, hy, 2, headH + 2); P(hair, hx + headW - 1, hy, 2, headH + 2); }
   // cappello
   if (o.hat) {

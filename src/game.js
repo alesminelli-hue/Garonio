@@ -34,6 +34,7 @@ import { Vita } from './vita.js';
 import { Imprevisti } from './imprevisti.js';
 import { Paradiso } from './paradiso.js';
 import { Salvataggi } from './salvataggi.js';
+import { Ragazze } from './ragazze.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -174,6 +175,7 @@ export class Game {
     this.vita = new Vita(this); this.vita.init();
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
+    this.ragazze = new Ragazze(this); this.ragazze.init();   // le ragazze da corteggiare e gli appuntamenti (src/ragazze.js)
     this.salvataggi.init();
     this.negozio.init();
     this.abilita.init();
