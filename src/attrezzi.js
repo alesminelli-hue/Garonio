@@ -93,7 +93,7 @@ export class Attrezzi {
   velocita(v) {
     if (v.kind !== 'trattore') return 1;
     if (this.gasolio(v.id) <= 0) return 0;
-    return this.su(v.id) ? 0.9 : 1;
+    return this.su(v.id) ? 0.95 : 1;
   }
 
   guida(v, dist, dt) {

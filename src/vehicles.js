@@ -23,8 +23,8 @@ export const VEHICLE_TYPES = {
     repair: { price: 20, minutes: 60 }, refuel: { price: 10, minutes: 15 }, tyre: { price: 8, minutes: 30 },
   },
   trattore: {
-    name: 'Trattore', label: 'trattore', article: 'il', icon: '🚜', maxSpeed: 4.2, accel: 5, turn: 3.0, box: [1.25, 0.75],
-    crashSpeed: 2.4, crashDamage: 16, tiredBreakPerSec: 0.006, plows: true,
+    name: 'Trattore', label: 'trattore', article: 'il', icon: '🚜', maxSpeed: 6.8, accel: 8, turn: 3.2, box: [1.25, 0.75],
+    crashSpeed: 3.5, crashDamage: 12, tiredBreakPerSec: 0.006, plows: true,
     repair: { price: 40, minutes: 120 },
   },
 };
@@ -298,7 +298,7 @@ export class Vehicles {
     // fondo stradale: sull'asfalto si va a tutta, nei campi e nell'erba si rallenta (il trattore no)
     const ch = this.world.tile(Math.floor(v.st.x), Math.floor(v.st.z));
     const surf = { a: 'asfalto', q: 'piazza', b: 'ponte', p: 'sterrato', g: 'erba', f: 'campo', o: 'campo', r: 'campo', y: 'campo', c: 'erba', s: 'fango', w: 'acqua' }[ch];
-    if (surf && SURFACE_SPEED[surf] != null) max *= v.kind === 'trattore' ? Math.max(0.8, SURFACE_SPEED[surf]) : Math.max(0.3, SURFACE_SPEED[surf]);
+    if (surf && SURFACE_SPEED[surf] != null) max *= v.kind === 'trattore' ? Math.max(0.9, SURFACE_SPEED[surf]) : Math.max(0.3, SURFACE_SPEED[surf]);
     // sterzo morbido: il mezzo gira verso la direzione premuta con una velocità angolare che si smorza;
     // tenendo premuto all'indietro da fermi (o dopo una botta) si va in retromarcia, altrimenti fa inversione
     let wantRate = 0;
