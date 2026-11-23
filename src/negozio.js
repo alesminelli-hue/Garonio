@@ -16,6 +16,12 @@ import { ARMI, VESTITI, OGGETTI, AFFILATURA } from './data/armi.js';
 import { NEGOZIO, VESTITI_IN_VENDITA, MANUALI, OGGETTI_IN_VENDITA, ATTREZZATURA, USATO, FRASI, LAVAGNA, FERRO_VECCHIO, AFFILA } from './data/negozio.js';
 import { pick, fill } from './racconto.js';
 
+const PILOT_GUIDA = [
+  "COSA PROVARE (1/3) · NEGOZIO. Il Bubetto sta nel suo magazzino in paese (dalle 9 alle 20). Bancone: parli con lui e apri il magazzino. Scaffali: armi, vestiti, manuali (+1 punto abilità) e oggetti. Angolo dell'usato: roba rara che cambia ogni lunedì. Le armi escono man mano: in primavera fino al forcone, in estate fino alla roncola, la motosega in autunno (col Kit è già tutto in vendita).",
+  "COSA PROVARE (2/3) · ARMI E MOSSE. Ogni arma porta la sua mossa nel menu Abilità dello scontro: Rastrellata (due nemici), Badilata (stordisce), Spazzata, Falciata (critico), Fendente (ignora la difesa), Motosegata (consuma benzina). Con Lottatore 3 arriva la seconda mossa. Oggetti nello scontro: trappola (stordisce), grappa (stress giù ma mira storta), pomata, panino. Il santino della nonna ti rialza una volta al giorno.",
+  "COSA PROVARE (3/3) · COMMISSIONI E ZENO. Lavagna del Bubetto, una alla volta: code di nutria, 10 piccioni (tra piazza e silos), 3 pezzi di ferro nei fossi della capezzagna (luccicano), il pacco per il Postino, i soldi di Mister Frank, 5 code di ratto (i ratti dei capannoni di notte). Ogni commissione alza la fiducia: più sconto e più roba nell'usato. In officina Zeno affila l'arma (3 gradi)... a volte ti frega.",
+];
+
 
 // ---------- Sprite: ferro vecchio ----------
 function outline(c, color = '#1a1420') {
@@ -68,6 +74,8 @@ export class Negozio {
     });
     // bersagli sulla mappa (tasto E)
     (g.bersagli ??= []).push(() => this._bersaglio());
+    // pilot di prova (?pilot): voce «Armi e negozio»
+    g.pilot?.sezione?.('⚒️ Armi, negozio del Bubetto e abilità', () => this._pilot());
     // aggancio agli interni (lavoro A), appena ci sono
     this._agganciaInterni();
     g.on('entrato', () => this._agganciaInterni());
@@ -81,6 +89,40 @@ export class Negozio {
     I.aggancia('magazzino:usato', () => this.apri('usato'));
     I.aggancia('magazzino:lavagna', () => this.lavagna());
     I.aggancia('officina:mola', () => this.affila());
+  }
+
+  // ---------- Pilot di prova ----------
+  _pilot() {
+    const g = this.game, s = this.s, ok = m => { g.ui.toast('🧪 ' + m, 'good'); return null; };
+    const vai = (x, z) => { g.vehicles?.leave?.(); g.player.group.position.set(x, 0, z); };
+    const lavagna = ['bubetto_nutrie', ...Object.keys(LAVAGNA)];
+    const prossima = () => {
+      const q = g.quests;
+      const att = lavagna.find(id => q.stato(id) === 'attiva' || q.stato(id) === 'pronta');
+      if (att) { q.completa(att); return `Completata: ${q.defs[att].titolo}`; }
+      const nuova = lavagna.find(id => !q.stato(id));
+      if (!nuova) return 'Lavagna finita!';
+      q.accetta(nuova); return `Accettata: ${q.defs[nuova].titolo}`;
+    };
+    return [
+      { label: '📖 Cosa provare (guida)', fn: () => PILOT_GUIDA.map(t => ({ who: 'bubetto', name: '🧪 Guida armi e negozio', text: t })) },
+      { label: '🎒 Kit: livello 12, 2000€, tutto in vendita, benzina, trappole, grappa, il cane', fn: () => {
+        while (s.level < 12) g.prog.addXp(g.prog.xpNext() - s.xp);
+        s.money += 2000; this.sbloccaTutto(); s.flags.cane = true;
+        for (const [id, n] of [['benzina', 3], ['trappola', 3], ['grappa', 2], ['panino', 2], ['pomata', 1], ['uova', 3]]) g.prog.dai(id, n);
+        return ok('Livello 12, 2000€, magazzino completo, oggetti per lo scontro e il cane. Spendi i punti abilità col menu J (prova Lottatore).');
+      } },
+      { label: '🏪 Vai al magazzino del Bubetto', fn: () => { vai(45, 50.8); return ok('Davanti al magazzino: E sulla porta, poi bancone, scaffali, usato e lavagna.'); } },
+      { label: '🔧 Vai in officina da Zeno (affilatura)', fn: () => { vai(85, 68.5); return ok('Davanti all\'officina: dentro c\'è la mola, oppure parla con Zeno.'); } },
+      { label: '🕊️ Vai al silos (piccioni)', fn: () => { vai(121, 69); s.minutes = Math.max(s.minutes, 9 * 60); return ok('Silos: i piccioni girano di giorno tra la piazza e il silos.'); } },
+      { label: '⚔️ Scontro di prova (2 nutrie + cinghiale)', fn: () => { setTimeout(() => g.combat.start({ enemies: ['nutria', 'nutria', 'cinghiale'], place: 'campo' }), 50); return null; } },
+      { label: '📋 Lavagna: accetta o completa la prossima commissione', fn: () => ok(prossima()) },
+      { label: '🗓️ Salta al lunedì dopo (nuovo usato)', fn: () => { s.day += 8 - ((s.day - 1) % 7 + 1); return ok(`Giorno ${s.day}: l'usato è cambiato.`); } },
+      { label: '🎯 Abilità al massimo (Lottatore, Furbizia, Resistenza, Agricoltore)', fn: () => {
+        for (const r of ['lottatore', 'furbizia', 'resistenza', 'agricoltore', 'nervi']) s.prog.rami[r] = 4;
+        s.maxHealth = g.prog.maxHealth(); return ok('Cinque rami al grado 4: seconda mossa dell\'arma, due azioni nel primo turno, critico, perdono del Gigante...');
+      } },
+    ];
   }
 
   // ---------- Stato ----------
