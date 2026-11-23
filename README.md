@@ -9,7 +9,7 @@ Il design completo è in [GDD.md](GDD.md).
 
 ## Come si gioca
 
-- **Frecce / WASD**: muoversi · **Shift**: correre · **E / Spazio / Invio**: agire · **J**: menu di Garonio (abilità, equipaggiamento, zaino, diario) · **M**: musica on/off
+- **Frecce / WASD**: muoversi · **Shift**: correre · **E / Spazio / Invio**: agire · **J**: menu di Garonio (abilità, equipaggiamento, zaino, diario) · **M**: musica on/off · **T**: telefonino a conchiglia (T risponde, X rifiuta)
 - Su telefono: appoggia il pollice sulla metà sinistra dello schermo e compare la levetta (spinta fino in fondo = corsa); pulsante **E** a destra per agire, **Q** per saltare. Un tocco a sinistra fa anche avanzare i dialoghi. Si gioca sia in verticale sia in orizzontale.
 - **Salvataggi**: 3 slot più uno automatico che si aggiorna ogni mattina al risveglio. La partita si salva da sola ogni ora nello slot in uso. Dal menu (scheda 💾 Partite) salvi in un altro slot o ne carichi uno; sul titolo «Continua» riprende l'ultimo salvato e «Carica partita» fa scegliere.
 - Ogni mattina il Gigante ti dà una missione con scadenza. Se fallisci arriva Mister Mountain, e a fine giornata **la giornata si rifà da capo** dalla mattina.

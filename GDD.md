@@ -757,7 +757,7 @@ Sprite nuovi da fare: Mamma, Zeno, il Consulente, il Bubetto, la Vigilessa (a pi
 ## 22. Altre idee da valutare
 
 - **Diario di Garonio**: un elenco unico di missioni del Gigante, truffaldine, del Bubetto e delle bestie, con la freccia sulla minimappa verso quella scelta.
-- **Il telefonino a conchiglia**: il Gigante chiama per sgridare, il Consulente manda i consigli, il Bubetto avvisa quando arriva roba nuova. Toglie tanti viaggi a piedi.
+- ✅ **Il telefonino a conchiglia** (fatto: `src/telefono.js`, dati in `src/data/telefono.js`, tasto **T** o 📱): il Gigante chiama per sollecitare la missione vicino alla scadenza e per dare lavoretti lampo (pagati con una telefonata) o le truffe; Mister Mountain chiama a sorpresa ogni 2‑3 giorni (stress, richiama se lo rifiuti); SMS di Mamma, Bubetto, Gigante e Consulente (dritta del mattino dal livello 5 di amicizia); rubrica, registro chiamate, suonerie e modalità silenziosa.
 - **Reputazione in paese**: oltre al Rispetto al bar, un valore unico che sale coi favori e scende con multe e truffe scoperte. Con reputazione bassa i prezzi salgono ovunque.
 - **Mercato del giovedì in piazza**: si vendono uova, ortaggi e raccolto a prezzi che cambiano ogni settimana (la TV di casa li anticipa).
 - **Collezionabili**: tappi di birra, santini e figurine nascosti nei fossi, che il Consulente aiuta a trovare. Completare una collezione dà un portafortuna.

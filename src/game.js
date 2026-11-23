@@ -10,6 +10,7 @@ import { Combat } from './combat.js';
 import { Vehicles } from './vehicles.js';
 import { Derisione } from './derisione.js';
 import { Eventi } from './eventi.js';
+import { Telefono } from './telefono.js';
 import { Progressione, freshProg } from './progressione.js';
 import { Personaggi } from './png.js';
 import { Secondarie } from './secondarie.js';
@@ -176,6 +177,7 @@ export class Game {
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
     this.derisione = new Derisione(this);  // chi ti vede rompere un mezzo ride (src/derisione.js)
+    this.telefono = new Telefono(this); this.telefono.init(); // telefonino a conchiglia (src/telefono.js)
     this.salvataggi.init();
     this.negozio.init();
     this.abilita.init();

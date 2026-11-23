@@ -191,6 +191,8 @@ export class Officina {
     const prezzo = this.prezzoRimorchio(v), paga = Math.max(0, Math.min(Math.floor(s.money), prezzo)), debito = prezzo - paga;
     s.money -= paga; f.conto += debito;
     s.minutes += RIMORCHIO.minuti;
+    // Garonio sale sul carro solo se è lì col mezzo (dal telefono può chiamare da lontano)
+    const P0 = g.player.group.position, conLui = veh.driving === v || (!g.interni?.attivo && Math.hypot(P0.x - v.st.x, P0.z - v.st.z) < 6);
     if (veh.driving === v) veh.leave();
     const p = veh.parking[v.id];
     v.st.x = p.x; v.st.z = p.z; v.st.h = p.h; v.speed = 0; v.bloccatoT = 0;
@@ -202,7 +204,7 @@ export class Officina {
     if (v.kind === 'trattore' && A?.st?.gasolio) A.st.gasolio[v.id] = Math.max(A.gasolio(v.id), RIMORCHIO.goccio);
     // Garonio scende dal carro accanto al mezzo
     const [hx, hz] = v.T.box, P = g.player.group.position;
-    for (const [dx, dz] of [[0, hz + 0.5], [hx + 0.5, 0], [-(hx + 0.5), 0], [0, -(hz + 0.5)], [0, hz + 1.5]]) {
+    if (conLui) for (const [dx, dz] of [[0, hz + 0.5], [hx + 0.5, 0], [-(hx + 0.5), 0], [0, -(hz + 0.5)], [0, hz + 1.5]]) {
       if (!g.world.blocked(v.st.x + dx, v.st.z + dz)) { P.set(v.st.x + dx, 0, v.st.z + dz); break; }
     }
     g.audio.sfx('coin');
