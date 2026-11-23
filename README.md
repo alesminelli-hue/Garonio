@@ -16,6 +16,11 @@ Il design completo è in [GDD.md](GDD.md).
 - Pollaio: raccogli le uova, dai da mangiare alle galline alla mangiatoia per averne di più.
 - Le nutrie escono dal canale e mangiano le piante del campo: avvicinati e scacciale.
 - Officina: attrezzi che rendono il lavoro meno faticoso.
+- **Mezzi**: avvicinati alla Vespa, alla Punto o ai trattori e premi **E** per salire o scendere. Si guida con frecce/WASD o con la levetta, **Q** (o il pulsante 📯 sul telefono) suona il clacson.
+  - La Vespa blu è veloce ma ogni tanto non parte o si spegne. La Punto bianca consuma benzina e può forare.
+  - I trattori arano da soli le zolle del campo dove passano e spaventano le nutrie, ma con gli urti o guidando troppo stanco si rompono: arriva Mister Mountain.
+  - In officina si riparano i mezzi, si cambia la gomma e si fa il pieno.
+  - Anteprima di tutti gli sprite dei mezzi: `tools/anteprima_mezzi.html`.
 - Il gioco si salva da solo nel browser.
 
 ## Provarlo sul computer

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><title>Anteprima mezzi</title>
+<script type="importmap">{ "imports": { "three": "../lib/three.module.min.js" } }</script>
+<style>body{background:#5a8a40;margin:16px;font-family:monospace;color:#fff}canvas{image-rendering:pixelated;margin:6px;vertical-align:bottom}</style></head>
+<body><h3>Mezzi di Garonio (zoom 4x)</h3><div id="out"></div>
+<script type="module">
+import { vehicleArt, smokePuff } from '../src/vehicle_sprites.js';
+const out = document.getElementById('out');
+for (const [k, c] of [['vespa'], ['punto'], ['trattore', 'rosso'], ['trattore', 'verde']]) {
+  const a = vehicleArt(k, c); const row = document.createElement('div');
+  for (const v of ['R', 'L', 'F', 'B']) for (const o of [0, 1]) {
+    const src = a[v][o]; const z = document.createElement('canvas'); z.width = src.width * 4; z.height = src.height * 4;
+    const g = z.getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(src, 0, 0, z.width, z.height); row.appendChild(z);
+  }
+  out.appendChild(row);
+}
+const s = smokePuff(true); const z = document.createElement('canvas'); z.width = 48; z.height = 48; const g = z.getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(s, 0, 0, 48, 48); out.appendChild(z);
+</script></body></html>
