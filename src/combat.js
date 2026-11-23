@@ -14,6 +14,7 @@
 //   hit(c, e, danno) · skill(c, id) · item(c, id, bersaglio)
 // c.addEnemy(id, { noXp }) aggiunge un nemico a scontro in corso (es. il Re dei Ratti chiama rinforzi).
 import * as PIX from './pixel.js';
+import { MOSSE_ARMI, MOSSE_GARONIO, NEMICI_PICCOLI, OGGETTI } from './data/armi.js';
 
 const rand = (a, b) => a + Math.random() * (b - a);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -28,6 +29,7 @@ export const COMBAT = {
   fleeTired: 3,
   minutesPerRound: 3,    // minuti di gioco che passano per ogni round
   rageStress: 60,        // stress minimo per usare Rabbia Incontrollata
+  critBase: 0.05,        // probabilità base di colpo critico (+10% con Lottatore grado 2)
 };
 
 // ---------- Sprite extra (volpe, cinghiale, ubriaco) ----------
@@ -135,19 +137,36 @@ export const ENEMIES = {
 };
 
 // ---------- Abilità di Garonio ----------
-const SKILLS = [
-  { id: 'zappata', name: 'Zappata', lvl: 1, tired: 6, target: 'one', pow: 1.7, desc: 'Colpo forte su un nemico.' },
-  { id: 'pisolino', name: 'Pisolino tattico', lvl: 1, tired: -15, target: 'self', desc: 'Stanchezza -15, ma il prossimo colpo fa più male.' },
-  { id: 'urlo', name: 'Urlo da campagna', lvl: 2, tired: 5, target: 'all', desc: 'Spaventa i nemici: attaccano più piano per 3 turni.' },
-  { id: 'spazzata', name: 'Spazzata col forcone', lvl: 3, tired: 10, target: 'all', pow: 1.0, desc: 'Colpisce tutti i nemici.' },
-  { id: 'rabbia', name: 'Rabbia Incontrollata', lvl: 1, tired: 8, target: 'all', pow: 2.4, rage: true, desc: 'Sfoga lo stress: colpo enorme a tutti, stress -35. Serve stress 60+.' },
-];
+// Le mosse sono dati in src/data/armi.js: quelle che Garonio impara coi livelli (MOSSE_GARONIO)
+// più la mossa propria dell'arma impugnata (MOSSE_ARMI), e la seconda con Lottatore grado 3.
+// Al bar le armi restano fuori dalla porta: niente mosse dell'arma.
+function skillList(game, place) {
+  const prog = game.prog, out = [];
+  if (prog && place !== 'bar') {
+    const a = prog.arma();
+    for (const [k, extra] of [[a.mossa, false], [a.mossa2, true]]) {
+      const m = MOSSE_ARMI[k]; if (!m) continue;
+      out.push({ id: k, name: m.nome, lvl: 1, ...m, arma: a.nome, extra, locked2: extra && !prog.bonus('mossaExtra') });
+    }
+  } else if (!prog) out.push({ id: 'zappata', name: 'Zappata', lvl: 1, ...MOSSE_ARMI.zappata });
+  for (const m of MOSSE_GARONIO) out.push({ ...m, name: m.nome });
+  return out;
+}
 
-const ITEMS = [
-  { id: 'uova', name: 'Uovo', target: 'one', desc: 'Lancialo in faccia: 12 danni.' },
-  { id: 'pomodoro', name: 'Pomodoro', target: 'self', desc: 'Mangialo: Vita +18.' },
-  { id: 'mais', name: 'Pannocchia', target: 'self', desc: 'Sgranocchiala: Stanchezza -15.' },
-];
+// Oggetti usabili nello scontro: tutti quelli di OGGETTI con "combattimento" (src/data/armi.js)
+function descOggetto(o) {
+  const e = o.effetto || {}, t = [];
+  if (e.danno) t.push(`lancialo: ${e.danno} danni`);
+  if (e.stordisce) t.push('il nemico salta un turno');
+  if (e.health) t.push(`Vita +${e.health}`);
+  if (e.tired) t.push(`Stanchezza ${e.tired}`);
+  if (e.stress) t.push(`Stress ${e.stress}`);
+  if (e.ubriaco) t.push(`ma sbagli più spesso per ${e.ubriaco} turni`);
+  if (e.guarisce) t.push('cura i morsi infetti');
+  return t.join(', ') + '.';
+}
+const itemList = () => Object.entries(OGGETTI).filter(([, o]) => o.combattimento)
+  .map(([id, o]) => ({ id, name: `${o.icona || ''} ${o.nome}`.trim(), target: o.combattimento, effetto: o.effetto || {}, desc: o.desc || descOggetto(o) }));
 
 const MAIN = ['Attacca', 'Abilità', 'Oggetti', 'Difendi', 'Fuggi'];
 const KEYS = {
@@ -183,19 +202,24 @@ export class Combat {
   get s() { return this.game.s; }
 
   // ---------- Avvio e fine ----------
-  async start({ enemies, place = 'campo', canFlee = true, intro = null, script = null, heroFirst = false }) {
+  async start({ enemies, place = 'campo', canFlee = true, intro = null, script = null, heroFirst = false, inMezzo = null }) {
     if (this.active) return 'flee';
     const { game } = this;
     this.active = true; game.locked = true;
     this._build();
     this.place = place; this.canFlee = canFlee; this.round = 1; this.script = script; this.heroFirst = heroFirst;
+    this.inMezzo = inMezzo ?? !!game.vehicles?.driving;     // arrivato col mezzo: si può usare il clacson
+    this.skills = skillList(game, place);
+    this.items = itemList();
     this.root.className = 'place-' + place;
     document.body.classList.add('in-battle');
 
     // Garonio
     const gf = PIX.garonioFrames();
     this.heroFrames = gf.frames;
-    this.hero = { name: 'Garonio', hero: true, defending: false, napping: false };
+    this.hero = { name: 'Garonio', hero: true, defending: false, napping: false, charge: 0, ubriaco: 0, fiato: false };
+    const thermos = game.prog?.bonus('faticaInizioScontro') || 0;
+    if (thermos) this.s.tired = Math.max(0, this.s.tired - thermos);
     this.heroCv.className = 'b-sprite';
     this.heroWrap.style.transform = '';
     this._heroPose('idle');
@@ -236,7 +260,7 @@ export class Combat {
     const cv = el('canvas', 'b-sprite', wrap);
     const frames = d.frames();
     drawFrame(cv, frames[0]);
-    const e = { id, def: d, name: d.name, hp: d.hp, max: d.hp, atk: d.atk, def_: d.def, spd: d.spd, scared: 0, sleep: 0, frames, wrap, cv, fill: info.querySelector('.fill'), alive: true, noXp, label: info.querySelector('span') };
+    const e = { id, def: d, name: d.name, hp: d.hp, max: d.hp, atk: d.atk, def_: d.def, spd: d.spd, scared: 0, sleep: 0, stun: 0, blind: 0, frames, wrap, cv, fill: info.querySelector('.fill'), alive: true, noXp, label: info.querySelector('span') };
     wrap.addEventListener('click', () => this.input && this.input('target', e));
     this.enemies.push(e);
     const same = this.enemies.filter(o => o.id === id);
@@ -252,8 +276,11 @@ export class Combat {
   _introText() {
     const names = this.enemies.map(e => e.def.name);
     if (this.place === 'bar') return `${names[0]} si piazza davanti a Garonio. Non si può far finta di niente!`;
-    if (names.length === 1) return `Una ${names[0].toLowerCase() === 'cinghiale' ? 'bestiaccia' : 'bestia'} selvatica: ${names[0]}! Garonio impugna la zappa.`;
-    return `Arrivano ${names.length} nemici! Garonio sospira e impugna la zappa.`;
+    const arma = (this.game.prog?.arma().nome || 'Zappa vecchia').toLowerCase();
+    const art = /^[aeiou]/.test(arma) ? 'l\'' : /^(z|s[^aeiou])/.test(arma) ? 'lo ' : 'il ';
+    const conArma = /^(zappa|falce|roncola|motosega)/.test(arma) ? `la ${arma}` : `${art}${arma}`;
+    if (names.length === 1) return `Una ${names[0].toLowerCase() === 'cinghiale' ? 'bestiaccia' : 'bestia'} selvatica: ${names[0]}! Garonio impugna ${conArma}.`;
+    return `Arrivano ${names.length} nemici! Garonio sospira e impugna ${conArma}.`;
   }
 
   async _end(result) {
@@ -272,6 +299,7 @@ export class Combat {
       for (const e of this.enemies) game.emit?.('nemicoSconfitto', { id: e.id, place: this.place });
     } else if (result === 'lose') {
       game.audio.sfx('ko');
+      game.emit?.('sconfitta', { place: this.place });
       this._heroPose('ko');
       s.health = Math.max(s.health, 5);
       await this._say('Garonio è a terra... Batte in ritirata, malconcio.', 2200, true);
@@ -312,18 +340,39 @@ export class Combat {
         if (await this._hook('heroTurn')) { this._clampStats(); this._refresh(); if (this.s.health <= 0) return 'lose'; continue; }
         const r = await this._heroTurn();
         if (r === 'flee') return 'flee';
+        // Lottatore grado 4: due azioni nel primo turno
+        if (this.round === 1 && this.game.prog?.bonus('primoTurnoDoppio') && this.enemies.some(e => e.alive)) {
+          await this._say('Garonio è carico: agisce ancora!', 800);
+          if (await this._heroTurn() === 'flee') return 'flee';
+        }
       } else if (!(await this._hook('enemyTurn', u))) await this._enemyTurn(u);
       this._clampStats(); this._refresh();
       if (this.enemies.every(e => !e.alive)) return 'win';
-      if (this.s.health <= 0) return 'lose';
+      if (this.s.health <= 0 && !(await this._santino())) return 'lose';
     }
     await this._hook('roundEnd');
     this._clampStats(); this._refresh();
     if (this.enemies.every(e => !e.alive)) return 'win';
     if (this.s.health <= 0) return 'lose';
     this.round++;
-    for (const e of this.enemies) if (e.scared > 0) e.scared--;
+    for (const e of this.enemies) { if (e.scared > 0) e.scared--; if (e.blind > 0) e.blind--; }
+    if (this.hero.ubriaco > 0) this.hero.ubriaco--;
     return null;
+  }
+
+  // Santino della nonna (o Fusibile fortunato): una volta al giorno, a Vita 0 Garonio si rialza
+  async _santino() {
+    const g = this.game, s = this.s;
+    if (!g.prog?.bonus('santino')) return false;
+    s.flags.armi ??= {};
+    if (s.flags.armi.santinoGiorno === s.day) return false;
+    s.flags.armi.santinoGiorno = s.day;
+    s.health = g.prog.bonus('rialzaMeta') ? Math.round(s.maxHealth / 2) : 20;
+    this._heroPose('idle'); this._float(this.heroWrap, `+${s.health} Vita`, 'heal');
+    g.audio.sfx('level');
+    await this._say(g.prog.bonus('rialzaMeta') ? 'Il fusibile fortunato fa una scintilla: Garonio si rialza!' : 'Il santino della nonna brilla nella tasca: Garonio si rialza!', 1500);
+    this._refresh();
+    return true;
   }
 
   _renderOrder(order, cur) {
@@ -351,29 +400,32 @@ export class Combat {
           return;
         }
         if (c === 1) {
-          const list = SKILLS.map(k => {
-            const locked = s.level < k.lvl;
-            const noRage = k.rage && s.stress < COMBAT.rageStress;
-            const tooTired = k.tired > 0 && s.tired + k.tired > 100;
+          const list = this.skills.map(k => {
+            const why = this._skillLock(k);
             return {
-              label: locked ? `${k.name} (Lv ${k.lvl})` : k.name,
-              right: k.rage ? `stress ${COMBAT.rageStress}+` : k.tired > 0 ? `stanc. +${k.tired}` : `stanc. ${k.tired}`,
-              desc: k.desc, disabled: locked || noRage || tooTired, rage: k.rage,
+              label: why ? `${k.name} (${why})` : k.name,
+              right: k.rage ? `stress ${COMBAT.rageStress}+` : k.tired > 0 ? `stanc. +${k.tired}` : k.tired < 0 ? `stanc. ${k.tired}` : k.stress ? `stress +${k.stress}` : 'gratis',
+              desc: (k.arma ? `[${k.arma}] ` : '') + k.desc, disabled: !!why || (k.rage && s.stress < COMBAT.rageStress) || (k.tired > 0 && s.tired + k.tired > 100), rage: k.rage,
             };
           });
           const i = await this._choose(list, true);
           if (i < 0) continue;
-          const k = SKILLS[i];
+          const k = this.skills[i];
           let targets = null;
-          if (k.target === 'one') { const t = await this._chooseTarget(); if (!t) continue; targets = [t]; }
+          if (k.target === 'one' || k.target === 'two') {
+            const t = await this._chooseTarget(); if (!t) continue;
+            targets = [t];
+            if (k.target === 'two') { const o = this.enemies.find(e => e.alive && e !== t); if (o) targets.push(o); }
+          }
           await this._useSkill(k, targets);
           return;
         }
         if (c === 2) {
-          const list = ITEMS.map(it => ({ label: it.name, right: `x${s.inv[it.id] || 0}`, desc: it.desc, disabled: !(s.inv[it.id] > 0) }));
+          const items = this.items.filter(it => s.inv[it.id] > 0 || ['uova', 'pomodoro', 'mais'].includes(it.id));
+          const list = items.map(it => ({ label: it.name, right: `x${s.inv[it.id] || 0}`, desc: it.desc, disabled: !(s.inv[it.id] > 0) }));
           const i = await this._choose(list, true);
           if (i < 0) continue;
-          const it = ITEMS[i];
+          const it = items[i];
           let target = null;
           if (it.target === 'one') { target = await this._chooseTarget(); if (!target) continue; }
           await this._useItem(it, target);
@@ -383,7 +435,7 @@ export class Combat {
           h.defending = true;
           s.tired -= 4;
           this._heroPose('guard');
-          await this._say('Garonio si appoggia alla zappa e si para. (Stanchezza -4)', 1100);
+          await this._say(`Garonio si para dietro ${this.place === 'bar' ? 'il bancone' : 'l\'attrezzo'}. (Stanchezza -4)`, 1100);
           return;
         }
         if (c === 4) {
@@ -405,30 +457,53 @@ export class Combat {
   }
 
   _heroAtk() {
-    const s = this.s;
-    return this.game.prog ? this.game.prog.atk() : COMBAT.heroBaseAtk + s.level * 2;
+    const s = this.s, p = this.game.prog;
+    if (!p) return COMBAT.heroBaseAtk + s.level * 2;
+    let atk = p.atk();
+    // al bar l'arma resta fuori dalla porta
+    if (this.place === 'bar') atk -= p.arma().atk + (s.prog.affilatura[p.arma().id] || 0) * 2;
+    return atk;
+  }
+
+  // perché una mossa non si può usare (null = si può)
+  _skillLock(k) {
+    const s = this.s, g = this.game;
+    if (s.level < k.lvl) return `Lv ${k.lvl}`;
+    if (k.locked2) return 'Lottatore 3';
+    if (k.benzina && !(s.inv.benzina > 0)) return 'serve benzina';
+    if (k.soloMezzo && !this.inMezzo) return 'solo col mezzo';
+    if (k.cane && !(s.flags?.cane || s.upgrades?.cane || g.prog?.bonus('cane'))) return 'serve il cane';
+    if (k.unaVolta && this.hero.fiato) return 'già usato';
+    return null;
   }
 
   _dmg(atk, pow, def) { return Math.max(1, Math.round((atk * pow - def * 0.5) * rand(0.85, 1.15))); }
 
-  async _heroStrike(targets, pow, text, { rage = false, sure = false } = {}) {
-    const s = this.s;
+  async _heroStrike(targets, pow, text, { rage = false, sure = false, critico = 0, ignoraDif = 0, stordisce = 0, letame = 0, colpi = 1 } = {}) {
+    const s = this.s, h = this.hero;
     this._msg(text);
     await this._lunge(targets[0], rage);
     this.game.audio.sfx('whoosh');
     let acc = 0.95;
     if (s.stress >= 90) acc -= 0.15;
     if (s.tired >= 80) acc -= 0.1;
-    for (const t of targets) {
-      if (!t.alive) continue;
+    if (h.ubriaco > 0) acc -= 0.25;
+    const carica = h.charge; h.charge = 0;
+    const critChance = COMBAT.critBase + (this.game.prog?.bonus('critico') || 0) + critico;
+    for (let c = 0; c < colpi; c++) for (const t of targets) {
+      if (!t.alive || t.hp <= 0) continue;
       if (this.script?.immune?.(t)) { this._float(t.wrap, 'Immune!', 'miss'); continue; }
       if (!sure && Math.random() > acc) { this._float(t.wrap, 'Mancato!', 'miss'); this.game.audio.sfx('dodge'); continue; }
-      let d = this._dmg(this._heroAtk(), pow, t.def_);
-      const crit = Math.random() < 0.1;
+      let d = this._dmg(this._heroAtk(), pow, t.def_ * (1 - ignoraDif));
+      if (carica) d = Math.round(d * (1 + carica));
+      const crit = Math.random() < critChance;
       if (crit) d = Math.round(d * 1.5);
       this.game.audio.sfx(crit || rage ? 'crit' : 'punch');
       this._hitEnemy(t, d, crit);
       await this._hook('hit', t, d);
+      if (stordisce && t.hp > 0) { t.stun = Math.max(t.stun, stordisce); setTimeout(() => this._float(t.wrap, 'Stordito!', 'miss'), 250); }
+      if (letame && t.hp > 0) { t.blind = Math.max(t.blind, letame); setTimeout(() => this._float(t.wrap, 'Accecato!', 'miss'), 250); }
+      if (colpi > 1) await this._sleep(250);
     }
     await this._sleep(500);
     await this._back();
@@ -453,28 +528,19 @@ export class Combat {
   }
 
   async _useSkill(k, targets) {
-    const s = this.s, h = this.hero;
+    const s = this.s, h = this.hero, g = this.game;
     s.tired += k.tired;
+    const alive = () => this.enemies.filter(e => e.alive);
+    const opts = { critico: k.critico || 0, ignoraDif: k.ignoraDif || 0, stordisce: k.stordisce || 0, letame: k.letame || 0, colpi: k.colpi || 1 };
     await this._hook('skill', k.id);
-    if (k.id === 'zappata') return this._heroStrike(targets, k.pow, 'Garonio: ZAPPATA!');
-    if (k.id === 'spazzata') return this._heroStrike(this.enemies.filter(e => e.alive), k.pow, 'Spazzata col forcone!');
     if (k.id === 'rabbia') {
       s.stress -= 35;
       this.root.classList.add('rage');
-      this.game.ui.shake();
+      g.ui.shake();
       await this._say('Garonio esplode: RABBIA INCONTROLLATA!', 1100);
-      await this._heroStrike(this.enemies.filter(e => e.alive), k.pow, 'AAARGH!', { rage: true, sure: true });
+      await this._heroStrike(alive(), k.pow, 'AAARGH!', { rage: true, sure: true });
       this.root.classList.remove('rage');
       await this._say('Che sfogo. (Stress -35)', 900);
-      return;
-    }
-    if (k.id === 'urlo') {
-      this._heroPose('attack');
-      this.game.audio.sfx('bad');
-      this.game.ui.shake();
-      for (const e of this.enemies) if (e.alive) { e.scared = 3; this._float(e.wrap, 'Paura!', 'miss'); }
-      await this._say('«VIA DI QUA, BESTIACCE!» I nemici si spaventano.', 1300);
-      this._heroPose('idle');
       return;
     }
     if (k.id === 'pisolino') {
@@ -483,38 +549,114 @@ export class Combat {
       this._heroPose('ko');
       this._float(this.heroWrap, 'Zzz', 'heal');
       await this._say('Garonio si fa un pisolino in mezzo allo scontro. Stanchezza -15.', 1300);
+      return;
     }
+    if (k.id === 'clacson') {
+      this._heroPose('attack'); g.audio.sfx('horn_punto'); g.ui.shake();
+      const piccoli = alive().filter(e => NEMICI_PICCOLI.includes(e.id));
+      await this._say('PEEEEEP! Garonio suona il clacson a tutto volume.', 1100);
+      for (const e of piccoli) { e.hp = 0; this._float(e.wrap, 'Scappa!', 'miss'); }
+      for (const e of alive()) if (!piccoli.includes(e)) { e.scared = Math.max(e.scared, 1); }
+      this._heroPose('idle');
+      if (!piccoli.length) await this._say('...ma qui nessuno si spaventa per un clacson.', 1000);
+      await this._checkDeaths();
+      return;
+    }
+    if (k.id === 'bestemmia') {
+      s.stress += k.stress; h.charge = k.carica;
+      this._heroPose('guard'); g.ui.shake();
+      this._float(this.heroWrap, `Stress +${k.stress}`, 'stress');
+      await this._say('«Porc... porca la miseria.» Garonio si morde la lingua e si carica: il prossimo colpo fa +50%.', 1600);
+      this._heroPose('idle');
+      return;
+    }
+    if (k.id === 'fiato') {
+      h.fiato = true; s.health += k.vita;
+      this._float(this.heroWrap, `+${k.vita} Vita`, 'heal'); g.audio.sfx('eat');
+      await this._say('Garonio respira a fondo, come quando scappa dal Gigante. Secondo fiato! (Stanchezza -40, Vita +20)', 1500);
+      return;
+    }
+    if (k.cane) {
+      await this._say('Garonio fischia. Dal fondo dei campi arriva il cane, che non aspettava altro!', 1300);
+      const t = targets[0];
+      const d = this._dmg(this._heroAtk(), k.pow, t.def_);
+      this._hitEnemy(t, d, false); this._float(t.wrap, 'Morso!', 'miss'); g.audio.sfx('punch');
+      await this._sleep(500);
+      await this._checkDeaths();
+      return;
+    }
+    if (k.benzina) g.prog ? g.prog.togliOggetto('benzina') : s.inv.benzina--;
+    // mosse senza danno: spavento o accecamento
+    if (!k.pow) {
+      this._heroPose('attack');
+      g.audio.sfx(k.benzina || k.id === 'avviamento' ? 'horn_trattore' : 'bad'); g.ui.shake();
+      const tg = k.target === 'all' || k.target === 'self' ? alive() : targets;
+      for (const e of tg) {
+        if (k.paura) { e.scared = Math.max(e.scared, k.paura); this._float(e.wrap, 'Paura!', 'miss'); }
+        if (k.letame) { e.blind = Math.max(e.blind, k.letame); this._float(e.wrap, 'Accecato!', 'miss'); }
+      }
+      const frasi = {
+        urlo: '«VIA DI QUA, BESTIACCE!» I nemici si spaventano.',
+        letame: `Garonio raccoglie una manciata di letame e la tira in faccia a ${targets?.[0]?.name}. Che mira!`,
+        avviamento: 'Garonio dà uno strappo alla motosega: VROOOM! I nemici fanno un passo indietro.',
+      };
+      await this._say(frasi[k.id] || `${k.name}!`, 1300);
+      this._heroPose('idle');
+      return;
+    }
+    // mossa d'attacco (di solito la mossa dell'arma)
+    const tg = k.target === 'all' ? alive() : targets;
+    const urlo = { zappata: 'ZAPPATA!', motosegata: 'BRRRRRAAAAAM!', fendente: 'Fendente della Bassa!', scossa: 'Bzzzt! SCOSSA!' }[k.id] || `${k.name}!`;
+    if (k.benzina) { this.root.classList.add('rage'); g.ui.shake(); }
+    await this._heroStrike(tg, k.pow, `Garonio: ${urlo}`, opts);
+    this.root.classList.remove('rage');
+    if (k.paura) for (const e of alive()) { e.scared = Math.max(e.scared, k.paura); this._float(e.wrap, 'Terrore!', 'miss'); }
   }
 
   async _useItem(it, target) {
-    const s = this.s;
-    s.inv[it.id]--;
+    const s = this.s, h = this.hero, g = this.game, e = it.effetto;
+    g.prog ? g.prog.togliOggetto(it.id) : s.inv[it.id]--;
+    const cure = 1 + (g.prog?.bonus('cure') || 0);
+    if (it.target === 'one') {
+      this._msg(`Garonio lancia: ${it.name}!`);
     await this._hook('item', it.id, target);
-    if (it.id === 'uova') {
-      this._msg('Garonio lancia un uovo!');
       this._heroPose('attack');
-      this.game.audio.sfx('whoosh');
+      g.audio.sfx('whoosh');
       await this._sleep(350);
-      this.game.audio.sfx('splat');
-      if (this.script?.immune?.(target)) this._float(target.wrap, 'Immune!', 'miss');
-      else this._hitEnemy(target, 12, false);
-      this._float(target.wrap, 'Splat!', 'miss');
+      if (e.danno) {
+        g.audio.sfx('splat');
+        if (this.script?.immune?.(target)) this._float(target.wrap, 'Immune!', 'miss');
+        else this._hitEnemy(target, e.danno, false);
+        this._float(target.wrap, 'Splat!', 'miss');
+      }
+      if (e.stordisce) {
+        const piccolo = NEMICI_PICCOLI.includes(target.id);
+        target.stun = Math.max(target.stun, piccolo ? 2 : 1);
+        this._float(target.wrap, piccolo ? 'Preso!' : 'Stordito!', 'miss');
+        await this._say(piccolo ? `${target.name} finisce nella trappola: salta due turni!` : `${target.name} pesta la trappola: salta un turno.`, 1100);
+      }
       await this._sleep(500);
       this._heroPose('idle');
       await this._checkDeaths();
-    } else if (it.id === 'pomodoro') {
-      s.health += 18; this.game.audio.sfx('eat'); this._float(this.heroWrap, '+18 Vita', 'heal');
-      await this._say('Garonio addenta un pomodoro. Vita +18.', 1100);
-    } else if (it.id === 'mais') {
-      s.tired -= 15; this.game.audio.sfx('eat'); this._float(this.heroWrap, '-15 Stanch.', 'heal');
-      await this._say('Garonio sgranocchia una pannocchia. Stanchezza -15.', 1100);
+      return;
     }
+    const fatto = [];
+    if (e.health) { const v = Math.round(e.health * cure); s.health += v; fatto.push(`Vita +${v}`); }
+    if (e.tired) { const v = Math.round(e.tired * cure); s.tired += v; fatto.push(`Stanchezza ${v}`); }
+    if (e.stress) { s.stress += e.stress; fatto.push(`Stress ${e.stress}`); }
+    if (e.ubriaco) { h.ubriaco = e.ubriaco; fatto.push('ma ci vede doppio'); }
+    if (e.guarisce) { h.infetto = 0; s.flags.infetto = 0; fatto.push('ferite pulite'); }
+    g.audio.sfx('eat');
+    this._float(this.heroWrap, fatto[0] || 'Gnam', 'heal');
+    const verbo = { pomodoro: 'addenta un pomodoro', mais: 'sgranocchia una pannocchia', caffe: 'manda giù un caffè', panino: 'divora un panino col salame', grappa: 'butta giù una grappa', pomata: 'si spalma la pomata', patata: 'mangia una patata (cruda?!)' }[it.id] || `usa: ${it.name}`;
+    await this._say(`Garonio ${verbo}. ${fatto.join(', ')}.`, 1200);
   }
 
   // ---------- Turno dei nemici ----------
   async _enemyTurn(e) {
     const s = this.s, h = this.hero;
     if (e.sleep > 0) { e.sleep--; await this._say(`${e.name} russa...`, 900); return; }
+    if (e.stun > 0) { e.stun--; this._float(e.wrap, 'Zzz', 'miss'); await this._say(`${e.name} è stordito e non si muove.`, 900); return; }
     const tot = e.def.moves.reduce((a, m) => a + m.w, 0);
     let r = Math.random() * tot, mv = e.def.moves[0];
     for (const m of e.def.moves) { r -= m.w; if (r <= 0) { mv = m; break; } }
@@ -525,7 +667,7 @@ export class Combat {
     await this._sleep(320);
     e.wrap.classList.remove('lunge');
 
-    if (mv.pow > 0 && Math.random() > (h.napping ? 1 : 0.9)) {
+    if (mv.pow > 0 && Math.random() > (h.napping ? 1 : e.blind > 0 ? 0.6 : 0.9)) {
       this._float(this.heroWrap, 'Schivato!', 'miss'); this.game.audio.sfx('dodge');
       this._heroPose('jump');
       await this._sleep(700);
@@ -534,6 +676,9 @@ export class Combat {
     }
     let dmg = mv.pow > 0 ? this._dmg(e.atk * (e.scared > 0 ? 0.6 : 1), mv.pow, (this.game.prog ? this.game.prog.def() : COMBAT.heroBaseDef + s.level)) : 0;
     let stress = mv.stress;
+    // vestiti e abilità che proteggono dallo stress (cappellino, mantello; prese in giro con Nervi saldi 2)
+    const P = this.game.prog;
+    if (P && stress) stress = Math.round(stress * Math.max(0.2, 1 - P.bonus('stress') - (mv.pow ? 0 : P.bonus('stressPreseInGiro'))));
     if (h.defending) { dmg = Math.ceil(dmg / 2); stress = Math.ceil(stress / 2); }
     if (h.napping) dmg = Math.round(dmg * 1.5);
     s.health -= dmg; s.stress += stress;
@@ -681,6 +826,7 @@ export class Combat {
       }
       const mark = () => {
         btns.forEach((b, i) => b.classList.toggle('sel', i === sel));
+        btns[sel]?.scrollIntoView?.({ block: 'nearest' });
         this._msg(options[sel].desc || base);
       };
       const done = v => { this.input = null; box.innerHTML = ''; res(v); };

@@ -68,7 +68,7 @@ body.in-battle #touch, body.in-battle #hud, body.in-battle #prompt { display: no
 .b-panel { background: linear-gradient(#2a3a8a, #141c4a); border: 3px solid var(--edge); border-radius: 6px; box-shadow: 0 0 0 3px var(--ink); padding: 8px 10px; }
 .b-msg { font-size: 15px; line-height: 1.4; position: relative; cursor: pointer; }
 .b-msg.more::after { content: '▼'; position: absolute; right: 8px; bottom: 4px; color: var(--gold); animation: blink 1s infinite; }
-.b-cmd { display: flex; flex-direction: column; gap: 3px; }
+.b-cmd { display: flex; flex-direction: column; gap: 3px; max-height: 44vh; overflow-y: auto; overscroll-behavior: contain; }
 .b-cmd:empty { opacity: .5; }
 .b-cmd button { display: flex; justify-content: space-between; gap: 8px; text-align: left; font: inherit; font-size: 14px; color: #fff6e0; background: rgba(0,0,0,.25);
   border: 2px solid transparent; border-radius: 4px; padding: 4px 8px; cursor: pointer; }
