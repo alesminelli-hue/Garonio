@@ -620,8 +620,10 @@ export class Game {
   _music() {
     if (this.mm || this.inBar) return;
     const P = this.player.group.position;
-    const attack = this.nutrie.some(n => n.state !== 'flee') && P.z < 12;
-    const nearBar = Math.hypot(P.x - 6.5, P.z - 16.5) < 4;
+    const f = AREAS.field, bar = BUILDINGS.find(b => b.id === 'bar');
+    const nearField = P.x > f.x0 - 8 && P.x < f.x1 + 8 && P.z < f.z1 + 6;
+    const attack = this.nutrie.some(n => n.state !== 'flee') && nearField;
+    const nearBar = Math.hypot(P.x - (bar.x0 + bar.w / 2), P.z - (bar.z0 + bar.d / 2)) < 7;
     const angry = this.s.stress >= 85;
     const scene = attack ? 'nemico' : angry ? 'rabbia' : nearBar ? 'bar' : this.s.minutes >= 20 * H ? 'notte' : 'base';
     this.audio.setScene(scene);
