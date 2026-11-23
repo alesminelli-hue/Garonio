@@ -9,7 +9,7 @@
 //   scelte()              scelte per il dialogo (Zeno, bancone dell'officina, vecchia porta)
 //   elaborazioni()        scelte del ponte sollevatore
 // Stato: s.flags.officina = { giorno, umore, conto, elab: { vespa: { marmitta: true } }, guai: [], usati: [] }
-import { FASCE, TRAINO, FATTURA, UMORI, PARLANTINA_SCONTO, USATO, META, ZENO, ELABORAZIONI, MEZZI_NOMI } from './data/officina.js';
+import { FASCE, TRAINO, RIMORCHIO, FATTURA, UMORI, PARLANTINA_SCONTO, USATO, META, ZENO, ELABORAZIONI, MEZZI_NOMI } from './data/officina.js';
 import { PLACES } from './map.js';
 import { pick } from './racconto.js';
 
@@ -161,11 +161,59 @@ export class Officina {
     return Object.entries(st.stato).filter(([id, v]) => (A.ha?.(id) ?? true) && v < 100).map(([id, v]) => ({ id, stato: v }));
   }
 
-  // Garonio chiama Zeno vicino a un mezzo rotto: carro attrezzi e riparazione
+  // Garonio chiama Zeno vicino a un mezzo rotto o a secco: riparazione (di giorno) oppure solo rimorchio fino a casa
   chiama(v) {
-    const g = this.game, h = (this.s.minutes / 60) % 24;
-    if (h < 7 || h >= 20) { g.audio.sfx('bad'); g.ui.toast('Zeno non risponde. Segreteria: «Sono chiuso. Anche il telefono.» Riprova dalle 7 alle 20.', 'bad'); return; }
-    return g.ui.dialog([{ ...this._conferma(v), text: `Pronto? ${MEZZI_NOMI[v.id]} ${v.kind === "trattore" ? "rotto" : "rotta"}? Che novità. ${this._conferma(v).text}` }]);
+    const g = this.game, aperto = this._zenoAperto(), rotto = v.st.cond <= 0;
+    const nome = MEZZI_NOMI[v.id], o = v.kind === 'trattore' ? 'o' : 'a';
+    const choices = [];
+    if (rotto && aperto) choices.push({ label: `🔧 Riparalo (traino incluso)`, fn: () => [this._conferma(v)] });
+    if (!this.aCasa(v)) choices.push({ label: this.etichettaRimorchio(v), fn: () => this.rimorchio(v) });
+    choices.push({ label: 'Lascia stare', fn: null });
+    const testo = !aperto ? `${pick(ZENO.rimorchioNotte)} Riparazioni solo di giorno, dalle ${RIMORCHIO.ore[0]} alle ${RIMORCHIO.ore[1]}.`
+      : rotto ? `Pronto? ${nome} rott${o}? Che novità. Te l${o} riparo o te l${o} riporto a casa e basta?`
+      : `Pronto? ${nome} ${g.vehicles.aSecco(v) ? 'a secco' : 'piantat' + o}? Ti mando il carro.`;
+    return g.ui.dialog([this._zeno(testo, choices)]);
+  }
+
+  _zenoAperto() { const h = (this.s.minutes / 60) % 24; return h >= RIMORCHIO.ore[0] && h < RIMORCHIO.ore[1]; }
+  prezzoRimorchio(v) { return RIMORCHIO.prezzo[kindOf(v.id)] * (this._zenoAperto() ? 1 : RIMORCHIO.notte); }
+  etichettaRimorchio(v) {
+    const p = this.prezzoRimorchio(v), debito = this.s.money < p;
+    return `🚚 Rimorchio fino in azienda: ${p}€${debito ? ' (a debito)' : ''}${this._zenoAperto() ? '' : ', tariffa notte'}`;
+  }
+  // il mezzo è già al suo posto in azienda?
+  aCasa(v) { const p = this.game.vehicles.parking[v.id]; return !!p && Math.hypot(v.st.x - p.x, v.st.z - p.z) < 4; }
+
+  // Solo trasporto: il mezzo torna al suo posto in azienda, Garonio viaggia con Zeno.
+  // Si paga quello che si ha, il resto va sul conto di Zeno (debito).
+  rimorchio(v) {
+    const g = this.game, s = this.s, f = this.f, veh = g.vehicles;
+    const prezzo = this.prezzoRimorchio(v), paga = Math.max(0, Math.min(Math.floor(s.money), prezzo)), debito = prezzo - paga;
+    s.money -= paga; f.conto += debito;
+    s.minutes += RIMORCHIO.minuti;
+    // Garonio sale sul carro solo se è lì col mezzo (dal telefono può chiamare da lontano)
+    const P0 = g.player.group.position, conLui = veh.driving === v || (!g.interni?.attivo && Math.hypot(P0.x - v.st.x, P0.z - v.st.z) < 6);
+    if (veh.driving === v) veh.leave();
+    const p = veh.parking[v.id];
+    v.st.x = p.x; v.st.z = p.z; v.st.h = p.h; v.speed = 0; v.bloccatoT = 0;
+    if (!veh._free(v, v.st.x, v.st.z)) veh._findFree(v);
+    veh._pose(v);
+    // a secco: Zeno lascia un goccio, giusto per arrivare alla cisterna o al distributore
+    if (v.kind === 'punto') v.st.fuel = Math.max(v.st.fuel, RIMORCHIO.goccio);
+    const A = g.attrezzi;
+    if (v.kind === 'trattore' && A?.st?.gasolio) A.st.gasolio[v.id] = Math.max(A.gasolio(v.id), RIMORCHIO.goccio);
+    // Garonio scende dal carro accanto al mezzo
+    const [hx, hz] = v.T.box, P = g.player.group.position;
+    if (conLui) for (const [dx, dz] of [[0, hz + 0.5], [hx + 0.5, 0], [-(hx + 0.5), 0], [0, -(hz + 0.5)], [0, hz + 1.5]]) {
+      if (!g.world.blocked(v.st.x + dx, v.st.z + dz)) { P.set(v.st.x + dx, 0, v.st.z + dz); break; }
+    }
+    g.audio.sfx('coin');
+    g.emit('carroAttrezzi', { mezzo: v.id, prezzo, debito });
+    g.ui.toast(`🚚 ${MEZZI_NOMI[v.id]} riportat${v.kind === 'trattore' ? 'o' : 'a'} in azienda: ${prezzo}€${debito ? ` (${debito}€ sul conto di Zeno)` : ''}`, debito ? 'bad' : 'good');
+    const righe = [pick(this._zenoAperto() ? ZENO.rimorchio : ZENO.rimorchioNotte)];
+    if (debito) righe.push(ZENO.rimorchioDebito(debito));
+    if (v.st.cond <= 0) righe.push('Rotto resta rotto, eh. Per quello vieni in officina.');
+    return [this._zeno(righe.join(' '), [{ label: 'Grazie, Zeno', fn: null }])];
   }
 
   _guaiFissi(id) { return this.f.guai.filter(g => g.mezzo === id && !g.fino); }

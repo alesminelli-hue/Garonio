@@ -28,6 +28,8 @@ export const COMBAT = {
   attackTired: 2,        // stanchezza per un attacco normale
   fleeTired: 3,
   minutesPerRound: 3,    // minuti di gioco che passano per ogni round
+  stressDa: 30,          // da qui in su lo stress fa mancare i colpi...
+  stressMira: 0.32,      // ...fino a -32% di mira a stress 100
   rageStress: 60,        // stress minimo per usare Rabbia Incontrollata
   critBase: 0.05,        // probabilità base di colpo critico (+10% con Lottatore grado 2)
 };
@@ -485,7 +487,8 @@ export class Combat {
     await this._lunge(targets[0], rage);
     this.game.audio.sfx('shoo');
     let acc = 0.95;
-    if (s.stress >= 90) acc -= 0.15;
+    // stress: sopra 30 la mira peggiora sempre di più (a 100 un colpo su tre va a vuoto); la Rabbia no, quella sfoga
+    if (!rage) acc -= COMBAT.stressMira * Math.max(0, s.stress - COMBAT.stressDa) / (100 - COMBAT.stressDa);
     if (s.tired >= 80) acc -= 0.1;
     if (h.ubriaco > 0) acc -= 0.25;
     const carica = h.charge; h.charge = 0;
@@ -507,7 +510,7 @@ export class Combat {
     this.game.audio.sfx('dig');
     await this._sleep(500);
     await this._back();
-    if (s.stress >= 90 && !rage) await this._say('Garonio è così nervoso che trema tutto...', 900);
+    if (s.stress >= 70 && !rage) await this._say(s.stress >= 90 ? 'Garonio è così nervoso che trema tutto...' : 'Il nervoso gli fa tremare le mani...', 900);
     await this._checkDeaths();
   }
 
