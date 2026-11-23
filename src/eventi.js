@@ -43,6 +43,7 @@
 //   randagio        { esito }                  il cane randagio: 'scacciato' | 'amico' | 'battuto'
 //   impiccione      { png, scelta }            un paesano attacca bottone: 'ascolta' | 'taglia' | 'telefono'
 //   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
+//   telefono        { tipo, chi }              telefonino (src/telefono.js): 'risposta' | 'rifiutata' | 'persa' | 'chiamata' | 'sms'
 //   annaffiato      { x, z }                   zolla annaffiata a mano
 //   sconfitta       { place }                  Garonio va a terra in uno scontro (il santino non l'ha salvato)
 //   comprato        { tipo, id, prezzo }       acquisto nel magazzino del Bubetto (src/negozio.js)
