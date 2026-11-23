@@ -190,10 +190,14 @@ function frame() {
     world.followSun(p.x, p.z);
     checkPerf();
     minimap.update(p.x, p.z, dt);
-    const tx = Math.max(7, Math.min(MAP_W - 7, p.x + look.x)), tz = Math.max(4, Math.min(MAP_H - 3, p.z + look.y));
-    camPos.set(tx, 0.8, tz);
-    camera.position.lerp(camPos.add(CAM_OFF), 1 - Math.exp(-dt * 6));
-    camera.lookAt(camera.position.x - CAM_OFF.x, 0.8, camera.position.z - CAM_OFF.z);
+    if (game.interni?.attivo) game.interni.camera(camera, dt); // dentro un edificio: camera fissa sulla stanza
+    else {
+      const tx = Math.max(7, Math.min(MAP_W - 7, p.x + look.x)), tz = Math.max(4, Math.min(MAP_H - 3, p.z + look.y));
+      camPos.set(tx, 0.8, tz);
+      camera.position.lerp(camPos.add(CAM_OFF), game.interni?.scatto ? 1 : 1 - Math.exp(-dt * 6));
+      camera.lookAt(camera.position.x - CAM_OFF.x, 0.8, camera.position.z - CAM_OFF.z);
+      if (game.interni) game.interni.scatto = false;
+    }
   } else {
     // panoramica lenta dietro al titolo
     const t = performance.now() / 6000;

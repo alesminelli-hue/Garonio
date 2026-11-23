@@ -58,15 +58,20 @@ export class Personaggi {
     }
     for (const n of this.list) {
       const p = this._posto(n.def);
-      // "interno": quando ci saranno gli interni il personaggio starà dentro; fino ad allora resta davanti alla porta
-      const show = !!p && !(p.interno && this.game.interni?.attivo);
-      if (show !== n.visible || force) {
-        n.visible = show; n.a.group.visible = show;
-        if (show) { const q = this._libero(p.x, p.z); n.x = q.x; n.z = q.z; n.giroI = 1; }
+      // "interno": il personaggio sta dentro quell'edificio (coordinate locali della stanza, vedi src/interni.js)
+      // e compare solo quando ci entra anche Garonio; quelli di fuori spariscono mentre Garonio è dentro.
+      const dentro = this.game.interni?.attivo ? this.game.interni.edificio : null;
+      const show = !!p && (p.interno ? p.interno === dentro : !dentro);
+      if (show !== n.visible || p !== n.posto || force) {
+        n.visible = show; n.a.group.visible = show; n.posto = p;
+        if (show) {
+          const o = p.interno ? this.game.interni.mondo(p.interno, p.x, p.z) : p;
+          const q = this._libero(o.x, o.z); n.x = q.x; n.z = q.z; n.giroI = 1;
+        }
       }
       if (!show) continue;
       let moving = false;
-      if (n.def.giro && dt > 0 && !this._parlando) {
+      if (n.def.giro && !p.interno && dt > 0 && !this._parlando) {
         const [tx, tz] = n.def.giro[n.giroI];
         const dx = tx - n.x, dz = tz - n.z, d = Math.hypot(dx, dz);
         if (d < 0.1) n.giroI = (n.giroI + 1) % n.def.giro.length;

@@ -3,8 +3,8 @@
 //  Solo dati: dove stanno, a che ora, come sono fatti e cosa dicono.
 //
 //  posti: [{ ore: [da, a], x, z }]   dove si trova nelle varie ore (prima regola che combacia).
-//         Coordinate della mappa grande (src/map.js). interno: 'bar' = sta dentro un edificio
-//         (lo mostrerà il lavoro sugli interni; per ora non compare sulla mappa).
+//         Coordinate della mappa grande (src/map.js). interno: 'bar' = sta dentro quell'edificio e x, z sono
+//         coordinate locali della stanza (src/data/interni.js): compare solo quando Garonio entra.
 //  giro:  [[x, z], ...]              se c'è, il personaggio cammina avanti e indietro lungo questi punti.
 //  aspetto: stesso formato dei personaggi di src/pixel.js (usato per sprite e ritratto).
 //  saluti / chiacchiere: frasi a caso. {titolo} = titolo di Garonio, {nome} = nome del personaggio.
@@ -14,7 +14,8 @@
 export const PNG = {
   mamma: {
     nome: 'La Mamma', ruolo: 'Gentile, l\'unica che difende Garonio.',
-    posti: [{ ore: [6, 22], x: 68.8, z: 67.3 }],
+    // in cucina (src/data/interni.js), tranne a metà mattina quando stende i panni in cortile
+    posti: [{ ore: [6, 9], interno: 'casa', x: 19.8, z: 1.4 }, { ore: [9, 11], x: 68.8, z: 67.3 }, { ore: [11, 22], interno: 'casa', x: 20.4, z: 1.4 }],
     aspetto: { w: 16, h: 23, skin: '#f0c8a8', hair: '#8a6a4a', hairStyle: 'long', shirt: '#d87aa0', pants: '#5a4a6a', boots: '#3a2a1a', belly: true, eyes: 'normal' },
     amicizia: [0, 100, 60],
     saluti: [
@@ -30,7 +31,7 @@ export const PNG = {
   },
   consulente: {
     nome: 'Il Consulente', ruolo: 'Amico fidato al bar: consigli su cosa trovare in giro.',
-    posti: [{ ore: [9, 23], x: 16.6, z: 51.3, interno: 'bar' }],
+    posti: [{ ore: [9, 23], interno: 'bar', x: 10.15, z: 0.85 }],   // al suo tavolino
     aspetto: { w: 16, h: 24, skin: '#e8b48a', hair: '#2a2a2a', hairStyle: 'flat', shirt: '#4a6aa8', tie: '#a83a3a', pants: '#3a3a4a', boots: '#1a1a1a', eyes: 'normal' },
     amicizia: [0, 100, 20],
     saluti: [
@@ -44,9 +45,25 @@ export const PNG = {
       "La Vigilessa fa il giro della piazza come un orologio svizzero. Svizzero di Codogno.",
     ],
   },
+  loredana: {
+    nome: 'Loredana', ruolo: 'La barista. Ha visto tutto, ha sentito tutto, non dimentica niente.',
+    posti: [{ ore: [6, 24], interno: 'bar', x: 3.9, z: 1.05 }],   // dietro al bancone
+    aspetto: { w: 16, h: 24, skin: '#f0c8a8', hair: '#a0522d', hairStyle: 'long', shirt: '#ffffff', pants: '#333', boots: '#222', eyes: 'normal' },
+    amicizia: [-50, 50, 5],
+    saluti: [
+      "Il solito, Garonio?",
+      "Ancora tu? Oggi cosa ti ha fatto tuo padre?",
+      "Siediti, che hai la faccia di uno che ha visto Mister Mountain.",
+    ],
+    chiacchiere: [
+      "Le regole del bar sono tre: si paga, non si sputa, e le risse si fanno fuori. La terza è più un consiglio.",
+      "Tarcisio ha il conto aperto dal 1987. Ormai è un monumento.",
+      "Il Consulente beve un caffè all'ora. Non so che lavoro faccia, ma lo fa sveglio.",
+    ],
+  },
   zeno: {
     nome: 'Zeno il meccanico', ruolo: 'Scorbutico, ripara i mezzi e spesso ti frega.',
-    posti: [{ ore: [7, 19], x: 86.3, z: 67.0 }],
+    posti: [{ ore: [7, 19], interno: 'officina', x: 2.2, z: 1.05 }],   // dietro al bancone
     aspetto: { w: 17, h: 24, skin: '#d9a27a', hair: '#4a4a4a', hairStyle: 'flat', shirt: '#5a6a7a', overalls: '#2a3a5a', pants: '#2a3a5a', boots: '#1a1a1a', mustache: '#3a3a3a', eyes: 'angry' },
     amicizia: [-50, 50, -5],
     saluti: [
@@ -62,13 +79,14 @@ export const PNG = {
   },
   bubetto: {
     nome: 'Il Bubetto', ruolo: 'Magazzino di tutto: vestiti, armi, manuali. Dà missioni secondarie.',
-    posti: [{ ore: [7, 20], x: 7.6, z: 51.4 }],
+    // la mattina presto vende dal furgone in piazza, poi apre il magazzino
+    posti: [{ ore: [7, 9], x: 7.6, z: 51.4 }, { ore: [9, 20], interno: 'magazzino', x: 7.0, z: 1.35 }],
     aspetto: { w: 17, h: 24, skin: '#f0c098', hair: '#c88a3a', hairStyle: 'messy', hat: '#2a5a3a', shirt: '#e0c050', pants: '#6a4a2a', boots: '#3a2a1a', belly: true, eyes: 'normal' },
     amicizia: [-50, 50, 0],
     saluti: [
       "Garonio! Il mio cliente più affidabile. Affidabile nel senso che torni sempre.",
       "Roba buona, roba nuova, roba... trovata. Non chiedere.",
-      "Il magazzino lo sto sistemando. Intanto vendo dal furgone, come i grandi.",
+      "Benvenuto nel mio magazzino! Se non c'è, te lo procuro. Se c'è, costa.",
     ],
     chiacchiere: [
       "Questa giacca? Era di un sindaco. Di quale paese non lo so.",
