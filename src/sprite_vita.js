@@ -176,3 +176,45 @@ export function fumetto(testo) {
   g.fillStyle = INK; g.font = '8px monospace'; g.textBaseline = 'top'; g.fillText(testo, 3, 1);
   return outline(c);
 }
+
+// ---------- Lavoretti ed easter egg ----------
+export const ceppo = (accetta = true) => disegna(16, 14, P => {
+  P('#7a5434', 2, 6, 12, 8); P('#c8a070', 3, 5, 10, 2); P('#8a6038', 6, 5, 3, 1);
+  if (accetta) { P('#7a5a3a', 9, 0, 2, 7); P('#b8b8c0', 7, 0, 5, 3); }
+});
+export const catasta = () => disegna(30, 20, P => {
+  for (let r = 0; r < 3; r++) for (let i = 0; i < 5 - r; i++) {
+    const x = 2 + i * 5 + r * 2.5, y = 14 - r * 5;
+    P('#7a5434', x, y, 5, 5); P('#c8a070', x + 1, y + 1, 3, 3); P('#8a6038', x + 2, y + 2, 1, 1);
+  }
+});
+export const pontile = () => disegna(32, 14, P => {
+  P('#8a6038', 0, 2, 32, 6); for (let x = 0; x < 32; x += 4) P('#6a4826', x, 2, 1, 6);
+  P('#5a3a20', 3, 8, 2, 6); P('#5a3a20', 27, 8, 2, 6);
+});
+export const fontana = () => disegna(26, 22, P => {
+  P('#a8a8b0', 1, 12, 24, 9); P('#c8c8d0', 1, 12, 24, 2); P('#5a90c8', 3, 14, 20, 4);
+  P('#a8a8b0', 11, 3, 4, 10); P('#c8c8d0', 8, 2, 10, 2);
+  P('#8ad0ff', 12, 0, 2, 2); P('#8ad0ff', 7, 4, 1, 6); P('#8ad0ff', 18, 4, 1, 6);
+});
+export const gnomo = () => disegna(10, 16, P => {
+  P('#d83a2e', 3, 0, 4, 2); P('#d83a2e', 2, 2, 6, 3);         // cappello
+  P('#f0c8a8', 3, 5, 4, 2); P('#f4f4f4', 2, 7, 6, 3);          // faccia e barba
+  P('#3a6ac8', 2, 10, 6, 4); P('#5a3a22', 2, 14, 2, 2); P('#5a3a22', 6, 14, 2, 2);
+  P('#1a1420', 4, 5, 1, 1); P('#1a1420', 6, 5, 1, 1);
+});
+export function maialino(frame = 0) {
+  return disegna(18, 12, P => {
+    P('#f0a0b0', 3, 3, 11, 6); P('#e08898', 3, 7, 11, 2);
+    P('#f0a0b0', 13, 2, 4, 5); P('#e07888', 16, 4, 2, 2); P('#1a1420', 15, 3, 1, 1); P('#e07888', 13, 1, 2, 2);
+    P('#e07888', 1, 3 + frame, 2, 1);
+    P('#c86878', 4, 9, 2, 3 - frame); P('#c86878', 7, 9, 2, 2 + frame); P('#c86878', 10, 9, 2, 3 - frame); P('#c86878', 12, 9, 2, 2 + frame);
+  });
+}
+export const cerchioGrano = () => {
+  const [c, g] = PIX.makeCanvas(64, 64);
+  g.strokeStyle = '#a88a30'; g.lineWidth = 3;
+  for (const r of [28, 18, 8]) { g.beginPath(); g.arc(32, 32, r, 0, Math.PI * 2); g.stroke(); }
+  g.beginPath(); g.moveTo(4, 32); g.lineTo(60, 32); g.moveTo(32, 4); g.lineTo(32, 60); g.stroke();
+  return c;
+};

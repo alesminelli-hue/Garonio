@@ -43,6 +43,8 @@
 //   randagio        { esito }                  il cane randagio: 'scacciato' | 'amico' | 'battuto'
 //   impiccione      { png, scelta }            un paesano attacca bottone: 'ascolta' | 'taglia' | 'telefono'
 //   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
+//   pescato         { esito }                  pesca al laghetto (src/lavoretti.js); legna e pesca mandano anche azione { tipo }
+//   sorpresa        { tipo, esito }            easter egg ed eventi casuali (src/sorprese.js)
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }

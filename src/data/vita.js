@@ -8,7 +8,7 @@
 
 // ---------- Posti del paese dove vanno i paesani (coordinate della mappa grande) ----------
 export const METE = {
-  alimentari: [4.5, 50.7], bar: [13.5, 50.8], piazza: [20, 51], fontana: [8.5, 51.2], municipio: [27.1, 50.4],
+  alimentari: [4.5, 50.7], bar: [13.5, 50.8], piazza: [20, 51], fontana: [8.8, 51.7], municipio: [27.1, 50.4],
   casaRosa: [33, 50.7], strisce: [20.5, 57.2], tabacchi: [16, 66.8], casaAzzurra: [6, 66.8], fermata: [38.5, 57.1],
   paradiso: [49, 66.9], vialetto: [74.8, 58], aia: [72, 69.5], capannoni: [124, 70], ponte: [119, 30.5], laghetto: [35, 77],
 };
@@ -201,4 +201,80 @@ export const PARADISO = {
   },
   // il giorno dopo un tranvione, i paesani lo sanno
   pettegolezzo: ["Ehi, ma è vero quello che dicono del Paradiso? Ahahah!", "Ciao, «good job»! Ahahah!", "Ah, il Re del Paradiso! Com'era Ivan?"],
+};
+
+// ---------- Night Paradiso: l'interno esplorabile (motore: src/interni.js, logica: src/paradiso.js) ----------
+export const PARADISO_INTERNO = {
+  nome: 'Night Paradiso', w: 18, d: 8, h: 3.2, pavimento: 'moquette', muro: 'velluto', musica: 'notte',
+  entrata: { x: 3, z: 7.0 },
+  uscita: { x: 3, z: 7.7 },
+  stanze: [
+    { id: 'ingresso', nome: 'Ingresso del Paradiso', x0: 0, x1: 6, luce: 0.85 },
+    { id: 'sala', nome: 'Sala del Paradiso', x0: 6, x1: 18, luce: 0.75, pavimento: 'scacchi' },
+  ],
+  finestre: [],
+  mobili: [
+    // ingresso: la reception di Sandokan col catalogo
+    { tipo: 'bancone', x: 1, z: 1.7, w: 3, d: 0.6, h: 1.1, colore: '#2a1a2a', piano: '#c8a040', zona: 'catalogo', etichetta: 'Sandokan: il catalogo' },
+    { tipo: 'insegna', parete: true, x: 1.2, y: 2.3, w: 3.4, h: 0.5, testo: 'NIGHT PARADISO' },
+    { tipo: 'pianta', x: 5, z: 0.4, w: 0.5, d: 0.5, h: 1.3 },
+    { tipo: 'tappeto', pavimento: true, x: 2, z: 4.2, w: 2.2, d: 2.4, colore: '#a8203a' },
+    { tipo: 'zerbino', pavimento: true, x: 2.3, z: 7.25, w: 1.4, d: 0.6, colore: '#5a1a3a' },
+    // sala: bancone, divanetti, pista, juke-box, privé
+    { tipo: 'bancone', x: 7, z: 1.7, w: 4, d: 0.6, h: 1.1, colore: '#3a1a3a', piano: '#e0d0e8', spine: true, zona: 'bancone', etichetta: 'Bancone di Lola' },
+    { tipo: 'mensola', parete: true, x: 7.2, y: 1.3, w: 3.6, h: 1.0, merce: 'bottiglie' },
+    { tipo: 'sgabello', x: 7.6, z: 2.6, w: 0.4, d: 0.4, h: 0.7, colore: '#c83a8a' },
+    { tipo: 'sgabello', x: 10, z: 2.6, w: 0.4, d: 0.4, h: 0.7, colore: '#c83a8a' },
+    { tipo: 'divano', x: 12.2, z: 0.4, w: 2.6, d: 0.95, h: 0.9, colore: '#a8203a', zona: 'divano', etichetta: 'Il Commendatore sul divanetto' },
+    { tipo: 'tappeto', pavimento: true, x: 8.4, z: 4.2, w: 3.2, d: 2.2, colore: '#3a3aa8', zona: 'pista', etichetta: 'Pista da ballo' },
+    { tipo: 'tavolino', x: 13.2, z: 4.8, w: 0.9, d: 0.8, h: 0.75, colore: '#2a1a2a', zona: 'geometra', etichetta: 'Tavolino in penombra' },
+    { tipo: 'tavolino', x: 15.8, z: 3.2, w: 0.9, d: 0.8, h: 0.75, colore: '#2a1a2a', zona: 'moreno', etichetta: 'Tavolino del Moreno' },
+    { tipo: 'jukebox', x: 16.8, z: 0.25, w: 1.0, d: 0.7, h: 1.7, zona: 'jukebox', etichetta: 'Juke-box' },
+    { tipo: 'porta', parete: true, x: 15.0, y: 0, w: 1.1, h: 2.1, zona: 'prive', etichetta: 'Porta del privé' },
+    { tipo: 'pianta', x: 6.4, z: 6.6, w: 0.5, d: 0.5, h: 1.2 },
+  ],
+};
+
+// personaggi dentro (coordinate locali della stanza) e cosa dicono
+export const PARADISO_GENTE = {
+  sandokan: { nome: 'Sandokan, il buttafuori', x: 2.5, z: 1.2, aspetto: { w: 20, h: 28, skin: '#d9a27a', hair: '#1a1a1a', hairStyle: 'bald', shirt: '#1a1a24', pants: '#1a1a24', boots: '#0a0a0a', beard: '#1a1a1a', tie: '#c0242c', belly: true, eyes: 'angry' } },
+  lola: { nome: 'Lola, la barista', x: 9, z: 1.2, aspetto: { w: 15, h: 23, skin: '#f0c0a0', hair: '#1a1a2a', hairStyle: 'long', shirt: '#c83a8a', pants: '#1a1a2a', boots: '#2a1a2a', eyes: 'normal' } },
+  commendatore: { nome: 'Il Commendatore', x: 13.5, z: 1.7, aspetto: { w: 17, h: 24, skin: '#e8b48a', hair: '#e0e0e0', hairStyle: 'grey', shirt: '#f4f4f4', pants: '#3a3a4a', boots: '#1a1a1a', tie: '#3a3aa8', mustache: '#e0e0e0', belly: true, eyes: 'sleepy' } },
+  geometra: { nome: 'Il Geometra Ballarin', x: 13.6, z: 4.3 },
+  moreno: { nome: 'Il Moreno in tuta', x: 16.3, z: 4.3 },
+};
+
+export const PARADISO_TESTI = {
+  entrata: ["Luci viola, musica di Gigi D'Agostino, odore di deodorante alla vaniglia. Benvenuto in Paradiso.", "La porta si chiude alle tue spalle con un «tump» da film. Sandokan ti fa l'occhiolino. Fa paura."],
+  bancone: {
+    saluto: ["Lola asciuga un bicchiere da quando hai aperto la porta. «Cosa ti servo, bello?»", "«Il figlio del Gigante! Tuo padre veniva qui negli anni '80. Ballava il twist sul bancone.»"],
+    ordini: [
+      { label: 'Analcolico alla fragola (5€): stress −6', prezzo: 5, stress: -6, testo: "Rosa, dolce, con l'ombrellino. Garonio si sente molto adulto." },
+      { label: 'Cocktail «Paradiso» (12€): stress −15, stanchezza +5', prezzo: 12, stress: -15, stanchezza: 5, testo: "Blu, fumante, con dentro una ciliegia e forse un pesce. Si vede la musica." },
+      { label: 'Bottiglia di «champagne» (60€): stress −30, +10 XP', prezzo: 60, stress: -30, xp: 10, testo: "Champagne di Broni. Le bollicine ci sono, il resto è fede. Tutta la sala applaude." },
+    ],
+  },
+  commendatore: [
+    "«Ragazzo, io qui ho speso tre capannoni e una Mercedes. Ne è valsa la pena? ...Sì.»",
+    "«Il segreto della vita? Mai dire a tua moglie che vai al Paradiso. Dille che vai a messa. È quasi la stessa cosa, c'è anche qui l'incenso.»",
+    "«Ti do un consiglio da Commendatore: il tranvione arriva quando ti senti furbo. Quindi non sentirti mai furbo.»",
+    "Il Commendatore dorme seduto con un sigaro spento in bocca. Russa a tempo di musica.",
+  ],
+  geometra: {
+    primo: "Il Geometra Ballarin si nasconde dietro un menu. «Tu non mi hai visto. Io non ti ho visto. Tieni 10€ e non dirlo alla Pina.»",
+    dopo: "Il Geometra fa finta di essere una pianta. Non è convincente.",
+    soldi: 10,
+  },
+  moreno: [
+    "«Garonio! Sei venuto a vedere la mia telecamera nuova?» No. No, grazie.",
+    "Il Moreno, in tuta, prova a fare il moonwalk. Scivola. Rimane a terra per un po'. «Sto bene!»",
+    "«Ho un sistema per evitare il tranvione: vengo solo a guardare. Costa uguale, però.»",
+  ],
+  pista: { testo: "Garonio si lancia sulla pista. Mosse da trattorista: aratura, semina, falciatura. La sala è perplessa. Stress −6, +3 XP", stress: -6, stanchezza: 4, xp: 3 },
+  jukebox: {
+    testo: "Il juke-box del Paradiso ha solo tre dischi, ma sono quelli giusti.",
+    dischi: ["L'amour toujours (Gigi D'Agostino)", "Tu vuò fà l'americano", "Romagna mia (versione dance)"],
+    scelto: "Parte «{titolo}». Il Commendatore si sveglia e balla da seduto. Stress −3",
+  },
+  prive: "La porta del privé. C'è scritto «SOLO CON PRENOTAZIONE». La prenotazione si fa da Sandokan, al catalogo.",
 };

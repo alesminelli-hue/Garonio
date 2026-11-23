@@ -31,6 +31,8 @@ import { Bestie } from './bestie.js';
 import { Vita } from './vita.js';
 import { Imprevisti } from './imprevisti.js';
 import { Paradiso } from './paradiso.js';
+import { Lavoretti } from './lavoretti.js';
+import { Sorprese } from './sorprese.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -172,6 +174,8 @@ export class Game {
     this.vita = new Vita(this); this.vita.init();
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
+    this.lavoretti = new Lavoretti(this); this.lavoretti.init();   // XP dalle faccende, legna, pesca (src/lavoretti.js)
+    this.sorprese = new Sorprese(this); this.sorprese.init();      // easter egg e cose che capitano (src/sorprese.js)
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
