@@ -324,7 +324,7 @@ export class Vehicles {
     if (v.kind === 'vespa') {
       const fall = speed >= v.T.fallSpeed || v.st.cond <= 0;
       if (fall) {
-        s.health = clamp(s.health - 6, 0, 100); s.stress = clamp(s.stress + 4, 0, 100);
+        s.health = clamp(s.health - 6, 0, s.maxHealth || 100); s.stress = clamp(s.stress + 4, 0, 100);
         this.ui.toast(`Botta! Garonio vola giù dalla Vespa. Vita -6, Vespa -${dmg}%`, 'bad');
       } else this.ui.toast(`Strisciata! Vespa -${dmg}%`, 'bad');
       if (v.st.cond <= 0) this.ui.toast('La Vespa non ne vuole più sapere. Serve l\'officina.', 'bad');
