@@ -203,6 +203,7 @@ export class Vehicles {
     }
     if (!best) return null;
     const v = best, name = v.T.label ?? v.T.name, sul = v.T.article === 'il' ? 'sul' : 'sulla';
+    if (v.st.cond <= 0 && this.game.officina) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore rotto' : name + ' rotta'}: chiama Zeno (traino e riparazione)`, fn: () => this.game.officina.chiama(v) };
     if (v.st.cond <= 0) return { label: v.kind === 'trattore' ? 'Trattore rotto: va riparato in officina' : `${name} rotta: va riparata in officina`, fn: () => this._brokenMsg(v) };
     if (v.kind === 'punto' && v.st.fuel <= 0) return { label: 'Punto a secco: fai il pieno in officina', fn: () => this._brokenMsg(v) };
     if (v.kind === 'vespa') return { label: 'Sali sulla Vespa e prova a metterla in moto', fn: () => this.tryMount(v) };
