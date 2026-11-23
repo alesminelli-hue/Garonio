@@ -54,17 +54,26 @@ Regola chiave: **lavorare stanca e stressa, riposare costa tempo**. Il giocatore
 - Esperienza → livelli → abilità (meno stanchezza per lavoro, più resistenza allo stress, colpi più efficaci contro le nutrie).
 - Le stagioni cambiano colture, nemici ed eventi.
 
-## 7. Mappa (piccola e raccolta)
+## 7. Mappa (160 × 112 caselle, luoghi distanti: a piedi si arriva, coi mezzi si fa prima)
 
 ```
-            [ CAMPI ]  ← nutrie
-               |
-[ BAR ] —— strada —— [ CASA ] — [ OFFICINA ]
-                         |
-                 [ ORTO ] [ POLLAIO ]
-                         |
-                 [ CAPANNONI MAIALI ]
+ ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ CANALE (da qui escono le nutrie) ≈≈≈≈≈≈≈≈╪ponte≈≈≈≈≈≈
+   [grano]   FIENILE  [CAMPO DI MAIS]   [arato]                 [grano]
+   ═════════════════ capezzagna (sterrato) ═════════════════════════════
+       ║                    ║                                        ║
+ BAR · paese ═══════════════╬══ strada provinciale (asfalto) ════════╬═══
+                            ║                    silos ║
+                      CASA  OFFICINA  tettoia      CAPANNONI MAIALI
+                      orto  pollaio                recinto dei maiali
+      laghetto
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ bosco ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
+
+Distanze a piedi (camminando): casa → bar circa 20 secondi, casa → campo circa 15, casa → maiali circa 20, bar → maiali più di 35. Per questo servono Vespa, Punto e trattori.
+
+- **Strade**: provinciale asfaltata (veloce), strade sterrate (medie), erba e campi (lenti). Cartelli agli incroci.
+- **Minimappa** in basso a destra (sul telefono in alto): tasto **N** o tocco per ingrandirla con i nomi dei luoghi.
+- Per gli sviluppatori: tutti i dati della mappa (luoghi, strade, zone, punti di parcheggio dei mezzi) stanno in `src/map.js`.
 
 - **Casa**: si dorme, si salva, si ricevono le missioni dal Gigante.
 - **Officina**: si comprano e migliorano attrezzi (zappa, annaffiatoio, rete anti‑nutria), mezzi (bici, motozappa, trattore) e abilità.
@@ -148,7 +157,7 @@ Per aggiungere una traccia basta mettere il file `.mp3` nella cartella e scriver
 
 ## 12. Controlli
 
-- PC: frecce o WASD per muoversi, **Shift** per correre, **E / Spazio** per agire, **Q** per saltare, **M** musica.
+- PC: frecce o WASD per muoversi, **Shift** per correre, **E / Spazio** per agire, **Q** per saltare, **M** musica, **N** mappa.
 - Telefono: levetta virtuale (spinta fino in fondo = corsa), pulsante **E** per agire e **Q** per saltare.
 
 ### Animazioni di Garonio (dal foglio personaggio)

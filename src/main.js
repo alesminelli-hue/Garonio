@@ -5,6 +5,8 @@ import { Game, CONFIG, hasSave } from './game.js';
 import { UI } from './ui.js';
 import { Audio } from './audio.js';
 import { loadGaronio } from './pixel.js';
+import { PLACES } from './map.js';
+import { Minimap } from './minimap.js';
 
 const $ = id => document.getElementById(id);
 const TARGET_H = 270; // risoluzione verticale interna: più bassa = pixel più grossi
@@ -34,6 +36,7 @@ await loadGaronio();
 const world = new World(scene);
 world.build();
 const game = new Game(world, ui, audio);
+const minimap = new Minimap(world.grid);
 
 // ---------- Input ----------
 const keys = new Set();
@@ -52,6 +55,7 @@ window.addEventListener('keydown', e => {
   if (['KeyE', 'Space', 'Enter'].includes(e.code) && !e.repeat) game.action();
   if (e.code === 'KeyQ' && !e.repeat) game.jump();
   if (e.code === 'KeyM') toggleMusic();
+  if (e.code === 'KeyN') minimap.toggle();
   if (e.code.startsWith('Arrow') || e.code === 'Space') e.preventDefault();
 });
 window.addEventListener('keyup', e => {
@@ -113,6 +117,7 @@ function frame() {
     game.update(dt);
     const p = game.player.group.position;
     world.updateOcclusion(p.x, p.z);
+    minimap.update(p.x, p.z, dt);
     const tx = Math.max(7, Math.min(MAP_W - 7, p.x)), tz = Math.max(4, Math.min(MAP_H - 3, p.z));
     camPos.set(tx, 0.8, tz);
     camera.position.lerp(camPos.clone().add(CAM_OFF), 1 - Math.pow(0.001, dt));
@@ -120,11 +125,12 @@ function frame() {
   } else {
     // panoramica lenta dietro al titolo
     const t = performance.now() / 6000;
-    camera.position.set(20 + Math.sin(t) * 8, 15, 15 + 21);
-    camera.lookAt(20 + Math.sin(t) * 8, 0, 15);
+    const C = PLACES.titleCam;
+    camera.position.set(C.x + Math.sin(t) * 10, 15, C.z + 21);
+    camera.lookAt(C.x + Math.sin(t) * 10, 0, C.z);
   }
   renderer.render(scene, camera);
   requestAnimationFrame(frame);
 }
 frame();
-window.__garonio = { game, world, ui, audio, CONFIG };
+window.__garonio = { game, world, ui, audio, CONFIG, minimap };
