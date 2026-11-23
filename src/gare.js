@@ -32,6 +32,7 @@ const CSS = `
   font:bold 22vmin/1 monospace;color:#f0d050;text-shadow:0 0 0 #1a1420,4px 4px 0 #1a1420,-2px -2px 0 #1a1420}
 #gara-conto.via{color:#62d050}
 #gara-hud[hidden],#gara-conto[hidden]{display:none}
+@media (max-width:700px){#gara-hud{top:27%;font-size:12px;padding:4px 10px}#gara-hud .pos{font-size:16px}#gara-hud .dir{font-size:11px}}
 `;
 
 export class Gare {
@@ -316,8 +317,9 @@ export class Gare {
     const r = this.r, v = r.v;
     const mio = r.finito ? 0 : this._punti(v.st.x, r.fase), suo = r.ai.finito ? 1e9 : this._punti(r.ai.x, r.ai.fase);
     const pos = mio >= suo ? '1°' : '2°';
-    const dir = r.fase === 0 ? `→ ${G.testi.boa}` : `← ${G.testi.traguardo}`;
-    const html = `<span class="pos">${pos}</span>🚜 vs ${r.R.nome} · ${tempo(r.t)}<span class="dir">${dir}</span>`;
+    const corto = innerWidth < 700;
+    const dir = r.fase === 0 ? `→ ${corto ? 'Alla bandierina e indietro' : G.testi.boa}` : `← ${G.testi.traguardo}`;
+    const html = `<span class="pos">${pos}</span>🚜 vs ${innerWidth < 700 ? r.R.nome.replace(/^(Il cugino|Il|Mister) /, '') : r.R.nome} · ${tempo(r.t)}<span class="dir">${dir}</span>`;
     if (html !== this._html) { this.hud.innerHTML = html; this._html = html; }
   }
 
