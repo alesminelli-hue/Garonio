@@ -247,7 +247,7 @@ export class Spawn {
     const P = this.game.player.group.position;
     for (const g of this.gruppi) {
       if (g.stato === 'scappa') continue;
-      if (Math.hypot(P.x - g.x, P.z - g.z) < 2.4) return { label: fill(AVVISI.attaccaPrimo, { nome: g.nome }), fn: () => this.combatti(g, true) };
+      if (Math.hypot(P.x - g.x, P.z - g.z) < 2.4) return { label: fill(AVVISI.attaccaPrimo, { nome: ENEMIES[g.membri[0]].name + (g.membri.length > 1 ? ` +${g.membri.length - 1}` : '') }), fn: () => this.combatti(g, true) };
     }
     return null;
   }
