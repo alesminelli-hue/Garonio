@@ -202,6 +202,8 @@ export class Interni {
   init() {
     const g = this.game;
     g.world.bloccatoFuoriMappa = (x, z, r) => this.blocked(x, z, r);
+    // Loredana ti ha bandito dal bar (lavoro "bar"): fuori, subito
+    g.on('bandoBar', () => { if (this.edificio === 'bar') setTimeout(() => this.esci(), 300); });
     this._css();
     const st = this.st;
     if (st.dentro && this.defs[st.dentro]) {
@@ -270,6 +272,7 @@ export class Interni {
     if (!def) return false;
     const g = this.game;
     if (this.attivo || (g.locked && !opts.ripristino)) return true;
+    if (opts.ripristino && id === 'bar' && g.bar?.bandito?.()) { this.st.dentro = null; g.player.group.position.set(PLACES.spawn.x, 0, PLACES.spawn.z); return true; }
     if (!opts.ripristino) {
       if (def.orari) {
         const h = (this.s.minutes / H) % 24;
