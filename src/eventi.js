@@ -1,0 +1,28 @@
+// Piccolo sistema di eventi: i vari pezzi del gioco si parlano senza conoscersi.
+// game.on('nemicoSconfitto', d => ...)   game.emit('nemicoSconfitto', { id: 'nutria' })
+//
+// Eventi che il gioco manda già (aggiungerne altri è libero, basta documentarli qui):
+//   nuovoGiorno     { day }                    dopo il risveglio
+//   ora             { ora }                    ogni ora di gioco piena
+//   azione          { tipo }                   zappa, semina, annaffia, raccogli, uovo, nutri
+//   raccolto        { crop }                   pianta raccolta (pomodoro, mais)
+//   venduto         { tot }                    vendita alla cassa
+//   nemicoSconfitto { id, place }              uno per ogni nemico battuto
+//   combattimento   { esito, place, nemici }   fine scontro: 'win' | 'lose' | 'flee'
+//   missioneFatta   { id }  missioneFallita { id }   missioni del Gigante
+//   livello         { level }                  Garonio sale di livello
+//   entrato         { edificio }               entra in casa, officina, bar...
+//   parlato         { png }                    finita una chiacchierata con un personaggio
+//   oggetto         { id, n }                  oggetto aggiunto (n > 0) o tolto (n < 0) dallo zaino
+//   secondaria      { id, stato }              missione secondaria: 'accettata' | 'pronta' | 'fatta' | 'fallita'
+export class Eventi {
+  constructor() { this._h = {}; }
+  on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }
+  off(name, fn) { const l = this._h[name]; if (l) l.splice(l.indexOf(fn) >>> 0, 1); }
+  emit(name, data = {}) {
+    for (const fn of [...(this._h[name] || [])]) {
+      try { fn(data); } catch (e) { console.error(`[eventi] ${name}`, e); }
+    }
+    for (const fn of [...(this._h['*'] || [])]) { try { fn(name, data); } catch (e) { console.error(e); } }
+  }
+}

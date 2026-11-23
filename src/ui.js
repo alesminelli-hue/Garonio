@@ -29,11 +29,12 @@ export class UI {
     this._set('level', 'text', `Lv ${s.level}`);
     this._set('xp', 'width', `${Math.min(100, s.xp / (s.level * 20) * 100).toFixed(1)}%`);
     for (const k of ['health', 'stress', 'tired']) {
-      const v = Math.max(0, Math.min(100, s[k]));
+      const max = k === 'health' ? (s.maxHealth || 100) : 100;
+      const raw = Math.max(0, Math.min(max, s[k])), v = raw / max * 100;
       this._set('bar-' + k, 'width', v.toFixed(1) + '%');
       const danger = k === 'health' ? v < 25 : v > 80;
       if (this._hud['d' + k] !== danger) { this._hud['d' + k] = danger; $('bar-' + k).parentElement.parentElement.classList.toggle('danger', danger); }
-      this._set('val-' + k, 'text', String(Math.round(v)));
+      this._set('val-' + k, 'text', String(Math.round(raw)));
     }
     this._set('inv', 'text', `🥚 ${s.inv.uova}  🍅 ${s.inv.pomodoro}  🌽 ${s.inv.mais}`);
     const m = $('mission');

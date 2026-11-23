@@ -255,6 +255,7 @@ export class Combat {
       s.money += money;
       await this._say(`Vittoria! +${xp} esperienza${money ? `, +${money}€ (offre il bar)` : ''}, stress -${calm}.`, 2200, true);
       game._xp(xp);
+      for (const e of this.enemies) game.emit?.('nemicoSconfitto', { id: e.id, place: this.place });
     } else if (result === 'lose') {
       game.audio.sfx('bad');
       this._heroPose('ko');
@@ -265,6 +266,7 @@ export class Combat {
     }
     s.minutes += this.round * COMBAT.minutesPerRound;
     this._clampStats();
+    game.emit?.('combattimento', { esito: result, place: this.place, nemici: this.enemies.map(e => e.id) });
     await this.game.ui.fade(true);
     this.root.hidden = true;
     document.body.classList.remove('in-battle');
@@ -384,7 +386,7 @@ export class Combat {
 
   _heroAtk() {
     const s = this.s;
-    return COMBAT.heroBaseAtk + s.level * 2 + (s.upgrades && s.upgrades.zappa ? 2 : 0);
+    return this.game.prog ? this.game.prog.atk() : COMBAT.heroBaseAtk + s.level * 2;
   }
 
   _dmg(atk, pow, def) { return Math.max(1, Math.round((atk * pow - def * 0.5) * rand(0.85, 1.15))); }
@@ -504,7 +506,7 @@ export class Combat {
       this._heroPose('idle');
       return;
     }
-    let dmg = mv.pow > 0 ? this._dmg(e.atk * (e.scared > 0 ? 0.6 : 1), mv.pow, COMBAT.heroBaseDef + s.level) : 0;
+    let dmg = mv.pow > 0 ? this._dmg(e.atk * (e.scared > 0 ? 0.6 : 1), mv.pow, (this.game.prog ? this.game.prog.def() : COMBAT.heroBaseDef + s.level)) : 0;
     let stress = mv.stress;
     if (h.defending) { dmg = Math.ceil(dmg / 2); stress = Math.ceil(stress / 2); }
     if (h.napping) dmg = Math.round(dmg * 1.5);
@@ -593,10 +595,11 @@ export class Combat {
   _refresh() {
     const s = this.s;
     for (const k of ['health', 'stress', 'tired']) {
-      const v = clamp(s[k], 0, 100);
+      const max = k === 'health' ? (s.maxHealth || 100) : 100;
+      const v = clamp(s[k] / max * 100, 0, 100);
       const b = this.partyBox.querySelector('.bar.' + k);
       b.querySelector('.fill').style.width = v + '%';
-      b.querySelector('span').textContent = Math.round(v);
+      b.querySelector('span').textContent = Math.round(s[k]);
       b.classList.toggle('danger', k === 'health' ? v < 25 : v > 80);
     }
     this.partyBox.querySelector('.b-lv').textContent = `Lv ${s.level}`;
@@ -605,7 +608,7 @@ export class Combat {
 
   _clampStats() {
     const s = this.s;
-    s.health = clamp(s.health, 0, 100); s.stress = clamp(s.stress, 0, 100); s.tired = clamp(s.tired, 0, 100);
+    s.health = clamp(s.health, 0, s.maxHealth || 100); s.stress = clamp(s.stress, 0, 100); s.tired = clamp(s.tired, 0, 100);
   }
 
   _msg(text) { this.msgBox.textContent = text; }

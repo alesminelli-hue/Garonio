@@ -40,6 +40,7 @@ await loadGaronio();
 const world = new World(scene);
 world.build();
 const game = new Game(world, ui, audio);
+window.garonio = game; // comodo per provare dalla console del browser
 
 // Qualità automatica: se il telefono fatica (meno di ~30 fotogrammi al secondo), spegne ombre e sfocature.
 const perf = { s: 0, n: 0, done: false };
@@ -77,6 +78,7 @@ window.addEventListener('keydown', e => {
   if (e.code === 'KeyQ' && !e.repeat) game.jump();
   if (e.code === 'KeyM') toggleMusic();
   if (e.code === 'KeyN') minimap.toggle();
+  if (e.code === 'KeyJ' && !e.repeat) game.menu.apri();
   if (e.code.startsWith('Arrow') || e.code === 'Space') e.preventDefault();
 });
 window.addEventListener('keyup', e => {
@@ -120,6 +122,7 @@ const buzz = ms => { try { navigator.vibrate?.(ms); } catch {} };
 $('btn-a').addEventListener('pointerdown', e => { e.preventDefault(); audio.unlock(); buzz(12); if (ui.busy()) ui.key('ok'); else game.action(); });
 $('btn-jump').addEventListener('pointerdown', e => { e.preventDefault(); audio.unlock(); buzz(8); game.jump(); });
 $('btn-music').addEventListener('click', e => { e.stopPropagation(); toggleMusic(); });
+$('btn-menu').addEventListener('click', e => { e.stopPropagation(); audio.unlock(); if (started) game.menu.apri(); });
 function toggleMusic() { const on = audio.toggle(); $('btn-music').textContent = on ? '♪' : '✕'; }
 if (matchMedia('(pointer: coarse)').matches) document.body.classList.add('touch');
 

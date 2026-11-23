@@ -8,6 +8,12 @@ import { pick, fill, pagina, pagine, ora, variabiliMissione } from './racconto.j
 import { PLACES, MAP_VERSION, coopSpot } from './map.js';
 import { Combat } from './combat.js';
 import { Vehicles } from './vehicles.js';
+import { Eventi } from './eventi.js';
+import { Progressione, freshProg } from './progressione.js';
+import { Personaggi } from './png.js';
+import { Secondarie } from './secondarie.js';
+import { Menu } from './menu.js';
+import { puoComparire } from './data/nemici.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -52,6 +58,7 @@ function fresh() {
     day: 1, minutes: 6 * H, health: 100, stress: 15, tired: 0, money: 20, xp: 0, level: 1,
     inv: { uova: 0, pomodoro: 0, mais: 0 }, upgrades: {}, plots: {}, eggs: [],
     fedToday: false, fedYesterday: false, mission: null, today: newStats(),
+    maxHealth: 100, prog: freshProg(), png: {}, quests: { attive: {}, fatte: [], fallite: [] }, flags: {},
     px: PLACES.spawn.x, pz: PLACES.spawn.z, mapVersion: MAP_VERSION, introDone: false, lastLay: 6 * H, nextNutria: 10 * H,
   };
 }
@@ -68,7 +75,16 @@ export class Game {
     this.locked = false; this.mm = null; this.hop = 0; this.caughtAt = -999; this.saveHour = 6;
     this.inBar = false;
     this.combat = new Combat(this);
+    // base comune per i lavori paralleli (vedi GDD capitolo 21)
+    this.ev = new Eventi();
+    this.prog = new Progressione(this);
+    this.png = new Personaggi(this);
+    this.quests = new Secondarie(this);
+    this.menu = new Menu(this);
   }
+
+  on(name, fn) { return this.ev.on(name, fn); }
+  emit(name, data) { this.ev.emit(name, data); }
 
   // ---------- Avvio ----------
   async start(continueSave) {
@@ -78,6 +94,7 @@ export class Game {
     if (this.s.mapVersion !== MAP_VERSION) { // salvataggio fatto con una mappa vecchia: campi e uova ripartono da zero
       Object.assign(this.s, { plots: {}, eggs: [], px: PLACES.spawn.x, pz: PLACES.spawn.z, mapVersion: MAP_VERSION });
     }
+    this.prog.migra();
     const W = this.world;
     const gf = PIX.garonioFrames();
     this.player = W.actor(gf.frames, { w: gf.w, h: gf.h, shadow: 0.45 });
@@ -107,6 +124,8 @@ export class Game {
     this.player.group.position.set(this.s.px, 0, this.s.pz);
     this.vehicles = new Vehicles(this);
     this.vehicles.init();
+    this.png.init();
+    this.quests.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
@@ -185,7 +204,7 @@ export class Game {
     } else if (moving) {
       ix /= Math.max(1, len); iz /= Math.max(1, len);
       let sp = this.input.run ? CONFIG.runSpeed : CONFIG.walkSpeed;
-      if (this.s.upgrades.stivali) sp *= 1.2;
+      sp *= 1 + this.prog.bonus('velocita');
       if (this.s.tired > 80) sp *= 0.7;
       const nx = P.x + ix * sp * dt, nz = P.z + iz * sp * dt;
       if (!this.world.blocked(nx, P.z)) P.x = nx;
@@ -218,7 +237,7 @@ export class Game {
     if (s.tired > 75) s.stress += 2 * hr;
     if (s.stress >= 100) s.health -= 8 * hr;
     else if (s.stress < 50) s.health += 1 * hr;
-    s.tired = clamp(s.tired, 0, 100); s.stress = clamp(s.stress, 0, 100); s.health = clamp(s.health, 0, 100);
+    s.tired = clamp(s.tired, 0, 100); s.stress = clamp(s.stress, 0, 100); s.health = clamp(s.health, 0, s.maxHealth);
 
     // il Gigante ti becca a dormire
     const gp = this.gigante.group.position, pp = this.player.group.position;
@@ -244,7 +263,7 @@ export class Game {
 
     // salvataggio automatico ogni ora
     const hNow = Math.floor(s.minutes / H);
-    if (hNow !== this.saveHour) { this.saveHour = hNow; this.save(); }
+    if (hNow !== this.saveHour) { this.saveHour = hNow; this.save(); this.emit('ora', { ora: hNow % 24 }); }
 
     if (s.health <= 0) this._faint();
     else if (s.tired >= 100) this._collapse();
@@ -257,9 +276,11 @@ export class Game {
     m.progress = this.s.today[m.stat] || 0;
     if (m.progress >= m.n) {
       m.done = true; this.s.money += m.pay; this._xp(d?.xp ?? 10); this.audio.sfx('coin');
+      this.emit('missioneFatta', { id: m.id });
       this.ui.toast(`Missione completata! +${m.pay}€  ${NOMI.gigante}: «${pick(d?.successo || GIGANTE.missioneFatta)}»`, 'good');
     } else if (this.s.minutes >= m.deadline) {
       m.failed = true;
+      this.emit('missioneFallita', { id: m.id });
       this.mountain('missione', d?.stressFallimento ?? 30, d && fill(pick(d.rimprovero), variabiliMissione(m)));
     }
   }
@@ -279,6 +300,8 @@ export class Game {
     if (this.vehicles.driving) return this.vehicles.target();
     const gp = this.gigante.group.position;
     if (d(gp.x, gp.z) < 1.5) return { label: 'Parla col Gigante', fn: () => this.talkGigante() };
+    const pt = this.png.bersaglio();
+    if (pt) return pt;
     for (const n of this.nutrie) if (n.state !== 'flee' && d(n.x, n.z) < 1.6) return { label: 'Affronta la nutria!', fn: () => this.shoo(n) };
     for (const e of this.s.eggs) if (d(e.x, e.z) < 0.9) return { label: 'Raccogli l\'uovo', fn: () => this.pickEgg(e) };
     for (const b of BUILDINGS) if (b.door && !b.noDoor && d(b.door.x, b.door.z) < 1.1) {
@@ -315,7 +338,7 @@ export class Game {
 
   _cost(kind) {
     const a = ACTIONS[kind];
-    let tired = a.tired * Math.max(0.6, 1 - 0.04 * (this.s.level - 1));
+    let tired = a.tired * this.prog.fatica();
     if (kind === 'zappa' && this.s.upgrades.zappa) tired *= 0.5;
     this.s.tired += tired;
     this.s.stress += a.stress + (this.s.tired > 70 ? 0.5 : 0);
@@ -323,20 +346,15 @@ export class Game {
     this._xp(a.xp);
     this.audio.sfx(a.sfx);
     this.actT = 0.3; this.actName = kind === 'scaccia' ? 'attack' : 'work';
+    this.emit('azione', { tipo: kind });
   }
 
-  _xp(n) {
-    const s = this.s; s.xp += n;
-    while (s.xp >= s.level * 20) {
-      s.xp -= s.level * 20; s.level++; s.health = Math.min(100, s.health + 10);
-      this.audio.sfx('level'); this.ui.toast(`Livello ${s.level}! Garonio si stanca un po' meno.`, 'good');
-    }
-  }
+  _xp(n) { this.prog.addXp(n); }
 
   till(key, x, z) {
     this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 }; this.world.setPlot(x, z, this.s.plots[key]); this._cost('zappa');
     this.s.today.zappate = (this.s.today.zappate || 0) + 1;
-    if (this.s.day >= 4 && this.world.areaAt(x, z) === 'field' && Math.random() < 0.05) setTimeout(() => this.ambush('cinghiale'), 400);
+    if (this.s.day >= 4 && puoComparire('cinghiale', this.s.level) && this.world.areaAt(x, z) === 'field' && Math.random() < 0.05) setTimeout(() => this.ambush('cinghiale'), 400);
   }
   sow(key, x, z, area) {
     const p = this.s.plots[key]; p.crop = AREAS[area].crop; p.stage = 0; p.g = 0;
@@ -348,23 +366,26 @@ export class Game {
   harvest(key, x, z) {
     const p = this.s.plots[key];
     this.s.inv[p.crop]++; this.ui.float(p.crop === 'mais' ? '+1 pannocchia' : '+1 pomodoro');
+    const crop = p.crop;
     this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 };
     this.world.setPlot(x, z, this.s.plots[key]); this._cost('raccogli'); this.s.today.raccolti++;
+    this.emit('raccolto', { crop });
   }
   pickEgg(e) {
     this.s.eggs.splice(this.s.eggs.indexOf(e), 1);
     const sp = this.eggSprites.find(x => x.userData.egg === e);
     if (sp) { this.world.scene.remove(sp); this.eggSprites.splice(this.eggSprites.indexOf(sp), 1); }
     this.s.inv.uova++; this.s.today.uova++; this._cost('uovo'); this.ui.float('+1 uovo');
-    if (this.s.day >= 2 && Math.random() < 0.1) setTimeout(() => this.ambush('volpe'), 400);
+    if (this.s.day >= 2 && puoComparire('volpe', this.s.level) && Math.random() < 0.1) setTimeout(() => this.ambush('volpe'), 400);
   }
   feed() { this.s.fedToday = true; this.s.today.galline = 1; this.s.lastLay = this.s.minutes; this._cost('nutri'); this.ui.toast('Galline sfamate: oggi e domani faranno più uova.'); }
   sell() {
     const s = this.s, pr = CONFIG.prices;
-    const tot = s.inv.uova * pr.uova + s.inv.pomodoro * pr.pomodoro + s.inv.mais * pr.mais;
+    const tot = Math.round((s.inv.uova * pr.uova + s.inv.pomodoro * pr.pomodoro + s.inv.mais * pr.mais) * (1 + this.prog.bonus('vendite')));
     if (!tot) { this.ui.toast('Non hai niente da vendere.'); return; }
-    s.money += tot; s.today.venduto += tot; s.inv = { uova: 0, pomodoro: 0, mais: 0 };
+    s.money += tot; s.today.venduto += tot; s.inv.uova = 0; s.inv.pomodoro = 0; s.inv.mais = 0;
     this.audio.sfx('coin'); this.ui.toast(`Venduto tutto: +${tot}€`, 'good');
+    this.emit('venduto', { tot });
   }
 
   // ---------- Galline e uova ----------
@@ -459,7 +480,7 @@ export class Game {
   async shoo(n) {
     const group = [n, ...this.nutrie.filter(o => o !== n && o.state !== 'flee' && Math.hypot(o.x - n.x, o.z - n.z) < 3.5)].slice(0, 3);
     const enemies = group.map(() => 'nutria');
-    if (this.s.day >= 3 && enemies.length < 3 && Math.random() < 0.2) enemies.push('nutria_gigante');
+    if (puoComparire('nutria_gigante', this.s.level) && enemies.length < 3 && Math.random() < 0.2) enemies.push('nutria_gigante');
     this._wake(); this.idle = 0;
     const res = await this.combat.start({ enemies, place: 'campo' });
     if (res === 'win') {
@@ -520,6 +541,7 @@ export class Game {
       { chi: 'garonio', testo: MOUNTAIN.risposteGaronio },
       { testo: MOUNTAIN.uscita },
     ]));
+    stress = Math.round(stress * Math.max(0.2, 1 - this.prog.bonus('stressRimproveri')));
     this.s.stress = clamp(this.s.stress + stress, 0, 100);
     this.ui.toast(`Stress +${stress}`, 'bad');
     this.mm.remove(); this.mm = null;
@@ -556,7 +578,7 @@ export class Game {
     s.day++; s.minutes = 6 * H; this.saveHour = 6;
     s.tired = forced ? 30 : 0;
     s.stress = clamp(s.stress - (forced ? 5 : 25), 0, 100);
-    s.health = fainted ? 40 : clamp(s.health + 30, 0, 100);
+    s.health = fainted ? 40 : clamp(s.health + 30, 0, s.maxHealth);
     this.vehicles.leave();
     for (const [k, p] of Object.entries(s.plots)) { p.water = false; const [x, z] = k.split(',').map(Number); this.world.setPlot(x, z, p); }
     s.fedYesterday = s.fedToday; s.fedToday = false; s.lastLay = 6 * H;
@@ -571,6 +593,7 @@ export class Game {
     await this.ui.fade(false);
     this.locked = false;
     this.ui.toast(`Giorno ${s.day}`, 'good');
+    this.emit('nuovoGiorno', { day: s.day });
     await this._story();
     await this._announceMission();
   }
@@ -578,6 +601,7 @@ export class Game {
   // ---------- Edifici ----------
   async enter(id) {
     const s = this.s;
+    this.emit('entrato', { edificio: id });
     if (id === 'casa') {
       const late = s.minutes >= 20 * H;
       await this.ui.dialog([{
@@ -604,7 +628,7 @@ export class Game {
       const choices = UPGRADES.map(u => ({
         label: s.upgrades[u.id] ? `${u.label} ✔` : `${u.label} (${u.price}€): ${u.desc}`,
         disabled: !!s.upgrades[u.id] || s.money < u.price,
-        fn: () => { s.money -= u.price; s.upgrades[u.id] = true; this.audio.sfx('coin'); this.ui.toast(`Comprato: ${u.label}!`, 'good'); },
+        fn: () => { s.money -= u.price; s.upgrades[u.id] = true; if (u.id === 'stivali') this.prog.daiVestito('stivali', true); this.audio.sfx('coin'); this.ui.toast(`Comprato: ${u.label}!`, 'good'); },
       }));
       choices.push(...this.vehicles.workshopChoices());
       choices.push({ label: 'Esci', fn: null });
@@ -616,7 +640,7 @@ export class Game {
 
   _barMenu(first) {
     const s = this.s, O = BAR.ordini, V = BAR.voci;
-    const fix = () => { s.stress = clamp(s.stress, 0, 100); s.tired = clamp(s.tired, 0, 100); s.health = clamp(s.health, 0, 100); };
+    const fix = () => { s.stress = clamp(s.stress, 0, 100); s.tired = clamp(s.tired, 0, 100); s.health = clamp(s.health, 0, s.maxHealth); };
     const buy = (price, fx, msg) => () => {
       s.money -= price; fx(); s.minutes += 30; this.audio.sfx('eat'); this.ui.toast(pick(msg)); fix();
       if (Math.random() < BAR.probabilitaAvventore) return this._bully();
@@ -648,7 +672,7 @@ export class Game {
     return [{
       ...pagina({ chi: b.id, testo: b.battute }),
       choices: [
-        { label: 'Affrontalo (scontro a turni)', fn: () => { this._barFight = b.id === 'bullo' ? 'bullo' : 'ubriaco'; return null; } },
+        { label: 'Affrontalo (scontro a turni)', fn: () => { this._barFight = b.id === 'bullo' && puoComparire('bullo', s.level) ? 'bullo' : 'ubriaco'; return null; } },
         { label: R.etichetta, fn: () => {
           if (Math.random() < (b.riuscita ?? 0.5)) {
             s.stress = clamp(s.stress + R.stressBene, 0, 100); this._xp(R.xpBene);
@@ -710,6 +734,7 @@ export class Game {
     // salto quando si lavora
     this._animatePlayer(dt);
     this.vehicles.animate(dt);
+    this.png.update(dt);
     const P = this.player.group.position;
     this.zzz.position.set(P.x + 0.5, 1.6 + Math.sin(performance.now() / 400) * 0.08, P.z);
     // galline
