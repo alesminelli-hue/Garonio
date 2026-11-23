@@ -7,6 +7,7 @@ import { Audio } from './audio.js';
 import { loadGaronio } from './pixel.js';
 import { PLACES } from './map.js';
 import { Minimap } from './minimap.js';
+import { Pannelli } from './pannelli.js';
 
 const $ = id => document.getElementById(id);
 // Stile HD-2D: pixel art nitida (texture "nearest") ma resa alla risoluzione piena del telefono,
@@ -59,6 +60,13 @@ function checkPerf() {
   }
 }
 const minimap = new Minimap(world.grid);
+// pannelli spostabili col dito o col mouse (posizioni ricordate, barre e missione riducibili)
+const pannelli = game.pannelli = new Pannelli();
+pannelli.aggiungi($('stats'), 'stats', { riducibile: true });
+pannelli.aggiungi($('mission'), 'mission', { riducibile: true });
+pannelli.aggiungi(minimap.el, 'minimap');
+pannelli.aggiungi($('quickbar'), 'quickbar');
+pannelli.aggiungi($('dialog'), 'dialog');
 
 // ---------- Input ----------
 const keys = new Set();
@@ -67,6 +75,13 @@ window.addEventListener('keydown', e => {
   if (!started) return;
   audio.unlock();
   const k = KEYMAP[e.code];
+  if (ui.modal && !ui.queue) { // menu di Garonio aperto: i tasti vanno a lui
+    if (!e.repeat || /Arrow|Key[WS]/.test(e.code)) ui.modal.key(e.code);
+    if (e.code !== 'F5' && e.code !== 'F12') e.preventDefault();
+    return;
+  }
+  if (e.code === 'KeyM') { toggleMusic(); return; }
+  if (e.code === 'KeyN' && !game.combat?.active) { toggleMap(); return; }
   if (ui.busy()) {
     if (k === 'u') ui.key('up'); else if (k === 'd') ui.key('down');
     else if (['KeyE', 'Space', 'Enter'].includes(e.code)) ui.key('ok');
@@ -76,8 +91,6 @@ window.addEventListener('keydown', e => {
   if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') keys.add('run');
   if (['KeyE', 'Space', 'Enter'].includes(e.code) && !e.repeat) game.action();
   if (e.code === 'KeyQ' && !e.repeat) game.jump();
-  if (e.code === 'KeyM') toggleMusic();
-  if (e.code === 'KeyN') minimap.toggle();
   if (e.code === 'KeyJ' && !e.repeat) game.menu.apri();
   if (e.code.startsWith('Arrow') || e.code === 'Space') e.preventDefault();
 });
@@ -121,9 +134,11 @@ function moveStick(e) {
 const buzz = ms => { try { navigator.vibrate?.(ms); } catch {} };
 $('btn-a').addEventListener('pointerdown', e => { e.preventDefault(); audio.unlock(); buzz(12); if (ui.busy()) ui.key('ok'); else game.action(); });
 $('btn-jump').addEventListener('pointerdown', e => { e.preventDefault(); audio.unlock(); buzz(8); game.jump(); });
-$('btn-music').addEventListener('click', e => { e.stopPropagation(); toggleMusic(); });
+$('btn-music').addEventListener('click', e => { e.stopPropagation(); audio.unlock(); toggleMusic(); });
+$('btn-map').addEventListener('click', e => { e.stopPropagation(); audio.unlock(); if (started) toggleMap(); });
+function toggleMap() { minimap.toggle(); $('btn-map').classList.toggle('on', minimap.el.classList.contains('big')); }
 $('btn-menu').addEventListener('click', e => { e.stopPropagation(); audio.unlock(); if (started) game.menu.apri(); });
-function toggleMusic() { const on = audio.toggle(); $('btn-music').textContent = on ? '♪' : '✕'; }
+function toggleMusic() { const on = audio.toggle(); $('btn-music').querySelector('.ic').textContent = on ? '♪' : '🔇'; }
 if (matchMedia('(pointer: coarse)').matches) document.body.classList.add('touch');
 
 // ---------- Schermata iniziale ----------
@@ -137,6 +152,7 @@ async function begin(cont) {
   $('title').hidden = true;
   audio.setScene(cont ? 'base' : 'intro');
   await game.start(cont);
+  pannelli.aggiungi($('veh'), 'veh'); // il pannello di guida nasce con la partita
 }
 // la musica dell'intro parte al primo tocco sulla schermata del titolo
 $('title').addEventListener('pointerdown', () => { audio.unlock(); if (!started) audio.setScene('intro'); });
@@ -189,4 +205,4 @@ function frame() {
   requestAnimationFrame(frame);
 }
 frame();
-window.__garonio = { game, world, ui, audio, CONFIG, minimap, perf };
+window.__garonio = { game, world, ui, audio, CONFIG, minimap, perf, pannelli };

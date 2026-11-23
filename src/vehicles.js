@@ -156,7 +156,7 @@ export class Vehicles {
   _updateHud() {
     const v = this.driving;
     this.hud.hidden = !v;
-    if (this.btnJump) this.btnJump.textContent = v ? '📯' : 'Q';
+    if (this.btnJump) this.btnJump.innerHTML = v ? '📯<small>Clacson</small>' : 'Q<small>Salta</small>';
     if (!v) return;
     const bar = (lab, val, cls) => `<div class="vbar ${cls}"><label>${lab}</label><div class="track"><div class="fill" style="width:${clamp(val, 0, 100)}%"></div></div></div>`;
     const kmh = Math.round(Math.abs(v.speed) * 9);

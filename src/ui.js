@@ -8,9 +8,10 @@ export class UI {
     this.audio = audio;
     this.queue = null;      // dialogo in corso
     this.typing = null;
+    this.modal = null;      // finestra a tutto schermo aperta (es. il menu di Garonio): ha un metodo key(code)
   }
 
-  busy() { return !!this.queue; }
+  busy() { return !!this.queue || !!this.modal; }
 
   // Scrive nel DOM solo se il valore è cambiato: su telefono riscrivere tutto a ogni fotogramma costa batteria.
   _set(id, prop, val) {
@@ -18,7 +19,9 @@ export class UI {
     if (c[k] === val) return;
     c[k] = val;
     const el = $(id);
-    if (prop === 'text') el.textContent = val; else if (prop === 'html') el.innerHTML = val; else el.style[prop] = val;
+    if (prop === 'text') el.textContent = val;
+    else if (prop === 'html') { const rb = el.querySelector(':scope > .rid-btn'); el.innerHTML = val; if (rb) el.appendChild(rb); } // tiene il pulsantino "riduci"
+    else el.style[prop] = val;
   }
 
   hud(s, mission) {
