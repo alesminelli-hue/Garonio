@@ -47,6 +47,7 @@
 //   beccatoDormire  {}                         il Gigante becca Garonio che dorme in giro
 //   collezionabile  { id, collezione, completa }  trovato un tappo, santino o figurina (src/diario.js)
 //   trofeo          { id }                     preso un trofeo (src/diario.js)
+//   telefono        { tipo, chi }              telefonino (src/telefono.js): 'risposta' | 'rifiutata' | 'persa' | 'chiamata' | 'sms'
 //   annaffiato      { x, z }                   zolla annaffiata a mano
 //   sconfitta       { place }                  Garonio va a terra in uno scontro (il santino non l'ha salvato)
 //   comprato        { tipo, id, prezzo }       acquisto nel magazzino del Bubetto (src/negozio.js)

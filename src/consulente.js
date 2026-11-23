@@ -72,7 +72,7 @@ export class Consulente {
       if (dopo >= C.telefonoLivello && !this.st.telefono) {
         this.st.telefono = true;
         g.prog.daiVestito('telefonoConsulente', true);
-        pages.push(this._p(T.telefono), { text: '📱 Hai il Telefono del Consulente (portafortuna, già indossato): ogni mattina una dritta per messaggio.' });
+        pages.push(this._p(T.telefono), { text: '📱 Il Consulente è nella rubrica del tuo telefonino (T). Ogni mattina una dritta per SMS, e puoi chiamarlo per una dritta in più.' });
       }
     }
     return pages;
@@ -246,7 +246,8 @@ export class Consulente {
     if (g.prog.bonus('consigliAlTelefono') && st.msg !== s.day) {
       st.msg = s.day;
       const testo = this.consiglio();
-      setTimeout(() => g.ui.toast(fill(T.messaggio, { testo }), 'good'), 2500);
+      // arriva come SMS sul telefonino a conchiglia (src/telefono.js); senza telefono resta il vecchio avviso
+      setTimeout(() => g.telefono ? g.telefono.sms('consulente', testo) : g.ui.toast(fill(T.messaggio, { testo }), 'good'), 2500);
     }
   }
 
