@@ -501,6 +501,7 @@ export class Vita {
       f.gatti[c.i] = true;
       s.stress = clamp(s.stress - G.carezza, 0, 100);
       g.ui.toast(fill(pick(G.testi), { s: G.carezza }), 'good'); g.audio.sfx('pick');
+      g.emit('gatto', {});
     } };
   }
 

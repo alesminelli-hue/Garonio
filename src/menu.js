@@ -4,6 +4,7 @@
 //   🧥 Equip     · arma e vestiti indossati, si cambiano con un tocco
 //   ⭐ Abilità   · rami di abilità coi loro gradi, si spendono i punti
 //   📊 Scheda    · statistiche di Garonio e amicizie
+//   🏆 Trofei    · trofei e collezionabili (aggiunta da src/diario.js); il 📍 sui lavori sceglie dove punta la freccia
 //
 // API (game.menu):
 //   apri(scheda?)                      apre il menu (scheda: 'missioni' | 'zaino' | 'equip' | 'abilita' | 'scheda')
@@ -193,7 +194,7 @@ export class Menu {
           h('b', null, m.text), barra(Math.min(m.progress, m.n), m.n),
           h('div', 'mn-chips', null, [h('span', 'chip', `${Math.min(m.progress, m.n)}/${m.n}`), h('span', 'chip', m.done ? '✅' : m.failed ? '❌' : `⏰ ${dl}`)]),
         ]),
-        m.done ? h('span', 'mn-timbro ok', 'FATTA') : m.failed ? h('span', 'mn-timbro ko', 'FALLITA') : null,
+        m.done ? h('span', 'mn-timbro ok', 'FATTA') : m.failed ? h('span', 'mn-timbro ko', 'FALLITA') : g.diario?.bottone(this, 'gigante'),
       ]));
     } else out.push(h('p', 'mn-vuoto', '😴 Oggi niente ordini.'));
 
@@ -215,6 +216,7 @@ export class Menu {
         this._faccia(d.da),
         h('div', 'mn-nota-c', null, [h('b', null, d.titolo), q.n > 1 && q.stato !== 'pronta' ? barra(q.progresso, q.n) : null, h('div', 'mn-chips', null, chips)]),
         q.stato === 'pronta' ? h('span', 'mn-timbro ok', 'FATTO') : null,
+        g.diario?.bottone(this, 'quest', q.id),
       ]));
     }
 
@@ -225,6 +227,7 @@ export class Menu {
     }
     const fatte = s.quests.fatte.length, fallite = s.quests.fallite.length;
     if (fatte || fallite) out.push(h('p', 'mn-vuoto', `📜 Completate ${fatte}${fallite ? ` · fallite ${fallite}` : ''}`));
+    out.push(...(g.diario?.righe(this) || []));   // freccia e dritte (src/diario.js)
     return out;
   }
 
