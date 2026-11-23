@@ -108,6 +108,15 @@ Esito:
 
 Idea: con stanchezza alta aumenta la probabilità di guasti e incidenti con tutti i mezzi.
 
+**Come funzionano nel gioco (versione 0.2)** — codice in `src/vehicles.js`, pixel art in `src/vehicle_sprites.js`:
+- **E** vicino a un mezzo per salire, **E** di nuovo per scendere. Guida con frecce/WASD o levetta: il mezzo gira verso la direzione premuta; tirando all'indietro va in retromarcia. **Q** = clacson (spaventa anche le nutrie).
+- **Vespa**: la più veloce e agile. Una volta su quattro circa non parte al primo colpo; ogni tanto si spegne in corsa e Garonio scende imprecando. Negli urti forti Garonio cade (Vita −6).
+- **Punto**: più lenta a partire, consuma benzina (spia della riserva, a secco si ferma). Negli urti si ammacca e può forare (velocità dimezzata finché non cambi la gomma).
+- **Trattori** (rosso e verde, vicino all'officina): lenti, arano automaticamente le zolle del campo dove passano. Si danneggiano molto con gli urti; a zero, o guidando con stanchezza sopra 75, si rompono → arriva Mister Mountain (stress +35).
+- Con stanchezza alta tutti i mezzi sbandano un po'. Se Garonio crolla mentre guida, il mezzo si danneggia.
+- **Officina**: riparazione (prezzo in base al danno), cambio gomma e pieno alla Punto. Il meccanico va a prendere il mezzo dove l'hai lasciato.
+- I mezzi sono parcheggiati vicino a casa e officina, calcolati dalla posizione degli edifici: con la mappa nuova basta aggiornare `defaultParking()`.
+
 ## 9. Nemici e combattimento (stile JRPG leggero)
 
 - Nel prototipo: le nutrie entrano nel campo e mangiano le piante; Garonio le scaccia avvicinandosi e premendo il tasto azione (costa stanchezza).
@@ -157,7 +166,7 @@ Per aggiungere una traccia basta mettere il file `.mp3` nella cartella e scriver
 
 ## 12. Controlli
 
-- PC: frecce o WASD per muoversi, **Shift** per correre, **E / Spazio** per agire, **Q** per saltare, **M** musica, **N** mappa.
+- PC: frecce o WASD per muoversi, **Shift** per correre, **E / Spazio** per agire (e salire/scendere dai mezzi), **Q** per saltare (clacson alla guida), **M** musica, **N** mappa.
 - Telefono: levetta virtuale (spinta fino in fondo = corsa), pulsante **E** per agire e **Q** per saltare.
 
 ### Animazioni di Garonio (dal foglio personaggio)
@@ -178,7 +187,7 @@ Fermo, cammina (4 fotogrammi), corre (3), salta (3), attacco (quando scaccia le 
 
 1. Provare il prototipo e decidere il "feeling" (velocità delle barre, durata del giorno).
 2. ✅ Garonio ha i suoi sprite e il ritratto. Mancano gli sprite veri del Gigante e di Mister Mountain, e le viste di Garonio di spalle e di fronte.
-3. Mezzi: Vespa e Punto per muoversi, trattori dell'azienda che si possono rompere.
+3. ✅ Mezzi: Vespa e Punto per muoversi, trattori dell'azienda che si possono rompere (prima versione).
 4. Aggiungere maiali, officina vera e bar con eventi.
 5. Sistema di livelli e abilità.
 6. Svago serale e catalogo (versione non esplicita).

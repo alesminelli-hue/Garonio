@@ -150,6 +150,13 @@ export class Audio {
       case 'bad': n(45, 0, 0.18, 'sawtooth', 0.09); n(40, 0.18, 0.3, 'sawtooth', 0.09); break;
       case 'level': [72, 76, 79, 84].forEach((m, i) => n(m, i * 0.09, 0.12)); break;
       case 'eat': n(60, 0, 0.05, 'square', 0.05); n(62, 0.08, 0.05, 'square', 0.05); break;
+      // mezzi
+      case 'horn_vespa': n(81, 0, 0.12, 'square', 0.05); n(81, 0.16, 0.2, 'square', 0.05); break;
+      case 'horn_punto': n(64, 0, 0.35, 'square', 0.05); n(68, 0, 0.35, 'square', 0.04); break;
+      case 'horn_trattore': n(52, 0, 0.5, 'sawtooth', 0.06); n(55, 0, 0.5, 'square', 0.03); break;
+      case 'engine': [30, 32, 30, 34, 36].forEach((m, i) => n(m, i * 0.07, 0.09, 'sawtooth', 0.07)); break;
+      case 'stall': [36, 33, 30, 26].forEach((m, i) => n(m, i * 0.11, 0.12, 'sawtooth', 0.07)); break;
+      case 'crash': n(30, 0, 0.25, 'sawtooth', 0.1); n(45, 0, 0.08, 'square', 0.07); n(38, 0.08, 0.2, 'square', 0.06); break;
     }
   }
 }

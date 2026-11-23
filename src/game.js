@@ -7,6 +7,7 @@ import { INTRO, STORIA, GIGANTE, MOUNTAIN, CASA, OFFICINA, BAR, NOMI } from './d
 import { pick, fill, pagina, pagine, ora, variabiliMissione } from './racconto.js';
 import { PLACES, MAP_VERSION, coopSpot } from './map.js';
 import { Combat } from './combat.js';
+import { Vehicles } from './vehicles.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -104,6 +105,8 @@ export class Game {
     for (const [k, p] of Object.entries(this.s.plots)) { const [x, z] = k.split(',').map(Number); W.setPlot(x, z, p); }
     this.s.eggs.forEach(e => this._eggSprite(e));
     this.player.group.position.set(this.s.px, 0, this.s.pz);
+    this.vehicles = new Vehicles(this);
+    this.vehicles.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
@@ -172,11 +175,14 @@ export class Game {
     this._animateWorld(dt);
     if (this.ui.busy() || this.locked) { this.ui.prompt(null); this.cursor.visible = false; return; }
 
-    // movimento
+    // movimento: alla guida di un mezzo, oppure a piedi
     let { x: ix, z: iz } = this.input;
     const len = Math.hypot(ix, iz);
-    const moving = len > 0.1;
-    if (moving) {
+    const moving = len > 0.1 && !this.vehicles.driving;
+    if (this.vehicles.driving) {
+      this.vehicles.drive(dt, this.input);
+      this.idle = 0;
+    } else if (moving) {
       ix /= Math.max(1, len); iz /= Math.max(1, len);
       let sp = this.input.run ? CONFIG.runSpeed : CONFIG.walkSpeed;
       if (this.s.upgrades.stivali) sp *= 1.2;
@@ -270,6 +276,7 @@ export class Game {
   _findTarget() {
     const P = this.player.group.position;
     const d = (x, z) => Math.hypot(P.x - x, P.z - z);
+    if (this.vehicles.driving) return this.vehicles.target();
     const gp = this.gigante.group.position;
     if (d(gp.x, gp.z) < 1.5) return { label: 'Parla col Gigante', fn: () => this.talkGigante() };
     for (const n of this.nutrie) if (n.state !== 'flee' && d(n.x, n.z) < 1.6) return { label: 'Affronta la nutria!', fn: () => this.shoo(n) };
@@ -282,6 +289,8 @@ export class Game {
     const inv = this.s.inv;
     if (d(pr.cassa.x, pr.cassa.z) < 1.3 && inv.uova + inv.pomodoro + inv.mais > 0) return { label: 'Vendi alla cassa', fn: () => this.sell() };
     if (d(pr.mangiatoia.x, pr.mangiatoia.z) < 1.3 && !this.s.fedToday) return { label: 'Dai da mangiare alle galline', fn: () => this.feed() };
+    const vt = this.vehicles.target();
+    if (vt) return vt;
     // casella sotto i piedi
     const tx = Math.floor(P.x), tz = Math.floor(P.z);
     const area = this.world.areaAt(tx, tz);
@@ -521,6 +530,7 @@ export class Game {
   async _collapse() {
     if (this.locked) return; this.locked = true;
     this.ui.toast('Garonio è sfinito e crolla a dormire per terra...', 'bad');
+    this.vehicles.crashAsleep();
     this.ko = true; this.player.setFrame((this.facing > 0 ? 0 : PIX.GARONIO_N) + PIX.GARONIO_ANIM.ko[0]);
     await new Promise(r => setTimeout(r, 1200));
     await this.ui.fade(true);
@@ -547,6 +557,7 @@ export class Game {
     s.tired = forced ? 30 : 0;
     s.stress = clamp(s.stress - (forced ? 5 : 25), 0, 100);
     s.health = fainted ? 40 : clamp(s.health + 30, 0, 100);
+    this.vehicles.leave();
     for (const [k, p] of Object.entries(s.plots)) { p.water = false; const [x, z] = k.split(',').map(Number); this.world.setPlot(x, z, p); }
     s.fedYesterday = s.fedToday; s.fedToday = false; s.lastLay = 6 * H;
     for (let i = 0; i < (s.fedYesterday ? 4 : 2); i++) if (s.eggs.length < 8) this._layEgg();
@@ -595,6 +606,7 @@ export class Game {
         disabled: !!s.upgrades[u.id] || s.money < u.price,
         fn: () => { s.money -= u.price; s.upgrades[u.id] = true; this.audio.sfx('coin'); this.ui.toast(`Comprato: ${u.label}!`, 'good'); },
       }));
+      choices.push(...this.vehicles.workshopChoices());
       choices.push({ label: 'Esci', fn: null });
       await this.ui.dialog([{ name: 'Officina', text: pick(OFFICINA.benvenuto), choices }]);
     } else if (id === 'maiali') {
@@ -659,13 +671,15 @@ export class Game {
     const attack = this.nutrie.some(n => n.state !== 'flee') && nearField;
     const nearBar = Math.hypot(P.x - (bar.x0 + bar.w / 2), P.z - (bar.z0 + bar.d / 2)) < 7;
     const angry = this.s.stress >= 85;
-    const scene = attack ? 'nemico' : angry ? 'rabbia' : nearBar ? 'bar' : this.s.minutes >= 20 * H ? 'notte' : 'base';
+    const scene = this.vehicles?.driving ? 'guida' : attack ? 'nemico' : angry ? 'rabbia' : nearBar ? 'bar' : this.s.minutes >= 20 * H ? 'notte' : 'base';
     this.audio.setScene(scene);
   }
 
   // ---------- Animazioni di Garonio ----------
   jump() {
-    if (this.ui.busy() || this.locked || this.jumpT > 0) return;
+    if (this.ui.busy() || this.locked) return;
+    if (this.vehicles.horn()) return; // alla guida, Q è il clacson
+    if (this.jumpT > 0) return;
     this.idle = 0; this._wake(); this.jumpT = 0.6; this.audio.sfx('blip');
     this.s.tired = clamp(this.s.tired + 0.5, 0, 100);
   }
@@ -695,6 +709,7 @@ export class Game {
     const s = this.s;
     // salto quando si lavora
     this._animatePlayer(dt);
+    this.vehicles.animate(dt);
     const P = this.player.group.position;
     this.zzz.position.set(P.x + 0.5, 1.6 + Math.sin(performance.now() / 400) * 0.08, P.z);
     // galline
