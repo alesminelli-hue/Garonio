@@ -727,6 +727,6 @@ export class Game {
     let k = 1, warm = 0;
     if (h < 7) k = 0.5 + (h - 6) * 0.5;
     else if (h > 18) { k = Math.max(0.2, 1 - (h - 18) / 2.5 * 0.8); warm = clamp(1 - Math.abs(h - 19) / 1.5, 0, 1); }
-    this.world.setDaylight(k, warm);
+    this.world.setDaylight(k, warm, h);
   }
 }

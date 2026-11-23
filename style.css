@@ -5,7 +5,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color: var(--paper);
   font-family: "Courier New", ui-monospace, monospace; font-weight: bold; -webkit-user-select: none; user-select: none; touch-action: none; }
-#game { position: fixed; inset: 0; width: 100vw; height: 100vh; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+#game { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
 #game.shake { animation: shake .5s; }
 @keyframes shake { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-8px,4px)} 40%{transform:translate(7px,-5px)} 60%{transform:translate(-5px,3px)} 80%{transform:translate(4px,-2px)} }
 
@@ -109,60 +109,59 @@ body.touch #minimap.big { width: calc(100vw - 16px); top: 50%; bottom: auto; tra
 body.touch #veh { left: auto; right: 8px; bottom: auto; top: 54px; width: 160px; font-size: 11px; padding: 5px 8px; }
 body.touch #veh .vbar { grid-template-columns: 40px 1fr; font-size: 10px; }
 @media (max-width: 640px) { body:not(.touch) #veh { width: 180px; font-size: 11px; } }
-/* ===== PROVA STILI (anteprima) ===== */
+/* ===== Stile HD-2D: sfocatura ai bordi (effetto plastico), vignetta, colori più caldi ===== */
 .tilt { display: none; }
-body.stile-c .tilt { display: block; position: fixed; left: 0; right: 0; height: 28vh; pointer-events: none; backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px); z-index: 0; }
-body.stile-c #tilt-top { top: 0; mask-image: linear-gradient(#000, transparent); -webkit-mask-image: linear-gradient(#000, transparent); }
-body.stile-c #tilt-bot { bottom: 0; mask-image: linear-gradient(transparent, #000); -webkit-mask-image: linear-gradient(transparent, #000); }
-body.stile-c #game { filter: saturate(1.15) contrast(1.05); }
-body.stile-c::after { content: ''; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(20,10,40,.35)); z-index: 1; }
-body.stile-b #hud, body.stile-c #hud { z-index: 2; }
+body .tilt { display: block; position: fixed; left: 0; right: 0; height: 28vh; pointer-events: none; backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px); z-index: 0; }
+body #tilt-top { top: 0; mask-image: linear-gradient(#000, transparent); -webkit-mask-image: linear-gradient(#000, transparent); }
+body #tilt-bot { bottom: 0; mask-image: linear-gradient(transparent, #000); -webkit-mask-image: linear-gradient(transparent, #000); }
+body #game { filter: saturate(1.06) contrast(1.06); }
+body::after { content: ''; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(20,10,40,.35)); z-index: 1; }
+#hud { z-index: 2; }
 
 /* UI nuova, più morbida e compatta */
-body:is(.stile-b,.stile-c) { --panel: rgba(22, 26, 56, 0.72); --edge: rgba(255,255,255,.55); }
-body:is(.stile-b,.stile-c) .panel { border-width: 2px; border-radius: 14px; box-shadow: 0 4px 14px rgba(0,0,0,.35); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-body:is(.stile-b,.stile-c) .track { border-radius: 99px; border: none; height: 8px; background: rgba(0,0,0,.45); overflow: hidden; }
-body:is(.stile-b,.stile-c) .fill { border-radius: 99px; }
-body:is(.stile-b,.stile-c) #hud-face { border-radius: 50%; }
-body:is(.stile-b,.stile-c) #btn-music { border-width: 2px; border-radius: 50%; backdrop-filter: blur(6px); }
-body:is(.stile-b,.stile-c) #dialog { border-width: 2px; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,.45); background: linear-gradient(rgba(42,58,138,.92), rgba(20,28,74,.92)); }
-body:is(.stile-b,.stile-c) #dlg-portrait { border-radius: 12px; border-width: 2px; }
-body:is(.stile-b,.stile-c) #pad { background: radial-gradient(rgba(255,255,255,.18), rgba(255,255,255,.05)); border: 2px solid rgba(255,255,255,.4); }
-body:is(.stile-b,.stile-c) #knob { box-shadow: 0 2px 8px rgba(0,0,0,.4); background: rgba(255,255,255,.75); }
-body:is(.stile-b,.stile-c) #btn-a, body:is(.stile-b,.stile-c) #btn-jump { border: 2px solid rgba(255,255,255,.6); box-shadow: 0 4px 12px rgba(0,0,0,.4); }
-body:is(.stile-b,.stile-c) #btn-a { background: rgba(240,208,80,.85); }
-body:is(.stile-b,.stile-c) #btn-jump { background: rgba(74,90,138,.8); }
+body { --panel: rgba(22, 26, 56, 0.72); --edge: rgba(255,255,255,.55); }
+body .panel { border-width: 2px; border-radius: 14px; box-shadow: 0 4px 14px rgba(0,0,0,.35); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+body .track { border-radius: 99px; border: none; height: 8px; background: rgba(0,0,0,.45); overflow: hidden; }
+body .fill { border-radius: 99px; }
+body #hud-face { border-radius: 50%; }
+body #btn-music { border-width: 2px; border-radius: 50%; backdrop-filter: blur(6px); }
+body #dialog { border-width: 2px; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,.45); background: linear-gradient(rgba(42,58,138,.92), rgba(20,28,74,.92)); }
+body #dlg-portrait { border-radius: 12px; border-width: 2px; }
+body #pad { background: radial-gradient(rgba(255,255,255,.18), rgba(255,255,255,.05)); border: 2px solid rgba(255,255,255,.4); }
+body #knob { box-shadow: 0 2px 8px rgba(0,0,0,.4); background: rgba(255,255,255,.75); }
+#btn-a, #btn-jump { border: 2px solid rgba(255,255,255,.6); box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+body #btn-a { background: rgba(240,208,80,.85); }
+body #btn-jump { background: rgba(74,90,138,.8); }
 @media (pointer: coarse) {
-  body:is(.stile-b,.stile-c) #stats { width: auto; max-width: 62vw; top: max(8px, env(safe-area-inset-top)); left: 8px; padding: 6px 10px; font-size: 11px; }
-  body:is(.stile-b,.stile-c) #stats .bar { grid-template-columns: 16px 1fr; gap: 6px; margin: 2px 0; }
-  body:is(.stile-b,.stile-c) #stats .bar label { font-size: 0; }
-  body:is(.stile-b,.stile-c) #stats .bar.health label::before { content: '❤'; font-size: 11px; }
-  body:is(.stile-b,.stile-c) #stats .bar.stress label::before { content: '⚡'; font-size: 11px; }
-  body:is(.stile-b,.stile-c) #stats .bar.tired label::before { content: '💤'; font-size: 11px; }
-  body:is(.stile-b,.stile-c) #stats .bar span, body:is(.stile-b,.stile-c) #inv { display: none; }
-  body:is(.stile-b,.stile-c) #hud-face { width: 28px; height: 28px; }
-  body:is(.stile-b,.stile-c) #pad { width: 104px; height: 104px; left: max(20px, env(safe-area-inset-left)); bottom: 20px; }
-  body:is(.stile-b,.stile-c) #knob { left: 30px; top: 30px; }
+  body #stats { width: auto; max-width: 62vw; top: max(8px, env(safe-area-inset-top)); left: 8px; padding: 6px 10px; font-size: 11px; }
+  body #stats .bar { grid-template-columns: 16px 1fr; gap: 6px; margin: 2px 0; }
+  body #stats .bar label { font-size: 0; }
+  body #stats .bar.health label::before { content: '❤'; font-size: 11px; }
+  body #stats .bar.stress label::before { content: '⚡'; font-size: 11px; }
+  body #stats .bar.tired label::before { content: '💤'; font-size: 11px; }
+  body #stats .bar span, body #inv { display: none; }
+  body #hud-face { width: 28px; height: 28px; }
+  body #pad { width: 104px; height: 104px; left: max(20px, env(safe-area-inset-left)); bottom: 20px; }
+  body #knob { left: 30px; top: 30px; }
 }
 @media (pointer: coarse) and (orientation: landscape) {
-  body:is(.stile-b,.stile-c) #stats { max-width: 240px; }
-  body:is(.stile-b,.stile-c) #dialog { bottom: 10px; width: min(560px, calc(100vw - 300px)); padding: 8px; }
-  body:is(.stile-b,.stile-c) #dlg-portrait { width: 56px; height: 56px; }
-  body:is(.stile-b,.stile-c) #dialog .body { min-height: 56px; }
-  body:is(.stile-b,.stile-c) #dlg-text { font-size: 13px; }
-  body:is(.stile-b,.stile-c) #minimap { width: 110px; }
+  body #stats { max-width: 240px; }
+  body #dialog { bottom: 10px; width: min(560px, calc(100vw - 300px)); padding: 8px; }
+  body #dlg-portrait { width: 56px; height: 56px; }
+  body #dialog .body { min-height: 56px; }
+  body #dlg-text { font-size: 13px; }
+  body #minimap { width: 110px; }
 }
-body:is(.stile-b,.stile-c), body:is(.stile-b,.stile-c) button { font-family: "Pixelify Sans", "Courier New", monospace; font-weight: 500; letter-spacing: .3px; }
-body.stile-c #touch { position: relative; z-index: 3; }
+body #touch { position: relative; z-index: 3; }
 @media (pointer: coarse) {
-  body:is(.stile-b,.stile-c) #mission { top: 124px; left: 8px; right: auto; width: auto; max-width: 62vw; font-size: 11px; padding: 6px 10px; gap: 2px; }
-  body:is(.stile-b,.stile-c) #mission b { display: none; }
-  body:is(.stile-b,.stile-c) #mission span::before { content: '📋 '; }
-  body:is(.stile-b,.stile-c):has(#dialog:not([hidden])) #btn-jump { opacity: 0; pointer-events: none; }
+  body #mission { top: 124px; left: 8px; right: auto; width: auto; max-width: 62vw; font-size: 11px; padding: 6px 10px; gap: 2px; }
+  body #mission b { display: none; }
+  body #mission span::before { content: '📋 '; }
+  body:has(#dialog:not([hidden])) #btn-jump { opacity: 0; pointer-events: none; }
 }
 @media (pointer: coarse) and (orientation: landscape) {
-  body:is(.stile-b,.stile-c) #mission { top: 8px; left: auto; right: 62px; max-width: 230px; }
-  body:is(.stile-b,.stile-c) #dialog { width: min(560px, calc(100vw - 380px)); }
+  body #mission { top: 8px; left: auto; right: 62px; max-width: 230px; }
+  body #dialog { width: min(560px, calc(100vw - 380px)); }
 }
 
 /* ===== Controlli touch: levetta che compare sotto il pollice ===== */
@@ -179,3 +178,14 @@ body { -webkit-touch-callout: none; overscroll-behavior: none; }
 /* pannello di guida su telefono: non sopra la minimappa */
 body.touch #veh { right: auto; left: 8px; top: auto; bottom: 170px; }
 @media (orientation: landscape) and (max-height: 500px) { body.touch #veh { left: 50%; bottom: auto; top: 8px; transform: translateX(-50%); } }
+
+/* telefoni lenti: niente sfocatura né vignetta */
+body.lowq .tilt, body.lowq::after { display: none; }
+body.lowq #game { filter: none; }
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
+  body.touch #dialog { bottom: max(10px, env(safe-area-inset-bottom)); }
+  body.touch #prompt { bottom: 14px; }
+  body.touch #minimap:not(.big) { top: auto; bottom: 140px; right: max(8px, env(safe-area-inset-right)); }
+  body #mission { font-size: 10px; }
+  body.touch #minimap.big { width: min(calc(100vw - 16px), 140vh); }
+}
