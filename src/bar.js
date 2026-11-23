@@ -105,6 +105,13 @@ const forza = c => FORZA.indexOf(c.v);
 const punti = c => PUNTI[c.v] || 0;
 const nomeCarta = (c, br) => `${NOMI_CARTE[c.v]} di ${c.seme}${c.seme === br ? ' ★' : ''}`;
 
+const GUIDA_PILOT = [
+  "BAR (1/4) · RISPETTO. Al bancone c'è la voce «Rispetto»: mostra rango, sblocchi, risse della settimana e a che punto sei con ogni avventore. Sale vincendo duelli e risse, scende perdendo, scappando o ignorando. A 40 Loredana ti regala il thermos, a 60 i deboli non ti sfidano più, a 80 sei il Re del bancone (caffè gratis ogni mattina). Lo sconto del rango si vede nei prezzi.",
+  "BAR (2/4) · DUELLI. Vai al tavolo di un avventore: ogni giorno puoi fare un incontro della sua storia. Nel duello guardi Orgoglio e Rabbia: Rispondi a tono toglie Orgoglio, Ignora calma ma ti stressa, Offri da bere abbassa la Rabbia (serve Parlantina 2, Tarcisio lo accetta sempre), Provoca rischia. Orgoglio a zero: vinci a parole. Rabbia a 100: rissa con sgabello, bottiglia, stecca o mani nude.",
+  "BAR (3/4) · STORIE. Tarcisio: offrigli da bere due volte e al terzo incontro ti racconta del Re dei Lupi. Pina: battila tre volte e smette di spargere voci (e ti dice della tana del Re delle Nutrie). Ballarin: quiz e misure, poi la mappa catastale. Ermes: gara di trattori e rissa in piazza, poi il rimorchio. Bruno: braccio di ferro e rissa con due amici: diventi Re del bancone. Poi arriva Rocco. Tarcisio gioca anche a briscola (rango 20+). Tre risse in una settimana: Loredana ti chiude fuori due giorni.",
+  "BAR (4/4) · CONSULENTE. Al suo tavolino (o davanti al bar): un caffè al giorno da 2€ e ti dà una dritta. La prima è sempre un oggetto nascosto: sacchetto col «?» sulla mappa e sulla minimappa (N per ingrandirla), E per raccoglierlo. Le altre dritte: nemici in giro, bestie leggendarie, umore di Zeno, dov'è la Vigilessa. Ogni caffè e ogni oggetto trovato alzano l'amicizia: al livello 5 ti regala il telefono e le dritte arrivano ogni mattina per messaggio.",
+];
+
 export class Bar {
   constructor(game) { this.game = game; this._azione = null; }
   get s() { return this.game.s; }
@@ -125,6 +132,7 @@ export class Bar {
       const el = document.createElement('style'); el.id = 'css-bar-piazza'; el.textContent = CSS_PIAZZA; document.head.appendChild(el);
     }
     this.game.on('nuovoGiorno', () => this._nuovoGiorno());
+    this.game.pilot?.sezione?.('🍺 Bar e Consulente', () => this._pilot());
   }
 
   // ---------- Rispetto e ranghi ----------
@@ -602,6 +610,33 @@ export class Bar {
     else text = fill(Bc.pari, { tuoi, suoi });
     g.emit('briscola', { vinta: tuoi > suoi, tuoi, suoi });
     await g.ui.dialog([{ who: 'tarcisio', name: 'Tarcisio', text }]);
+  }
+
+  // ---------- Pilot di prova (?pilot nell'indirizzo, pulsante 🧪) ----------
+  _pilot() {
+    const g = this.game, s = this.s, st = this.st, P = g.prog;
+    const ok = m => { g.ui.toast('🧪 ' + m, 'good'); return null; };
+    const alBar = ore => { if (s.mission && !s.mission.failed) s.mission.done = true; s.minutes = ore * H; g.player.group.position.set(13.5, 0, 50.6); };  // il salto d'ora non fa scattare Mister Mountain
+    const livello = n => { while (s.level < n) P.addXp(P.xpNext() - s.xp); };
+    const storie = () => ({ who: 'garonio', name: '🧪 Storie del bar', text: 'Porta un avventore a un incontro (e sblocca quello di oggi).',
+      choices: [...Object.entries(B.avventori).flatMap(([id, a]) => a.incontri.map((inc, i) => ({
+        label: `${a.nome} · ${i + 1}: ${inc.titolo}`, fn: () => { livello(a.liv); this.provaStoria(id, i); if (a.serveRe) this.provaRispetto(Math.max(85, st.rispetto)); alBar(Math.max(a.ore[0], 18) + 0.5); return ok(`${a.nome} pronto per l'incontro ${i + 1}. Entra al bar.`); },
+      }))), { label: 'Chiudi', fn: null }] });
+    return [
+      { label: '📖 Cosa provare al bar', fn: () => GUIDA_PILOT.map(t => ({ who: 'garonio', name: '🧪 Guida del bar', text: t })) },
+      { label: '🍺 Davanti al bar alle 18, livello 15, 300€', fn: () => { livello(15); s.money = Math.max(s.money, 300); alBar(18); return ok('Sei davanti al bar: E sulla porta. Ci sono tutti tranne Rocco.'); } },
+      { label: '🎭 Scegli l\'incontro di un avventore', fn: () => [storie()] },
+      { label: '🔁 Sblocca gli incontri di oggi', fn: () => { for (const x of Object.values(st.storie)) x.giorno = 0; return ok('Tutti gli avventori possono rifare l\'incontro oggi.'); } },
+      ...[0, 20, 40, 60, 85].map(n => ({ label: `⭐ Rispetto ${n} (${this.rango(n).nome})`, fn: () => { this.provaRispetto(n); return ok(`Rispetto ${n}: «${this.rango().nome}».`); } })),
+      { label: '🗣️ Parlantina al massimo (Offri da bere, Chiudila a parole)', fn: () => { livello(15); P.p.rami.parlantina = 4; return ok('Parlantina 4/4: nuove scelte nei duelli e nelle risse.'); } },
+      { label: '🥊 Due risse questa settimana (la terza fa scattare il bando)', fn: () => { st.risse = [s.day, s.day]; return ok('Alla prossima rissa Loredana ti chiude fuori per due giorni.'); } },
+      { label: '🚪 Togli il bando di Loredana', fn: () => { this.provaSbanna(); return ok('Il bar ti riapre le porte.'); } },
+      { label: '🚛 Fai arrivare Rocco (sera, Re del bancone)', fn: () => { livello(15); this.provaRispetto(85); st.reBancone = true; alBar(20); return ok('Rocco è al tavolo 3. Entra al bar.'); } },
+      { label: '☕ Consulente: caffè di nuovo disponibile', fn: () => { g.s.flags.consulente.giornoCaffe = 0; s.minutes = Math.max(s.minutes, 10 * H); return ok('Il Consulente accetta un altro caffè.'); } },
+      { label: '❓ Consulente: oggetto nascosto adesso e portami lì', fn: () => { g.consulente.consiglio('oggetto'); const o = g.consulente.oggi(); g.player.group.position.set(o.x - 1.5, 0, o.z + 1); return ok(`${o.dove}: c'è il sacchetto col «?». E per raccoglierlo.`); } },
+      { label: '📱 Consulente: amicizia quasi al livello 5', fn: () => { g.consulente.provaAmicizia(78); g.s.flags.consulente.giornoCaffe = 0; return ok('Offrigli un caffè: al livello 5 ti regala il telefono.'); } },
+      { label: '🌅 Prossima mattina (messaggio del telefono)', fn: () => { setTimeout(() => g.sleep(false), 50); return null; } },
+    ];
   }
 
   // ---------- Scorciatoie per provare (console: garonio.bar.prova...) ----------
