@@ -793,7 +793,7 @@ export class Cascine {
   _suono(tipo) {
     const A = this.game.audio; if (!A?.enabled || !A.ctx || !A._note) return;
     const t = A.ctx.currentTime, n = (m, dt, d, type = 'square', v = 0.06) => A._note(m, t + dt, d, type, v);
-    if (tipo === 'abbaia') { n(57, 0, 0.07, 'square', 0.07); n(52, 0.09, 0.09, 'square', 0.06); }
+    if (tipo === 'abbaia') A.sfx('bark');
     else if (tipo === 'motosega') { for (let i = 0; i < 5; i++) n(38 + (i % 2) * 5, i * 0.09, 0.09, 'sawtooth', 0.07); }
     else if (tipo === 'tonfo') { n(28, 0, 0.3, 'sawtooth', 0.1); n(33, 0.05, 0.2, 'square', 0.06); }
   }

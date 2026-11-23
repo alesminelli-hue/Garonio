@@ -316,7 +316,7 @@ export class Imprevisti {
       const actor = this.W.actor([fr[0], fr[1], PIX.mirror(fr[0]), PIX.mirror(fr[1])], { w: 1.2, h: 0.82, shadow: 0.3 });
       const bau = this.W.sprite(this._bauTex, { w: 1.2, h: 0.8 }); bau.position.set(0.3, 0.95, 0); bau.visible = false; actor.group.add(bau);
       this.cane = { actor, bau, x, z, stato: 'insegue', t: 0, dir: 1, walkT: 0, morso: false, avvisato: false };
-      this.game.ui.toast(`🐕 ${pick(I.cane.arrivo)}`, 'bad'); this.game.audio.sfx('bad');
+      this.game.ui.toast(`🐕 ${pick(I.cane.arrivo)}`, 'bad'); this.game.audio.sfx('bark');
       return this.cane;
     }
     return null;

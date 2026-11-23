@@ -1,6 +1,10 @@
 // Musica ed effetti sonori.
 // Le colonne sonore stanno in assets/music/ e sono collegate ai momenti del gioco
 // tramite assets/music/playlist.json. Se manca una traccia, suona una musichetta 8-bit di riserva.
+// Gli effetti sonori sono sintetizzati in src/sfx.js e passano da un bus col loro volume.
+// Volumi (0..1) ricordati nel browser: setMusicVolume(v), setSfxVolume(v). Tasto M / ♪: tutto l'audio on/off.
+import { Sfx } from './sfx.js';
+const VOL_KEY = 'garonio-volumi';
 
 const MUSIC_DIR = 'assets/music/';
 
@@ -21,7 +25,12 @@ export class Audio {
   constructor() {
     this.ctx = null;
     this.enabled = true;
-    this.musicVolume = 0.55;
+    let vol = {};
+    try { vol = JSON.parse(localStorage.getItem(VOL_KEY)) || {}; } catch { }
+    this.musicVolume = vol.musica ?? 0.55;
+    this.sfxVolume = vol.effetti ?? 0.8;
+    this.fx = new Sfx(this);
+    this.musicBus = null; this.sfxBus = null;
     this.playlist = {};
     this.scene = null;
     this.el = null;           // <audio> in riproduzione
@@ -39,10 +48,43 @@ export class Audio {
   unlock() {
     if (!this.ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
-      if (AC) this.ctx = new AC();
+      if (AC) { this.ctx = new AC(); this._buses(); }
     }
     if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
   }
+
+  _buses() {
+    const ctx = this.ctx;
+    this.musicBus = ctx.createGain(); this.musicBus.gain.value = this.musicVolume;
+    this.musicBus.connect(ctx.destination);
+    // gli effetti passano da un compressore leggero, così botte e incidenti non saturano
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -14; comp.knee.value = 10; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.15;
+    this.sfxBus = ctx.createGain(); this.sfxBus.gain.value = this._curve(this.sfxVolume);
+    this.sfxBus.connect(comp).connect(ctx.destination);
+    this.fx.init(ctx, this.sfxBus);
+    // telefono in tasca o scheda nascosta: si ferma tutto il sintetizzato
+    document.addEventListener('visibilitychange', () => { if (document.hidden) ctx.suspend?.(); else if (this.enabled) ctx.resume?.(); });
+  }
+
+  _curve(v) { return v * v * 1.6; }   // il volume "a orecchio" non è lineare
+
+  attach(game) { this.fx.attach(game); }
+
+  setMusicVolume(v) {
+    this.musicVolume = Math.max(0, Math.min(1, v));
+    if (this.el) this.el.volume = this.musicVolume;
+    if (this.musicBus) this.musicBus.gain.setTargetAtTime(this.musicVolume, this.ctx.currentTime, 0.05);
+    this._saveVol();
+  }
+
+  setSfxVolume(v) {
+    this.sfxVolume = Math.max(0, Math.min(1, v));
+    if (this.sfxBus) this.sfxBus.gain.setTargetAtTime(this._curve(this.sfxVolume), this.ctx.currentTime, 0.05);
+    this._saveVol();
+  }
+
+  _saveVol() { try { localStorage.setItem(VOL_KEY, JSON.stringify({ musica: this.musicVolume, effetti: this.sfxVolume })); } catch { } }
 
   toggle() {
     this.enabled = !this.enabled;
@@ -134,8 +176,8 @@ export class Audio {
     const tick = () => {
       while (next < ctx.currentTime + 0.3) {
         const m = song.mel[i % song.mel.length];
-        if (m) this._note(m, next, beat * 0.9, 'square', 0.035);
-        if (i % 2 === 0) this._note(song.bass[(i / 2 | 0) % song.bass.length], next, beat * 1.8, 'triangle', 0.06);
+        if (m) this._note(m, next, beat * 0.9, 'square', 0.06, this.musicBus);
+        if (i % 2 === 0) this._note(song.bass[(i / 2 | 0) % song.bass.length], next, beat * 1.8, 'triangle', 0.1, this.musicBus);
         next += beat; i++;
       }
     };
@@ -145,39 +187,22 @@ export class Audio {
 
   _stopChiptune() { if (this.chipTimer) { clearInterval(this.chipTimer); this.chipTimer = null; } }
 
-  _note(midi, t, dur, type, vol) {
+  // nota semplice; senza "dest" va nel bus degli effetti (la usano anche altri moduli, es. src/cascine.js)
+  _note(midi, t, dur, type, vol, dest) {
     const ctx = this.ctx;
     const o = ctx.createOscillator(), g = ctx.createGain();
     o.type = type;
     o.frequency.value = 440 * Math.pow(2, (midi - 69) / 12);
     g.gain.setValueAtTime(vol, t);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g).connect(ctx.destination);
+    o.connect(g).connect(dest || this.sfxBus || ctx.destination);
     o.start(t); o.stop(t + dur + 0.02);
   }
 
   // ---- Effetti sonori ----
-  sfx(name) {
+  // nome: vedi l'elenco in src/sfx.js. opt: { x, z } per i suoni nel mondo (volume e lato secondo la distanza), { vol }
+  sfx(name, opt) {
     if (!this.enabled || !this.ctx) return;
-    const t = this.ctx.currentTime;
-    const n = (m, dt, d, type = 'square', v = 0.06) => this._note(m, t + dt, d, type, v);
-    switch (name) {
-      case 'blip': n(84, 0, 0.05); break;
-      case 'dig': n(40, 0, 0.08, 'sawtooth', 0.08); n(36, 0.06, 0.08, 'sawtooth', 0.06); break;
-      case 'water': n(76, 0, 0.05, 'sine', 0.08); n(79, 0.05, 0.05, 'sine', 0.08); n(83, 0.1, 0.06, 'sine', 0.06); break;
-      case 'pick': n(79, 0, 0.06); n(86, 0.06, 0.08); break;
-      case 'coin': n(88, 0, 0.06); n(93, 0.07, 0.14); break;
-      case 'shoo': n(60, 0, 0.06, 'sawtooth', 0.08); n(67, 0.05, 0.06, 'sawtooth', 0.08); n(72, 0.1, 0.1, 'sawtooth', 0.06); break;
-      case 'bad': n(45, 0, 0.18, 'sawtooth', 0.09); n(40, 0.18, 0.3, 'sawtooth', 0.09); break;
-      case 'level': [72, 76, 79, 84].forEach((m, i) => n(m, i * 0.09, 0.12)); break;
-      case 'eat': n(60, 0, 0.05, 'square', 0.05); n(62, 0.08, 0.05, 'square', 0.05); break;
-      // mezzi
-      case 'horn_vespa': n(81, 0, 0.12, 'square', 0.05); n(81, 0.16, 0.2, 'square', 0.05); break;
-      case 'horn_punto': n(64, 0, 0.35, 'square', 0.05); n(68, 0, 0.35, 'square', 0.04); break;
-      case 'horn_trattore': n(52, 0, 0.5, 'sawtooth', 0.06); n(55, 0, 0.5, 'square', 0.03); break;
-      case 'engine': [30, 32, 30, 34, 36].forEach((m, i) => n(m, i * 0.07, 0.09, 'sawtooth', 0.07)); break;
-      case 'stall': [36, 33, 30, 26].forEach((m, i) => n(m, i * 0.11, 0.12, 'sawtooth', 0.07)); break;
-      case 'crash': n(30, 0, 0.25, 'sawtooth', 0.1); n(45, 0, 0.08, 'square', 0.07); n(38, 0.08, 0.2, 'square', 0.06); break;
-    }
+    this.fx.play(name, opt);
   }
 }

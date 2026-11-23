@@ -41,6 +41,7 @@ await loadGaronio();
 const world = new World(scene);
 world.build();
 const game = new Game(world, ui, audio);
+audio.attach(game);   // effetti sonori continui: motori, passi, animali, traffico, pioggia (src/sfx.js)
 window.garonio = game; // comodo per provare dalla console del browser
 
 // Qualità automatica: se il telefono fatica (meno di ~30 fotogrammi al secondo), spegne ombre e sfocature.

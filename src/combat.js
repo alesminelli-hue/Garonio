@@ -271,7 +271,7 @@ export class Combat {
       game._xp(xp);
       for (const e of this.enemies) game.emit?.('nemicoSconfitto', { id: e.id, place: this.place });
     } else if (result === 'lose') {
-      game.audio.sfx('bad');
+      game.audio.sfx('ko');
       this._heroPose('ko');
       s.health = Math.max(s.health, 5);
       await this._say('Garonio è a terra... Batte in ritirata, malconcio.', 2200, true);
@@ -415,21 +415,21 @@ export class Combat {
     const s = this.s;
     this._msg(text);
     await this._lunge(targets[0], rage);
-    this.game.audio.sfx('shoo');
+    this.game.audio.sfx('whoosh');
     let acc = 0.95;
     if (s.stress >= 90) acc -= 0.15;
     if (s.tired >= 80) acc -= 0.1;
     for (const t of targets) {
       if (!t.alive) continue;
       if (this.script?.immune?.(t)) { this._float(t.wrap, 'Immune!', 'miss'); continue; }
-      if (!sure && Math.random() > acc) { this._float(t.wrap, 'Mancato!', 'miss'); continue; }
+      if (!sure && Math.random() > acc) { this._float(t.wrap, 'Mancato!', 'miss'); this.game.audio.sfx('dodge'); continue; }
       let d = this._dmg(this._heroAtk(), pow, t.def_);
       const crit = Math.random() < 0.1;
       if (crit) d = Math.round(d * 1.5);
+      this.game.audio.sfx(crit || rage ? 'crit' : 'punch');
       this._hitEnemy(t, d, crit);
       await this._hook('hit', t, d);
     }
-    this.game.audio.sfx('dig');
     await this._sleep(500);
     await this._back();
     if (s.stress >= 90 && !rage) await this._say('Garonio è così nervoso che trema tutto...', 900);
@@ -493,8 +493,9 @@ export class Combat {
     if (it.id === 'uova') {
       this._msg('Garonio lancia un uovo!');
       this._heroPose('attack');
-      this.game.audio.sfx('shoo');
+      this.game.audio.sfx('whoosh');
       await this._sleep(350);
+      this.game.audio.sfx('splat');
       if (this.script?.immune?.(target)) this._float(target.wrap, 'Immune!', 'miss');
       else this._hitEnemy(target, 12, false);
       this._float(target.wrap, 'Splat!', 'miss');
@@ -525,7 +526,7 @@ export class Combat {
     e.wrap.classList.remove('lunge');
 
     if (mv.pow > 0 && Math.random() > (h.napping ? 1 : 0.9)) {
-      this._float(this.heroWrap, 'Schivato!', 'miss');
+      this._float(this.heroWrap, 'Schivato!', 'miss'); this.game.audio.sfx('dodge');
       this._heroPose('jump');
       await this._sleep(700);
       this._heroPose('idle');
@@ -536,7 +537,7 @@ export class Combat {
     if (h.defending) { dmg = Math.ceil(dmg / 2); stress = Math.ceil(stress / 2); }
     if (h.napping) dmg = Math.round(dmg * 1.5);
     s.health -= dmg; s.stress += stress;
-    if (dmg) { this._float(this.heroWrap, `-${dmg}`, 'dmg'); this._flash(this.heroCv); this.game.audio.sfx('dig'); }
+    if (dmg) { this._float(this.heroWrap, `-${dmg}`, 'dmg'); this._flash(this.heroCv); this.game.audio.sfx('hurt'); }
     if (stress) setTimeout(() => this._float(this.heroWrap, `Stress +${stress}`, 'stress'), dmg ? 250 : 0);
     if (!dmg) this.game.audio.sfx('bad');
     if (mv.steal && s.inv[mv.steal] > 0) { s.inv[mv.steal]--; this._float(e.wrap, '+1 uovo', 'miss'); }
