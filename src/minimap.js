@@ -45,8 +45,9 @@ export class Minimap {
   toggle() { this.el.classList.toggle('big'); }
 
   // Segnalino extra (es. un mezzo parcheggiato): setMarker('vespa', x, z, '#6aa0e0'); null per toglierlo.
-  setMarker(id, x, z, color = '#ffffff') {
-    if (x === null || x === undefined) this.markers.delete(id); else this.markers.set(id, { x, z, color });
+  // glyph (facoltativo): un carattere disegnato in un tondo, es. '?' per gli oggetti nascosti del Consulente.
+  setMarker(id, x, z, color = '#ffffff', glyph = null) {
+    if (x === null || x === undefined) this.markers.delete(id); else this.markers.set(id, { x, z, color, glyph });
   }
 
   update(px, pz, dt = 0.016) {
@@ -55,7 +56,13 @@ export class Minimap {
     this.t = 0;
     const g = this.canvas.getContext('2d'), S = this.S;
     g.drawImage(this.base, 0, 0);
-    for (const m of this.markers.values()) { g.fillStyle = '#1a1420'; g.fillRect(m.x * S - 3, m.z * S - 3, 6, 6); g.fillStyle = m.color; g.fillRect(m.x * S - 2, m.z * S - 2, 4, 4); }
+    for (const m of this.markers.values()) if (m.glyph) {
+      g.fillStyle = '#1a1420'; g.beginPath(); g.arc(m.x * S, m.z * S, 7, 0, Math.PI * 2); g.fill();
+      g.fillStyle = m.color; g.beginPath(); g.arc(m.x * S, m.z * S, 5.5, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#1a1420'; g.font = 'bold 10px monospace'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(m.glyph, m.x * S, m.z * S + 1);
+    }
+    for (const m of this.markers.values()) if (!m.glyph) { g.fillStyle = '#1a1420'; g.fillRect(m.x * S - 3, m.z * S - 3, 6, 6); g.fillStyle = m.color; g.fillRect(m.x * S - 2, m.z * S - 2, 4, 4); }
     const blink = (performance.now() / 300 | 0) % 2;
     g.fillStyle = '#1a1420'; g.fillRect(px * S - 4, pz * S - 4, 8, 8);
     g.fillStyle = blink ? '#ff5040' : '#ffffff'; g.fillRect(px * S - 3, pz * S - 3, 6, 6);

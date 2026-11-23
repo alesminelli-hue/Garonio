@@ -227,3 +227,6 @@ body.touch #annata-hud .obj { font-size: 10px; max-width: 58vw; }
 body.touch #btn-pilot { bottom: auto; top: 50%; right: 8px; }
 @media (pointer: coarse) and (orientation: portrait) { body #mission { top: 150px; } }
 @media (pointer: coarse) and (orientation: landscape) { body.touch #btn-pilot { top: 108px; } }
+/* dialoghi lunghi (menu del bar con tavoli e rispetto): il riquadro scorre invece di uscire dallo schermo */
+#dialog { max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; }
+body.touch #dialog { max-height: calc(100vh - 170px); max-height: calc(100dvh - 170px); }

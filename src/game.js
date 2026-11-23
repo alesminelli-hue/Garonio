@@ -17,6 +17,8 @@ import { Officina } from './officina.js';
 import { Vigilessa } from './vigilessa.js';
 import { Cabina } from './cabina.js';
 import { Cascine } from './cascine.js';
+import { Bar } from './bar.js';
+import { Consulente } from './consulente.js';
 import { puoComparire } from './data/nemici.js';
 import { Attrezzi } from './attrezzi.js';
 import { Maiali } from './maiali.js';
@@ -98,6 +100,8 @@ export class Game {
     this.attrezzi = new Attrezzi(this);
     this.maiali = new Maiali(this);
     this.pilot = new Pilot(this);         // ?pilot nell'indirizzo: scorciatoie per provare l'annata
+    this.bar = new Bar(this);               // trama del bar (src/bar.js)
+    this.consulente = new Consulente(this); // consigli e oggetti nascosti (src/consulente.js)
   }
 
   on(name, fn) { return this.ev.on(name, fn); }
@@ -152,6 +156,8 @@ export class Game {
     this.pilot.init();
     this.cascine = new Cascine(this);      // cascine dei vicini e missioni truffaldine (src/cascine.js)
     this.cascine.init();
+    this.bar.init();
+    this.consulente.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
@@ -645,11 +651,19 @@ export class Game {
         ],
       }]);
     } else if (id === 'bar') {
+      if (!(await this.bar.ingresso())) return;
       this.inBar = true; this.audio.setScene('bar');
       this._barFight = null;
       await this._barMenu(true);
       while (this._barFight) { // il cliente ostile va affrontato in uno scontro a turni
         const foe = this._barFight; this._barFight = null;
+        if (typeof foe === 'function') { // avventori, Consulente, sfide (src/bar.js)
+          await foe();
+          if (this.bar.bandito()) break;
+          this.audio.setScene('bar');
+          await this.ui.dialog([this._barMenu(false)]);
+          continue;
+        }
         const res = await this.combat.start({ enemies: [foe], place: 'bar' });
         if (res === 'lose') { await this.mountain('sconfitta', 15); break; }
         this.audio.setScene('bar');
@@ -671,11 +685,11 @@ export class Game {
   }
 
   _barMenu(first) {
-    const s = this.s, O = BAR.ordini, V = BAR.voci;
+    const s = this.s, O = BAR.ordini, V = BAR.voci, P = n => this.bar.prezzo(n);
     const fix = () => { s.stress = clamp(s.stress, 0, 100); s.tired = clamp(s.tired, 0, 100); s.health = clamp(s.health, 0, s.maxHealth); };
     const buy = (price, fx, msg) => () => {
       s.money -= price; fx(); s.minutes += 30; this.audio.sfx('eat'); this.ui.toast(pick(msg)); fix();
-      if (Math.random() < BAR.probabilitaAvventore) return this._bully();
+      if (Math.random() < BAR.probabilitaAvventore * (this.bar.rango().da < 20 ? 1.4 : 1)) return this.bar.provocazione() || [this._barMenu(false)];
       return [this._barMenu(false)];
     };
     const gossip = () => {
@@ -685,10 +699,12 @@ export class Game {
     const page = {
       ...pagina({ chi: 'barista', testo: first ? BAR.saluti : BAR.ancora }),
       choices: [
-        { label: 'Panino e bibita (6€): stress -15, vita +10', disabled: s.money < 6, fn: buy(6, () => { s.stress -= 15; s.health += 10; }, O.panino) },
-        { label: 'Caffè (2€): stanchezza -12', disabled: s.money < 2, fn: buy(2, () => { s.tired -= 12; }, O.caffe) },
-        { label: 'Birra (4€): stress -22, stanchezza +6', disabled: s.money < 4, fn: buy(4, () => { s.stress -= 22; s.tired += 6; }, O.birra) },
+        { label: `Panino e bibita (${P(6)}€): stress -15, vita +10`, disabled: s.money < P(6), fn: buy(P(6), () => { s.stress -= 15; s.health += 10; }, O.panino) },
+        { label: `Caffè (${P(2)}€): stanchezza -12`, disabled: s.money < P(2), fn: buy(P(2), () => { s.tired -= 12; }, O.caffe) },
+        { label: `Birra (${P(4)}€): stress -22, stanchezza +6`, disabled: s.money < P(4), fn: buy(P(4), () => { s.stress -= 22; s.tired += 6; }, O.birra) },
         { label: V.etichetta, fn: gossip },
+        ...this.bar.scelteBancone(),
+        ...(this.interni?.attivo ? [] : this.bar.scelteTavoli()),
         { label: 'Esci', fn: null },
       ],
     };
