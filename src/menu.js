@@ -13,7 +13,7 @@
 //
 // Tastiera: ←/→ (o A/D, 1-5) cambia scheda · ↑/↓ scegli · E/Invio usa · J/Esc chiude.
 import { RAMI, GRADI_LIVELLO, LIVELLI } from './data/progressione.js';
-import { ARMI, VESTITI, OGGETTI, SLOT, NOMI_SLOT } from './data/armi.js';
+import { ARMI, VESTITI, OGGETTI, SLOT, NOMI_SLOT, MOSSE_ARMI, AFFILATURA } from './data/armi.js';
 import { PNG } from './data/png.js';
 import { portrait } from './pixel.js';
 
