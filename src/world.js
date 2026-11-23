@@ -100,6 +100,7 @@ export class World {
 
   paint(x, z, plot) {
     PIX.paintTile(this.groundCtx, this.grid[z][x], x, z, x * 131 + z * 977 + 7, plot);
+    if (!plot) PIX.blendTile(this.groundCtx, this.grid, x, z);
     if (this.groundTex) this.groundTex.needsUpdate = true;
   }
 
