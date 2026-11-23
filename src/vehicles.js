@@ -13,18 +13,18 @@ import { vehicleArt, smokePuff, VPX } from './vehicle_sprites.js';
 // ===== Valori facili da ritoccare =====
 export const VEHICLE_TYPES = {
   vespa: {
-    name: 'Vespa', article: 'la', icon: '🛵', maxSpeed: 8.5, accel: 7, turn: 4.2, box: [0.55, 0.32],
+    name: 'Vespa', article: 'la', icon: '🛵', maxSpeed: 8.5, accel: 8, turn: 5.5, box: [0.55, 0.32],
     crashSpeed: 5, fallSpeed: 7, crashDamage: 6, startFail: 0.25, stallPerSec: 0.004,
     repair: { price: 15, minutes: 60 },
   },
   punto: {
-    name: 'Punto', article: 'la', icon: '🚗', maxSpeed: 7.5, accel: 4.5, turn: 2.6, box: [1.35, 0.62],
+    name: 'Punto', article: 'la', icon: '🚗', maxSpeed: 7.5, accel: 6, turn: 3.8, box: [1.35, 0.62],
     crashSpeed: 3.5, crashDamage: 5, fuelPerUnit: 0.16, flatChance: 0.3,
     repair: { price: 20, minutes: 60 }, refuel: { price: 10, minutes: 15 }, tyre: { price: 8, minutes: 30 },
   },
   trattore: {
-    name: 'Trattore', label: 'trattore', article: 'il', icon: '🚜', maxSpeed: 3.8, accel: 3, turn: 1.9, box: [1.25, 0.75],
-    crashSpeed: 1.6, crashDamage: 16, tiredBreakPerSec: 0.006, plows: true,
+    name: 'Trattore', label: 'trattore', article: 'il', icon: '🚜', maxSpeed: 4.2, accel: 5, turn: 3.0, box: [1.25, 0.75],
+    crashSpeed: 2.4, crashDamage: 16, tiredBreakPerSec: 0.006, plows: true,
     repair: { price: 40, minutes: 120 },
   },
 };
@@ -101,7 +101,8 @@ export class Vehicles {
   get(id) { return this.list.find(v => v.id === id); }
 
   // ---------- Collisioni ----------
-  _box(v, x = v.st.x, z = v.st.z) { const [hx, hz] = v.T.box; return [x - hx, z - hz, x + hx, z + hz]; }
+  // ingombro: lungo in orizzontale, girato quando il mezzo va su o giù
+  _box(v, x = v.st.x, z = v.st.z, vert = v.vert) { const [a, b] = v.T.box; const hx = vert ? b : a, hz = vert ? a * 0.8 : b; return [x - hx, z - hz, x + hx, z + hz]; }
 
   _hitsVehicle(x0, z0, x1, z1, except) {
     for (const v of this.list) {
@@ -112,8 +113,8 @@ export class Vehicles {
     return false;
   }
 
-  _free(v, x, z) {
-    const [x0, z0, x1, z1] = this._box(v, x, z);
+  _free(v, x, z, vert = v.vert) {
+    const [x0, z0, x1, z1] = this._box(v, x, z, vert);
     for (const s of this.world.solids) if (x1 > s.x0 && x0 < s.x1 && z1 > s.z0 && z0 < s.z1) return false;
     return !this._hitsVehicle(x0, z0, x1, z1, v);
   }
@@ -130,8 +131,15 @@ export class Vehicles {
   // ---------- Grafica ----------
   _pose(v) {
     const { st } = v;
-    const cx = Math.cos(st.h), cz = Math.sin(st.h);
-    const view = Math.abs(cx) >= Math.abs(cz) * 0.75 ? (cx >= 0 ? 'R' : 'L') : (cz > 0 ? 'F' : 'B');
+    // vista dello sprite con un po' di isteresi, così non sfarfalla in diagonale
+    const CENTER = { R: 0, F: Math.PI / 2, L: Math.PI, B: -Math.PI / 2 };
+    let view = v.view;
+    if (!view || Math.abs(wrap(st.h - CENTER[view])) > Math.PI / 4 + 0.18) {
+      const cx = Math.cos(st.h), cz = Math.sin(st.h);
+      view = Math.abs(cx) >= Math.abs(cz) ? (cx >= 0 ? 'R' : 'L') : (cz > 0 ? 'F' : 'B');
+    }
+    const vert = view === 'F' || view === 'B';
+    if (vert !== !!v.vert && this._free(v, st.x, st.z, vert)) v.vert = vert;
     const occ = v === this.driving ? 1 : 0;
     if (view !== v.view || occ !== v.occ) {
       v.view = view; v.occ = occ;
@@ -151,12 +159,22 @@ export class Vehicles {
     document.getElementById('hud').appendChild(el);
     this.hud = el;
     this.btnJump = document.getElementById('btn-jump');
+    // menu attrezzi dal trattore: tasto R sul PC, pulsante 🔧 sul telefono
+    const b = document.createElement('button');
+    b.id = 'btn-attrezzo'; b.textContent = '🔧'; b.title = 'Cambia attrezzo (R)'; b.hidden = true;
+    document.getElementById('touch')?.appendChild(b);
+    b.addEventListener('pointerdown', e => { e.preventDefault(); this.apriAttrezzi(); });
+    this.btnAttrezzo = b;
+    window.addEventListener('keydown', e => { if (e.code === 'KeyR' && !e.repeat) this.apriAttrezzi(); });
   }
 
   _updateHud() {
     const v = this.driving;
     this.hud.hidden = !v;
-    if (this.btnJump) this.btnJump.innerHTML = v ? '📯<small>Clacson</small>' : 'Q<small>Salta</small>';
+    const jl = v ? '📯<small>Clacson</small>' : 'Q<small>Salta</small>';
+    if (this.btnJump && this._jl !== jl) { this._jl = jl; this.btnJump.innerHTML = jl; }
+    const conAttrezzi = v?.kind === 'trattore' && !!this.game.attrezzi;
+    if (this.btnAttrezzo && this.btnAttrezzo.hidden === conAttrezzi) this.btnAttrezzo.hidden = !conAttrezzi;
     if (!v) return;
     const bar = (lab, val, cls) => `<div class="vbar ${cls}"><label>${lab}</label><div class="track"><div class="fill" style="width:${clamp(val, 0, 100)}%"></div></div></div>`;
     const kmh = Math.round(Math.abs(v.speed) * 9);
@@ -250,6 +268,13 @@ export class Vehicles {
     return true;
   }
 
+  apriAttrezzi() {
+    const v = this.driving;
+    if (!v || v.kind !== 'trattore' || !this.game.attrezzi || this.ui.busy() || this.game.locked) return;
+    v.speed = 0;
+    this.game.attrezzi.apriDaTrattore(v.id);
+  }
+
   horn() {
     const v = this.driving; if (!v) return false;
     this.audio.sfx('horn_' + v.kind);
@@ -274,20 +299,31 @@ export class Vehicles {
     const ch = this.world.tile(Math.floor(v.st.x), Math.floor(v.st.z));
     const surf = { a: 'asfalto', q: 'piazza', b: 'ponte', p: 'sterrato', g: 'erba', f: 'campo', o: 'campo', r: 'campo', y: 'campo', c: 'erba', s: 'fango', w: 'acqua' }[ch];
     if (surf && SURFACE_SPEED[surf] != null) max *= v.kind === 'trattore' ? Math.max(0.8, SURFACE_SPEED[surf]) : Math.max(0.3, SURFACE_SPEED[surf]);
-    if (len > 0.1) {
+    // sterzo morbido: il mezzo gira verso la direzione premuta con una velocità angolare che si smorza;
+    // tenendo premuto all'indietro da fermi (o dopo una botta) si va in retromarcia, altrimenti fa inversione
+    let wantRate = 0;
+    v.stuckT = Math.max(0, (v.stuckT || 0) - dt);
+    if (len > 0.08) {
+      const inp = Math.pow(Math.min(1, len), 0.8);
       const want = Math.atan2(iz, ix);
       let diff = wrap(want - st.h);
-      if (Math.abs(diff) > 2.4 && v.speed < 1.5) {
-        // indietro: si va in retromarcia girando il muso dall'altra parte
-        target = -max * 0.35 * Math.min(1, len);
+      const opp = Math.abs(diff) > 2.5;
+      v.oppT = opp ? (v.oppT || 0) + (Math.abs(v.speed) < 0.8 ? dt : 0) : 0;
+      if (!opp) v.rev = false;
+      if (opp && (v.rev || v.oppT > 0.4 || v.stuckT > 0)) {
+        v.rev = true;
+        target = -max * 0.4 * inp;
         diff = wrap(want + Math.PI - st.h);
-      } else target = max * Math.min(1, len) * clamp(1 - Math.abs(diff) / 3.2, 0.25, 1);
-      const steer = T.turn * M.sterzo * clamp(Math.abs(v.speed) / 2, 0.35, 1) * dt;
-      st.h = wrap(st.h + clamp(diff, -steer, steer));
-    }
+      } else target = max * inp * clamp(1 - Math.abs(diff) / 4.5, 0.45, 1);
+      const k = T.turn * M.sterzo * clamp(0.55 + Math.abs(v.speed) / T.maxSpeed, 0.55, 1.2);
+      wantRate = clamp(diff * 5, -k, k);
+    } else { v.oppT = 0; v.rev = false; }
+    v.angV = (v.angV || 0) + (wantRate - (v.angV || 0)) * (1 - Math.exp(-dt * 12));
+    st.h = wrap(st.h + v.angV * dt);
     // stanco: il mezzo sbanda un po'
     if (s.tired > 70 && Math.abs(v.speed) > 1) st.h = wrap(st.h + Math.sin(this.t * 2.3) * 0.35 * dt * (s.tired - 70) / 30);
-    const rate = (target === 0 || Math.sign(target) !== Math.sign(v.speed) ? T.accel * 1.6 : T.accel) * dt;
+    const braking = Math.sign(target) !== Math.sign(v.speed) && Math.abs(v.speed) > 0.05;
+    const rate = (target === 0 ? T.accel * 1.2 : braking ? T.accel * 1.8 : T.accel) * dt;
     v.speed += clamp(target - v.speed, -rate, rate);
 
     // movimento con scivolamento sui muri
@@ -298,7 +334,7 @@ export class Vehicles {
       const okX = this._free(v, st.x + dx, st.z), okZ = this._free(v, st.x, st.z + dz);
       if (okX && Math.abs(dx) > Math.abs(dz) * 0.3) { st.x += dx; v.speed *= 0.97; }
       else if (okZ && Math.abs(dz) > Math.abs(dx) * 0.3) { st.z += dz; v.speed *= 0.97; }
-      else { v.speed = -v.speed * 0.25; this._crash(v, before); if (this.driving !== v) return; }
+      else { v.speed = -v.speed * 0.25; v.stuckT = 1; this._crash(v, before); if (this.driving !== v) return; }
     }
     const dist = Math.hypot(dx, dz);
 
@@ -328,7 +364,7 @@ export class Vehicles {
   }
 
   _crash(v, speed) {
-    if (speed < 1.2) return;
+    if (speed < 2) return;
     const dmg = speed < v.T.crashSpeed ? 0 : Math.round((speed - v.T.crashSpeed + 1) * v.T.crashDamage);
     // chi ascolta (Vigilessa, cabina della corrente) può prendersi lo schianto: gestito = true
     const ev = { mezzo: v.id, tipo: v.kind, danno: dmg, x: v.st.x, z: v.st.z, velocita: speed, gestito: false };

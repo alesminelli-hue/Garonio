@@ -337,3 +337,6 @@ body.touch #minimap.big { right: 50%; }
 /* pulsanti di prova sotto la colonna dei pulsanti rapidi; missione sotto le barre in verticale */
 @media (pointer: coarse) and (orientation: landscape) { body.touch #btn-pilot, body.touch #btn-prova { top: 186px; } }
 @media (pointer: coarse) and (orientation: portrait) { body #mission { top: 162px; } }
+#btn-attrezzo { position: fixed; right: calc(max(28px, env(safe-area-inset-right)) + 93px); bottom: calc(max(24px, env(safe-area-inset-bottom)) + 66px); width: 50px; height: 50px; border-radius: 50%; font: inherit; font-size: 20px; background: #6a7a4a; border: 4px solid var(--ink); pointer-events: auto; }
+#btn-attrezzo[hidden] { display: none; }
+body:has(#dialog:not([hidden])) #btn-attrezzo { opacity: 0; pointer-events: none; }
