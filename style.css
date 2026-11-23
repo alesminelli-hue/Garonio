@@ -48,7 +48,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color:
 #dialog .body { flex: 1; min-height: 96px; position: relative; }
 #dlg-name { color: var(--gold); font-size: 15px; margin-bottom: 4px; }
 #dlg-text { font-size: 16px; line-height: 1.35; white-space: pre-wrap; }
-#dlg-choices { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+#dlg-choices { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; max-height: 46vh; overflow-y: auto; overscroll-behavior: contain; }
 #dlg-choices button { text-align: left; font: inherit; font-size: 14px; color: var(--paper); background: rgba(0,0,0,.25); border: 2px solid transparent; border-radius: 4px; padding: 5px 8px; cursor: pointer; }
 #dlg-choices button.sel { border-color: var(--gold); color: var(--gold); }
 #dlg-choices button.sel::before { content: '▶ '; }
