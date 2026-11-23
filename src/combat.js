@@ -220,7 +220,7 @@ export class Combat {
     // musica dello scontro: "Rabbia Incontrollata"
     const au = game.audio;
     this.prevScene = au.scene;
-    au.setScene(au.playlist && au.playlist.battaglia ? 'battaglia' : 'nutrie');
+    au.setScene('combattimento');
     au.sfx('bad');
 
     this.root.hidden = false;

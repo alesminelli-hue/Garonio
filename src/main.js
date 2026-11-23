@@ -90,9 +90,11 @@ async function begin(cont) {
   started = true;
   audio.unlock();
   $('title').hidden = true;
-  audio.setScene('base');
+  audio.setScene(cont ? 'base' : 'intro');
   await game.start(cont);
 }
+// la musica dell'intro parte al primo tocco sulla schermata del titolo
+$('title').addEventListener('pointerdown', () => { audio.unlock(); if (!started) audio.setScene('intro'); });
 $('btn-new').addEventListener('click', () => { Game.reset(); begin(false); });
 $('btn-continue').addEventListener('click', () => begin(true));
 
