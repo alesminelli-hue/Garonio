@@ -23,7 +23,14 @@ export class Officina {
     this._ultimoMin = null;
     this._grattaT = 0;
     game.moduli.push(this);
-    game.png.aggiungiScelte('zeno', () => [{ label: `🔧 Officina (Zeno oggi: ${UMORI[this.umore()].icona} ${this.umore()})`, fn: () => [this._pagina(true)] }]);
+    // scelte dirette nel dialogo di Zeno: riparazioni (mezzi e attrezzi) ed elaborazioni
+    game.png.aggiungiScelte('zeno', () => {
+      const n = this._daRiparare().length + this._attrezziRotti().length;
+      return [
+        { label: `🔧 Ripara mezzi e attrezzi${n ? ` (${n} da sistemare)` : ''} · Zeno ${UMORI[this.umore()].icona}`, fn: () => [n ? this._paginaRip() : this._zeno(ZENO.nienteDaFare, [{ label: 'Indietro', fn: () => [this._pagina()] }])] },
+        { label: '⚙️ Elaborazioni di Vespa e Punto', fn: () => [this._paginaElab()] },
+      ];
+    });
     game.interni?.aggancia?.('officina:ponte', () => game.ui.dialog([this._paginaElab()]));
     game.on('nuovoGiorno', () => this._nuovoGiorno());
     game.vehicles.blocchi.push(v => this._nonParte(v));
@@ -125,10 +132,10 @@ export class Officina {
   // scelte riusabili ovunque (dialogo di Zeno, bancone, porta dell'officina)
   scelte() {
     const s = this.s, veh = this.game.vehicles, out = [];
-    const rip = veh.list.filter(v => v.st.cond < 100 || this._guaiFissi(v.id).length);
+    const n = this._daRiparare().length + this._attrezziRotti().length;
     out.push({
-      label: rip.length ? `Riparazioni (${rip.length} ${rip.length === 1 ? 'mezzo' : 'mezzi'})` : 'Riparazioni: niente da fare',
-      fn: () => [rip.length ? this._paginaRip() : this._zeno(ZENO.nienteDaFare, [{ label: 'Indietro', fn: () => [this._pagina()] }])],
+      label: n ? `🔧 Ripara mezzi e attrezzi (${n} da sistemare)` : '🔧 Riparazioni: niente da fare',
+      fn: () => [n ? this._paginaRip() : this._zeno(ZENO.nienteDaFare, [{ label: 'Indietro', fn: () => [this._pagina()] }])],
     });
     out.push({ label: 'Elaborazioni di Vespa e Punto', fn: () => [this._paginaElab()] });
     // pieno e gomma: servizi semplici, senza fregature
@@ -144,6 +151,21 @@ export class Officina {
 
   _servizio(price, minutes, fx, msg) {
     return () => { this.s.money -= price; this.s.minutes += minutes; fx(); this.game.audio.sfx('coin'); this.game.ui.toast(msg, 'good'); return [this._pagina()]; };
+  }
+
+  _daRiparare() { return this.game.vehicles.list.filter(v => v.st.cond < 100 || this._guaiFissi(v.id).length); }
+
+  // attrezzi dei trattori rovinati (src/attrezzi.js li ripara nel suo menu)
+  _attrezziRotti() {
+    const A = this.game.attrezzi, st = A?.st; if (!st?.stato) return [];
+    return Object.entries(st.stato).filter(([id, v]) => (A.ha?.(id) ?? true) && v < 100).map(([id, v]) => ({ id, stato: v }));
+  }
+
+  // Garonio chiama Zeno vicino a un mezzo rotto: carro attrezzi e riparazione
+  chiama(v) {
+    const g = this.game, h = (this.s.minutes / 60) % 24;
+    if (h < 7 || h >= 20) { g.audio.sfx('bad'); g.ui.toast('Zeno non risponde. Segreteria: «Sono chiuso. Anche il telefono.» Riprova dalle 7 alle 20.', 'bad'); return; }
+    return g.ui.dialog([{ ...this._conferma(v), text: `Pronto? ${MEZZI_NOMI[v.id]} ${v.kind === "trattore" ? "rotto" : "rotta"}? Che novità. ${this._conferma(v).text}` }]);
   }
 
   _guaiFissi(id) { return this.f.guai.filter(g => g.mezzo === id && !g.fino); }
@@ -168,6 +190,8 @@ export class Officina {
         fn: () => [this._conferma(v)],
       };
     });
+    const A = this.game.attrezzi, rotti = this._attrezziRotti();
+    if (rotti.length && A?._paginaZeno) choices.push({ label: `🚜 Attrezzi: ${rotti.map(r => `${r.id} ${Math.round(r.stato)}%`).join(', ')}`, fn: () => [A._paginaZeno()] });
     choices.push({ label: 'Indietro', fn: () => [this._pagina()] });
     const text = this.f.conto > 0 ? ZENO.conto(this.f.conto) : 'Cosa ti sistemo? Scegli, che il listino cambia mentre parli.';
     return this._zeno(text, choices);
