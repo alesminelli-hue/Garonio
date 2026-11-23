@@ -486,7 +486,7 @@ export class Game {
     this._wake(); this.actT = 0; this.jumpT = 0;
     this.facing = side; this.player.setFrame(side > 0 ? 0 : PIX.GARONIO_N);
     this.player.spr.position.y = 0;
-    this.audio.setScene('mister_mountain'); this.audio.sfx('bad'); this.ui.shake();
+    this.audio.setScene('nemico'); this.audio.sfx('bad'); this.ui.shake();
     const lines = MM_LINES[reason];
     await this.ui.dialog([
       { text: 'Il terreno trema... arriva MISTER MOUNTAIN!' },
@@ -602,14 +602,16 @@ export class Game {
   _bully() {
     const s = this.s;
     const b = BAR_BULLIES[randi(0, BAR_BULLIES.length - 1)];
+    this.audio.setScene('rabbia');
+    const back = () => { this.audio.setScene('bar'); return this._barPage(false); };
     return [{
       who: 'bullo', name: b.name, text: b.text,
       choices: [
         { label: 'Rispondi a tono', fn: () => {
-          if (Math.random() < 0.5) { s.stress = clamp(s.stress - 5, 0, 100); this._xp(3); return [{ who: 'garonio', name: 'Garonio', text: 'Almeno io un padre che mi dà lavoro ce l\'ho. Tu hai solo quello sgabello.' }, { text: 'Il bar ride. Il bullo se ne va borbottando. Stress -5', }, this._barPage(false)]; }
-          s.stress = clamp(s.stress + 12, 0, 100); return [{ text: 'La risposta ti esce storta e tutti ridono di te. Stress +12' }, this._barPage(false)];
+          if (Math.random() < 0.5) { s.stress = clamp(s.stress - 5, 0, 100); this._xp(3); return [{ who: 'garonio', name: 'Garonio', text: 'Almeno io un padre che mi dà lavoro ce l\'ho. Tu hai solo quello sgabello.' }, { text: 'Il bar ride. Il bullo se ne va borbottando. Stress -5', }, back()]; }
+          s.stress = clamp(s.stress + 12, 0, 100); return [{ text: 'La risposta ti esce storta e tutti ridono di te. Stress +12' }, back()];
         } },
-        { label: 'Ignoralo', fn: () => { s.stress = clamp(s.stress + 6, 0, 100); return [{ text: 'Fai finta di niente, ma ti rode. Stress +6' }, this._barPage(false)]; } },
+        { label: 'Ignoralo', fn: () => { s.stress = clamp(s.stress + 6, 0, 100); return [{ text: 'Fai finta di niente, ma ti rode. Stress +6' }, back()]; } },
       ],
     }];
   }
@@ -620,7 +622,8 @@ export class Game {
     const P = this.player.group.position;
     const attack = this.nutrie.some(n => n.state !== 'flee') && P.z < 12;
     const nearBar = Math.hypot(P.x - 6.5, P.z - 16.5) < 4;
-    const scene = attack ? 'nutrie' : nearBar ? 'bar' : this.s.minutes >= 20 * H ? 'notte' : 'base';
+    const angry = this.s.stress >= 85;
+    const scene = attack ? 'nemico' : angry ? 'rabbia' : nearBar ? 'bar' : this.s.minutes >= 20 * H ? 'notte' : 'base';
     this.audio.setScene(scene);
   }
 
