@@ -61,12 +61,13 @@ function checkPerf() {
 }
 const minimap = new Minimap(world.grid);
 // pannelli spostabili col dito o col mouse (posizioni ricordate, barre e missione riducibili)
-const pannelli = game.pannelli = new Pannelli();
+const pannelli = game.pannelli = new Pannelli(ui);
 pannelli.aggiungi($('stats'), 'stats', { riducibile: true });
 pannelli.aggiungi($('mission'), 'mission', { riducibile: true });
 pannelli.aggiungi(minimap.el, 'minimap');
 pannelli.aggiungi($('quickbar'), 'quickbar');
 pannelli.aggiungi($('dialog'), 'dialog');
+pannelli.aggiungi($('toasts'), 'toasts');
 
 // ---------- Input ----------
 const keys = new Set();
@@ -135,6 +136,7 @@ const buzz = ms => { try { navigator.vibrate?.(ms); } catch {} };
 $('btn-a').addEventListener('pointerdown', e => { e.preventDefault(); audio.unlock(); buzz(12); if (ui.busy()) ui.key('ok'); else game.action(); });
 $('btn-jump').addEventListener('pointerdown', e => { e.preventDefault(); audio.unlock(); buzz(8); game.jump(); });
 $('btn-music').addEventListener('click', e => { e.stopPropagation(); audio.unlock(); toggleMusic(); });
+$('btn-sposta').addEventListener('click', e => { e.stopPropagation(); audio.unlock(); if (started) pannelli.sposta(); });
 $('btn-map').addEventListener('click', e => { e.stopPropagation(); audio.unlock(); if (started) toggleMap(); });
 function toggleMap() { minimap.toggle(); $('btn-map').classList.toggle('on', minimap.el.classList.contains('big')); }
 $('btn-menu').addEventListener('click', e => { e.stopPropagation(); audio.unlock(); if (started) game.menu.apri(); });

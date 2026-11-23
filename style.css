@@ -340,3 +340,52 @@ body.touch #minimap.big { right: 50%; }
 #btn-attrezzo { position: fixed; right: calc(max(28px, env(safe-area-inset-right)) + 93px); bottom: calc(max(24px, env(safe-area-inset-bottom)) + 66px); width: 50px; height: 50px; border-radius: 50%; font: inherit; font-size: 20px; background: #6a7a4a; border: 4px solid var(--ink); pointer-events: auto; }
 #btn-attrezzo[hidden] { display: none; }
 body:has(#dialog:not([hidden])) #btn-attrezzo { opacity: 0; pointer-events: none; }
+
+/* ---------- Modalità «Sposta» dei pannelli ---------- */
+.spostabile > .grip { display: none; }
+body.sposta #hud { z-index: 6; }
+body.sposta #hud .spostabile { outline: 2px dashed var(--gold); outline-offset: 3px; cursor: grab; touch-action: none; }
+body.sposta #hud .spostabile > .grip { display: grid; place-items: center; position: absolute; left: -10px; top: -10px; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--gold); color: var(--ink); font-size: 15px; line-height: 1; box-shadow: 0 2px 6px rgba(0,0,0,.5); pointer-events: none; z-index: 2; }
+body.sposta #hud .spostabile.trascina { outline-style: solid; }
+body.sposta #touch, body.sposta #prompt { opacity: .25; pointer-events: none; }
+body.sposta #veh[hidden] { display: none; }
+#sposta-bar { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 9; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: var(--panel); border: 2px solid var(--gold); border-radius: 14px; padding: 10px 14px; color: var(--paper); font-size: 13px; text-align: center; width: max-content; max-width: calc(100vw - 24px); box-shadow: 0 6px 18px rgba(0,0,0,.5); }
+#sposta-bar[hidden] { display: none; }
+#sposta-bar div { display: flex; gap: 10px; }
+#sposta-bar button { font: inherit; font-size: 15px; padding: 9px 16px; border-radius: 10px; border: 2px solid var(--edge); background: rgba(255,255,255,.1); color: var(--paper); cursor: pointer; }
+#sposta-bar button.ok { background: var(--gold); color: var(--ink); border-color: var(--ink); }
+/* la riga dei 4 pulsanti rapidi in verticale: barre un po' più strette */
+@media (orientation: portrait) { body.touch #stats { max-width: calc(100vw - 222px) !important; min-width: 150px; } }
+
+/* ---------- Scritte dei pulsanti: mai fuori dal bordo, anche con caratteri più larghi ---------- */
+#quickbar > button, #btn-a, #btn-jump { overflow: hidden; }
+#quickbar .lb, #btn-a small, #btn-jump small { max-width: 92%; white-space: nowrap; overflow: hidden; text-overflow: clip; letter-spacing: -.3px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-weight: 700; }
+body.touch #quickbar .lb { font-size: 8.5px; }
+body.touch #hud #quickbar > button { width: 44px; height: 46px; }
+#btn-a small { font-size: 10px; } #btn-jump small { font-size: 8.5px; }
+#btn-a, #btn-jump { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-weight: 800; }
+#quickbar kbd { right: 1px; bottom: 1px; min-width: 14px; height: 14px; line-height: 14px; font-size: 9px; }
+/* su telefono i 4 pulsanti rapidi stanno in un quadrato 2×2 (non coprono barre, E e Q) */
+body.touch #quickbar { display: grid !important; grid-template-columns: 44px 44px; gap: 6px !important; }
+@media (orientation: portrait) {
+  body.touch #stats { max-width: calc(100vw - 122px) !important; min-width: 0; }
+  body.touch #minimap:not(.big) { top: calc(max(8px, env(safe-area-inset-top)) + 106px); width: 140px; max-width: 36vw; }
+}
+@media (orientation: landscape) {
+  body.touch #mission { right: calc(max(8px, env(safe-area-inset-right)) + 104px); }
+  body.touch #minimap:not(.big) { right: calc(max(8px, env(safe-area-inset-right)) + 104px); }
+}
+body #hud { z-index: 4; } /* i pannelli spostati restano toccabili anche sopra la levetta e i pulsanti E/Q */
+/* pulsanti touch: solo lettere e icone, niente parole */
+body.touch #quickbar .lb, #btn-a small, #btn-jump small { display: none !important; }
+body.touch #hud #quickbar > button { width: 44px; height: 44px; padding: 0; grid-template-rows: none; }
+body.touch #quickbar .ic { font-size: 20px; }
+/* avvisi (fumetti): si spostano nella modalità «Sposta»; fuori restano trasparenti al tocco */
+#hud #toasts.spostabile { pointer-events: none; }
+body.sposta #hud #toasts.spostabile { pointer-events: auto; opacity: 1; min-width: 140px; min-height: 34px; }
+body.sposta #toasts:not(:has(.toast))::before { content: '💬 Avvisi'; display: block; background: var(--panel); border: 2px solid var(--edge); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+body.sposta #mission[hidden] { display: flex !important; opacity: .6; }
+body.sposta #mission[hidden]:not(:has(b))::before { content: '📋 Missione'; }
+#money { white-space: nowrap; }

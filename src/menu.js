@@ -317,7 +317,8 @@ export class Menu {
   _opzioni() {
     const g = this.game, out = [];
     out.push(h('h3', null, '🖐️ Pannelli'));
-    out.push(h('p', 'mn-desc', 'Barre, missione, minimappa, pulsanti, dialoghi e questo menu si spostano trascinandoli col dito o col mouse. Il pulsantino ▾ riduce barre e missione a una riga.'));
+    out.push(h('p', 'mn-desc', 'Tocca ✥ Sposta (in alto a destra) e trascina barre, missione, minimappa e pulsanti dove vuoi, poi ✔ Fatto. Col mouse si possono trascinare anche senza. Il pulsantino ▾ riduce barre e missione a una riga.'));
+    out.push(this._azione('✥ Sposta i pannelli', () => { this.chiudi(); setTimeout(() => g.pannelli?.sposta(true), 50); return ''; }));
     out.push(this._azione('↺ Rimetti i pannelli al loro posto', () => { g.pannelli?.ripristina(); return 'Pannelli rimessi al loro posto.'; }));
     out.push(h('h3', null, '🎵 Audio'));
     out.push(this._azione('♪ Musica on/off', () => { document.getElementById('btn-music')?.click(); return 'Musica cambiata.'; }));

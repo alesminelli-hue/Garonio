@@ -3,8 +3,12 @@
 // La posizione si ricorda per orientamento (verticale e orizzontale hanno disposizioni diverse).
 // Barre e missione hanno anche un pulsantino ▾ per ridurle a una riga.
 //
+// Modalità «Sposta» (pulsante ✥ della barra rapida o Opzioni del menu): il gioco si ferma, ogni pannello
+// mostra una cornice e una maniglia, e basta trascinarlo; «Fatto» per tornare a giocare.
+//
 // API (window.__garonio.pannelli):  ripristina()   rimette tutto al suo posto
 //                                    aggiungi(el, id)  rende spostabile un altro pannello
+//                                    sposta(on)     accende o spegne la modalità «Sposta»
 const KEY = 'garonio-pannelli-v1';
 const SOGLIA = 9; // px prima che un tocco diventi un trascinamento
 
@@ -13,11 +17,15 @@ function salva(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch 
 const orient = () => (innerWidth > innerHeight ? 'o' : 'v');
 
 export class Pannelli {
-  constructor() {
+  constructor(ui) {
+    this.ui = ui;
     this.dati = carica();          // { v: { id: { dx, dy, ridotto } }, o: {...} }
     this.els = {};
     this.zitto = false;            // true subito dopo un trascinamento: il click che segue non conta
-    window.addEventListener('click', e => { if (this.zitto) { e.stopPropagation(); e.preventDefault(); } }, true);
+    window.addEventListener('click', e => {
+      const inPannello = this.attivo && e.target.closest?.('.spostabile') && !e.target.closest('.rid-btn');
+      if (this.zitto || inPannello) { e.stopPropagation(); e.preventDefault(); }
+    }, true);
     window.addEventListener('resize', () => { clearTimeout(this._rt); this._rt = setTimeout(() => this.applicaTutti(), 150); });
   }
 
@@ -33,7 +41,7 @@ export class Pannelli {
     const muovi = e => {
       if (!st || e.pointerId !== st.pid) return;
       const mx = e.clientX - st.x, my = e.clientY - st.y;
-      if (!st.via && Math.hypot(mx, my) < SOGLIA) return;
+      if (!st.via && Math.hypot(mx, my) < (this.attivo ? 2 : SOGLIA)) return;
       if (!st.via) { st.via = true; el.classList.add('trascina'); }
       const p = this._pos(id); p.dx = st.dx + mx; p.dy = st.dy + my;
       this.applica(id);
@@ -54,12 +62,16 @@ export class Pannelli {
     presa.addEventListener('pointerdown', e => {
       if (e.button > 0 || el.classList.contains('big') || st) return;
       if (e.target.closest('.rid-btn, .mn-close, .mn-tab, .mn-body, input')) return;
+      if (this.attivo) e.preventDefault();
       const p = this._pos(id);
       st = { x: e.clientX, y: e.clientY, dx: p.dx, dy: p.dy, via: false, pid: e.pointerId };
       window.addEventListener('pointermove', muovi, true);
       window.addEventListener('pointerup', fine, true);
       window.addEventListener('pointercancel', fine, true);
     });
+    const grip = document.createElement('span');
+    grip.className = 'grip'; grip.textContent = '✥';
+    el.appendChild(grip);
     if (riducibile) {
       const b = document.createElement('button');
       b.className = 'rid-btn'; b.type = 'button'; b.title = 'Riduci / allarga';
@@ -88,6 +100,29 @@ export class Pannelli {
       if (r.top + ay < m) ay = m - r.top;
       if (ax || ay) { p.dx += ax; p.dy += ay; el.style.translate = `${Math.round(p.dx)}px ${Math.round(p.dy)}px`; }
     }
+  }
+
+  // ---------- Modalità «Sposta» ----------
+  sposta(on = !this.attivo) {
+    if (on === !!this.attivo) return;
+    if (on && this.ui.busy()) return;
+    this.attivo = on;
+    document.body.classList.toggle('sposta', on);
+    if (!this.barra) {
+      const b = this.barra = document.createElement('div');
+      b.id = 'sposta-bar';
+      b.innerHTML = '<span>✥ Trascina i pannelli dove vuoi. ▾ li riduce.</span><div><button data-a="r">↺ Ripristina</button><button data-a="ok" class="ok">✔ Fatto</button></div>';
+      b.addEventListener('click', e => {
+        const a = e.target.closest('button')?.dataset.a; e.stopPropagation();
+        if (a === 'r') this.ripristina(); else if (a === 'ok') this.sposta(false);
+      });
+      document.body.appendChild(b);
+    }
+    this.barra.hidden = !on;
+    // il gioco resta fermo finché si spostano i pannelli (Esc o Invio per finire)
+    this._modal ??= { key: code => { if (['Escape', 'Enter', 'KeyJ', 'Space'].includes(code)) this.sposta(false); } };
+    if (on) this.ui.modal = this._modal;
+    else { if (this.ui.modal === this._modal) this.ui.modal = null; this.applicaTutti(); }
   }
 
   applicaTutti() { for (const id of Object.keys(this.els)) this.applica(id, true); }
