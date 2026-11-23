@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { World, MAP_W, MAP_H } from './world.js';
 import { Game, CONFIG, hasSave } from './game.js';
+import { Salvataggi } from './salvataggi.js';
 import { UI } from './ui.js';
 import { Audio } from './audio.js';
 import { loadGaronio } from './pixel.js';
@@ -153,14 +154,33 @@ async function begin(cont) {
   audio.unlock();
   $('title').hidden = true;
   audio.setScene(cont ? 'base' : 'intro');
+  titoloBox.querySelector('.sv-titolo')?.remove();
   await game.start(cont);
   pannelli.aggiungi($('veh'), 'veh'); // il pannello di guida nasce con la partita
   pannelli.aggiungi($('truffa'), 'truffa', { riducibile: true }); // missioni truffaldine (cascine)
 }
 // la musica dell'intro parte al primo tocco sulla schermata del titolo
 $('title').addEventListener('pointerdown', () => { audio.unlock(); if (!started) audio.setScene('intro'); });
-$('btn-new').addEventListener('click', () => { Game.reset(); begin(false); });
+// salvataggi multipli (src/salvataggi.js): Continua = l'ultimo salvato, Carica = scegli lo slot
+const titoloBox = $('title').querySelector('.box');
+const pulsantiTitolo = () => [$('btn-new'), $('btn-continue'), $('btn-load')];
+function slotTitolo(modo) {
+  const nascosti = pulsantiTitolo().map(b => [b, b.hidden]);
+  nascosti.forEach(([b]) => b.hidden = true);
+  Salvataggi.titolo(titoloBox, modo, {
+    carica: id => begin(id),
+    nuova: id => { Game.reset(id); begin(false); },
+    indietro: () => nascosti.forEach(([b, h]) => b.hidden = h),
+  });
+}
+$('btn-new').addEventListener('click', () => {
+  if (!Salvataggi.ce()) { Game.reset('1'); begin(false); } else slotTitolo('nuova');
+});
 $('btn-continue').addEventListener('click', () => begin(true));
+$('btn-load').hidden = !hasSave();
+$('btn-load').addEventListener('click', () => slotTitolo('carica'));
+// caricamento chiesto dal menu in partita (la pagina si ricarica e riparte da quello slot)
+{ const r = Salvataggi.richiesta(); if (r) begin(r); }
 
 // ---------- Ciclo ----------
 const clock = new THREE.Clock();

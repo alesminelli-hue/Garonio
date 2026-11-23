@@ -31,6 +31,7 @@ import { Bestie } from './bestie.js';
 import { Vita } from './vita.js';
 import { Imprevisti } from './imprevisti.js';
 import { Paradiso } from './paradiso.js';
+import { Salvataggi } from './salvataggi.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -43,7 +44,6 @@ export const CONFIG = {
   tiredPerHour: 1.5,           // stanchezza che sale solo stando svegli
 };
 
-const SAVE_KEY = 'garonio-save-v1';
 const H = 60;
 
 const ACTIONS = {
@@ -80,7 +80,7 @@ function fresh() {
   };
 }
 
-export function hasSave() { try { return !!localStorage.getItem(SAVE_KEY); } catch { return false; } }
+export function hasSave() { Salvataggi.migra(); return Salvataggi.ce(); }
 
 export class Game {
   constructor(world, ui, audio) {
@@ -110,15 +110,19 @@ export class Game {
     this.bar = new Bar(this);               // trama del bar (src/bar.js)
     this.consulente = new Consulente(this); // consigli e oggetti nascosti (src/consulente.js)
     this.interni = new Interni(this);   // interni degli edifici (src/interni.js)
+    this.salvataggi = new Salvataggi(this); // slot multipli e salvataggio automatico (src/salvataggi.js)
   }
 
   on(name, fn) { return this.ev.on(name, fn); }
   emit(name, data) { this.ev.emit(name, data); }
 
   // ---------- Avvio ----------
-  async start(continueSave) {
+  // slot: '1' | '2' | '3' | 'auto' per caricare, true per l'ultimo salvato, false per una partita nuova
+  async start(slot) {
     let s = null;
-    if (continueSave) { try { s = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch { s = null; } }
+    Salvataggi.migra();
+    if (slot === true) slot = Salvataggi.ultimo();
+    if (slot) s = Salvataggi.apri(slot);
     this.s = Object.assign(fresh(), s || {});
     if (this.s.mapVersion !== MAP_VERSION) { // salvataggio fatto con una mappa vecchia: campi e uova ripartono da zero
       Object.assign(this.s, { plots: {}, eggs: [], px: PLACES.spawn.x, pz: PLACES.spawn.z, mapVersion: MAP_VERSION });
@@ -172,6 +176,7 @@ export class Game {
     this.vita = new Vita(this); this.vita.init();
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
+    this.salvataggi.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
@@ -180,10 +185,11 @@ export class Game {
   save() {
     const p = this.player.group.position;
     this.s.px = p.x; this.s.pz = p.z;
-    try { localStorage.setItem(SAVE_KEY, JSON.stringify(this.s)); } catch { /* spazio pieno o privato */ }
+    Salvataggi.scrivi(Salvataggi.attivo(), this.s); // slot della partita in corso (src/salvataggi.js)
   }
 
-  static reset() { try { localStorage.removeItem(SAVE_KEY); } catch { } }
+  // nuova partita nello slot scelto (cancella quello che c'era)
+  static reset(slot) { Salvataggi.migra(); const id = slot || Salvataggi.liberi()[0] || Salvataggi.attivo(); Salvataggi.cancella(id); Salvataggi.usa(id); }
 
   // ---------- Storia ----------
   async intro() {

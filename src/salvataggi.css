@@ -1,0 +1,24 @@
+/* Salvataggi multipli (src/salvataggi.js): scheda 💾 del menu e scelta dello slot sul titolo */
+.sv-riga { position: relative; display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; justify-content: space-between; margin: 8px 2px 10px; padding: 10px 12px;
+  background: var(--carta, #f7edd2); border-radius: 3px; box-shadow: 0 3px 6px rgba(60,36,10,.35); transform: rotate(-.4deg); color: var(--inchiostro, #3e2410); }
+.sv-riga:nth-of-type(even) { transform: rotate(.5deg); }
+.sv-riga::before { content: '📌'; position: absolute; top: -10px; left: 50%; font-size: 16px; transform: translateX(-50%); }
+.sv-riga.mio { background: #eef6dc; }
+.sv-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 160px; }
+.sv-nome b { font-size: 14px; }
+.sv-sotto { font-size: 13px; }
+.sv-quando { font-size: 11px; opacity: .7; }
+.sv-tag { align-self: flex-start; margin-top: 2px; padding: 1px 6px; border: 2px solid #2f8a3a; color: #2f8a3a; border-radius: 4px; font-family: 'Rye', Georgia, serif; font-size: 11px; transform: rotate(-6deg); }
+.sv-azioni { display: flex; gap: 6px; flex-wrap: wrap; }
+#menu .sv-azioni .mn-act { margin: 0; white-space: nowrap; }
+.sv-come { margin: 4px 2px 8px; padding: 8px 10px; background: rgba(247,237,210,.7); border-radius: 6px; font-size: 13px; line-height: 1.35; }
+/* schermata del titolo */
+.sv-titolo { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.sv-tit { margin: 0 0 2px; color: var(--gold, #f0d050); }
+#title .sv-slot { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 10px; text-align: left; margin: 0; padding: 10px 12px; font-size: 15px; }
+#title .sv-slot .sv-nome { grid-column: 1; }
+#title .sv-slot .sv-sotto { grid-column: 1; font-size: 13px; opacity: .85; }
+#title .sv-slot .sv-quando { grid-column: 2; grid-row: 1 / span 2; }
+#title .sv-slot.vuoto { background: #d8cfa0; }
+#title .sv-slot.attento { background: #f6b08a; }
+#title .sv-indietro { background: transparent; color: var(--paper, #e8e0ff); border-color: currentColor; font-size: 14px; padding: 8px; }
