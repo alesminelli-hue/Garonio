@@ -1,0 +1,8 @@
+{
+  "_info": "Collega ogni momento del gioco a uno o più file mp3/ogg di questa cartella. Se una lista è vuota parte la musichetta 8-bit di riserva.",
+  "base": ["sunset_truciolone.mp3"],
+  "notte": ["sunset_truciolone.mp3"],
+  "bar": ["rabbia_incontrollata.mp3"],
+  "nutrie": ["rabbia_incontrollata.mp3"],
+  "mister_mountain": ["mister_scarogna.mp3"]
+}
