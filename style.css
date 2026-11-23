@@ -334,3 +334,6 @@ body.touch .rid-btn { width: 26px; height: 26px; line-height: 22px; }
 body.touch #minimap.big { right: 50%; }
 /* telefono in orizzontale: la minimappa sta a sinistra della colonna dei pulsanti */
 @media (orientation: landscape) { body.touch #minimap:not(.big) { right: calc(max(8px, env(safe-area-inset-right)) + 60px); } }
+/* pulsanti di prova sotto la colonna dei pulsanti rapidi; missione sotto le barre in verticale */
+@media (pointer: coarse) and (orientation: landscape) { body.touch #btn-pilot, body.touch #btn-prova { top: 186px; } }
+@media (pointer: coarse) and (orientation: portrait) { body #mission { top: 162px; } }
