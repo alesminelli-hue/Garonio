@@ -176,3 +176,6 @@ body.stile-c #touch { position: relative; z-index: 3; }
 #btn-a { right: max(28px, env(safe-area-inset-right)); bottom: max(36px, env(safe-area-inset-bottom)); }
 #btn-jump { right: calc(max(28px, env(safe-area-inset-right)) + 90px); bottom: max(24px, env(safe-area-inset-bottom)); }
 body { -webkit-touch-callout: none; overscroll-behavior: none; }
+/* pannello di guida su telefono: non sopra la minimappa */
+body.touch #veh { right: auto; left: 8px; top: auto; bottom: 170px; }
+@media (orientation: landscape) and (max-height: 500px) { body.touch #veh { left: 50%; bottom: auto; top: 8px; transform: translateX(-50%); } }
