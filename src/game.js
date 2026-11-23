@@ -16,6 +16,7 @@ import { Menu } from './menu.js';
 import { Officina } from './officina.js';
 import { Vigilessa } from './vigilessa.js';
 import { Cabina } from './cabina.js';
+import { Cascine } from './cascine.js';
 import { puoComparire } from './data/nemici.js';
 import { Attrezzi } from './attrezzi.js';
 import { Maiali } from './maiali.js';
@@ -149,6 +150,8 @@ export class Game {
     this.attrezzi.init();
     this.maiali.init();
     this.pilot.init();
+    this.cascine = new Cascine(this);      // cascine dei vicini e missioni truffaldine (src/cascine.js)
+    this.cascine.init();
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
@@ -321,7 +324,7 @@ export class Game {
   _findTarget() {
     const P = this.player.group.position;
     const d = (x, z) => Math.hypot(P.x - x, P.z - z);
-    if (this.vehicles.driving) return this.vehicles.target();
+    if (this.vehicles.driving) return this.cascine.target() || this.vehicles.target();
     const gp = this.gigante.group.position;
     if (d(gp.x, gp.z) < 1.5) return { label: 'Parla col Gigante', fn: () => this.talkGigante() };
     const pt = this.png.bersaglio();
@@ -541,6 +544,7 @@ export class Game {
       return [pagina({ chi: 'gigante', testo: opt.risposte })];
     };
     await this.ui.dialog([{ ...pagina({ chi: 'gigante', testo: text }), choices: [
+      ...this.cascine.scelteGigante(),
       { label: sc.aumento.etichetta, fn: reply(sc.aumento) },
       { label: sc.lamentati.etichetta, fn: reply(sc.lamentati) },
       { label: sc.niente.etichetta, fn: null },

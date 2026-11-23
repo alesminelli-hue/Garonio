@@ -25,6 +25,8 @@ Il design completo è in [GDD.md](GDD.md).
   - C'è un segreto in fondo alla capezzagna. Non lo diciamo. (Il Consulente forse sì.)
   - Anteprima di tutti gli sprite dei mezzi: `tools/anteprima_mezzi.html`.
 - **Personaggi del paese**: la Mamma, il Consulente, Zeno, il Bubetto, la Vigilessa, il Patata, il Postino e Mister Frank. Avvicinati e premi **E** per parlarci. Chi ha un fumetto «!» ha una missione secondaria da darti o da ritirare.
+- **Cascine dei vicini**: la Cascina del Patata, la Cascina del Postino e il Ranch di Mister Frank stanno a sud della capezzagna, accanto ai loro campi. I vicini fanno battute quando passi, il Patata vende patate (e una bollita al giorno è gratis), il Postino vende voci di paese (alcune vere e utili per le truffe), Frank compra il mais a 14 €. Ogni cascina ha un cane (accarezzalo: per quel giorno non abbaia contro di te) e, di giorno, a volte un garzone.
+- **Missioni truffaldine del Gigante**: parlando col Gigante scegli 🤫 «Hai qualche lavoretto... speciale?». Rubare l'acqua col trattore rosso e la turbina, abbattere alberi con la motosega prestata, spostare i paletti del confine, «prendere in prestito» l'erpice. Durante la truffa vedi i coni di vista (giallo → rosso) e i cerchi d'udito di vicino, cane e garzone, più le barre di sospetto e rumore. Di notte (dopo le 20) vedono meno ma sentono tutto. Se ti beccano: scuse, bugia (Parlantina), fuga o rissa. Il ramo Furbizia fa meno rumore.
 - **Livelli e abilità**: a ogni livello (fino al 20) guadagni un punto abilità da spendere nel menu (**J**) in uno dei sette rami.
 - Il gioco si salva da solo nel browser.
 
