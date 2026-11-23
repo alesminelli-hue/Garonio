@@ -20,6 +20,10 @@
 //   riparato        { mezzo, prezzo, fattura } Zeno ripara un mezzo (src/officina.js)
 //   elaborazione    { mezzo, id, esito }       elaborazione di Zeno: 'ok' | 'male'
 //   cabina          { esito, id }              schianto contro la cabina della corrente: 'niente' | 'comune' | 'leggendario' | 'scarica'
+//   truffa          { tipo, vicino }           colpo truffaldino riuscito: 'acqua' | 'prestito' (src/cascine.js)
+//   alberoAbbattuto { vicino }                 albero del confine abbattuto con la motosega del Gigante
+//   palettoSpostato { vicino }                 paletto del confine spostato
+//   truffaScoperta  { vicino, missione, esito }  un vicino ti ha beccato: esito 'scusa' | 'bugia' | 'scappa' | 'rissa'
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }
