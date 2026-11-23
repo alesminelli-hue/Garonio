@@ -1,6 +1,6 @@
 # Garonio — Documento di Game Design (pilot)
 
-> Versione 0.2 · documento vivo: lo approfondiremo pezzo per pezzo.
+> Versione 0.3 · documento vivo: lo approfondiremo pezzo per pezzo.
 
 ## 1. In una frase
 
@@ -28,6 +28,12 @@ Un **survival gestionale con elementi da JRPG** in pixel art semi‑3D: guidi **
 | **Il Gigante** | Il padre e titolare dell'azienda. Lo considera uno scansafatiche. Ogni mattina assegna le missioni e controlla i risultati. |
 | **Mister Mountain** | Appare quando Garonio sbaglia, perde o non completa una missione. Lo rimprovera e gli alza lo stress. È il "boss" ricorrente. |
 | **Avventori del bar** | Personaggi ostili o molesti che possono far arrabbiare Garonio (eventi casuali che alzano lo stress invece di abbassarlo). |
+| **La Mamma** | Gentile, l'unica che difende Garonio. In cucina dà pasti e consigli. |
+| **Il Consulente** | Amico fidato di Garonio, sempre al bar. Dà consigli su cosa trovare in giro (capitolo 19.1). |
+| **Zeno il meccanico** | Scorbutico, gestisce l'officina. Ripara ed elabora i mezzi, ma spesso frega Garonio (capitolo 20). |
+| **Il Bubetto** | Ha un magazzino che vende di tutto: vestiti, armi, manuali. Dà missioni secondarie (capitolo 19.3). |
+| **La Vigilessa** | Gira in paese e sulle strade. Se vede Garonio urtare qualcosa coi mezzi gli fa la multa (capitolo 19.4). |
+| **I vicini** | Il Patata, il Postino e Mister Frank, ognuno con la sua cascina e le sue battute (capitolo 19.5). |
 | **Nutrie e altri animali** | Nemici dei campi: mangiano il raccolto. Più avanti: volpi per le galline, cinghiali, ladri di attrezzi. |
 
 ## 5. Le tre barre di Garonio
@@ -252,7 +258,7 @@ Fermo, cammina (4 fotogrammi), corre (3), salta (3), attacco (quando scaccia le 
 2. ✅ Garonio ha i suoi sprite e il ritratto. Mancano gli sprite veri del Gigante e di Mister Mountain, e le viste di Garonio di spalle e di fronte.
 3. ✅ Mezzi: Vespa e Punto per muoversi, trattori dell'azienda che si possono rompere (prima versione).
 4. Aggiungere maiali, officina vera e bar con eventi (interni: capitolo 17).
-5. Sistema di livelli e abilità (progettato: capitoli 11, 15, 16; lavori: capitolo 19).
+5. Sistema di livelli e abilità (progettato: capitoli 11, 15, 16; lavori: capitolo 21).
 6. Svago serale e catalogo (versione non esplicita).
 7. Stagioni e nuovi nemici (progettati: capitolo 18).
 8. Versione app per telefono.
@@ -265,15 +271,15 @@ Garonio porta **un'arma** (un attrezzo da lavoro) e **quattro pezzi di equipaggi
 
 ### 15.2 Armi (attrezzi)
 
-Ogni arma ha attacco, una **mossa propria** che si aggiunge al menu Abilità, e un piccolo effetto fuori dal combattimento (perché è anche un attrezzo). Si comprano in officina se Garonio ha il livello e il banco attrezzi giusto (capitolo 16), e si possono **affilare** tre volte (+2 attacco ogni volta).
+Ogni arma ha attacco, una **mossa propria** che si aggiunge al menu Abilità, e un piccolo effetto fuori dal combattimento (perché è anche un attrezzo). Si comprano al **magazzino del Bubetto** se Garonio ha il livello giusto e il Bubetto le ha in negozio (capitolo 19.3). Si possono **affilare** tre volte da Zeno in officina (+2 attacco ogni volta, capitolo 16).
 
 | Arma | Liv. | Attacco | Mossa propria | Fuori dal combattimento | Prezzo |
 |---|---|---|---|---|---|
 | Zappa vecchia | 1 | +0 | **Zappata**: colpo forte su uno | zappa le zolle | di partenza |
-| Rastrello | 3 | +2 | **Rastrellata**: colpisce due nemici vicini | raccoglie 2 piante alla volta | 50 € |
+| Rastrello | 3 | +2 | **Rastrellata**: colpisce due nemici vicini | raccoglie 2 piante alla volta nell'orto | 50 € |
 | Badile | 5 | +4 | **Badilata**: stordisce un nemico per un turno | scava le tane delle nutrie (meno nutrie) | 90 € |
 | Forcone | 7 | +6 | **Spazzata col forcone**: colpisce tutti | pulisce i capannoni più in fretta | 140 € |
-| Falce | 10 | +8 | **Falciata**: tutti, con critico più facile | raccoglie il grano a mano | 220 € |
+| Falce | 10 | +8 | **Falciata**: tutti, con critico più facile | taglia l'erba alta dei fossi (ci si nascondono oggetti) | 220 € |
 | Roncola | 12 | +10 | **Fendente della Bassa**: uno, ignora metà difesa | taglia i rovi del bosco (apre sentieri) | 300 € |
 | Motosega | 16 | +15 | **Motosegata**: enorme a tutti, consuma benzina e alza lo stress dei nemici | taglia alberi (apre la radura del Re dei Lupi) | 600 € + benzina |
 
@@ -307,13 +313,13 @@ Alle mosse delle armi si aggiungono quelle che Garonio impara salendo di livello
 
 | Pezzo | Slot | Effetto | Dove si trova |
 |---|---|---|---|
-| Stivali nuovi | piedi | cammini +20% | officina (c'è già, diventa equipaggiamento) |
-| Stivali alti da canale | piedi | si entra nell'acqua bassa, serve per il Re delle Nutrie | officina, liv. 9 |
-| Cappellino del consorzio | testa | stress −10% | alimentari |
-| Casco da Vespa | testa | difesa +2, niente danno nelle cadute dalla Vespa | officina |
-| Tuta da lavoro | corpo | difesa +2, lavori −5% fatica | officina |
-| Giacca imbottita | corpo | difesa +4, d'inverno niente fatica extra per il freddo | officina, liv. 10 |
-| Grembiule di cuoio | corpo | difesa +6 | officina, liv. 14 |
+| Stivali nuovi | piedi | cammini +20% | Bubetto (oggi in officina, diventa equipaggiamento) |
+| Stivali alti da canale | piedi | si entra nell'acqua bassa, serve per il Re delle Nutrie | Bubetto, liv. 9 |
+| Cappellino del consorzio | testa | stress −10% | Bubetto |
+| Casco da Vespa | testa | difesa +2, niente danno nelle cadute dalla Vespa, niente multa della Vigilessa | Bubetto |
+| Tuta da lavoro | corpo | difesa +2, lavori −5% fatica | Bubetto |
+| Giacca imbottita | corpo | difesa +4, d'inverno niente fatica extra per il freddo | Bubetto, liv. 10 |
+| Grembiule di cuoio | corpo | difesa +6 | Bubetto, liv. 14 |
 | Santino della nonna | portafortuna | una volta al giorno, a Vita 0 si rialza con 20 | in cantina, cap. 1 della trama principale |
 | Thermos di caffè | portafortuna | fatica −10 a inizio scontro | bar, rispetto 40 |
 | **Corona del Re dei Ratti** | testa | i ratti non rosicchiano più il mangime, attacco +3 | trofeo |
@@ -329,35 +335,27 @@ Ci sono già Uovo, Pomodoro e Pannocchia. Si aggiungono:
 | Caffè | fatica −20 | bar |
 | Panino col salame | Vita +35 | bar, alimentari |
 | Grappa | stress −25, ma sbaglia più spesso per 3 turni | bar |
-| Trappola per ratti | un ratto salta il turno; fuori dal combattimento cattura ratti nei capannoni | officina |
-| Tanica di benzina | ricarica la motosega o la Punto | officina |
+| Trappola per ratti | un ratto salta il turno; fuori dal combattimento cattura ratti nei capannoni | Bubetto |
+| Tanica di benzina | ricarica la motosega, la Punto o la Vespa | officina |
 | Pomata del veterinario | cura il «morso infetto» dei ratti | capannoni |
 
 ## 16. Upgrade
 
 Gli upgrade si comprano con i soldi. Alcuni chiedono un livello minimo o un capitolo della trama.
 
-### 16.1 Officina (attrezzi e armi)
+### 16.1 Armi e affilatura
 
-| Upgrade | Effetto | Prezzo |
-|---|---|---|
-| Banco attrezzi 1 | si possono comprare armi fino al liv. 7 | gratis |
-| Banco attrezzi 2 | armi fino al liv. 12 | 250 € |
-| Banco attrezzi 3 | motosega | 500 € |
-| Mola per affilare | affilatura delle armi (3 gradi, 30/60/120 €) | 80 € |
+Le armi si comprano dal Bubetto, che allarga il magazzino col passare dell'annata (capitolo 19.3). In officina Zeno affila le armi in tre gradi (30/60/120 €). Come tutto quello che fa Zeno, a volte l'affilatura va storta (capitolo 20.3).
 
 ### 16.2 Mezzi
 
 | Mezzo | Upgrade | Effetto | Prezzo |
 |---|---|---|---|
-| Vespa | Motore revisionato | non si spegne più in corsa | 120 € |
 | Vespa | Portapacchi | trasporta 3 oggetti | 40 € |
-| Punto | Gomme nuove | non fora | 80 € |
-| Punto | Serbatoio grande | benzina doppia | 60 € |
 | Punto | Gancio traino | trasporta un maiale per la vendita | 100 € |
-| Trattori | Aratro largo | ara 3 zolle in larghezza | 200 € |
-| Trattori | Rimorchio | raccolta automatica di mais e grano | 300 € |
 | Trattori | Cabina | con stanchezza alta non si rompe più | 400 € |
+
+Gli **attrezzi dei trattori** (aratro, seminatrice, falciatrice, turbina) e le **elaborazioni** di Vespa e Punto, che possono andare male, sono nel capitolo 20.
 
 ### 16.3 Azienda
 
@@ -393,11 +391,11 @@ Toccando la porta (tasto **E**) si entra in una **stanza a parte**, nello stesso
 
 | Zona | Cosa si fa |
 |---|---|
-| **Bancone del meccanico** | **Zeno**, il meccanico (personaggio nuovo): riparazioni, pieno e gomme (c'è già nel menu). |
-| **Banco attrezzi** | Comprare e affilare armi, comprare equipaggiamento. |
-| **Ponte sollevatore** | Upgrade di Vespa, Punto e trattori: si vede il mezzo sollevato. |
+| **Bancone del meccanico** | **Zeno**, il meccanico scorbutico: riparazioni a pagamento, pieno e gomme (c'è già nel menu), con il rischio che ti freghi (capitolo 20). |
+| **Ponte sollevatore** | Elaborazioni di Vespa e Punto: si vede il mezzo sollevato. |
+| **Mola** | Affilatura delle armi. |
+| **Rastrelliera degli attrezzi** | Aratro, seminatrice, falciatrice e turbina: si comprano, si riparano e si agganciano ai trattori. |
 | **Armadietti** | Upgrade dell'azienda (si ordinano qui). |
-| **Angolo della radio** | Zeno racconta voci di campagna (indizi sulle bestie leggendarie). |
 
 ### 17.3 Capannoni dei maiali
 
@@ -416,12 +414,24 @@ Di notte nei capannoni compaiono gruppi di ratti (vedi spawn, capitolo 18.4).
 | Zona | Cosa si fa |
 |---|---|
 | **Bancone** | **Loredana**: ordini (c'è già), voci di paese, misuratore del **Rispetto**. |
+| **Tavolino del Consulente** | Il **Consulente**, sempre lì: consigli su cosa trovare in giro (capitolo 19.1). |
 | **Tavoli** | Ogni avventore ha il suo posto. Si va a parlarci: è da qui che partono i dialoghi e le risse (trama del bar). |
 | **Tavolo delle carte** | Briscola con Tarcisio: mini‑gioco per soldi e rispetto. |
 | **Biliardo** | Sfide a soldi; la stecca diventa un'arma nelle risse. |
 | **Juke‑box** | Si sceglie la musica di sottofondo fra le tracce del gioco (usa `playlist.json`). |
 | **Bacheca degli annunci** | Lavoretti extra (missioni secondarie) e avvisi sulle bestie leggendarie. |
 | **Porta sul retro** | «Andiamo fuori a parlarne»: le risse grosse si fanno nella piazza. |
+
+### 17.5 Magazzino del Bubetto
+
+| Zona | Cosa si fa |
+|---|---|
+| **Bancone** | Il **Bubetto**: si compra e si vende, si chiacchiera. |
+| **Scaffali** | Vestiti, armi, manuali e oggetti, divisi per reparto. |
+| **Angolo dell'usato** | Oggetti rari a rotazione, ogni lunedì. |
+| **Lavagna** | Le missioni secondarie del Bubetto. |
+
+Le cascine dei vicini (capitolo 19.5) per ora si vedono solo da fuori: si parla coi vicini nel cortile.
 
 ## 18. Le tre trame
 
@@ -448,7 +458,7 @@ Ogni stagione è un capitolo, con un **obiettivo di stagione** (grande, controll
 - fiducia media: «Un altro anno così e ti metto a fare il garzone a vita»;
 - fiducia bassa: Mister Mountain si presenta alla cena di Natale.
 
-Missioni nuove da aggiungere ai tipi che ci sono già: **Trebbiatura** (col trattore e il rimorchio), **Irrigazione**, **Parto** (resta sveglio di notte nei capannoni), **Fiera** (porta i maiali più belli col gancio traino), **Manutenzione** (porta i mezzi da Zeno).
+Missioni nuove da aggiungere ai tipi che ci sono già: **Trebbiatura** (col trattore e la falciatrice), **Irrigazione**, **Parto** (resta sveglio di notte nei capannoni), **Fiera** (porta i maiali più belli col gancio traino), **Manutenzione** (porta i mezzi da Zeno).
 
 ### 18.2 Trama del bar: «Farsi rispettare»
 
@@ -491,7 +501,7 @@ Tre bestie leggendarie, ognuna nella sua stagione. Ogni caccia ha tre passi:
 |---|---|---|---|
 | Stagione | primavera‑estate | estate‑autunno | inverno |
 | Livello | min. 6, consigliato 8 | min. 11, consigliato 13 | min. 17, consigliato 19 |
-| Voce | Mamma: «In cantina sparisce il salame» | La Pina (o la bacheca del bar) | Tarcisio, dopo il terzo bianchino |
+| Voce | Mamma: «In cantina sparisce il salame» | La Pina, o il Consulente | Tarcisio, dopo il terzo bianchino |
 | Tracce | sacchi di mangime rosicchiati, maialini spaventati, la grata nei capannoni | argine bucato sotto il ponte, campo di grano allagato | impronte nella neve, un maiale sparito, ululati di notte |
 | Tana | sotto il silos (dalla grata dei capannoni) | sotto il ponte del canale (servono gli stivali alti) | radura del bosco (si apre con la roncola o la motosega), di notte |
 | Seguaci | ratti, ratti di fogna | nutrie, mamme nutrie, nutrie corazzate | lupi giovani, lupi |
@@ -522,21 +532,182 @@ Regole:
 - Sconfitto un re, la sua specie compare la metà e solo in gruppi piccoli.
 - Con il cane, quando un gruppo si avvicina a casa o ai capannoni, abbaia.
 
-## 19. Come dividere il lavoro di sviluppo
+## 19. Il paese: personaggi, cascine e missioni secondarie
 
-Proposta: **un lavoro di base, poi quattro in parallelo**. Ogni lavoro tocca file diversi, così non si pestano i piedi.
+> Versione 0.3. I personaggi nuovi danno vita al paese, missioni secondarie e qualche fregatura.
+
+### 19.1 Il Consulente (al bar)
+
+- **Chi è**: l'amico fidato di Garonio. Sempre allo stesso tavolino del bar, giacca sportiva, cellulare in mano, «consulente» di non si sa bene cosa. Parla come un esperto di tutto. Con Garonio è sincero.
+- **Cosa fa**: una volta al giorno, offrendogli un caffè (2 €), dà **un consiglio su cosa trovare in giro**:
+  - dove c'è un **oggetto nascosto** oggi (attrezzi persi, soldi caduti, santini, pezzi di ricambio), che compare come punto di domanda sulla minimappa;
+  - dove girano **gruppi di nemici** e cosa portano in premio;
+  - le **tracce** delle bestie leggendarie, quando la trama ci arriva;
+  - un avviso su **Zeno** («Oggi è di luna storta, non farti fare l'elaborazione») o sulla **Vigilessa** («Stamattina è sulla provinciale»).
+- **Rapporto**: più consigli segue Garonio, più il Consulente si fida e dà dritte migliori. Livelli di amicizia 1‑5. Al 5 regala il **Telefono del Consulente** (portafortuna: i consigli arrivano per messaggio senza andare al bar).
+- **Battute di esempio**: «Garonio, te lo dico da professionista: dietro al fienile c'è roba. Non chiedermi come lo so.» · «Mai fidarsi di un meccanico che fischietta.»
+
+### 19.2 Zeno il meccanico (in officina)
+
+Scorbutico, borbotta sempre, si lamenta dei ricambi e dei clienti. È l'unico che ripara i mezzi, ed **è proprio lui che spesso frega Garonio**. Tutte le regole su riparazioni ed elaborazioni sono nel capitolo 20.
+
+- **Umore di Zeno** (cattivo, normale, buono): cambia ogni giorno e si vede dalla prima battuta. Con l'umore cattivo fa più errori e chiede di più. Il Consulente sa dire com'è.
+- **Battute di esempio**: «Cosa le hai fatto a 'sta Vespa, l'hai portata in guerra?» · «Il prezzo è quello. Se non ti va, ripara da solo. Con cosa, con le mani?» · «Garanzia? Sì, fino al cancello.»
+
+### 19.3 Il Bubetto e il suo magazzino
+
+- **Chi è**: un commerciante di paese un po' furbetto, che ha un **magazzino lungo la provinciale** pieno di roba di ogni tipo. Vende tutto e conosce tutti.
+- **Cosa vende**:
+
+| Reparto | Cosa | Note |
+|---|---|---|
+| **Vestiti** | tutto l'equipaggiamento di testa, corpo e piedi (capitolo 15.4) | casco, tuta, stivali, giacche |
+| **Armi** | gli attrezzi‑arma (capitolo 15.2) | escono man mano: fino al liv. 7 in primavera, fino al 12 in estate, la motosega in autunno |
+| **Manuali** (le «skill») | «Manuale del bravo contadino», «Corso di autodifesa per corrispondenza», «Come rispondere a tono»... | ognuno dà **1 punto abilità** (oppure sblocca un grado di un ramo preciso). Uno nuovo a capitolo, prezzo crescente (80, 150, 250, 400 €) |
+| **Oggetti** | trappole, pomate, cibo | prezzi più bassi del bar, ma niente caffè |
+| **Usato** | oggetti rari a rotazione, ogni lunedì | a volte sono roba rubata dalle cascine vicine... |
+
+- **Missioni secondarie del Bubetto**: si prendono dalla lavagna del magazzino, una alla volta, e pagano in soldi, sconti o oggetti. Esempi da definire meglio più avanti:
+  - **Caccia**: «Abbatti 10 piccioni sul silos» · «Porta 5 code di ratto».
+  - **Consegne**: «Porta questo pacco al Postino, ma senza che lo veda la moglie».
+  - **Raccolta**: «Trovami 3 pezzi di ferro vecchio nei fossi».
+  - **Favori**: «Vai a ritirare i soldi che mi deve Mister Frank».
+- **Fiducia del Bubetto**: sale con le missioni fatte. Più è alta, più sconti e più roba nel reparto «usato».
+
+### 19.4 La Vigilessa
+
+- **Chi è**: la vigilessa del paese, inflessibile, taccuino sempre in mano. Non si corrompe (o quasi).
+- **Dove**: gira a piedi in paese e ogni tanto in macchinina sulla provinciale. Ha un **cono di vista** come le guardie dei giochi stealth, segnato a terra.
+- **Multe**: se vede Garonio fare una di queste cose, lo ferma e gli dà la multa:
+
+| Infrazione | Multa |
+|---|---|
+| Urtare un oggetto, un muro o un mezzo parcheggiato | 10‑40 € secondo il danno |
+| Andare in Vespa senza casco | 25 € |
+| Trattore sulla provinciale con l'attrezzo abbassato | 30 € |
+| Correre in paese (piazza e vie) | 15 € |
+| Farsi vedere durante una missione truffaldina | 50 € e la notizia arriva al bar (rispetto −) |
+
+- **Regole**:
+  - le multe si pagano al municipio entro 3 giorni, altrimenti **raddoppiano**;
+  - con 3 multe non pagate la Vigilessa **sequestra la Vespa o la Punto** per un giorno;
+  - con Parlantina 2 si può provare a convincerla («Era un piccione, l'ho schivato!»): riesce una volta su tre, se va male la multa raddoppia.
+- **Battute di esempio**: «Garonio. Di nuovo. Patente e libretto. Anche della zappa.» · «Il paracarro era lì da prima di te.»
+
+### 19.5 Le cascine dei vicini
+
+Tre cascine nuove sulla mappa, accanto ai campi dei vicini che ci sono già. Ogni vicino ha un carattere, delle battute per Garonio, qualcosa da vendere o scambiare, e i suoi campi sono il bersaglio delle missioni truffaldine del Gigante.
+
+| Cascina | Dove (sulla mappa di oggi) | Il vicino | Carattere e battute | Cosa offre |
+|---|---|---|---|---|
+| **Cascina del Patata** | il campo arato in mezzo, tra il campo di mais e il ponte | **il Patata**, grosso, lento, buono | Parla solo di patate e di sua mamma. «Garonio, sai cosa ci vuole per essere felici? Una patata. Bollita. Basta.» · «Tuo papà mi ha chiesto in prestito la turbina. Nel 2009. La sto ancora aspettando.» | Patate (cibo che toglie fatica), scambio di sementi, presta attrezzi se ti è amico |
+| **Cascina del Postino** | il campo di grano a ovest, vicino alla Via del Mulino | **il Postino**, sa tutto di tutti, pettegolo come la Pina | Ti legge le lettere degli altri. «C'è una lettera per te. Ah no, era di tuo padre. Dice che sei pigro. L'ho letta per sbaglio. Tre volte.» · «Con la Pina? Ma chi l'ha detto? ...Chi l'ha detto?» | Consegne a pagamento, voci (come il Consulente ma meno affidabili), pacchi del Bubetto |
+| **Ranch di Mister Frank** | il campo di grano a est, oltre la Strada dell'argine | **Mister Frank**, emiliano che si crede americano: cappello da cowboy, pick‑up, chiama il trattore «my horse» | «Hey boy! Qui siamo in Texas della Bassa!» · «Il mio pozzo è il più profondo della county. Non toccarlo, eh!» · «Tuo papà? Good man. Ladro, ma good man.» | Il pozzo più grande (bersaglio dell'acqua rubata), sfide di rodeo col trattore, compra il mais a prezzo alto |
+
+Ogni vicino ha un'**amicizia** (−50…+50). Sale facendo favori, comprando, scherzando bene. Scende quando ti becca nelle missioni truffaldine. Con amicizia alta: prezzi migliori, attrezzi in prestito, aiuto nei raccolti. Con amicizia bassa: ti chiude il cancello, chiama la Vigilessa, ti aspetta col forcone.
+
+### 19.6 Le missioni truffaldine del Gigante
+
+Ogni tanto, al posto della missione normale o in più, il Gigante abbassa la voce e assegna una **missione truffaldina** contro i vicini. Pagano molto di più ma sono rischiose.
+
+| Missione | Come si fa | Contro chi | Paga |
+|---|---|---|---|
+| **Ruba l'acqua** | Di notte porti il trattore con la **turbina** sul fosso o sul pozzo del vicino e la attacchi per irrigare il tuo campo. Serve restare lì un'ora di gioco senza farsi vedere. | Mister Frank (pozzo), il Patata (fosso) | 60‑90 € |
+| **Abbatti gli alberi** | Abbatti gli alberi sul confine dei campi degli altri, così il campo del Gigante si allarga. Si fa con la **motosega del Gigante**, che te la presta solo per questa missione. Fa rumore: più alberi tagli, più alto il rischio. | tutti e tre | 40 € ad albero |
+| **Sposta il confine** | Di notte sposti i paletti del confine di qualche metro. | il Postino | 50 € |
+| **Prendi in prestito** | «Prendi» un attrezzo dalla cascina del vicino e portalo nella nostra tettoia. | il Patata | 70 € + l'attrezzo |
+
+**Come funziona il rischio**:
+- Ogni cascina ha il **vicino** e a volte un **cane** con un cono di vista e un raggio di udito. Il rumore del trattore e della motosega allarga il raggio.
+- Di notte e con la nebbia si vede meno. Con il ramo Furbizia si fa meno rumore.
+- Se ti beccano: il vicino ti scopre e parte un **dialogo** (puoi scusarti, inventare una scusa, scappare) che può finire in **rissa** col vicino e i suoi garzoni. L'amicizia col vicino crolla e, se c'è la Vigilessa in giro, arriva anche la multa.
+- Il Gigante, se la missione riesce: «Non abbiamo visto niente, vero?». Se fallisce: Mister Mountain, ma la colpa resta tua.
+
+## 20. Mezzi: attrezzi dei trattori, riparazioni ed elaborazioni
+
+### 20.1 Il lavoro nei campi si fa coi trattori
+
+Nei campi grandi (mais, grano, campi dei vicini) **Garonio non lavora più a mani nude**: ara, semina, raccoglie e irriga con i trattori e i loro attrezzi. A mano restano solo l'**orto** e i lavori piccoli (uova, maiali, rastrello nell'orto). Come oggi, il trattore lavora le zolle dove passa, ma ora fa quello che dice l'attrezzo agganciato.
+
+| Attrezzo | Lavoro | Si aggancia a | Prezzo | Note |
+|---|---|---|---|---|
+| **Aratro** | ara le zolle (oggi il trattore lo fa già da solo) | trattore rosso o verde | di partenza | upgrade «largo»: 3 zolle insieme (200 €) |
+| **Seminatrice** | semina le zolle arate | trattore rosso o verde | 150 € (il Gigante la dà nella prima missione) | consuma sacchi di semente da comprare dal Bubetto |
+| **Falciatrice** (o trebbia) | raccoglie mais e grano maturi | trattore verde (il più forte) | 300 € | upgrade «rimorchio»: il raccolto va dritto nel fienile |
+| **Turbina per irrigare** | irriga un'area intorno al trattore, se è vicino all'acqua (canale, laghetto, fosso, pozzo) | trattore rosso | 250 € | serve anche per le missioni truffaldine |
+
+- L'attrezzo si **aggancia sotto la tettoia** vicino all'officina, uno per volta (si vede sullo sprite del trattore).
+- Gli attrezzi hanno uno **stato** come i mezzi. Si rovinano quando urti con l'attrezzo giù o lavori su terra sassosa, e si riparano da Zeno.
+- I trattori consumano **gasolio** (tanica in officina): finito il gasolio si fermano in mezzo al campo.
+
+### 20.2 Riparazioni solo a pagamento
+
+Nel gioco di oggi le riparazioni costano già in base al danno e i mezzi non si aggiustano da soli. Questa regola resta e diventa più chiara: **niente si ripara da solo**, si paga sempre Zeno.
+
+| Stato del mezzo | Cosa succede guidando | Costo indicativo (Vespa / Punto / Trattore) |
+|---|---|---|
+| 100‑75% · **graffi** | niente | 5 / 8 / 15 € |
+| 74‑40% · **ammaccato** | più lento del 15% | 10 / 15 / 30 € |
+| 39‑1% · **messo male** | più lento del 30%, si spegne più spesso, il trattore lavora peggio | 15 / 20 / 45 € |
+| 0% · **rotto** | non va; bisogna pagare Zeno perché venga a prenderlo (traino 10 €) | 25 / 35 / 70 € |
+
+Il prezzo esatto è proporzionale ai punti di danno, come adesso. Il tempo di riparazione cresce col danno.
+
+### 20.3 Zeno ti frega
+
+Ogni lavoro di Zeno ha una piccola probabilità di andare storto. Dipende dal suo umore del giorno (19.2):
+
+| Fregatura | Probabilità (umore buono / normale / cattivo) | Effetto |
+|---|---|---|
+| **Sovrapprezzo** | 5% / 15% / 30% | a lavoro finito chiede il 50% in più («Eh, c'era anche la guarnizione») |
+| **Lavoro a metà** | 5% / 10% / 20% | il mezzo torna all'80% invece che al 100% |
+| **Pezzo di ricambio «usato»** | 0% / 5% / 10% | dopo 2 giorni il mezzo perde di nuovo il 20% |
+
+Si può ridurre il rischio: seguendo i consigli del Consulente, col ramo Parlantina (si contratta) o pagando la **«fattura»** (+20% sul prezzo, ma niente fregature).
+
+### 20.4 Elaborazioni di Vespa e Punto
+
+Garonio può far elaborare la Vespa o la Punto da Zeno. Ogni elaborazione ha una **probabilità di riuscita**. Se va male, Zeno **si tiene i soldi** e il mezzo **si rompe di più** («Eh, capita»).
+
+| Mezzo | Elaborazione | Se riesce | Riuscita | Se va male | Prezzo |
+|---|---|---|---|---|---|
+| Vespa | **Marmitta sportiva** | +20% velocità, fa rumore (le nutrie scappano, la Vigilessa ti sente) | 70% | stato −30%, si spegne il doppio per 3 giorni | 80 € |
+| Vespa | **Motore revisionato** | non si spegne più in corsa | 60% | stato −40%, una volta su due non parte per 2 giorni | 120 € |
+| Vespa | **Cilindro maggiorato** | +35% velocità | 45% | Vespa **rotta** | 200 € |
+| Punto | **Gomme nuove** | non fora più | 90% | ne ha montate di usate: fora come prima | 80 € |
+| Punto | **Serbatoio grande** | benzina doppia | 75% | perde benzina: consuma il doppio | 60 € |
+| Punto | **Assetto ribassato** | curve più strette, +10% velocità | 55% | stato −35%, gratta su ogni sterrato | 150 € |
+| Punto | **Impianto stereo** | stress −2 all'ora mentre guidi, suona la colonna sonora a volume alto | 80% | la batteria si scarica: una volta su tre non parte | 100 € |
+
+L'umore di Zeno sposta la riuscita di ±15%. Un'elaborazione andata male si può riprovare pagando di nuovo, dopo aver pagato la riparazione.
+
+## 21. Come dividere il lavoro di sviluppo
+
+Proposta: **un lavoro di base, poi gli altri in parallelo**. Ogni lavoro tocca file diversi, così non si pestano i piedi. Il lavoro su grafica e fluidità è finito, quindi anche gli interni possono partire.
 
 | # | Lavoro | Cosa fa | File principali | Dipende da |
 |---|---|---|---|---|
-| **0** | **Base della progressione** (prima di tutti, breve) | Dati di livelli, punti abilità, armi, equipaggiamento, oggetti e nemici spostati in file di dati; salvataggio con i campi nuovi | `src/data/progressione.js`, `src/data/armi.js`, `src/data/nemici.js`, salvataggio in `game.js` | niente |
-| **A** | **Interni degli edifici** | Le quattro stanze (casa, officina, capannoni, bar), entrata e uscita dalle porte, personaggi dentro (Mamma, Zeno, Loredana, avventori ai tavoli) | `src/interni.js`, `src/data/interni.js` | lavoro 0; da coordinare col lavoro su grafica e fluidità che è in corso |
-| **B** | **Armi, abilità e upgrade** | Menu abilità e armadio, negozio armi e upgrade in officina, mosse nuove nel combattimento | `src/combat.js` (mosse), `src/progressione.js`, menu officina | lavoro 0 |
-| **C** | **Trama dell'annata** | Calendario e stagioni, obiettivi di stagione, maiali veri, missioni nuove, fiducia del Gigante, finale | `src/stagioni.js`, `src/maiali.js`, `src/data/missioni.js` | lavoro 0 |
-| **D** | **Trama del bar** | Rispetto, Orgoglio e Rabbia degli avventori, storie dei sei avventori, risse con armi da bar | `src/data/dialoghi.js`, `src/bar.js` | lavoro 0. Si può fare prima nel menu del bar attuale e poi spostare nell'interno |
-| **E** | **Bestie leggendarie e spawn** | Nemici nuovi con sprite, gruppi visibili sulla mappa, tracce, tre tane e tre re | `src/spawn.js`, `src/data/bestie.js`, sprite in `src/combat.js` | lavoro 0; le tane usano gli interni (A) |
+| **0** | **Base della progressione e dei personaggi** (prima di tutti, breve) | Dati di livelli, punti abilità, armi, equipaggiamento, oggetti e nemici in file di dati; un sistema unico per i **PNG** (dove stanno, orari, battute, amicizia) e per le **missioni secondarie**; salvataggio con i campi nuovi | `src/data/progressione.js`, `src/data/armi.js`, `src/data/nemici.js`, `src/data/png.js`, `src/png.js`, salvataggio in `game.js` | niente |
+| **A** | **Interni degli edifici** | Le stanze di casa, officina, capannoni, bar e magazzino del Bubetto, con i personaggi dentro | `src/interni.js`, `src/data/interni.js` | lavoro 0 |
+| **B** | **Armi, abilità e negozio del Bubetto** | Menu abilità e armadio, magazzino del Bubetto (vestiti, armi, manuali), mosse nuove nel combattimento | `src/combat.js` (mosse), `src/progressione.js`, `src/negozio.js` | lavoro 0 |
+| **C** | **Trama dell'annata e attrezzi dei trattori** | Stagioni, obiettivi, maiali veri, fiducia del Gigante; aratro, seminatrice, falciatrice e turbina, gasolio | `src/stagioni.js`, `src/maiali.js`, `src/attrezzi.js`, `src/data/missioni.js` | lavoro 0 |
+| **D** | **Trama del bar e Consulente** | Rispetto, Orgoglio e Rabbia, storie degli avventori, risse; il Consulente coi consigli e gli oggetti nascosti sulla mappa | `src/data/dialoghi.js`, `src/bar.js`, `src/consulente.js` | lavoro 0 |
+| **E** | **Bestie leggendarie e spawn** | Nemici nuovi, gruppi visibili sulla mappa, tracce, tane e re | `src/spawn.js`, `src/data/bestie.js`, sprite in `src/combat.js` | lavoro 0; le tane usano gli interni (A) |
+| **F** | **Zeno e la Vigilessa** | Riparazioni a fasce, fregature di Zeno, elaborazioni che possono andare male; la Vigilessa che gira, il cono di vista, le multe e il sequestro | `src/vehicles.js` (officina), `src/vigilessa.js`, `src/data/officina.js` | lavoro 0 |
+| **G** | **Cascine e missioni truffaldine** | Le tre cascine sulla mappa coi vicini e le battute, amicizia, missioni del Gigante contro i vicini con rischio di farsi beccare | `src/map.js` (cascine), `src/cascine.js`, `src/data/vicini.js` | lavoro 0; la turbina viene da C, la Vigilessa da F (si può partire con dei segnaposto) |
 
-Ordine consigliato: **0 subito**, poi **B, C, D, E in parallelo**; **A** parte appena il lavoro su grafica e fluidità è finito, perché tocca la parte che disegna il mondo.
+Ordine consigliato: **0 subito**, poi **A, B, C, D, F in parallelo**; **E** e **G** appena A, C e F hanno le prime versioni.
 
-**Più avanti (dopo questi lavori)**: ritratti dei personaggi in **PNG** disegnati a mano, da usare nei dialoghi al posto dei ritratti generati dal codice, e **dialoghi di vita quotidiana** («slice of life»): chiacchiere con la Mamma, il Gigante, Zeno e gli avventori che non fanno parte delle missioni ma raccontano il paese e i personaggi.
+**Più avanti (dopo questi lavori)**: ritratti dei personaggi in **PNG** disegnati a mano, da usare nei dialoghi al posto dei ritratti generati dal codice, e **dialoghi di vita quotidiana** («slice of life»): chiacchiere con la Mamma, il Gigante, Zeno, il Consulente, i vicini e gli avventori che non fanno parte delle missioni ma raccontano il paese e i personaggi.
 
-Sprite nuovi da fare: Mamma, Zeno, Rocco il camionista, ratto, ratto di fogna, gazza, nutria corazzata, lupo giovane, lupo, cinghiale maschio, i tre re; armi in mano a Garonio; i quattro interni.
+Sprite nuovi da fare: Mamma, Zeno, il Consulente, il Bubetto, la Vigilessa (a piedi e in macchinina), il Patata, il Postino, Mister Frank, Rocco il camionista; ratto, ratto di fogna, gazza, piccione, nutria corazzata, lupo giovane, lupo, cinghiale maschio, i tre re; armi in mano a Garonio; aratro, seminatrice, falciatrice e turbina agganciati ai trattori; tre cascine e il magazzino del Bubetto; gli interni.
+
+## 22. Altre idee da valutare
+
+- **Diario di Garonio**: un elenco unico di missioni del Gigante, truffaldine, del Bubetto e delle bestie, con la freccia sulla minimappa verso quella scelta.
+- **Il telefonino a conchiglia**: il Gigante chiama per sgridare, il Consulente manda i consigli, il Bubetto avvisa quando arriva roba nuova. Toglie tanti viaggi a piedi.
+- **Reputazione in paese**: oltre al Rispetto al bar, un valore unico che sale coi favori e scende con multe e truffe scoperte. Con reputazione bassa i prezzi salgono ovunque.
+- **Mercato del giovedì in piazza**: si vendono uova, ortaggi e raccolto a prezzi che cambiano ogni settimana (la TV di casa li anticipa).
+- **Collezionabili**: tappi di birra, santini e figurine nascosti nei fossi, che il Consulente aiuta a trovare. Completare una collezione dà un portafortuna.
+- **Viaggio rapido coi mezzi**: con la Punto, scelta di destinazione dalla mappa grande (costa benzina e tempo, ma niente guida).
+- **Scommesse al bar**: il Consulente organizza scommesse sulle risse e sulle gare col trattore di Ermes e Mister Frank.
