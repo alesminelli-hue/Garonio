@@ -537,4 +537,6 @@ Proposta: **un lavoro di base, poi quattro in parallelo**. Ogni lavoro tocca fil
 
 Ordine consigliato: **0 subito**, poi **B, C, D, E in parallelo**; **A** parte appena il lavoro su grafica e fluidità è finito, perché tocca la parte che disegna il mondo.
 
+**Più avanti (dopo questi lavori)**: ritratti dei personaggi in **PNG** disegnati a mano, da usare nei dialoghi al posto dei ritratti generati dal codice, e **dialoghi di vita quotidiana** («slice of life»): chiacchiere con la Mamma, il Gigante, Zeno e gli avventori che non fanno parte delle missioni ma raccontano il paese e i personaggi.
+
 Sprite nuovi da fare: Mamma, Zeno, Rocco il camionista, ratto, ratto di fogna, gazza, nutria corazzata, lupo giovane, lupo, cinghiale maschio, i tre re; armi in mano a Garonio; i quattro interni.
