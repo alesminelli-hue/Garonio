@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { toTexture } from './pixel.js';
 import { BUILDINGS, AREAS } from './world.js';
+import { PLACES, SURFACE_SPEED } from './map.js';
 import { vehicleArt, smokePuff, VPX } from './vehicle_sprites.js';
 
 // ===== Valori facili da ritoccare =====
@@ -31,6 +32,15 @@ export const VEHICLE_TYPES = {
 // Dove sono parcheggiati all'inizio, calcolato dagli edifici: se la mappa cambia, seguono casa e officina.
 // La mappa nuova può sostituire questa funzione (o passare i posti a new Vehicles(game, parking)).
 export function defaultParking() {
+  const P = PLACES.parking;
+  if (P) { // posti auto della mappa grande (src/map.js)
+    return {
+      vespa: { x: P.casa.x, z: P.casa.z, h: P.casa.dir },
+      punto: { x: P.casa.x + 3.2, z: P.casa.z, h: P.casa.dir },
+      trattore1: { x: P.tettoia.x, z: P.tettoia.z, h: P.tettoia.dir, color: 'rosso' },
+      trattore2: { x: P.officina.x, z: P.officina.z, h: P.officina.dir, color: 'verde' },
+    };
+  }
   const casa = BUILDINGS.find(b => b.id === 'casa'), off = BUILDINGS.find(b => b.id === 'officina');
   return {
     vespa: { x: casa.x0 + casa.w + 0.75, z: casa.z0 + casa.d - 0.7, h: Math.PI / 2 },
@@ -248,6 +258,10 @@ export class Vehicles {
     let target = 0;
     let max = T.maxSpeed * (st.flat ? 0.45 : 1) * (st.cond < 30 ? 0.75 : 1);
     if (s.tired > 80) max *= 0.85;
+    // fondo stradale: sull'asfalto si va a tutta, nei campi e nell'erba si rallenta (il trattore no)
+    const ch = this.world.tile(Math.floor(v.st.x), Math.floor(v.st.z));
+    const surf = { a: 'asfalto', q: 'piazza', b: 'ponte', p: 'sterrato', g: 'erba', f: 'campo', o: 'campo', r: 'campo', y: 'campo', c: 'erba', s: 'fango', w: 'acqua' }[ch];
+    if (surf && SURFACE_SPEED[surf] != null) max *= v.kind === 'trattore' ? Math.max(0.8, SURFACE_SPEED[surf]) : Math.max(0.3, SURFACE_SPEED[surf]);
     if (len > 0.1) {
       const want = Math.atan2(iz, ix);
       let diff = wrap(want - st.h);
