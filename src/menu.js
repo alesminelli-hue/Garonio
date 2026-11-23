@@ -91,13 +91,12 @@ export class Menu {
 
   vai(tab) { if (!this.schede[tab]) return; this.tab = tab; this.msg = ''; this.sel = 0; this._tabs(); this._render(); this.body.scrollTop = 0; }
 
-  // compatibilità col vecchio menu a dialoghi (es. l'armadio degli interni): apre la scheda Equip.
-  // Si può chiamare anche dentro la scelta di un dialogo: il menu si apre appena il dialogo si chiude.
-  _equip() {
-    if (!this.game.ui.busy()) { this.apri('equip'); return null; }
-    const t = setInterval(() => { if (!this.game.ui.busy()) { clearInterval(t); this.apri('equip'); } }, 50);
-    setTimeout(() => clearInterval(t), 4000);
-    return null;
+  // Compatibilità col vecchio menu a dialoghi (es. l'armadio degli interni: ui.dialog([menu._equip(testo)])):
+  // restituisce una pagina di dialogo col testo; appena il dialogo si chiude si apre la scheda Equip.
+  _equip(msg) {
+    const t = setInterval(() => { if (!this.game.ui.busy()) { clearInterval(t); this.apri('equip'); } }, 60);
+    setTimeout(() => clearInterval(t), 30000);
+    return { who: 'garonio', name: 'Garonio', text: msg || 'Vediamo cosa mi metto.' };
   }
 
   _build() {
