@@ -35,7 +35,7 @@ export class Attrezzi {
     const s = this.s;
     s.flags ??= {};
     s.flags.attrezzi ??= {
-      posseduti: { aratro: true, seminatrice: true },
+      posseduti: { aratro: true, seminatrice: true, falciatrice: true, turbina: true }, // pilot: tutti e quattro da subito
       noleggio: {},
       su: { trattore1: 'aratro', trattore2: 'seminatrice' },
       stato: { aratro: 100, seminatrice: 100 },
@@ -44,6 +44,8 @@ export class Attrezzi {
       semente: L.sementeIniziale * L.sementeSacco,
       cassone: { mais: 0, grano: 0 },
     };
+    // pilot: anche nelle partite salvate prima ci sono tutti gli attrezzi
+    for (const a of Object.keys(ATTREZZI)) if (!this.st.posseduti[a]) { this.st.posseduti[a] = true; this.st.stato[a] ??= 100; }
     const g = this.game, W = g.world;
     this.fienile = BUILDINGS.find(b => b.id === 'fienile');
     // rastrelliera degli attrezzi e cisterna del gasolio, accanto alla tettoia
@@ -396,11 +398,17 @@ export class Attrezzi {
   _paginaAggancio(idT, rapido = false) {
     const g = this.game, s = this.s;
     const fine = msg => { if (!rapido) return [this._paginaRastrelliera(msg)]; g.ui.toast(msg, 'good'); return null; };
-    const choices = Object.keys(ATTREZZI).filter(a => this.ha(a)).map(a => {
-      const D = ATTREZZI[a], ok = D.trattori.includes(idT), cur = this.su(idT) === a;
+    // tutti gli attrezzi sempre in lista: quelli che non hai dicono dove trovarli
+    const choices = Object.keys(ATTREZZI).map(a => {
+      const D = ATTREZZI[a], ok = D.trattori.includes(idT), cur = this.su(idT) === a, mio = this.ha(a);
+      const altrove = TRATTORI.find(t => t !== idT && this.su(t) === a);
+      const label = cur ? `${D.icona} ${D.nome} (già agganciato)`
+        : !mio ? `${D.icona} ${D.nome}: da Zeno, ${D.prezzo} €${D.noleggio ? ` (noleggio ${D.noleggio} €)` : ''}`
+        : !ok ? `${D.icona} ${D.nome}: solo sul ${D.trattori.map(nomeT).join(' o ')}`
+        : `${D.icona} Aggancia ${D.nome.toLowerCase()}: ${D.lavoro}${altrove ? ` (lo stacco dal ${nomeT(altrove)})` : ''}`;
       return {
-        label: cur ? `${D.icona} ${D.nome} (già agganciato)` : ok ? `${D.icona} Aggancia ${D.nome.toLowerCase()}: ${D.lavoro}` : `${D.icona} ${D.nome}: solo sul ${D.trattori.map(nomeT).join(' o ')}`,
-        disabled: cur || !ok,
+        label,
+        disabled: cur || !ok || !mio,
         fn: () => {
           this.aggancia(idT, a); s.minutes += 10; g.audio.sfx('dig');
           return fine(`${D.icona} ${D.nome} agganciat${/(a|ice)$/.test(D.nome) ? 'a' : 'o'} al ${nomeT(idT)}.`);

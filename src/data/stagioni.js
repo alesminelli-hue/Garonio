@@ -170,9 +170,9 @@ export const ATTREZZI = {
                  lavoro: 'ara le zolle (anche le stoppie del grano)' },
   seminatrice: { nome: 'Seminatrice', icona: '🌱', trattori: ['trattore1', 'trattore2'], prezzo: 150, larghezza: 2, usura: 0.06, gasolio: 0.05,
                  lavoro: 'semina le zolle arate (consuma la semente)' },
-  falciatrice: { nome: 'Falciatrice', icona: '🌾', trattori: ['trattore2'], prezzo: 300, larghezza: 2, usura: 0.08, gasolio: 0.1, noleggio: 35,
+  falciatrice: { nome: 'Falciatrice', icona: '🌾', trattori: ['trattore1', 'trattore2'], prezzo: 300, larghezza: 2, usura: 0.08, gasolio: 0.1, noleggio: 35,
                  lavoro: 'raccoglie mais e grano maturi; il cassone si scarica al fienile' },
-  turbina:     { nome: 'Turbina per irrigare', icona: '💦', trattori: ['trattore1'], prezzo: 250, raggio: 2.6, usura: 0.02, gasolio: 0.35, noleggio: 30,
+  turbina:     { nome: 'Turbina per irrigare', icona: '💦', trattori: ['trattore1', 'trattore2'], prezzo: 250, raggio: 2.6, usura: 0.02, gasolio: 0.35, noleggio: 30,
                  lavoro: 'irriga intorno al trattore, se sei vicino all\'acqua (canale o laghetto)' },
 };
 
