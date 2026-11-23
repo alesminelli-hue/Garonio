@@ -163,7 +163,8 @@ export class Consulente {
   _avviso() {
     const g = this.game;
     if (Math.random() < 0.5) {
-      if (g.officina?.consiglio) { try { const t = g.officina.consiglio(); if (t) return t; } catch (e) { console.error(e); } }
+      // l'umore di Zeno viene dall'officina (src/officina.js): T.zeno = [normale, cattivo, buono]
+      try { const u = g.officina?.umore?.(); if (u) return T.zeno[{ normale: 0, cattivo: 1, buono: 2 }[u] ?? 0]; } catch (e) { console.error(e); }
       return pick(T.zeno);
     }
     const p = g.png.dove('vigilessa');
