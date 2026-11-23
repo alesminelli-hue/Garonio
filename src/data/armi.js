@@ -43,7 +43,7 @@ export const VESTITI = {
   grembiule:       { nome: 'Grembiule di cuoio',       slot: 'corpo', bonus: { def: 6 }, prezzo: 180, liv: 14, desc: 'difesa +6' },
   santino:         { nome: 'Santino della nonna',      slot: 'portafortuna', bonus: { santino: 1 }, desc: 'una volta al giorno, a Vita 0 si rialza' },
   thermos:         { nome: 'Thermos di caffè',         slot: 'portafortuna', bonus: { faticaInizioScontro: 10 }, desc: 'fatica −10 a inizio scontro' },
-  telefonoConsulente: { nome: 'Telefono del Consulente', slot: 'portafortuna', bonus: { consigliAlTelefono: 1 }, desc: 'i consigli arrivano per messaggio' },
+  telefonoConsulente: { nome: 'Numero del Consulente', slot: 'portafortuna', bonus: { consigliAlTelefono: 1 }, desc: 'le dritte arrivano per SMS sul telefonino' },
   // leggendari: solo dalla cabina della corrente (GDD 20.5)
   cascoFulmine:    { nome: 'Casco di Nonno Fulmine',   slot: 'testa', bonus: { def: 5, casco: 1, invisibileVigilessa: 1 }, leggendario: true, desc: 'difesa +5, la Vigilessa non ti vede' },
   tutaIsolante:    { nome: 'Tuta isolante del tecnico', slot: 'corpo', bonus: { def: 7, scosse: 1 }, leggendario: true, desc: 'difesa +7, immune alle scosse' },

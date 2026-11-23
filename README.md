@@ -7,7 +7,7 @@ Il design completo è in [GDD.md](GDD.md).
 
 ## Come si gioca
 
-- **Frecce / WASD**: muoversi · **Shift**: correre · **E / Spazio / Invio**: agire · **J**: menu di Garonio (abilità, equipaggiamento, zaino, diario) · **M**: musica on/off
+- **Frecce / WASD**: muoversi · **Shift**: correre · **E / Spazio / Invio**: agire · **J**: menu di Garonio (abilità, equipaggiamento, zaino, diario) · **M**: musica on/off · **T**: telefonino a conchiglia (T risponde, X rifiuta)
 - Su telefono: appoggia il pollice sulla metà sinistra dello schermo e compare la levetta (spinta fino in fondo = corsa); pulsante **E** a destra per agire, **Q** per saltare. Un tocco a sinistra fa anche avanzare i dialoghi. Si gioca sia in verticale sia in orizzontale.
 - Ogni mattina il Gigante ti dà una missione con scadenza. Se fallisci arriva Mister Mountain.
 - Lavorare alza **stanchezza** e **stress**. Il **bar** abbassa lo stress, la **casa** fa dormire (dopo le 20:00) o fare un pisolino.

@@ -9,6 +9,7 @@ import { PLACES, MAP_VERSION, coopSpot } from './map.js';
 import { Combat } from './combat.js';
 import { Vehicles } from './vehicles.js';
 import { Eventi } from './eventi.js';
+import { Telefono } from './telefono.js';
 import { Progressione, freshProg } from './progressione.js';
 import { Personaggi } from './png.js';
 import { Secondarie } from './secondarie.js';
@@ -172,6 +173,7 @@ export class Game {
     this.vita = new Vita(this); this.vita.init();
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
+    this.telefono = new Telefono(this); this.telefono.init(); // telefonino a conchiglia (src/telefono.js)
 
     if (!this.s.introDone) await this.intro();
     else if (!this.s.mission) await this.morning();
