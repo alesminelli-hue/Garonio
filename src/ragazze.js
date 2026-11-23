@@ -297,6 +297,7 @@ export class Ragazze {
     g._xp(C.xp);
     g.emit('conquista', { id });
     // la notte finisce lì: Garonio si risveglia a casa la mattina dopo (stesso giro del letto di casa)
+    await g.ui.fade(false);   // si riapre un attimo: se la giornata va rifatta, il Gigante deve vedersi
     g.locked = false;
     await g.sleep(false);
     g.audio.sfx('level');
