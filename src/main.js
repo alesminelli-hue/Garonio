@@ -12,8 +12,8 @@ const $ = id => document.getElementById(id);
 const TARGET_H = 270; // risoluzione verticale interna: più bassa = pixel più grossi
 
 const canvas = $('game');
-// PROVA STILI (solo anteprima): ?stile=b (pixel morbido) o ?stile=c (HD-2D)
-const STILE = new URLSearchParams(location.search).get('stile') || 'a';
+// Stile grafico: b = pixel morbido (predefinito). Per confronto: ?stile=a (pixel classico) o ?stile=c (HD-2D)
+const STILE = new URLSearchParams(location.search).get('stile') || 'b';
 document.body.classList.add('stile-' + STILE);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: STILE !== 'a' });
 renderer.setPixelRatio(STILE === 'a' ? 1 : Math.min(devicePixelRatio, 2));
