@@ -57,19 +57,40 @@ export class Audio {
     if (scene === this.scene) return;
     this.scene = scene;
     if (!this.enabled) return;
-    const list = (this.playlist[scene] || []).filter(Boolean);
-    const file = list.length ? list[Math.floor(Math.random() * list.length)] : null;
-    if (file && this.el && this.el.dataset.file === file) return; // stessa traccia: continua
+    const list = this._list(scene);
+    // se la traccia che sta suonando va bene anche per la nuova scena, continua
+    if (list.length && this.el && list.includes(this.el.dataset.file)) { this.el.loop = list.length === 1; return; }
     this._fadeOut();
-    if (file) this._playFile(file);
+    if (list.length) this._playFile(this._next(scene));
     else this._startChiptune(scene);
+  }
+
+  _list(scene) { return (this.playlist[scene] || []).filter(Boolean); }
+
+  // Rotazione: ogni scena ricorda a che punto della sua lista era arrivata
+  _next(scene) {
+    const list = this._list(scene);
+    this.rot ??= {};
+    const i = this.rot[scene] ?? 0;
+    this.rot[scene] = (i + 1) % list.length;
+    return list[i % list.length];
   }
 
   _playFile(file) {
     this._stopChiptune();
     const el = new window.Audio(MUSIC_DIR + file);
     el.dataset.file = file;
-    el.loop = true;
+    el.loop = this._list(this.scene).length <= 1;
+    // a fine traccia parte la successiva della scena attuale
+    el.addEventListener('ended', () => {
+      if (this.el !== el || !this.enabled) return;
+      this.el = null;
+      const list = this._list(this.scene);
+      if (!list.length) return;
+      let f = this._next(this.scene);
+      if (f === file && list.length > 1) f = this._next(this.scene);
+      this._playFile(f);
+    });
     el.volume = 0;
     el.play().catch(() => {});
     this.el = el;
