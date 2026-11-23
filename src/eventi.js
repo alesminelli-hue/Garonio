@@ -34,10 +34,18 @@
 //   briscola        { vinta, tuoi, suoi }      partita a briscola con Tarcisio
 //   trovato         { id, dove }               raccolto l'oggetto nascosto indicato dal Consulente
 //   consulente      { livello }                sale l'amicizia col Consulente
+<<<<<<< HEAD
 //   buca            { mezzo, danno, x, z }     un mezzo prende una buca (src/imprevisti.js)
 //   randagio        { esito }                  il cane randagio: 'scacciato' | 'amico' | 'battuto'
 //   impiccione      { png, scelta }            un paesano attacca bottone: 'ascolta' | 'taglia' | 'telefono'
 //   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
+=======
+//   traccia         { bestia, luogo }          (ascoltato) segni di un re trovati altrove (es. negli interni)
+//   tracciaBestia   { id, n, tot }             traccia di un re trovata sulla mappa
+//   bestiaSconfitta { id }                     un re è stato battuto (trofeo già dato)
+//   gruppo          { stato, membri, zona }    gruppo sulla mappa: 'comparso' | 'win' | 'lose' | 'flee'
+//   clacson         { mezzo, x, z }            Garonio suona il clacson (scaccia i gruppi piccoli)
+>>>>>>> fd74d7e4984452736b57d91c24feb038837616a4
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }

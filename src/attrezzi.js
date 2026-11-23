@@ -145,7 +145,7 @@ export class Attrezzi {
     const gas = this.gasolio(v.id);
     let html = bar('Gas.', gas, gas < 15 ? 'low' : 'fuel');
     const a = this.su(v.id);
-    if (!a) return html + '<div class="warn att">Nessun attrezzo: agganciane uno alla tettoia</div>';
+    if (!a) return html + '<div class="warn att">Nessun attrezzo: premi R (o 🔧) per agganciarne uno</div>';
     const st = this.st, stato = Math.round(st.stato[a] ?? 100);
     let extra = '';
     if (a === 'seminatrice') extra = ` · semente ${Math.ceil(st.semente / L.sementeSacco)} sacchi (${st.semente} zolle)`;
@@ -153,7 +153,7 @@ export class Attrezzi {
     if (a === 'turbina') extra = v._spray > 0 ? ' · 💦 spruzza' : this._acqua(v.st.x, v.st.z) > L.raggioAcqua ? ' · lontano dall\'acqua' : '';
     if (a === 'aratro' && st.upg.aratroLargo) extra = ' · largo';
     if (a !== 'turbina') extra += v._giu ? ' · ⬇ giù' : ' · ⬆ alzato';
-    return html + `<div class="att">${ATTREZZI[a].icona} ${ATTREZZI[a].nome} ${stato}%${extra}</div>`;
+    return html + `<div class="att">${ATTREZZI[a].icona} ${ATTREZZI[a].nome} ${stato}%${extra} · <b>${document.body.classList.contains('touch') ? '🔧' : 'R'}</b> cambia</div>`;
   }
 
   // la turbina c'è ed è accesa vicino a (x, z)?
@@ -390,8 +390,12 @@ export class Attrezzi {
     return { who: 'garonio', name: 'Tettoia degli attrezzi', text: (msg ? msg + '\n' : '') + desc, choices };
   }
 
-  _paginaAggancio(idT) {
+  // menu rapido dal trattore (tasto R o pulsante 🔧): scegli l'attrezzo senza andare alla tettoia
+  async apriDaTrattore(idT) { await this.game.ui.dialog([this._paginaAggancio(idT, true)]); }
+
+  _paginaAggancio(idT, rapido = false) {
     const g = this.game, s = this.s;
+    const fine = msg => { if (!rapido) return [this._paginaRastrelliera(msg)]; g.ui.toast(msg, 'good'); return null; };
     const choices = Object.keys(ATTREZZI).filter(a => this.ha(a)).map(a => {
       const D = ATTREZZI[a], ok = D.trattori.includes(idT), cur = this.su(idT) === a;
       return {
@@ -399,13 +403,15 @@ export class Attrezzi {
         disabled: cur || !ok,
         fn: () => {
           this.aggancia(idT, a); s.minutes += 10; g.audio.sfx('dig');
-          return [this._paginaRastrelliera(`${D.nome} agganciat${D.nome.endsWith('a') ? 'a' : 'o'} al ${nomeT(idT)}.`)];
+          return fine(`${D.icona} ${D.nome} agganciat${/(a|ice)$/.test(D.nome) ? 'a' : 'o'} al ${nomeT(idT)}.`);
         },
       };
     });
-    if (this.su(idT)) choices.push({ label: 'Sgancia e lascia il trattore libero', fn: () => { this.st.su[idT] = null; s.minutes += 5; return [this._paginaRastrelliera('Sganciato.')]; } });
-    choices.push({ label: 'Indietro', fn: () => [this._paginaRastrelliera()] });
-    return { who: 'garonio', name: `Attrezzi · ${nomeT(idT)}`, text: 'Cosa ci attacco?', choices };
+    if (this.su(idT)) choices.push({ label: 'Sgancia e lascia il trattore libero', fn: () => { this.st.su[idT] = null; s.minutes += 5; return fine('Attrezzo sganciato.'); } });
+    choices.push(rapido ? { label: 'Chiudi', fn: null } : { label: 'Indietro', fn: () => [this._paginaRastrelliera()] });
+    const cur = this.su(idT);
+    const text = rapido ? `Ora c'è: ${cur ? ATTREZZI[cur].icona + ' ' + ATTREZZI[cur].nome : 'niente'}. Cosa ci attacco? (10 minuti)` : 'Cosa ci attacco?';
+    return { who: 'garonio', name: `Attrezzi · ${nomeT(idT)}`, text, choices };
   }
 
   _sceltaSemente(prezzo, chi, back) {

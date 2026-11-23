@@ -302,7 +302,7 @@ export class Imprevisti {
 
   _ognOra() {
     const s = this.s, C = I.cane, h = this._ora();
-    if (this.cane || s.day < C.daGiorno || h < 7 || h > 20) return;
+    if (this.cane || s.day < C.daGiorno || h < 7 || h > 20 || this.game.interni?.attivo) return;
     if (Math.random() < C.probabilitaOra) this._nuovoCane();
   }
 
@@ -470,6 +470,7 @@ export class Imprevisti {
 
   // =====================================================================
   update(dt) {
+    if (this.game.interni?.attivo) return;   // dentro un edificio: niente imprevisti
     this._controllaStrada(dt);
     this._controllaCantiere();
     this._aggiornaCane(dt);

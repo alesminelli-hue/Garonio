@@ -69,6 +69,7 @@ export const BUILDINGS = [
   { id: 'officina', label: 'OFFICINA', x0: 80, z0: 60, w: 7, d: 6, h: 3, wall: 'metallo', roof: '#6a7078', windows: 1 },
   { id: 'bar', label: 'BAR', x0: 10, z0: 45, w: 7, d: 5, h: 2.8, wall: 'bar', roof: '#3a7a4a', windows: 2 },
   { id: 'maiali', label: 'MAIALI', x0: 128, z0: 62, w: 12, d: 6, h: 2.6, wall: 'metallo', roof: '#8a4a32', windows: 0 },
+  { id: 'magazzino', label: 'BUBETTO', x0: 41, z0: 44, w: 8, d: 5.5, h: 3.2, wall: 'metallo', roof: '#4a7a5a', windows: 1 },
   { id: 'gallinaio', label: '', x0: 82, z0: 73.5, w: 2.5, d: 2, h: 1.4, wall: 'legno', roof: '#7a4a26', windows: 0, noDoor: true },
   // scenografia
   { id: 'capannone2', label: '', x0: 142, z0: 62, w: 10, d: 6, h: 2.6, wall: 'metallo', roof: '#8a4a32', windows: 0, decor: true },
@@ -121,7 +122,7 @@ export const PLACES = {
 
 // Punti di riferimento per minimappa e cartelli.
 export const LANDMARKS = [
-  { name: 'Casa', x: 65.5, z: 63.5 }, { name: 'Officina', x: 83.5, z: 63 }, { name: 'Bar', x: 13.5, z: 47.5 },
+  { name: 'Casa', x: 65.5, z: 63.5 }, { name: 'Officina', x: 83.5, z: 63 }, { name: 'Bar', x: 13.5, z: 47.5 }, { name: 'Bubetto', x: 45, z: 46.5 },
   { name: 'Maiali', x: 134, z: 65 }, { name: 'Campo', x: 74, z: 17 }, { name: 'Orto', x: 65.5, z: 75 },
   { name: 'Pollaio', x: 81, z: 76.5 }, { name: 'Laghetto', x: 35, z: 83.5 },
   { name: 'Paradiso', x: 48, z: 63.5 },

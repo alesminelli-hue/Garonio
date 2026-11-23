@@ -379,6 +379,7 @@ export class World {
 
   // Collisioni: indice a celle 8x8, ricostruito quando cambia la lista dei solidi.
   blocked(x, z, r = 0.28) {
+    if (x > MAP_W + 20 && this.bloccatoFuoriMappa) return this.bloccatoFuoriMappa(x, z, r); // interni degli edifici
     if (this._idxN !== this.solids.length) this._indexSolids();
     const cell = this._idx.get(((x / 8) | 0) + ',' + ((z / 8) | 0));
     if (x < 0 || z < 0 || x >= MAP_W || z >= MAP_H) return true;

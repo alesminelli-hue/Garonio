@@ -224,7 +224,7 @@ Le tracce originali stanno in `assets/music/`. La **mappa centrale** è `assets/
 | Scena (nel codice) | Traccia | Quando suona |
 |---|---|---|
 | `intro` | **Il Conte della Bassa** | Schermata del titolo e prologo |
-| `base` / `notte` | **Sunset Truciolone** | Giornata in azienda e sera |
+| `base` / `notte` | **A rotazione:** Sunset Truciolone, Palestra Delirio, Il Conte della Bassa, Boborriello Re della Notte (di sera parte Boborriello) | Gioco libero, giorno e sera: a fine traccia parte la successiva |
 | `bar` | **Pappa Garonio** | Al bar |
 | `rabbia` | **Canaglia (Rabbia Incontrollata)** | Garonio si arrabbia: stress oltre 85, litigi al bar |
 | `guida` | **Canaglia (Rabbia Incontrollata)** | Alla guida di Vespa, Punto o trattore |
