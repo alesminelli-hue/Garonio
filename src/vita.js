@@ -31,7 +31,7 @@ const rand = (a, b) => a + Math.random() * (b - a);
 const inOre = (o, h) => !!o && (o[0] <= o[1] ? h >= o[0] && h < o[1] : h >= o[0] || h < o[1]);
 
 // posti dei lampioni e delle auto parcheggiate la sera
-const LAMPIONI = [[3, 57.3], [9, 57.3], [15, 57.3], [27, 57.3], [33, 57.3], [41, 57.3], [53, 57.3], [9, 49.6], [21, 49.6], [37, 49.6],
+const LAMPIONI = [[3, 57.3], [9, 57.3], [15, 57.3], [27, 57.3], [33, 57.3], [41, 57.3], [53, 57.3], [21, 49.6], [37, 49.6],
   [59.4, 65], [72.6, 66], [71.6, 57.3], [123.4, 57.3], [117.6, 66], [44, 67]];
 const PARCHEGGI = [
   { x: 46, z: 68.6, ore: [20.5, 24], col: '#2a2a30', tipo: 'auto' }, { x: 51.5, z: 68.8, ore: [21, 24], col: '#c83a2e', tipo: 'auto' },
@@ -151,7 +151,7 @@ export class Vita {
     for (const p of this.paesani) if (this._inGiro(p.def, h)) this._mostra(p, METE[pick(p.def.mete)]);
   }
 
-  _inGiro(def, h) { return inOre(def.ore, h) || inOre(def.ore2, h); }
+  _inGiro(def, h) { return inOre(def.ore, h) || inOre(def.ore2, h) || (!!this.game.sorprese?.sagra(h) && h < 23.5); }
 
   _mostra(p, [x, z]) {
     const q = this._libero(x, z);
@@ -169,6 +169,7 @@ export class Vita {
 
   _scegliMeta(p) {
     const imp = this.game.imprevisti;
+    if (this.game.sorprese?.sagra()) return [rand(12, 28), rand(50.4, 51.8)];   // tutti alla sagra
     if (p.def.umarell && imp?.cantiere && Math.random() < 0.5) {
       const c = imp.cantiere;
       return [c.x + rand(-2.5, 2.5), c.z + (Math.random() < 0.5 ? -2.2 : 2.2)];
@@ -335,6 +336,7 @@ export class Vita {
     for (const p of this.paesani) if (p.visibile) ostacoli.push({ x: p.x, z: p.z, r: 0.3 });
     const vig = g.png.dove('vigilessa'); if (vig) ostacoli.push({ x: vig.x, z: vig.z, r: 0.3 });
     const cane = g.imprevisti?.cane; if (cane) ostacoli.push({ x: cane.x, z: cane.z, r: 0.4 });
+    const maiale = g.sorprese?.maiale; if (maiale) ostacoli.push({ x: maiale.x, z: maiale.z, r: 0.5 });
     for (const t of g.imprevisti?.ostacoliStrada?.() || []) ostacoli.push(t);
 
     for (const a of [...this.auto]) {

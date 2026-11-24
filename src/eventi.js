@@ -46,6 +46,8 @@
 //   randagio        { esito }                  il cane randagio: 'scacciato' | 'amico' | 'battuto'
 //   impiccione      { png, scelta }            un paesano attacca bottone: 'ascolta' | 'taglia' | 'telefono'
 //   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
+//   pescato         { esito }                  pesca al laghetto (src/lavoretti.js); legna e pesca mandano anche azione { tipo }
+//   sorpresa        { tipo, esito }            easter egg ed eventi casuali (src/sorprese.js)
 //   gatto           {}                         Garonio accarezza un gatto (src/vita.js)
 //   beccatoDormire  {}                         il Gigante becca Garonio che dorme in giro
 //   collezionabile  { id, collezione, completa }  trovato un tappo, santino o figurina (src/diario.js)

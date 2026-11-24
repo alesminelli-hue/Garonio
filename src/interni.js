@@ -87,6 +87,7 @@ const PAVIMENTI = {
     for (let x = 0; x < W; x += 48) P('#76766f', x, 0, 1, H);
     for (let i = 0; i < W / 30; i++) { const x = r() * W, y = r() * H; P('rgba(40,36,30,0.18)', x, y, 10 + r() * 14, 5 + r() * 6); }
   },
+  moquette: (P, W, H, g, r) => { P('#5a1e4a', 0, 0, W, H); for (let i = 0; i < W * H / 12; i++) P(r() < 0.5 ? '#6a2a5a' : '#4a1640', r() * W, r() * H, 2, 1); },   // Night Paradiso (src/paradiso.js)
   assi: (P, W, H, g, r) => {
     for (let x = 0; x < W; x += 6) { const c = tono('#9a7048', 0.88 + r() * 0.2); P(c, x, 0, 6, H); P(tono(c, 0.7), x, 0, 1, H); for (let y = Math.floor(r() * 40); y < H; y += 40 + Math.floor(r() * 30)) P(tono(c, 0.6), x, y, 6, 1); }
   },
@@ -100,6 +101,7 @@ const MURI = {
   verde: (P, W, H) => { P('#2f5a3e', 0, 0, W, H); for (let x = 0; x < W; x += 10) P('#2a5238', x, 0, 2, H); P('#c8a050', 0, Math.round(H * 0.45), W, 1); zoccolo(P, W, H, '#4a2e16', 12); },
   mattoni: (P, W, H) => { P('#6a5a50', 0, 0, W, H); for (let y = 0; y < H; y += 5) for (let x = (y / 5 % 2) * 6 - 6; x < W; x += 12) { P(tono('#8a4a36', 0.85 + ((x * 3 + y) % 7) * 0.04), x + 1, y + 1, 11, 4); } },
   lamiera: (P, W, H) => { P('#8a96a0', 0, 0, W, H); for (let x = 0; x < W; x += 6) { P('#a4b0b8', x, 0, 2, H); P('#6a7680', x + 4, 0, 1, H); } for (let y = 0; y < H; y += 32) P('#5a6470', 0, y, W, 1); zoccolo(P, W, H, '#5a6068', 8); },
+  velluto: (P, W, H) => { P('#4a1a3e', 0, 0, W, H); for (let x = 0; x < W; x += 6) P('#5a2450', x, 0, 2, H); P('#c8a040', 0, Math.round(H * 0.62), W, 1); P('#2a0e24', 0, H - 4, W, 4); },   // Night Paradiso
   lamiera2: (P, W, H, g, r) => { MURI.lamiera(P, W, H); for (let i = 0; i < W / 4; i++) P('rgba(150,80,30,0.35)', r() * W, r() * H, 2, 3 + r() * 8); },
 };
 function zoccolo(P, W, H, col, h) { P(col, 0, H - h, W, h); P(tono(col, 1.25), 0, H - h, W, 1); P(tono(col, 0.7), 0, H - 1, W, 1); }
