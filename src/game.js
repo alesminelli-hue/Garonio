@@ -20,6 +20,11 @@ import { Parco } from './parco.js';
 import { Stalla } from './stalla.js';
 import { Collezione } from './collezione.js';
 import { Banco } from './banco.js';
+import { Azienda } from './azienda.js';
+import { Consorzio } from './consorzio.js';
+import { Paese } from './paese.js';
+import { Endgame } from './endgame.js';
+import { OGGETTI } from './data/armi.js';
 import { Menu } from './menu.js';
 import { Officina } from './officina.js';
 import { Vigilessa } from './vigilessa.js';
@@ -57,13 +62,14 @@ export const CONFIG = {
   minutesPerSecond: 1.5,       // quanti minuti di gioco passano in 1 secondo reale
   walkSpeed: 3.2,
   runSpeed: 5.0,
-  growMinutes: { pomodoro: 6 * 60, mais: 10 * 60, grano: GRANO_MINUTI },
-  prices: { uova: 3, pomodoro: 6, mais: 10 },
+  growMinutes: { pomodoro: 6 * 60, mais: 10 * 60, grano: GRANO_MINUTI, insalata: 4 * 60, zucchina: 5 * 60, peperone: 7 * 60, fragola: 8 * 60, zucca: 12 * 60 },
+  prices: { uova: 3, pomodoro: 6, mais: 10, insalata: 5, zucchina: 7, peperone: 9, fragola: 12, zucca: 16 },   // alla cassa
   idleDozeSeconds: 6,          // dopo quanti secondi fermo Garonio si appisola
   tiredPerHour: 1.5,           // stanchezza che sale solo stando svegli
 };
 
 const H = 60;
+const NOMI_COLTURE = { mais: 'mais', pomodoro: 'pomodori', zucchina: 'zucchine', insalata: 'insalata', zucca: 'zucche', peperone: 'peperoni', fragola: 'fragole' };
 
 const ACTIONS = {
   zappa: { tired: 3, stress: 1, xp: 2, min: 10, sfx: 'dig' },
@@ -218,6 +224,13 @@ export class Game {
     this.stalla = new Stalla(this); this.stalla.init();
     this.collezione = new Collezione(this); this.collezione.init();
     this.banco = new Banco(this); this.banco.init();
+    // l'endgame: missioni dell'erede, Ufficio agricolo, azienda agricola (src/azienda.js)
+    this.azienda = new Azienda(this); this.azienda.init();
+    // il Consorzio Agrario di Mister Rodella: semi gratis per l'orto, mangimi, trattori (src/consorzio.js)
+    this.consorzio = new Consorzio(this); this.consorzio.init();
+    // il paese reagisce all'azienda; Concilio del Gambalone, Notte delle Leggende, taglie, marchi, record
+    this.paese = new Paese(this); this.paese.init();
+    this.endgame = new Endgame(this); this.endgame.init();
 
     if (!this.s.introDone) await this.intro();
     else if (this.s.rifaiGiornata) { // giornata ricominciata da capo (vedi _rifaiGiornata)
@@ -396,7 +409,7 @@ export class Game {
   _updateTarget() {
     const t = this._findTarget();
     this.target = t;
-    this.ui.prompt(t ? `[E] ${t.label}` : null);
+    this.ui.prompt(t?.label ? `[E] ${t.label}` : null);
     if (t && t.tile) { this.cursor.visible = true; this.cursor.position.set(t.tile[0] + 0.5, 0.03, t.tile[1] + 0.5); }
     else this.cursor.visible = false;
   }
@@ -419,7 +432,7 @@ export class Game {
     }
     const pr = this.world.props;
     const inv = this.s.inv;
-    if (d(pr.cassa.x, pr.cassa.z) < 1.3 && inv.uova + inv.pomodoro + inv.mais > 0) return { label: 'Vendi alla cassa', fn: () => this.sell() };
+    if (d(pr.cassa.x, pr.cassa.z) < 1.3 && Object.keys(CONFIG.prices).some(k => inv[k] > 0)) return { label: 'Vendi alla cassa', fn: () => this.sell() };
     if (d(pr.mangiatoia.x, pr.mangiatoia.z) < 1.3 && !this.s.fedToday) return { label: 'Dai da mangiare alle galline', fn: () => this.feed() };
     const vt = this.vehicles.target();
     if (vt) return vt;
@@ -429,11 +442,19 @@ export class Game {
     if (area === 'field' && this.attrezzi) { // nel campo grande si lavora col trattore (GDD 20.1)
       return { tile: [tx, tz], label: 'Campo di mais: qui si lavora col trattore', fn: () => this.ui.toast('Aratro, seminatrice, falciatrice e turbina si agganciano sotto la tettoia, accanto al deposito.') };
     }
-    if (area === 'field' || area === 'orto') {
+    if (area === 'field' || area === 'orto' || area === 'ortoSalici') {
       const key = tx + ',' + tz, p = this.s.plots[key];
       const tile = [tx, tz];
+      // l'orto vero è uno solo: quello di casa, o quello della Cascina dei Salici quando è di Garonio (src/azienda.js)
+      const mio = area === 'field' || (area === 'orto') !== !!this.azienda?.comprata?.();
+      if (!mio && !(p?.crop && p.stage >= 3)) return area === 'orto'
+        ? { tile, label: 'Orto del Gigante: il tuo è alla Cascina dei Salici', fn: () => this.ui.toast('«Questo orto adesso è mio», dice il Gigante. «Tu hai la cascina, coltivati il tuo.»') }
+        : { tile, label: 'Orto abbandonato della Cascina dei Salici', fn: () => this.ui.toast('Erbacce alte così. Prima bisogna comprare la cascina, in comune.') };
       if (!p) return { tile, label: 'Zappa', fn: () => this.till(key, tx, tz) };
-      if (!p.crop) return { tile, label: `Semina ${AREAS[area].crop === 'mais' ? 'mais' : 'pomodori'}`, fn: () => this.sow(key, tx, tz, area) };
+      if (!p.crop) {
+        const crop = area === 'field' ? 'mais' : this.consorzio?.semeScelto?.() || 'pomodoro';
+        return { tile, label: `Semina ${NOMI_COLTURE[crop] || crop}`, fn: () => this.sow(key, tx, tz, area, crop) };
+      }
       if (p.stage >= 3) return { tile, label: 'Raccogli', fn: () => this.harvest(key, tx, tz) };
       if (!p.water) return { tile, label: 'Annaffia', fn: () => this.water(key, tx, tz) };
       return { tile, label: null };
@@ -468,8 +489,9 @@ export class Game {
     this.s.today.zappate = (this.s.today.zappate || 0) + 1;
     if (this.s.day >= 4 && puoComparire('cinghiale', this.s.level) && this.world.areaAt(x, z) === 'field' && Math.random() < 0.05) setTimeout(() => this.ambush('cinghiale'), 400);
   }
-  sow(key, x, z, area) {
-    const p = this.s.plots[key]; p.crop = AREAS[area].crop; p.stage = 0; p.g = 0;
+  sow(key, x, z, area, crop = AREAS[area].crop) {
+    const p = this.s.plots[key]; p.crop = crop; p.stage = 0; p.g = 0;
+    if (crop !== AREAS[area].crop) this.consorzio?.usaSeme?.(crop);
     this.world.setPlot(x, z, p); this._cost('semina');
     if (area === 'field') this.s.today.seminaCampo++;
     else this.s.today.seminaOrto = (this.s.today.seminaOrto || 0) + 1;
@@ -480,7 +502,7 @@ export class Game {
   }
   harvest(key, x, z) {
     const p = this.s.plots[key];
-    this.s.inv[p.crop]++; this.ui.float(p.crop === 'mais' ? '+1 pannocchia' : '+1 pomodoro');
+    this.s.inv[p.crop] = (this.s.inv[p.crop] || 0) + 1; this.ui.float(`+1 ${OGGETTI[p.crop]?.nome.toLowerCase() || p.crop}`);
     const crop = p.crop;
     this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 };
     this.world.setPlot(x, z, this.s.plots[key]); this._cost('raccogli'); this.s.today.raccolti++;
@@ -496,9 +518,9 @@ export class Game {
   feed() { this.s.fedToday = true; this.s.today.galline = 1; this.s.lastLay = this.s.minutes; this._cost('nutri'); this.ui.toast('Galline sfamate: oggi e domani faranno più uova.'); }
   sell() {
     const s = this.s, pr = CONFIG.prices;
-    const tot = Math.round((s.inv.uova * pr.uova + s.inv.pomodoro * pr.pomodoro + s.inv.mais * pr.mais) * (1 + this.prog.bonus('vendite')));
+    const tot = Math.round(Object.entries(pr).reduce((t, [k, v]) => t + (s.inv[k] || 0) * v, 0) * (1 + this.prog.bonus('vendite')));
     if (!tot) { this.ui.toast('Non hai niente da vendere.'); return; }
-    s.money += tot; s.today.venduto += tot; s.inv.uova = 0; s.inv.pomodoro = 0; s.inv.mais = 0;
+    s.money += tot; s.today.venduto += tot; for (const k of Object.keys(pr)) if (s.inv[k]) s.inv[k] = 0;
     this.audio.sfx('coin'); this.ui.toast(`Venduto tutto: +${tot}€`, 'good');
     this.emit('venduto', { tot });
   }
@@ -629,6 +651,7 @@ export class Game {
       return [pagina({ chi: 'gigante', testo: opt.risposte })];
     };
     await this.ui.dialog([{ ...pagina({ chi: 'gigante', testo: text }), choices: [
+      ...(this.azienda?.scelteGigante?.() || []),
       ...this.cascine.scelteGigante(),
       { label: sc.aumento.etichetta, fn: reply(sc.aumento) },
       { label: sc.lamentati.etichetta, fn: reply(sc.lamentati) },

@@ -105,6 +105,24 @@ export function coltura(tipo, stadio) {
     if (stadio === 3) for (const [x, y] of [[4, top + 6], [10, top + 3], [7, top + 11], [11, top + 9]]) {
       d.P('#d83a2a', x, y, 3, 3); d.P('#ff8a6a', x, y); d.P('#9a1e16', x + 2, y + 2); d.P('#3a7a2a', x + 1, y - 1);
     }
+  } else if (tipo === 'zucchina' || tipo === 'zucca') {
+    // foglie larghe a terra; frutti sotto le foglie
+    const big = stadio === 3;
+    chioma(d, [[5, 17, 4, 3], [11, 17, 4, 3], [8, 14, 4, 3]], '#4c9a3a', tipo === 'zucca' ? 9 : 8);
+    d.P('#f0c030', 8, 12, 2, 2); d.P('#f8e070', 8, 12);                                              // fiore giallo
+    if (big && tipo === 'zucchina') for (const [x, y] of [[2, 19], [10, 19]]) { const Z = ramp('#3a7a2a'); d.P(Z[2], x, y, 6, 2); d.P(Z[3], x, y, 6, 1); d.P('#c8e870', x + 1, y); }
+    if (big && tipo === 'zucca') { d.ball(8, 18, 5, 4, ramp('#e07028')); d.P('#a84a18', 6, 15, 1, 6); d.P('#a84a18', 10, 15, 1, 6); d.P('#5a3a1a', 8, 13, 1, 2); }
+  } else if (tipo === 'insalata') {
+    const r = stadio === 3 ? 5 : 3.5, I = ramp('#7ac84a');
+    d.ball(8, 20 - r * 0.6, r + 1, r * 0.8, ramp('#4c9a3a'));
+    d.ball(8, 19 - r * 0.6, r, r * 0.7, I);
+    if (stadio === 3) { d.P(I[4], 6, 15, 3, 1); d.P(I[1], 8, 17, 1, 3); d.P(I[1], 5, 18, 1, 2); d.P(I[1], 11, 18, 1, 2); }
+  } else if (tipo === 'peperone' || tipo === 'fragola') {
+    const fr = tipo === 'fragola', h = fr ? 6 : stadio === 2 ? 10 : 13, top = 22 - h;
+    if (!fr) d.P(G[1], 7, top, 2, h);
+    chioma(d, fr ? [[5, 18, 3, 2], [11, 18, 3, 2], [8, 17, 3, 2]] : [[8, top + 3, 4, 3], [6, top + 7, 4, 3], [10, top + 8, 4, 3]], '#3e8a32', fr ? 11 : 12);
+    if (stadio === 3 && fr) for (const [x, y] of [[3, 19], [8, 20], [12, 19]]) { d.P('#d8202a', x, y, 2, 2); d.P('#ff7a6a', x, y); d.P('#f8e070', x + 1, y + 1); d.P('#3a7a2a', x, y - 1, 2, 1); }
+    if (stadio === 3 && !fr) for (const [x, y, c] of [[4, top + 6, '#d83a2a'], [10, top + 4, '#e8b820'], [9, top + 10, '#3e8a3a']]) { const P = ramp(c); d.P(P[2], x, y, 3, 4); d.P(P[3], x, y, 1, 3); d.P(P[1], x + 2, y + 3); d.P('#2a5a1a', x + 1, y - 1); }
   } else { // grano: ciuffo di steli a ventaglio
     const ripe = stadio === 3, h = ripe ? 17 : 13;
     const S = ramp(ripe ? '#c8a038' : '#4c9a3a'), E = ramp(ripe ? '#eecb5a' : '#86c45a');

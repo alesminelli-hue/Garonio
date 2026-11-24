@@ -7,7 +7,7 @@
 // e comincia il gioco libero. La velocità resta quella di prima (livello × 20 per salire).
 export const LIVELLI = {
   max: 30,
-  xpPer: level => level * 20,        // esperienza per passare dal livello L al L+1
+  xpPer: level => level * 16,        // esperienza per passare dal livello L al L+1 (storia di 8-10 ore)
   perLivello: { atk: 2, def: 1, vitaMax: 5, punti: 1 },
   vitaBase: 100,
   faticaPerLivello: 0.04, faticaMin: 0.6,   // lavori: −4% fatica a livello, fino a −40%

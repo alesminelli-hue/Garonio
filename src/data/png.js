@@ -572,6 +572,26 @@ export const PNG = {
       "La sera nel bosco ci vanno le coppiette. Lascia stare, ragazzo. Spiare non porta niente di buono. A parte le foto.",
     ],
   },
+  rodella: {
+    nome: 'Mister Rodella', ruolo: 'Titolare del Consorzio Agrario Rodella. Regala i semi, vende mangimi e trattori. Soprattutto vende.',
+    posti: [{ ore: [7, 19], x: 102.5, z: 49.2 }],
+    aspetto: { sprite: 'commendatore', w: 16, h: 25, skin: '#e8b48a', hair: '#8a8a8a', hairStyle: 'flat', shirt: '#2a6a3a', pants: '#3a3a42', boots: '#2a2018', eyes: 'normal' },
+    amicizia: [0, 100, 10],
+    saluti: [
+      "Giovanotto! Il cliente più bello della Bassa! Dopo di me, ovviamente.",
+      "Garonio! Stavo giusto pensando: «chi è che ha bisogno di un trattore nuovo?». E sei arrivato tu.",
+      "Benvenuto al Consorzio Rodella: dove il cliente ha sempre ragione, finché paga.",
+      "Ah, sei tu. Credevo fosse la Finanza. Vieni, vieni.",
+    ],
+    chiacchiere: [
+      "Lo sai che il mio primo trattore l'ho venduto a me stesso? Affare d'oro. Mi sono fatto anche lo sconto.",
+      "Mia moglie dice che parlo solo di mangimi. Non è vero: parlo anche di sementi. E di lei, che è scappata con quello delle sementi della concorrenza.",
+      "Il marketing del consorzio lo fa mio nipote. Ha diciannove anni e ha scritto «CONZORZIO» sul furgone. È un genio incompreso.",
+      "Il Patata ha comprato un trattore da me nel '98. Lo sta ancora pagando. A rate. Da dodicimila lire.",
+      "Il segreto di un buon pomodoro? Musica classica. Il segreto di una buona zucchina? Non dirle mai che è una zucchina. Si offende.",
+      "Ho venduto un aratro anche al prete. Non so cosa ci faccia. Non chiedo. Il cliente ha sempre ragione.",
+    ],
+  },
   bossmm: {
     nome: 'Boss MM', ruolo: 'Il capo delle guardie del Parco Oglio. Baffi, fischietto, cappello. Soprattutto il cappello.',
     posti: [{ ore: [7, 22], x: 111.5, z: 90.4 }],

@@ -57,6 +57,8 @@ export const SURFACE_SPEED = { asfalto: 1, piazza: 0.9, ponte: 0.8, sterrato: 0.
 export const AREAS = {
   field: { x0: 64, x1: 84, z0: 12, z1: 22, crop: 'mais', name: 'Campo di mais' },
   orto: { x0: 62, x1: 69, z0: 73, z1: 77, crop: 'pomodoro', name: 'Orto' },
+  // l'orto della Cascina dei Salici: si usa quando Garonio compra l'azienda (src/azienda.js), e quello di casa torna al Gigante
+  ortoSalici: { x0: 77, x1: 84, z0: 43, z1: 47, crop: 'pomodoro', name: 'Orto della Cascina dei Salici' },
   coop: { x0: 77, x1: 85, z0: 73, z1: 80, name: 'Pollaio', gate: [79, 81] },
 };
 
@@ -81,7 +83,11 @@ export const ZONES = [
   // Parco Oglio: il fiume esce dal laghetto e attraversa il bosco fino al bordo est
   ...[[39, 42, 87, 102], [39, 76, 99, 102], [73, 76, 95, 102], [73, 105, 95, 98], [102, 105, 95, 103], [102, 136, 100, 103], [133, 136, 96, 103], [133, 160, 96, 99]]
     .map(([x0, x1, z0, z1]) => ({ tile: 'w', x0, x1, z0, z1, name: 'Fiume Oglio', solid: true })),
-  { tile: 'p', x0: 48, x1: 60, z0: 89, z1: 90, name: 'Aia della Cascina dell\'Oglio' },
+  { tile: 'p', x0: 48, x1: 60, z0: 89, z1: 90, name: 'Aia del Vecchio Camper' },
+  // la Cascina dei Salici: in vendita all'Ufficio agricolo dopo la storia (src/azienda.js)
+  { tile: 'p', x0: 76, x1: 93, z0: 35, z1: 36.5, name: 'Aia della Cascina dei Salici' },
+  { tile: 'r', x0: 88, x1: 93, z0: 37, z1: 42, name: 'Campi della Cascina dei Salici' },
+  { tile: 'p', x0: 96, x1: 109, z0: 48, z1: 51, name: 'Piazzale del Consorzio Rodella' },
   { tile: 'p', x0: 99, x1: 117, z0: 76, z1: 84, name: 'Recinto della stalla', fence: true, gate: [104, 107] },
 ];
 
@@ -122,6 +128,13 @@ export const BUILDINGS = [
   { id: 'cascina-postino', label: 'CASCINA DEL POSTINO', x0: 33, z0: 34, w: 7, d: 5, h: 2.8, wall: '#f0d8b8', roof: '#8a3a2a', windows: 2, decor: true },
   { id: 'ranch-frank', label: 'RANCH MISTER FRANK', x0: 140, z0: 33, w: 9, d: 5, h: 3, wall: 'legno', roof: '#7a2a22', windows: 2, decor: true },
   // Parco Oglio (src/parco.js) e stalla (src/stalla.js)
+  // Cascina dei Salici (src/azienda.js): abbandonata finché Garonio non la compra in comune
+  { id: 'salici-casa', label: 'CASCINA DEI SALICI', x0: 76.5, z0: 30.4, w: 7, d: 4.4, h: 2.8, wall: '#e0d0a8', roof: '#9a4a32', windows: 2, decor: true },
+  { id: 'salici-porcilaia', label: '', x0: 84.5, z0: 30.4, w: 8, d: 4.2, h: 2.4, wall: 'metallo', roof: '#7a4a32', windows: 0, decor: true },
+  { id: 'salici-stalla', label: '', x0: 76.5, z0: 37.2, w: 5.4, d: 3.6, h: 2.4, wall: 'legno', roof: '#6a5a3a', windows: 1, decor: true },
+  { id: 'salici-pollaio', label: '', x0: 83, z0: 37.8, w: 3.4, d: 2.6, h: 1.8, wall: 'legno', roof: '#8a6a3a', windows: 0, decor: true },
+  // Consorzio agrario di Mister Rodella (src/consorzio.js): mangimi, sementi gratis, trattori
+  { id: 'consorzio', label: 'CONSORZIO RODELLA', x0: 97.5, z0: 42.6, w: 10, d: 5.2, h: 3.4, wall: 'metallo', roof: '#2a6a3a', windows: 1, decor: true },
   { id: 'cascina-oglio', label: 'CASCINA DEL CAMPER', x0: 49, z0: 84, w: 8, d: 5, h: 2.8, wall: '#d8c08a', roof: '#8a4a2a', windows: 2, decor: true },
   { id: 'casotto-guardie', label: 'GUARDIE DEL PARCO', x0: 108, z0: 85.4, w: 7, d: 4.4, h: 2.8, wall: 'legno', roof: '#3a5a2a', windows: 1, decor: true },
   { id: 'stalla', label: 'STALLA', x0: 108, z0: 77, w: 7, d: 4.5, h: 3, wall: 'legno', roof: '#7a4a26', windows: 0, decor: true },
@@ -178,6 +191,8 @@ export const LANDMARKS = [
   { name: 'Chiesa', x: 6.5, z: 71 }, { name: 'Farmacia', x: 16.5, z: 72 }, { name: 'Dottore', x: 26, z: 70 }, { name: 'Bella Napoli', x: 33.5, z: 70 },
   { name: 'Kebab', x: 19.6, z: 47.5 }, { name: 'Zeno', x: 56, z: 47.4 }, { name: 'Palestra', x: 64.5, z: 47.5 }, { name: 'Castello', x: 10, z: 94.5 },
   { name: 'Parco Oglio', x: 96, z: 104 }, { name: 'Vecchio Camper', x: 53, z: 86.5 }, { name: 'Guardie', x: 111.5, z: 87.5 }, { name: 'Stalla', x: 108, z: 80 },
+  { name: 'Cascina dei Salici', x: 84, z: 34 },
+  { name: 'Consorzio Rodella', x: 102.5, z: 49 },
 ];
 
 // ---------- Griglia del terreno ----------
