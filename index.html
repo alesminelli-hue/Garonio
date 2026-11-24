@@ -8,7 +8,7 @@
   <title>Grand Theft Tractor: Goodville City</title>
   <meta name="description" content="Survival gestionale con elementi JRPG: sopravvivi alle giornate in azienda agricola, al Gigante e a Mister Mountain.">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rye&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Rye&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 </head>
@@ -57,8 +57,41 @@
 
   <div id="title">
     <div class="box">
-      <h1><span>GRAND THEFT</span> <span>TRACTOR</span></h1>
-      <p class="city">Goodville City</p>
+      <h1 class="logo" aria-label="Grand Theft Tractor: Goodville City">
+        <!-- Logo del gioco: scritte grasse col contorno nero, ruota del trattore dietro, nastro col nome della città -->
+        <svg viewBox="0 0 600 340" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="lg-tramonto" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fff3a0"/><stop offset=".45" stop-color="#f6c637"/><stop offset="1" stop-color="#e8741f"/>
+            </linearGradient>
+            <linearGradient id="lg-nastro" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#d4533a"/><stop offset="1" stop-color="#8e2a1c"/>
+            </linearGradient>
+            <g id="lg-tacco"><path d="M-14 -150 L14 -150 L22 -128 L-6 -128 Z"/></g>
+            <g id="lg-gomma"><circle r="132"/><use href="#lg-tacco" transform="rotate(0)"/><use href="#lg-tacco" transform="rotate(20)"/><use href="#lg-tacco" transform="rotate(40)"/><use href="#lg-tacco" transform="rotate(60)"/><use href="#lg-tacco" transform="rotate(80)"/><use href="#lg-tacco" transform="rotate(100)"/><use href="#lg-tacco" transform="rotate(120)"/><use href="#lg-tacco" transform="rotate(140)"/><use href="#lg-tacco" transform="rotate(160)"/><use href="#lg-tacco" transform="rotate(180)"/><use href="#lg-tacco" transform="rotate(200)"/><use href="#lg-tacco" transform="rotate(220)"/><use href="#lg-tacco" transform="rotate(240)"/><use href="#lg-tacco" transform="rotate(260)"/><use href="#lg-tacco" transform="rotate(280)"/><use href="#lg-tacco" transform="rotate(300)"/><use href="#lg-tacco" transform="rotate(320)"/><use href="#lg-tacco" transform="rotate(340)"/></g>
+          </defs>
+          <!-- ruota posteriore del trattore -->
+          <g transform="translate(515 92) scale(.6)"><g class="lg-ruota">
+            <use href="#lg-gomma" fill="#fff6e0" stroke="#fff6e0" stroke-width="12" stroke-linejoin="round"/>
+            <use href="#lg-gomma" fill="#2b2028"/>
+            <circle r="84" fill="#c8342a" stroke="#241a20" stroke-width="10"/>
+            <circle r="26" fill="#f6c637" stroke="#241a20" stroke-width="8"/>
+            <g stroke="#241a20" stroke-width="9"><path d="M0 -26 V-80"/><path d="M0 26 V80"/><path d="M-26 0 H-80"/><path d="M26 0 H80"/></g>
+          </g></g>
+          <g transform="skewX(-7) translate(20 0)">
+            <text x="300" y="78" text-anchor="middle" class="lg-grand" textLength="380" lengthAdjust="spacingAndGlyphs">GRAND THEFT</text>
+            <text x="309" y="241" text-anchor="middle" class="lg-tractor lg-ombra" textLength="560" lengthAdjust="spacingAndGlyphs">TRACTOR</text>
+            <text x="300" y="232" text-anchor="middle" class="lg-tractor" textLength="560" lengthAdjust="spacingAndGlyphs">TRACTOR</text>
+          </g>
+          <!-- nastro -->
+          <g transform="translate(0 18)">
+            <path d="M92 252 L130 252 L130 300 L92 300 L108 276 Z" fill="#6e1f14" stroke="#1a1420" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M508 252 L470 252 L470 300 L508 300 L492 276 Z" fill="#6e1f14" stroke="#1a1420" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M120 244 Q300 228 480 244 L480 292 Q300 276 120 292 Z" fill="url(#lg-nastro)" stroke="#1a1420" stroke-width="6" stroke-linejoin="round"/>
+            <text x="300" y="277" text-anchor="middle" class="lg-city" textLength="320" lengthAdjust="spacingAndGlyphs">GOODVILLE CITY</text>
+          </g>
+        </svg>
+      </h1>
       <p class="sub">Garonio, lo scansafatiche della Bassa</p>
       <button id="btn-new">Nuova partita</button>
       <button id="btn-continue" hidden>Continua</button>

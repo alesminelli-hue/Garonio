@@ -1,7 +1,7 @@
 // Il dating simulator di Garonio: ragazze in giro per il paese da corteggiare con un gioco a dialoghi.
 // Ogni ragazza ha una personalità (gusti per «tono» di risposta): le risposte giuste alzano l'affinità
 // e i punti red pill, quelle sbagliate li fanno scendere. Con l'affinità arriva il numero, poi
-// l'appuntamento la sera (pizzeria, laghetto, ponte) e, se hai reputazione in paese e te la giochi bene,
+// l'appuntamento la sera (pizzeria, laghetto, ponte, castello, kebab, campanile) e, se hai reputazione in paese e te la giochi bene,
 // lei ti invita a salire: dissolvenza al nero e una battuta. Niente scene.
 // Testi e numeri: src/data/ragazze.js.
 //
@@ -32,6 +32,21 @@ for (const [id, r] of Object.entries(RAGAZZE)) {
     amicizia: [-50, 100, 0], saluti: r.saluti, chiacchiere: r.saluti, ragazza: true,
   };
 }
+// Una frase di un personaggio sulla ragazza con cui Garonio esce (src/data/png.js, campo sulleRagazze).
+// null se Garonio non esce con nessuna o se nessuna frase vale per lei. {ragazza} = il nome della ragazza.
+export function fraseSulleRagazze(s, lista) {
+  const f = s.flags?.ragazze;
+  if (!lista?.length || !f?.r) return null;
+  const app = f.app && !f.app.fatto && f.app.giorno === s.day ? f.app.id : null;
+  const frequentate = Object.keys(RAGAZZE).filter(id => f.r[id]?.uscite || f.r[id]?.conquiste);
+  const id = app || (frequentate.length ? pick(frequentate) : null);
+  if (!id) return null;
+  const ok = lista.filter(x => typeof x === 'string' || ((!x.solo || x.solo.includes(id)) && (!x.tranne || !x.tranne.includes(id))));
+  if (!ok.length) return null;
+  const x = pick(ok);
+  return fill(typeof x === 'string' ? x : x.t, { ragazza: RAGAZZE[id].nome });
+}
+
 // dove aspetta la sera dell'appuntamento (oggetti fissi: png.js li confronta per identità)
 const POSTI_SERA = Object.fromEntries(Object.entries(LUOGHI).map(([k, l]) => [k, { ore: ORA_APPUNTAMENTO, x: l.x, z: l.z, fermo: true }]));
 
@@ -345,7 +360,7 @@ export class Ragazze {
         ]),
       ]));
     }
-    out.push(h('p', 'mn-vuoto', 'Ogni ragazza ha i suoi gusti: chi ama le battute, chi la sincerità, chi non sopporta gli sdolcinati. Gli spacconi e i cafoni non piacciono a nessuna.'));
+    out.push(h('p', 'mn-vuoto', 'Ogni ragazza ha i suoi gusti: chi ama le battute, chi la sincerità, chi non sopporta gli sdolcinati. Spacconi, piagnoni e cafoni di solito vanno male... ma non con tutte.'));
     return out;
   }
 }

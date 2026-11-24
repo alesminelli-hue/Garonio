@@ -215,11 +215,19 @@ export const PARLA_GARZONI = {
     "Lo zio dice che da grande diventerò una patata anch'io. Spero di no.",
     "Io guardo il campo. Il campo non fa niente. Nemmeno io. Siamo una squadra.",
     "Se vedi lo zio arrabbiato, dagli una patata. Funziona sempre.",
+    "Lo zio dice che da grande diventerò una patata anch'io. Io voglio fare lo youtuber.",
+    "Se vedi lo zio digli che sto lavorando. Sto lavorando. Guarda, mi muovo.",
+    "Ho chiesto allo zio il WiFi. Mi ha dato una patata. Ha detto \"connettiti con la terra\".",
+    "Non ti ho visto. Non mi hai visto. Siamo d'accordo, vero?",
   ],
   kevin: [
     "Mister Frank mi chiama Kevin. Mi chiamo Gianluca. Però Kevin è più western.",
     "Lavoro qui da tre anni. Ho visto il Texas solo in TV. Anche lui.",
     "Il pozzo? Di notte lo guarda Sceriffo. Di giorno lo guardo io. Male, ma lo guardo.",
+    "Frank vuole che lo chiami \"boss\". Io lo chiamo \"zio Franco\". Si offende in inglese.",
+    "Faccio il cowboy da tre anni. Non ho mai visto una mucca da vicino. Solo i maiali.",
+    "Ho chiesto un aumento. Frank mi ha dato un cappello. Uguale al suo. Di Carpi.",
+    "Shh. Sto facendo la guardia. Cioè, sto giocando al telefono. Ma con gli occhi aperti.",
   ],
 };
 

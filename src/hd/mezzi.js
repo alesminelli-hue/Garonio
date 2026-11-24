@@ -122,165 +122,325 @@ export function puntoDietro() {
 }
 
 // ---------- Trattori ----------
+// Trattore da Bassa con un po' di carattere: cofano arrotondato con la fascia, zavorre davanti,
+// ruote coi tasselli a spina di pesce, scarico cromato col cappellotto, fari da lavoro sul tetto.
+// Le misure (76x68 di lato, 56x68 davanti/dietro) e i finestrini (TRACTOR_WIN) restano quelli di prima.
+const GIALLO = ramp('#e8b820'), ZAVORRA = ramp('#2e2c34'), FANGO_T = ['#5a4028', '#7a5a34', '#8e6c40'];
+
+function schizzi(d, seed, x0, y0, w, h, n) { // fango schizzato in basso
+  const R = rng(seed);
+  for (let i = 0; i < n; i++) { const y = y0 + Math.floor(Math.pow(R(), 0.6) * h); d.P(FANGO_T[(R() * 3) | 0], x0 + Math.floor(R() * w), y, R() < 0.3 ? 2 : 1, 1); }
+}
+
+// ruota posteriore vista di lato: tasselli che sporgono dal profilo, cerchio giallo coi bulloni
+function ruotaGrande(d, cx, cy, r, rim) {
+  d.ball(cx, cy, r, r, GOMMA);
+  for (let a = 0; a < 360; a += 20) {                               // tasselli sul profilo
+    const t = a * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
+    for (let k = -0.5; k <= 1; k += 0.5) d.P(s < -0.3 ? GOMMA[2] : GOMMA[1], cx + c * (r + k), cy + s * (r + k), 2, 2);
+  }
+  for (let a = 10; a < 360; a += 20) { const t = a * Math.PI / 180; d.P(GOMMA[0], cx + Math.cos(t) * (r - 2), cy + Math.sin(t) * (r - 2), 2, 2); }
+  d.ell(cx, cy, r * 0.74, r * 0.74, GOMMA[0]);                       // spalla
+  const rr = r * 0.62, Y = ramp(rim);
+  d.ball(cx, cy, rr, rr, Y);
+  d.ell(cx, cy, rr * 0.7, rr * 0.7, Y[1]);                           // disco incavato
+  d.ball(cx, cy, rr * 0.55, rr * 0.55, Y);
+  for (let a = 0; a < 360; a += 45) { const t = a * Math.PI / 180; d.P(Y[0], cx + Math.cos(t) * rr * 0.38, cy + Math.sin(t) * rr * 0.38); }
+  d.ball(cx, cy, rr * 0.25, rr * 0.25, CROMO);
+  d.P(Y[4], cx - rr * 0.6, cy - rr * 0.5, 2, 1);
+}
+function ruotaPiccola(d, cx, cy, r, rim) {
+  d.ball(cx, cy, r, r, GOMMA);
+  for (let a = 0; a < 360; a += 30) { const t = a * Math.PI / 180; d.P(GOMMA[1], cx + Math.cos(t) * (r + 0.3), cy + Math.sin(t) * (r + 0.3), 2, 1); }
+  const Y = ramp(rim);
+  d.ball(cx, cy, r * 0.55, r * 0.55, Y); d.ell(cx, cy, r * 0.32, r * 0.32, Y[1]);
+  d.ball(cx, cy, r * 0.18 + 0.6, r * 0.18 + 0.6, CROMO);
+}
+// gomma vista da davanti/dietro: battistrada a spina di pesce
+function gommaFronte(d, x, y, w, h) {
+  d.P(GOMMA[1], x, y, w, h);
+  d.P(GOMMA[2], x + 1, y + 1, 2, h - 2); d.P(GOMMA[0], x + w - 2, y + 1, 2, h - 2);
+  for (let j = y + 2; j < y + h - 2; j += 4) {
+    const m = x + w / 2;
+    d.line(x + 1, j + 2, m - 1, j, GOMMA[3]); d.line(m, j, x + w - 2, j + 2, GOMMA[0]);
+    d.line(x + 1, j + 3, m - 1, j + 1, GOMMA[0]);
+  }
+  d.P(GOMMA[0], x, y, w, 1); d.P(GOMMA[0], x, y + h - 1, w, 1);
+}
+// zavorre davanti (pila di pesi neri con la maniglia)
+function zavorre(d, x, y, w, n) {
+  for (let i = 0; i < n; i++) {
+    const yy = y + i * 3;
+    d.P(ZAVORRA[2], x, yy, w, 3); d.P(ZAVORRA[3], x, yy, w, 1); d.P(ZAVORRA[0], x, yy + 2, w, 1);
+    d.P(ZAVORRA[4], x + 1, yy, 2, 1);
+  }
+}
+// faro da lavoro squadrato
+function faroLavoro(d, x, y) { d.P(FERRO[1], x, y, 4, 3); d.P(FARO[2], x + 1, y + 1, 2, 1); d.P(FARO[4], x + 1, y + 1); }
+
 export function trattoreLato(col = '#c83a2e') {
   const d = pen(76, 68), B = ramp(col);
+  // scarico cromato col cappellotto (dietro alla cabina, davanti nel disegno)
+  d.cyl(51, 13, 3, 21, ramp('#3a3a42'));
+  d.cyl(51, 9, 3, 5, CROMO); d.P(CROMO[4], 51, 9, 1, 5);
+  d.poly([[50, 9], [55, 6], [55, 8], [51, 10]], CROMO[1]);           // cappellotto aperto
   // cabina
   vetro(d, [[10, 7], [35, 7], [35, 34], [10, 34]], [[13, 30, 24, 9], [18, 30, 29, 9]]);
-  d.P('#2a2a30', 14, 25, 8, 6); d.P('#3a3a44', 14, 25, 8, 1);               // sedile
-  d.line(27, 22, 31, 26, '#2a2a30'); d.P('#2a2a30', 30, 26, 2, 8);           // volante
-  d.P(B[1], 8, 6, 3, 30); d.P(B[2], 35, 6, 3, 30); d.P(B[3], 35, 6, 1, 30);  // montanti
-  d.box(5, 1, 36, 6, B); d.P('#f4f2ea', 5, 4, 36, 1);                       // tetto
-  d.P('#f08a20', 21, 0, 4, 2); d.P('#ffc060', 21, 0, 2, 1);                 // lampeggiante
-  d.box(5, 33, 33, 5, B);
-  // cofano
-  d.box(30, 34, 41, 13, B); d.P(B[4], 31, 34, 39, 1);
-  for (let x = 42; x < 62; x += 4) d.P(B[0], x, 38, 2, 6);
-  d.P('#2e2e36', 69, 36, 3, 10); for (let y = 37; y < 46; y += 2) d.P('#5a5a62', 69, y, 3, 1);
-  d.P(FARO[2], 66, 31, 4, 3); d.P(FARO[4], 66, 31, 2, 1); d.P(FERRO[1], 67, 34, 2, 1);
-  d.cyl(52, 15, 3, 19, ramp('#3a3a42')); d.P('#2a2a30', 51, 14, 5, 2);     // scarico
-  d.P(FERRO[1], 30, 47, 38, 5); d.P(FERRO[2], 30, 47, 38, 1);              // telaio
-  d.P(FERRO[2], 0, 45, 7, 3);                                               // gancio
-  // ruote
-  wheel(d, 21, 51, 16, { rim: '#e0b830', mud: 14 });
-  for (let a = 0; a < 360; a += 18) { const r = a * Math.PI / 180; d.P(GOMMA[0], 21 + Math.cos(r) * 14.5, 51 + Math.sin(r) * 14.5, 2, 2); }
-  wheel(d, 62, 59, 8.5, { rim: '#e0b830', mud: 6 });
-  // parafango sulla ruota grande
+  d.P('#2a2a30', 14, 25, 8, 6); d.P('#3a3a44', 14, 25, 8, 1);        // sedile
+  d.line(27, 22, 31, 26, '#2a2a30'); d.P('#2a2a30', 30, 26, 2, 8);    // volante
+  d.P(INK, 22, 7, 1, 27);                                            // guarnizione della porta
+  d.P(B[1], 8, 6, 3, 30); d.P(B[0], 10, 6, 1, 30);
+  d.P(B[2], 35, 6, 3, 30); d.P(B[3], 35, 6, 1, 30);                   // montanti
+  d.P(FERRO[1], 38, 10, 3, 1); d.P(FERRO[2], 40, 8, 3, 5); d.P(VETRO[3], 41, 9, 1, 3); // specchietto
+  // tetto bombato con lo sbalzo, faro da lavoro e lampeggiante
+  d.poly([[4, 3], [8, 1], [38, 1], [42, 3], [42, 6], [4, 6]], B[2]);
+  d.P(B[4], 9, 1, 29, 1); d.P(B[3], 5, 3, 36, 1); d.P(B[0], 4, 6, 38, 1);
+  d.P('#f4f2ea', 4, 4, 38, 1);                                        // filetto bianco
+  faroLavoro(d, 37, 2);
+  d.P('#f08a20', 19, 0, 5, 2); d.P('#ffc060', 19, 0, 2, 1); d.P('#c86010', 22, 1, 2, 1);
+  // pianale sotto la cabina e scaletta
+  d.box(5, 33, 33, 4, B);
+  d.P(FERRO[1], 6, 37, 2, 8); d.P(FERRO[2], 3, 39, 5, 1); d.P(FERRO[2], 3, 43, 5, 1);
+  // blocco motore sotto il cofano
+  d.P(FERRO[1], 36, 46, 30, 6); d.P(FERRO[2], 36, 46, 30, 1);
+  for (let x = 40; x < 64; x += 5) d.P(FERRO[0], x, 48, 2, 3);
+  // cofano arrotondato, più basso davanti
+  d.poly([[34, 33], [62, 33], [67, 35], [69, 38], [69, 47], [34, 47]], B[2]);
+  d.P(B[4], 35, 33, 27, 1); d.line(62, 33, 67, 35, B[3]); d.P(B[3], 35, 34, 30, 1);
+  d.P(B[1], 34, 45, 35, 2); d.P(B[0], 34, 46, 35, 1);
+  // fascia decorativa con la scritta
+  d.P('#f4f2ea', 36, 38, 30, 3); d.P(B[0], 36, 41, 30, 1);
+  text(d, 'GT 90', 44, 37, B[0]);
+  d.P('#f4f2ea', 36, 38, 7, 1);
+  // feritoie del cofano
+  for (let x = 37; x < 66; x += 3) d.P(B[0], x, 43, 2, 1);
+  // calandra e fari
+  d.P('#2e2e36', 66, 37, 3, 9); for (let y = 38; y < 46; y += 2) d.P('#6a6a74', 66, y, 3, 1);
+  d.P(FARO[2], 64, 34, 4, 2); d.P(FARO[4], 64, 34, 2, 1);
+  // zavorre davanti e supporto
+  d.P(FERRO[2], 68, 47, 4, 4);
+  zavorre(d, 69, 39, 6, 4);
+  // ruota anteriore col suo parafanghino
+  ruotaPiccola(d, 61, 59, 8.5, GIALLO[2]);
+  for (let x = 52; x < 71; x++) { const y = 50 - Math.round(Math.sqrt(Math.max(0, 90 - (x - 61) ** 2)) * 0.25); d.P(B[2], x, y, 1, 2); d.P(B[3], x, y); }
+  // ruota grande e parafango tondo con la luce dietro
+  ruotaGrande(d, 21, 51, 15.5, GIALLO[2]);
   for (let y = 30; y < 50; y++) for (let x = 0; x < 44; x++) {
     const r = Math.hypot(x - 21, y - 51);
-    if (r >= 16.5 && r < 19.5 && y < 47) d.P(r < 17.5 ? B[0] : y < 36 ? B[3] : B[2], x, y);
+    if (r >= 17 && r < 20.5 && y < 47) d.P(r < 18 ? B[0] : y < 37 ? B[4] : r > 19.5 ? B[1] : B[2], x, y);
   }
-  ruggine(d, [[33, 45, 3, 1], [58, 36], [6, 35, 2, 1], [40, 39]]);
+  d.P(STOP[2], 2, 40, 2, 3); d.P(STOP[4], 2, 40);
+  d.P('#f08a20', 2, 43, 2, 1);
+  // gancio di traino
+  d.P(FERRO[2], 0, 45, 7, 3); d.P(FERRO[3], 0, 45, 7, 1);
+  // ruggine e fango
+  ruggine(d, [[33, 44, 3, 1], [58, 36], [6, 35, 2, 1], [47, 44]]);
+  schizzi(d, 5, 34, 41, 36, 6, 18);
   return outline(d.c);
 }
+
 export function trattoreDavanti(col = '#c83a2e') {
   const d = pen(56, 68), B = ramp(col);
-  for (const x of [0, 44]) { // ruote grandi
-    d.P(GOMMA[1], x, 34, 12, 33); d.P(GOMMA[2], x + 1, 34, 3, 33);
-    for (let y = 36; y < 66; y += 3) d.P(GOMMA[0], x, y, 12, 1);
-    d.box(x - (x ? 1 : 0), 30, 13, 5, B);
-  }
+  // ruote grandi dietro, col parafango
+  for (const x of [0, 44]) { gommaFronte(d, x, 34, 12, 33); d.box(x - (x ? 1 : 0), 30, 13, 5, B); d.P(B[4], x, 30, 12, 1); }
+  // cabina
   vetro(d, [[11, 7], [45, 7], [45, 33], [11, 33]], [[14, 30, 26, 9], [20, 30, 32, 9]]);
-  d.P('#2a2a30', 20, 22, 16, 3); d.P('#2a2a30', 27, 25, 2, 8);             // volante
+  d.P('#2a2a30', 20, 22, 16, 3); d.P('#2a2a30', 27, 25, 2, 8);        // volante
   d.P(B[2], 9, 6, 3, 28); d.P(B[3], 9, 6, 1, 28); d.P(B[1], 44, 6, 3, 28);
-  d.box(6, 1, 44, 6, B); d.P('#f4f2ea', 6, 4, 44, 1);
-  d.P('#f08a20', 26, 0, 4, 2);
-  d.cyl(38, 13, 3, 19, ramp('#3a3a42'));
-  d.box(18, 32, 20, 17, B); d.P(B[4], 19, 32, 18, 1);
-  d.P('#2e2e36', 21, 36, 14, 10); for (let y = 37; y < 46; y += 2) d.P('#5a5a62', 22, y, 12, 1);
-  d.P(FARO[2], 19, 33, 4, 2); d.P(FARO[2], 33, 33, 4, 2);
-  d.P(FERRO[1], 12, 51, 32, 3);
-  for (const x of [12, 38]) { d.P(GOMMA[1], x, 49, 7, 17); d.P(GOMMA[2], x + 1, 49, 2, 17); for (let y = 51; y < 65; y += 3) d.P(GOMMA[0], x, y, 7, 1); d.P('#e0b830', x + 2, 55, 3, 5); }
-  ruggine(d, [[20, 47, 3, 1], [2, 32]]);
+  // specchietti a braccio
+  d.P(FERRO[1], 3, 10, 6, 1); d.P(FERRO[2], 1, 8, 3, 6); d.P(VETRO[3], 2, 9, 1, 4);
+  d.P(FERRO[1], 47, 10, 6, 1); d.P(FERRO[2], 52, 8, 3, 6); d.P(VETRO[3], 53, 9, 1, 4);
+  // tetto con sbalzo, fari da lavoro e lampeggiante
+  d.poly([[4, 3], [8, 1], [48, 1], [52, 3], [52, 6], [4, 6]], B[2]);
+  d.P(B[4], 9, 1, 39, 1); d.P(B[3], 5, 3, 46, 1); d.P(B[0], 4, 6, 48, 1); d.P('#f4f2ea', 4, 4, 48, 1);
+  faroLavoro(d, 13, 3); faroLavoro(d, 39, 3);
+  d.P('#f08a20', 25, 0, 6, 2); d.P('#ffc060', 25, 0, 2, 1);
+  // scarico che spunta a destra
+  d.cyl(38, 12, 3, 20, ramp('#3a3a42')); d.cyl(38, 9, 3, 4, CROMO);
+  // cofano visto di fronte, arrotondato in alto
+  d.poly([[17, 33], [39, 33], [41, 35], [41, 50], [15, 50], [15, 35]], B[2]);
+  d.P(B[4], 18, 33, 20, 1); d.P(B[3], 16, 35, 2, 14); d.P(B[1], 39, 35, 2, 15);
+  // calandra a nido d'ape con la fascia
+  d.P('#2e2e36', 19, 37, 18, 11);
+  for (let y = 38; y < 47; y += 2) for (let x = 20 + (y % 4 ? 1 : 0); x < 36; x += 2) d.P('#5a5a64', x, y);
+  d.P('#f4f2ea', 19, 36, 18, 1);
+  d.P(B[0], 26, 37, 4, 2); d.P('#e8b820', 27, 37, 2, 1);              // stemma
+  // fari incassati nel cofano
+  for (const x of [16, 37]) { d.P('#3a3a44', x, 34, 4, 3); d.P(FARO[2], x + 1, 35, 2, 1); d.P(FARO[4], x + 1, 35); }
+  // zavorre davanti
+  d.P(FERRO[1], 17, 50, 22, 2);
+  zavorre(d, 15, 52, 26, 2); d.P(FERRO[3], 26, 52, 4, 1);
+  // assale e ruote anteriori
+  d.P(FERRO[1], 11, 58, 34, 3); d.P(FERRO[2], 11, 58, 34, 1);
+  for (const x of [11, 38]) { gommaFronte(d, x, 50, 7, 17); d.P(GIALLO[2], x + 2, 56, 3, 5); d.P(GIALLO[4], x + 2, 56, 1, 2); }
+  ruggine(d, [[20, 48, 3, 1], [2, 32], [40, 40]]);
+  schizzi(d, 9, 15, 44, 26, 8, 10);
   return outline(d.c);
 }
+
 export function trattoreDietro(col = '#c83a2e') {
   const d = pen(56, 68), B = ramp(col);
-  for (const x of [0, 44]) {
-    d.P(GOMMA[1], x, 34, 12, 33); d.P(GOMMA[2], x + 1, 34, 3, 33);
-    for (let y = 36; y < 66; y += 3) d.P(GOMMA[0], x, y, 12, 1);
-    d.box(x - (x ? 1 : 0), 30, 13, 5, B);
-  }
+  for (const x of [0, 44]) gommaFronte(d, x, 34, 12, 33);
+  // cabina e schienale
   vetro(d, [[11, 7], [45, 7], [45, 31], [11, 31]], [[14, 28, 24, 9]]);
-  d.P('#2a2a30', 20, 18, 16, 12); d.P('#3a3a44', 20, 18, 16, 2);           // schienale
+  d.P('#2a2a30', 20, 18, 16, 12); d.P('#3a3a44', 20, 18, 16, 2);
   d.P(B[2], 9, 6, 3, 28); d.P(B[3], 9, 6, 1, 28); d.P(B[1], 44, 6, 3, 28);
-  d.box(6, 1, 44, 6, B); d.P('#f4f2ea', 6, 4, 44, 1);
-  d.box(12, 31, 32, 15, B);
-  d.P(STOP[2], 13, 33, 4, 3); d.P(STOP[2], 39, 33, 4, 3); d.P(STOP[4], 13, 33); d.P(STOP[4], 39, 33);
-  d.P('#f4f2ea', 22, 34, 12, 4); d.P(INK, 24, 35, 8, 1);
-  d.P(FERRO[2], 26, 46, 4, 5);                                             // presa di forza
-  d.line(16, 46, 20, 58, FERRO[1], 2); d.line(39, 46, 35, 58, FERRO[1], 2);  // sollevatore a tre punti
-  d.P(FERRO[2], 19, 57, 18, 2); d.line(28, 46, 28, 52, FERRO[2], 2);
+  d.P(FERRO[1], 3, 10, 6, 1); d.P(FERRO[2], 1, 8, 3, 6);
+  d.P(FERRO[1], 47, 10, 6, 1); d.P(FERRO[2], 52, 8, 3, 6);
+  d.poly([[4, 3], [8, 1], [48, 1], [52, 3], [52, 6], [4, 6]], B[2]);
+  d.P(B[4], 9, 1, 39, 1); d.P(B[3], 5, 3, 46, 1); d.P(B[0], 4, 6, 48, 1); d.P('#f4f2ea', 4, 4, 48, 1);
+  faroLavoro(d, 13, 3); faroLavoro(d, 39, 3);
+  d.P('#f08a20', 25, 0, 6, 2);
+  // parafanghi tondi sulle ruote con le luci
+  for (const x of [0, 43]) {
+    d.box(x, 29, 13, 6, B); d.P(B[4], x + 1, 29, 11, 1);
+    const lx = x ? x + 1 : x + 8;
+    d.P(STOP[2], lx, 31, 4, 2); d.P('#f08a20', lx, 33, 4, 1); d.P(STOP[4], lx, 31);
+  }
+  // scatola del cambio e sollevatore
+  d.box(12, 31, 32, 14, B); d.P(B[0], 12, 44, 32, 1);
+  d.P('#f4f2ea', 22, 34, 12, 5); d.P('#2f4fa8', 22, 34, 2, 5); d.P(INK, 25, 35, 8, 1); d.P(INK, 25, 37, 8, 1); // targa
+  d.P(FERRO[2], 14, 32, 6, 1); d.P(FERRO[2], 36, 32, 6, 1);
+  // presa di forza con la cuffia gialla
+  d.P(GIALLO[2], 24, 45, 8, 4); d.P(GIALLO[4], 24, 45, 8, 1); d.P(GIALLO[0], 24, 48, 8, 1);
+  d.P(FERRO[2], 27, 49, 2, 3);
+  // tre punti
+  d.line(16, 45, 20, 58, FERRO[1], 2); d.line(39, 45, 35, 58, FERRO[1], 2);
+  d.P(FERRO[2], 18, 57, 20, 2); d.P(FERRO[3], 18, 57, 20, 1);
+  d.line(28, 44, 28, 54, FERRO[2], 2); d.P(GIALLO[2], 17, 56, 3, 3); d.P(GIALLO[2], 36, 56, 3, 3);
   ruggine(d, [[15, 42, 3, 1], [46, 32]]);
+  schizzi(d, 13, 12, 40, 32, 5, 10);
   return outline(d.c);
 }
 
 // ---------- Attrezzi (di lato, il gancio a destra verso il trattore) ----------
+const ATT_ROSSO = ramp('#c03a2a'), ACCIAIO = ramp('#c8ccd4'), STRISCE = ['#d8342a', '#f4f2ea'];
+function strisce(d, x, y, w, h) { for (let i = 0; i < w; i++) for (let j = 0; j < h; j++) d.P(STRISCE[((i + j) >> 1) % 2], x + i, y + j); }
+function cardano(d, x0, y0, x1, y1) { d.line(x0, y0, x1, y1, FERRO[1], 2); d.line(x0, y0 - 1, x1, y1 - 1, GIALLO[2], 1); }
+
 export function aratro() {
-  const d = pen(48, 28), R = ramp('#c03a2a'), A = ramp('#c8ccd4');
-  d.box(4, 3, 36, 4, R);
-  d.poly([[38, 3], [47, 1], [47, 9], [40, 7]], R[1]); d.P(FERRO[2], 44, 2, 3, 6);
-  for (const x of [12, 24, 36]) {
-    d.line(x, 7, x - 4, 19, R[1], 2);
-    d.poly([[x - 11, 19], [x - 3, 17], [x - 1, 22], [x - 8, 24]], A[2]);
-    d.P(A[4], x - 9, 19, 4, 1); d.P(A[1], x - 7, 23, 5, 1); d.P('#3a3a42', x - 1, 21, 2, 2);
+  const d = pen(48, 28), R = ATT_ROSSO, A = ACCIAIO;
+  // castello del tre punti (a destra) e trave
+  d.poly([[38, 1], [46, 1], [47, 9], [40, 9]], R[1]); d.P(R[3], 39, 1, 7, 1);
+  d.P(GIALLO[2], 44, 2, 3, 3); d.P(FERRO[2], 44, 6, 4, 3);
+  d.box(3, 3, 37, 5, R); d.P(R[4], 4, 3, 35, 1); d.P(R[0], 3, 7, 37, 1);
+  for (const x of [8, 20, 32]) d.P(CROMO[3], x, 5);                // bulloni
+  // tre corpi: montante rosso, versoio d'acciaio che si avvita all'indietro, vomere scuro in avanti
+  for (const x of [14, 26, 38]) {
+    d.P(R[1], x - 1, 8, 3, 9); d.P(R[3], x - 1, 8, 1, 9);
+    d.poly([[x + 3, 23], [x + 1, 16], [x - 3, 13], [x - 9, 13], [x - 7, 18], [x - 4, 23]], A[2]);
+    d.line(x - 9, 13, x - 3, 13, A[4]); d.line(x - 8, 14, x - 6, 18, A[3]);
+    d.line(x - 4, 22, x + 2, 22, A[1]); d.line(x + 1, 16, x + 3, 22, A[0]);
+    d.P('#3a3a42', x - 4, 23, 8, 1); d.P(A[4], x + 2, 23, 2, 1);     // vomere
   }
-  wheel(d, 5, 20, 5, { rim: '#9a9aa0' }); d.line(5, 7, 5, 15, R[1], 2);
-  d.P('#6a4a2a', 25, 24, 4, 1); // terra
+  ruotaPiccola(d, 4, 20, 4.5, '#9a9aa0'); d.line(4, 7, 4, 15, R[1], 2);
+  // zolle rivoltate
+  for (const [x, y] of [[0, 26], [10, 26], [22, 26]]) { d.P('#6a4a2a', x, y, 5, 2); d.P('#8a6a3a', x + 1, y, 3, 1); }
   return outline(d.c);
 }
 export function seminatrice() {
   const d = pen(50, 34), G = ramp('#3e8a4a'), Y = ramp('#e8c030');
-  d.box(4, 2, 34, 14, G); d.box(3, 1, 36, 3, Y);
-  d.P('#f4ecd6', 10, 7, 20, 4); text(d, 'SEMI', 12, 7, G[0]);
-  d.P(FERRO[1], 2, 16, 42, 3);
-  for (let x = 8; x <= 36; x += 7) { d.P(FERRO[0], x, 18, 1, 4); d.ball(x, 24, 2, 5, CROMO); d.P(CROMO[4], x - 1, 21); }
-  wheel(d, 42, 26, 6, { rim: '#e8c030' });
-  d.P(FERRO[2], 42, 12, 8, 3);
+  // tramoggia a trapezio col coperchio giallo
+  d.poly([[4, 4], [38, 4], [35, 15], [7, 15]], G[2]);
+  d.P(G[3], 5, 5, 32, 1); d.P(G[1], 8, 14, 27, 1); d.line(36, 5, 34, 14, G[1]);
+  d.box(2, 1, 38, 3, Y); d.P(Y[4], 3, 1, 36, 1);
+  d.P('#f4ecd6', 11, 7, 20, 6); d.P('#d8ccb0', 11, 12, 20, 1); text(d, 'SEMI', 14, 8, G[0]);
+  d.P(FERRO[2], 37, 5, 1, 10); for (let y = 6; y < 15; y += 3) d.P(FERRO[3], 36, y, 3, 1); // scaletta
+  // tubi di caduta e assolcatori a disco
+  d.P(FERRO[1], 2, 15, 42, 3); d.P(FERRO[2], 2, 15, 42, 1);
+  for (let x = 7; x <= 35; x += 7) {
+    d.line(x + 1, 18, x, 24, '#2a2a30', 2);
+    d.ball(x, 25, 3, 3, CROMO); d.P(CROMO[0], x, 25);
+    d.ball(x - 2, 29, 2, 2, GOMMA);                                  // ruotino che chiude il solco
+  }
+  // tracciafile ripiegato e ruota motrice
+  d.line(3, 1, 0, 12, Y[1], 2); d.ball(1, 13, 2, 2, CROMO);
+  ruotaPiccola(d, 42, 26, 6, '#e8c030');
+  d.P(FERRO[2], 42, 12, 8, 3); d.P(GIALLO[2], 46, 11, 3, 2);
   return outline(d.c);
 }
 export function falciatrice() {
   const d = pen(54, 26), O = ramp('#e07a2a');
-  d.line(52, 5, 30, 12, FERRO[1], 3); d.P(FERRO[2], 48, 3, 6, 4);
-  d.box(4, 9, 40, 7, O); d.P(O[4], 6, 9, 30, 1);
-  for (let x = 8; x < 40; x += 8) d.P(O[0], x, 11, 3, 3);
-  d.P('#f4ecd6', 18, 11, 10, 3); d.P(INK, 20, 12, 6, 1);
-  d.P(CROMO[2], 2, 17, 44, 2); d.P(CROMO[4], 2, 17, 44, 1);
-  for (let x = 3; x < 46; x += 3) { d.P(CROMO[1], x, 19, 2, 1); d.P(CROMO[0], x, 20); }
-  d.P(FERRO[2], 0, 15, 4, 4);
+  cardano(d, 52, 5, 34, 11); d.P(FERRO[2], 48, 3, 6, 4);
+  // carter arrotondato con le strisce di sicurezza
+  d.poly([[4, 10], [8, 7], [42, 7], [45, 10], [45, 16], [4, 16]], O[2]);
+  d.P(O[4], 8, 7, 34, 1); d.P(O[3], 5, 9, 39, 1); d.P(O[0], 4, 15, 41, 1);
+  strisce(d, 5, 11, 6, 3); strisce(d, 39, 11, 5, 3);
+  d.P('#f4ecd6', 13, 9, 25, 7); text(d, 'FALCIA', 14, 10, O[0]);
+  d.P(FERRO[2], 24, 4, 4, 3);
+  // tendina di gomma nera e dischi che si intravedono
+  for (let x = 4; x < 45; x += 2) d.P(x % 4 ? '#2a2a30' : '#3a3a44', x, 16, 2, 3);
+  for (let x = 6; x < 44; x += 8) { d.ell(x + 2, 20, 3, 1, CROMO[2]); d.P(CROMO[4], x, 20, 2, 1); }
+  d.P(CROMO[1], 2, 21, 44, 1);
+  d.P(FERRO[2], 0, 13, 4, 6);                                         // pattino
   return outline(d.c);
 }
 export function turbina() { // atomizzatore: botte con ventola dietro
   const d = pen(48, 40), W = ramp('#e8e4d8');
-  d.ball(24, 16, 15, 11, W);
-  d.P('#2f5e9a', 10, 18, 28, 2); d.P('#4a7ab8', 10, 18, 28, 1);
-  d.ball(24, 5, 4, 1.8, ramp('#e07a2a'));                                    // tappo
-  d.ball(7, 18, 6, 12, ramp('#4a4a54'));
-  for (let y = 9; y < 28; y += 3) d.P('#2a2a30', 3, y, 8, 1);                // griglia
-  for (const y of [8, 14, 20, 26]) d.P('#e07a2a', 1, y, 2, 2);               // ugelli
-  d.P(FERRO[1], 12, 27, 30, 3);
-  wheel(d, 27, 32, 7, { rim: '#9a9aa0' });
-  d.P(FERRO[2], 38, 26, 10, 2); d.P(FERRO[3], 44, 25, 4, 1);
+  d.ball(25, 16, 15, 11, W);
+  d.P('#2f5e9a', 11, 18, 29, 2); d.P('#4a7ab8', 11, 18, 29, 1);
+  d.P('#9a968a', 31, 11, 3, 6); d.P('#8ab8d8', 32, 13, 1, 3); // spia del livello
+  d.ball(25, 5, 4, 1.8, ramp('#e07a2a')); d.P('#ffb070', 23, 4, 2, 1);   // tappo
+  // ventola con la gabbia e il convogliatore
+  d.ball(7, 18, 6.5, 12.5, ramp('#4a4a54'));
+  d.ell(7, 18, 4, 9, '#2a2a30');
+  for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3 + 0.4; d.line(7, 18, 7 + Math.cos(a) * 3.5, 18 + Math.sin(a) * 8, '#8a8a94'); }
+  d.ball(7, 18, 1.2, 1.2, CROMO);
+  for (const y of [7, 13, 19, 25, 30]) { d.P('#e07a2a', 0, y, 2, 2); d.P('#ffb070', 0, y); } // ugelli
+  // telaio, cardano e ruota col parafango
+  d.P(FERRO[1], 12, 27, 30, 3); d.P(FERRO[2], 12, 27, 30, 1);
+  cardano(d, 47, 25, 38, 27);
+  ruotaPiccola(d, 27, 32, 7, '#9a9aa0');
+  for (let x = 19; x < 36; x++) { const y = 25 - Math.round(Math.sqrt(Math.max(0, 72 - (x - 27) ** 2)) * 0.3); d.P(FERRO[2], x, y, 1, 1); }
   return outline(d.c);
 }
 
 // ---------- Attrezzi visti da davanti/dietro (dietro al trattore che va verso la camera o si allontana) ----------
 export function aratroFronte() {
-  const d = pen(58, 24), R = ramp('#c03a2a'), A = ramp('#c8ccd4');
-  d.box(3, 3, 52, 5, R); d.P(FERRO[2], 25, 0, 8, 4);
+  const d = pen(58, 24), R = ATT_ROSSO, A = ACCIAIO;
+  d.box(3, 3, 52, 5, R); d.P(R[4], 4, 3, 50, 1);
+  d.P(R[1], 24, 0, 10, 4); d.P(GIALLO[2], 27, 0, 4, 2);
   for (const x of [9, 22, 35, 48]) {
-    d.P(R[1], x - 1, 8, 3, 8);
-    d.poly([[x - 5, 15], [x + 3, 15], [x + 4, 21], [x - 4, 22]], A[2]); d.P(A[4], x - 4, 16, 5, 1); d.P(A[0], x - 3, 21, 6, 1);
+    d.P(R[1], x - 1, 8, 3, 7); d.P(CROMO[2], x, 4, 1, 1);
+    d.poly([[x - 5, 14], [x + 3, 14], [x + 5, 21], [x - 4, 22]], A[2]);
+    d.P(A[4], x - 4, 15, 6, 1); d.P(A[3], x - 4, 16, 2, 4); d.P(A[0], x - 3, 21, 7, 1);
   }
   return outline(d.c);
 }
 export function seminatriceFronte() {
   const d = pen(58, 30), G = ramp('#3e8a4a'), Y = ramp('#e8c030');
-  d.box(4, 3, 50, 13, G); d.box(3, 1, 52, 3, Y);
-  d.P('#f4ecd6', 19, 7, 20, 5); text(d, 'SEMI', 21, 7, G[0]);
+  d.poly([[4, 4], [54, 4], [51, 16], [7, 16]], G[2]); d.P(G[3], 5, 5, 48, 1); d.P(G[1], 8, 15, 42, 1);
+  d.box(3, 1, 52, 3, Y); d.P(Y[4], 4, 1, 50, 1);
+  d.P('#f4ecd6', 19, 7, 20, 6); text(d, 'SEMI', 21, 8, G[0]);
   d.P(FERRO[1], 2, 16, 54, 3);
-  for (let x = 7; x < 52; x += 6) d.ball(x, 23, 1.5, 4, CROMO);
-  d.P(GOMMA[1], 0, 18, 5, 11); d.P(GOMMA[1], 53, 18, 5, 11); d.P(GOMMA[2], 1, 18, 1, 11); d.P(GOMMA[2], 54, 18, 1, 11);
+  for (let x = 7; x < 52; x += 6) { d.P('#2a2a30', x, 19, 1, 2); d.ball(x, 23, 1.5, 3.5, CROMO); }
+  gommaFronte(d, 0, 18, 5, 11); gommaFronte(d, 53, 18, 5, 11);
   return outline(d.c);
 }
 export function falciatriceFronte() {
   const d = pen(66, 22), O = ramp('#e07a2a');
-  d.box(3, 4, 60, 9, O); d.P(O[4], 4, 4, 58, 1);
-  for (let x = 10; x < 58; x += 12) d.P(O[0], x, 6, 4, 4);
-  d.P(FERRO[2], 29, 0, 8, 5);
-  d.P(CROMO[2], 1, 14, 64, 2); d.P(CROMO[4], 1, 14, 64, 1);
-  for (let x = 2; x < 64; x += 3) { d.P(CROMO[1], x, 16, 2, 2); d.P(CROMO[0], x, 18); }
+  d.poly([[3, 7], [7, 4], [59, 4], [63, 7], [63, 13], [3, 13]], O[2]);
+  d.P(O[4], 7, 4, 52, 1); d.P(O[3], 4, 6, 58, 1); d.P(O[0], 3, 12, 60, 1);
+  strisce(d, 4, 8, 8, 3); strisce(d, 54, 8, 8, 3);
+  d.P('#f4ecd6', 21, 6, 25, 7); text(d, 'FALCIA', 22, 7, O[0]);
+  d.P(FERRO[2], 29, 0, 8, 5); d.P(GIALLO[2], 31, 0, 4, 2);
+  for (let x = 3; x < 63; x += 2) d.P(x % 4 ? '#2a2a30' : '#3a3a44', x, 13, 2, 4);
+  d.P(CROMO[2], 1, 17, 64, 2); d.P(CROMO[4], 1, 17, 64, 1);
+  for (let x = 2; x < 64; x += 3) d.P(CROMO[0], x, 19, 2, 1);
   return outline(d.c);
 }
 export function turbinaFronte() {
   const d = pen(42, 42), W = ramp('#e8e4d8');
   d.ball(21, 17, 15, 12, W);
-  d.P('#2f5e9a', 7, 19, 28, 2);
+  d.P('#2f5e9a', 7, 21, 28, 2);
   d.ball(21, 5, 4, 1.8, ramp('#e07a2a'));
-  d.ball(21, 20, 8, 8, ramp('#4a4a54'));
-  for (let y = 14; y < 27; y += 3) d.P('#2a2a30', 15, y, 13, 1);
-  for (const [x, y] of [[10, 12], [32, 12], [8, 22], [34, 22]]) d.P('#e07a2a', x, y, 2, 2);
+  // ventola rotonda con le pale
+  d.ball(21, 19, 9, 9, ramp('#4a4a54')); d.ell(21, 19, 7, 7, '#2a2a30');
+  for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3 + 0.3; d.line(21, 19, 21 + Math.cos(a) * 6, 19 + Math.sin(a) * 6, '#8a8a94'); }
+  d.ball(21, 19, 1.5, 1.5, CROMO);
+  for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; d.P('#e07a2a', 21 + Math.cos(a) * 10.5, 19 + Math.sin(a) * 10.5, 2, 2); }
   d.P(FERRO[1], 6, 30, 30, 3);
-  for (const x of [3, 33]) { d.P(GOMMA[1], x, 29, 6, 12); d.P(GOMMA[2], x + 1, 29, 2, 12); }
+  gommaFronte(d, 2, 29, 6, 12); gommaFronte(d, 34, 29, 6, 12);
   return outline(d.c);
 }
 

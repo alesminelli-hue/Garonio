@@ -601,8 +601,3 @@ export const TESTI = {
   uscitaInterno: "Torna indietro",
 };
 
-// Titoli del juke-box per le scene musicali di assets/music/playlist.json
-export const JUKEBOX = {
-  bar: 'Pappa Garonio', base: 'Sunset Truciolone', intro: 'Il Conte della Bassa', rabbia: 'Canaglia (Rabbia incontrollata)',
-  nemico: 'Mister Scarogna', combattimento: 'Rabbia incontrollata',
-};

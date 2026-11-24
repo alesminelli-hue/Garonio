@@ -28,7 +28,7 @@ import * as THREE from 'three';
 import * as PIX from './pixel.js';
 import { ramp, tone as hdTono, hash as hdHash } from './hd/kit.js';
 import * as HDO from './hd/oggetti.js';
-import { INTERNI, TESTI, MAIALI_FINTI, JUKEBOX, PORTE } from './data/interni.js';
+import { INTERNI, TESTI, MAIALI_FINTI, PORTE } from './data/interni.js';
 import { BUILDINGS, MAP_W, PLACES } from './map.js';
 import { SPALLE } from './world.js';
 import { VESTITI } from './data/armi.js';
@@ -1389,9 +1389,11 @@ export class Interni {
       },
       'bar:biliardo': async () => { await this._biliardo(); },
       'bar:jukebox': async () => {
-        const pl = g.audio.playlist || {};
-        const scene = Object.keys(JUKEBOX).filter(k => (pl[k] || []).length || !Object.keys(pl).length);
-        const choices = scene.map(k => ({ label: `${this._musica === k ? '▶ ' : ''}${JUKEBOX[k]}`, fn: () => { this._musica = k; g.audio.setScene(k); toast(fill(T.bar.jukeboxScelto, { titolo: JUKEBOX[k] })); return null; } }));
+        // il juke-box ha i dischi della radio (assets/music/playlist.json, scena "guida")
+        const choices = g.audio.canzoni().map(f => {
+          const k = 'disco:' + f, titolo = g.audio.titolo(f);
+          return { label: `${this._musica === k ? '▶ ' : ''}${titolo}`, fn: () => { this._musica = k; g.audio.setScene(k); toast(fill(T.bar.jukeboxScelto, { titolo })); return null; } };
+        });
         choices.push({ label: 'Lascia stare', fn: null });
         await g.ui.dialog([{ name: 'Juke-box', text: T.bar.jukebox, choices }]);
       },

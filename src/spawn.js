@@ -126,7 +126,7 @@ export class Spawn {
     const actors = membri.map((id, i) => {
       const fr = this._frames(id);
       const nn = NEMICI_NUOVI[id];
-      const w = nn?.mappa ?? fr[0].width / PIX.PX, h = w * fr[0].height / fr[0].width;
+      const w = nn?.mappa ?? ENEMIES[id]?.mappa ?? fr[0].width / PIX.PX, h = w * fr[0].height / fr[0].width;
       const a = W.actor(fr, { w, h, shadow: w * 0.3 });
       const ang = i * 2.3, r = i ? 0.9 + i * 0.15 : 0;
       return { a, id, ox: Math.cos(ang) * r, oz: Math.sin(ang) * r * 0.6, vola: !!nn?.vola, ph: Math.random() * 6 };
