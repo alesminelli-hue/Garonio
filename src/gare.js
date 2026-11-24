@@ -14,7 +14,7 @@
 import * as THREE from 'three';
 import * as PIX from './pixel.js';
 import * as SM from './sprite_mercato.js';
-import { vehicleArt, VPX } from './vehicle_sprites.js';
+import { vehicleArt, VPX, TRACTOR_WIN } from './vehicle_sprites.js';
 import { GARE as G } from './data/mercato.js';
 import { pick, fill } from './racconto.js';
 
@@ -148,11 +148,11 @@ export class Gare {
       g.restore();
       return n;
     };
-    const R = conPilota(art.R[0], [10, 5, 22, 28]);
+    const R = conPilota(art.R[0], TRACTOR_WIN.R);
     return {
       R, L: PIX.mirror(R),
-      F: conPilota(art.F[0], [11, 5, 30, 31]),
-      B: conPilota(art.B[0], [11, 5, 30, 31]),
+      F: conPilota(art.F[0], TRACTOR_WIN.F),
+      B: conPilota(art.B[0], TRACTOR_WIN.B),
     };
   }
 
@@ -186,7 +186,7 @@ export class Gare {
     for (let i = 0; i < G.balle; i++) {
       let x, n = 0; do x = 68 + Math.random() * 54; while (!libero(x) && ++n < 30);
       const z = Math.random() < 0.5 ? G.corsie.andata : G.corsie.ritorno;
-      const sp = W.sprite(bt, { w: 1.25, h: 1 }); sp.position.set(x, 0, z); W.scene.add(sp);
+      const sp = W.sprite(bt, { w: 1.5, h: 1.375 }); sp.position.set(x, 0, z); W.scene.add(sp);
       ost.push({ tipo: 'balla', x, z, obj: sp, vola: 0 });
     }
     this.r = { id, R, v, ai, ost, t: 0, conto: 3.6, fase: 0, bumpT: 0, battutaT: 0, finito: false };

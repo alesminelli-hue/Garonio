@@ -14,6 +14,7 @@
 // Stato salvato in s.flags.attrezzi.
 import * as PIX from './pixel.js';
 import { VPX } from './vehicle_sprites.js';
+import * as HDM from './hd/mezzi.js';
 import { BUILDINGS } from './map.js';
 import { ATTREZZI, UPGRADE_ATTREZZI, TRATTORI_NOMI, LAVORO_CAMPI as L, BATTUTE_LAVORO as B } from './data/stagioni.js';
 
@@ -331,7 +332,8 @@ export class Attrezzi {
     sp.visible = true;
     const front = a === 'falciatrice';
     const side = view === 'R' || view === 'L';
-    const dist = side ? (front ? 2.3 : 2.35) : (front ? 1.3 : 1.25);
+    // di lato: mezzo trattore (1.9) + metà attrezzo, meno il pezzo che si aggancia
+    const dist = side ? (front ? 1.45 : 1.55) + T.w / 2 : (front ? 1.3 : 1.25);
     const dir = front ? 1 : -1;
     const bob = v === this.game.vehicles.driving && Math.abs(v.speed) > 0.5 ? (Math.floor(this.t * 14) % 2) / VPX : 0;
     sp.position.set(v.st.x + Math.cos(v.st.h) * dist * dir, bob, v.st.z + Math.sin(v.st.h) * dist * dir + (view === 'B' && !front ? 0.05 : 0));
@@ -498,69 +500,19 @@ export function attrezzoArt(a, view) {
   return view === 'L' ? PIX.mirror(c) : c;
 }
 
+// corpi HD in src/hd/mezzi.js (di lato il gancio è a destra: per la falciatrice, che sta davanti, si specchia)
 function attrezzoSide(a) {
-  if (a === 'aratro') {
-    const d = pen(34, 22), { P } = d;
-    P('#3a3a40', 20, 6, 14, 3);                // attacco a tre punti
-    P('#c83a2a', 2, 8, 26, 4); P('#e05a40', 2, 8, 26, 1);
-    for (const x of [4, 12, 20]) { P('#7a7a82', x, 12, 3, 6); P('#b8b8c0', x - 2, 17, 6, 3); P('#e8e8ee', x - 2, 17, 3, 1); }
-    return outline(d.c);
-  }
-  if (a === 'seminatrice') {
-    const d = pen(34, 30), { P, disc } = d;
-    P('#3a3a40', 26, 14, 8, 3);
-    P('#2a6ab0', 4, 4, 22, 12); P('#4a8ad0', 4, 4, 22, 2); P('#1a4a80', 4, 14, 22, 2);
-    P('#f0d040', 8, 8, 14, 3);                  // scritta gialla
-    for (const x of [6, 11, 16, 21]) P('#5a5a62', x, 16, 2, 8);
-    disc(15, 25, 4, '#26262a'); disc(15, 25, 1, '#8a8a92');
-    return outline(d.c);
-  }
-  if (a === 'falciatrice') {
-    const d = pen(38, 30), { P, disc } = d;
-    P('#3a3a40', 0, 14, 8, 3);                  // braccio verso il trattore
-    P('#d8a020', 8, 16, 28, 9); P('#f0c040', 8, 16, 28, 2);
-    for (let x = 9; x < 36; x += 3) P('#9a9aa2', x, 25, 2, 3);   // denti
-    disc(22, 11, 7, '#c83a2a'); disc(22, 11, 4, '#e05a40');        // aspo rotante
-    P('#5a1a12', 15, 11, 15, 1); P('#5a1a12', 22, 4, 1, 15);
-    return outline(d.c);
-  }
-  // turbina: rullo col tubo e cannone sopra
-  const d = pen(36, 40), { P, disc } = d;
-  P('#3a3a40', 28, 26, 8, 3);
-  P('#c8c8d0', 6, 22, 22, 12); P('#e8e8ee', 6, 22, 22, 2);
-  disc(17, 26, 8, '#3a7a3a'); disc(17, 26, 5, '#2a5a2a'); disc(17, 26, 2, '#9a9aa2');
-  P('#7a7a82', 16, 6, 3, 16); P('#9a9aa2', 10, 4, 12, 3); P('#5a5a62', 8, 3, 3, 4);
-  disc(9, 36, 3, '#26262a'); disc(25, 36, 3, '#26262a');
-  return outline(d.c);
+  if (a === 'aratro') return HDM.aratro();
+  if (a === 'seminatrice') return HDM.seminatrice();
+  if (a === 'falciatrice') return PIX.mirror(HDM.falciatrice());
+  return HDM.turbina();
 }
 
 function attrezzoFront(a) {
-  if (a === 'aratro') {
-    const d = pen(56, 20), { P } = d;
-    P('#c83a2a', 4, 4, 48, 4); P('#e05a40', 4, 4, 48, 1);
-    for (const x of [8, 22, 36, 48]) { P('#7a7a82', x - 1, 8, 3, 7); P('#b8b8c0', x - 3, 14, 7, 4); }
-    return outline(d.c);
-  }
-  if (a === 'seminatrice') {
-    const d = pen(56, 26), { P } = d;
-    P('#2a6ab0', 4, 2, 48, 12); P('#4a8ad0', 4, 2, 48, 2); P('#f0d040', 18, 6, 20, 3);
-    for (let x = 6; x < 52; x += 6) P('#5a5a62', x, 14, 2, 8);
-    P('#26262a', 2, 18, 5, 8); P('#26262a', 49, 18, 5, 8);
-    return outline(d.c);
-  }
-  if (a === 'falciatrice') {
-    const d = pen(64, 24), { P } = d;
-    P('#d8a020', 2, 10, 60, 10); P('#f0c040', 2, 10, 60, 2);
-    P('#c83a2a', 6, 3, 52, 6); P('#e05a40', 6, 3, 52, 1);
-    for (let x = 8; x < 58; x += 5) P('#5a1a12', x, 3, 1, 6);
-    for (let x = 3; x < 62; x += 3) P('#9a9aa2', x, 20, 2, 3);
-    return outline(d.c);
-  }
-  const d = pen(40, 40), { P, disc } = d;
-  P('#c8c8d0', 4, 20, 32, 12); disc(20, 25, 8, '#3a7a3a'); disc(20, 25, 4, '#2a5a2a');
-  P('#7a7a82', 19, 4, 3, 16); P('#9a9aa2', 14, 2, 13, 3);
-  P('#26262a', 2, 30, 6, 9); P('#26262a', 32, 30, 6, 9);
-  return outline(d.c);
+  if (a === 'aratro') return HDM.aratroFronte();
+  if (a === 'seminatrice') return HDM.seminatriceFronte();
+  if (a === 'falciatrice') return HDM.falciatriceFronte();
+  return HDM.turbinaFronte();
 }
 
 function rackArt() {

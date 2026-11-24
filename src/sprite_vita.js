@@ -2,6 +2,7 @@
 // auto, Ape, camion, gatti, corvi, anatre, barboncino, buche, pozzanghere, cantiere, lampioni, aloni di luce.
 // Scala: 16 pixel = 1 casella (PIX.PX). Gli sprite di lato guardano a destra: per la sinistra si usa mirror().
 import * as PIX from './pixel.js';
+import * as HDM from './hd/mezzi.js';
 
 const INK = '#1a1420';
 export function outline(c, color = INK) {
@@ -63,7 +64,9 @@ export function camion(col, f = 0) {
     ruota(P, 9, 24, f); ruota(P, 18, 24, f); ruota(P, 51, 24, f);
   });
 }
-export function auto_(tipo, col, f) { return tipo === 'ape' ? ape(col, f) : tipo === 'camion' ? camion(col, f) : auto(col, f); }
+// Traffico HD (src/hd/mezzi.js, scala 20 px = 1 casella come i mezzi di Garonio): niente fotogrammi delle ruote.
+export const AUTO_PX = 20;
+export function auto_(tipo, col, f) { return tipo === 'ape' ? HDM.apeLato(col) : tipo === 'camion' ? HDM.camionLato(col) : HDM.puntoLato(col); }
 
 // ---------- Animali ----------
 export function gatto(col, frame = 0) {   // 0/1 passo, 2 dorme
