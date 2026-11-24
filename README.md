@@ -37,6 +37,7 @@ Il design completo è in [GDD.md](GDD.md).
 - **Il paese è vivo**: i paesani (la Sciura Ines, il Bepi, il Gino del tabacchi, la Giusy, il Moreno, il veterinario, l'Ornella col barboncino, il Walter) girano per il paese di giorno e la sera tornano a casa. Sulla provinciale passano auto, Ape e il camion del latte (di più all'ora di punta, di notte coi fari): se Garonio sta in mezzo frenano e suonano (stress), se le tamponi coi mezzi è un urto vero. Gatti da accarezzare (stress −3, a volte graffiano), corvi che volano via, anatre sul laghetto, lucciole nelle notti d'estate, lampioni che si accendono al tramonto.
 - **Imprevisti** che alzano lo stress: **buche** sulle strade (rovinano Vespa, Punto e trattori: poi paghi Zeno; la Punto può forare), **pozzanghere** nei giorni di pioggia (calzini bagnati, la Vespa scoda, le auto ti fanno la doccia), **cantieri** con transenne, operai e umarell, il **cane randagio** che ti insegue (scappa correndo, scaccialo, lanciagli un uovo o affrontalo), i **paesani impiccioni** che attaccano bottone e le **zanzare** la sera vicino all'acqua.
 - **Night Paradiso** (accanto al paese, aperto dalle 20): il catalogo, con descrizioni ironiche. Più spendi, più scende lo stress e più esperienza prendi. Una sera sola al giorno. Occhio al **tranvione**: a volte va male e perdi tutti i soldi, il rispetto al bar e la reputazione in paese.
+- **Le ragazze del paese** (dating simulator): Debora e Federica fanno jogging sulla capezzagna (la mattina e la sera), Sabrina sta alla fontana e la sera al bancone del bar, Ilenia gioca a biliardo al bar in pausa pranzo. Parlaci con **E** e scegli «Corteggiala»: è un gioco a dialoghi, ognuna ha la sua personalità (chi ama le battute, chi la sincerità, chi odia gli sdolcinati). Le risposte giuste alzano l'affinità e i **punti red pill**, quelle sbagliate li fanno scendere (e se esageri ti blocca per qualche giorno). Con abbastanza affinità ti dà il numero, poi puoi chiederle di uscire: la sera, dalle 20, ti aspetta in pizzeria, al laghetto o sul ponte (se le dai buca lo sa tutto il paese). Se la serata va bene, hai la **reputazione** in paese (almeno 40) e rispondi con classe, ti invita a salire: dissolvenza al nero, una battuta e ti risvegli a casa. Con tanti punti red pill a volte vedi la risposta giusta (👀) e dai 70 si sblocca la «mossa da maestro» (😎). Tutto nella scheda 💘 **Cuori** del menu.
 - **Mercato del giovedì** (piazzola davanti al municipio, giovedì dalle 7 alle 13; il giorno 1 è un lunedì): la Rina compra pomodori e patate, Ottavio le uova, il Sor Bortolo il mais, Gilberto «Salamella» i salami (che ti lascia il commerciante quando vendi un maiale). I prezzi cambiano ogni settimana, anche molto (la **TV di casa** li anticipa con la notizia della settimana); più vendi allo stesso banco più il prezzo cala, e con ogni banco puoi **trattare** una volta (riesce meglio con la Parlantina). Nando delle pentole vende cianfrusaglie e gratta e vinci.
 - **Gare di trattori**: sali sul trattore e vai alla **lavagna delle gare** sulla capezzagna, vicino al fienile. Sfida il Patata (posta 10 €), il cugino Ermes (25 €, serve rispetto 15) o Mister Frank (50 €, rispetto 35): conto alla rovescia, fino alla bandierina in fondo, si gira e si torna. Balle di fieno e fango sulla strada, sportellate dal rivale. Chi vince prende la posta e al bar lo sanno subito (rispetto su o giù). Una gara al giorno per rivale, dalle 7 alle 20.
 - **Scommesse del Consulente** (al suo tavolino al bar): la gara delle 18 tra Ermes e Frank, te stesso nella prossima gara di trattori, la tua prossima rissa (su di te o «contro», la combine, che Loredana non perdona) e la rissa della sera tra due avventori. La puntata massima sale col rango al bar; le vincite grosse alzano il rispetto.
@@ -84,6 +85,19 @@ Le colonne sonore stanno in `assets/music/` e si collegano alle scene in `assets
 Nel codice si usa sempre e solo `audio.setScene('nome-scena')` (elenco in `src/audio.js`, `MUSIC_SCENES`).
 
 Per aggiungere una traccia: copia il file `.mp3` nella cartella e scrivi il suo nome nella lista della scena. Se una lista è vuota suona una musichetta 8‑bit di riserva.
+
+## Effetti sonori
+
+Tutti gli effetti sono **sintetizzati al volo** con la Web Audio API in `src/sfx.js`: nessun file audio esterno, quindi nessuna licenza di terzi da rispettare (sono codice del gioco come il resto). Passano da un bus separato dalla musica con un compressore leggero.
+
+- **Mezzi**: motore continuo di Vespa (2 tempi), Punto e trattore (diesel) che sale di giri con la velocità, avviamento, motore che si spegne, clacson, incidenti; traffico che passa sulla provinciale.
+- **Combattimento**: colpi a vuoto, pugni, colpi critici, Garonio colpito, schivate, uovo spiaccicato, KO.
+- **Mondo**: passi diversi su erba, sterrato, asfalto, ponte, campo, fango e pavimenti (il fango quando piove), porte che si aprono e chiudono, galline, maiali, anatre, nutrie, gatti, cani, fischietto della Vigilessa, uccellini di giorno, grilli la sera, pioggia, vento con nebbia o neve, brusio e bicchieri al bar.
+- **Interfaccia**: click, monete, livello, errore.
+
+Nel codice: `audio.sfx('nome')`, oppure `audio.sfx('nome', { x, z })` per un suono nel mondo (più piano da lontano, a destra o a sinistra). L'elenco dei nomi è in cima a `src/sfx.js`.
+
+**Volumi**: nel menu (**J**) → ⚙️ Opzioni ci sono Musica ed Effetti separati, ricordati dal browser. Il tasto **M** (o ♪) spegne e riaccende tutto l'audio.
 
 ## Struttura
 
