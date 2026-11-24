@@ -44,6 +44,7 @@ import { Ragazze } from './ragazze.js';
 import { Mercato } from './mercato.js';
 import { Gare } from './gare.js';
 import { Scommesse } from './scommesse.js';
+import { Boss } from './boss.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -200,6 +201,8 @@ export class Game {
     this.scommesse = new Scommesse(this); this.scommesse.init();
     // chiesa, castello, farmacia, dottore, palestra, pizzeria e kebab: azioni e personaggi (src/edifici.js)
     this.edifici = new EdificiPaese(this); this.edifici.init();
+    // boss delle missioni secondarie, bottino dei nemici ed endgame al livello 30 (src/boss.js)
+    this.boss = new Boss(this); this.boss.init();
 
     if (!this.s.introDone) await this.intro();
     else if (this.s.rifaiGiornata) { // giornata ricominciata da capo (vedi _rifaiGiornata)

@@ -160,9 +160,9 @@ Con i soldi guadagnati Garonio può scegliere come scaricare lo stress:
 
 ### 11.1 Livelli ed esperienza
 
-- **Livello massimo: 20** nel pilot.
-- **Esperienza per salire**: resta la regola che c'è già nel codice, *livello attuale × 20* (dal 1 al 2 servono 20 punti, dal 10 all'11 ne servono 200). Per arrivare al 20 servono circa 3.800 punti in tutto.
-- **Da dove arriva**: lavori (1‑5 punti), missioni del Gigante (10‑40), combattimenti (5‑25 per nemico), dialoghi vinti al bar (3‑15), bestie leggendarie (150‑400). Le missioni pagano di più man mano che l'annata va avanti, così il ritmo non rallenta.
+- **Livello massimo: 30**. Il 30 è l'**endgame**: da lì comincia il gioco libero (vedi capitolo 24).
+- **Esperienza per salire**: resta la regola che c'è già nel codice, *livello attuale × 20* (dal 1 al 2 servono 20 punti, dal 10 all'11 ne servono 200). Per arrivare al 20 servono circa 3.800 punti in tutto, per arrivare al 30 circa 8.700. La velocità non cambia: i nemici di livello alto e i boss danno molta più esperienza, quindi il ritmo resta veloce.
+- **Da dove arriva**: lavori (1‑5 punti), missioni del Gigante (10‑40), combattimenti (5‑25 per nemico), dialoghi vinti al bar (3‑15), bestie leggendarie (150‑400). Le missioni pagano di più man mano che l'annata va avanti, così il ritmo non rallenta. I boss delle missioni secondarie danno 30 punti per livello del boss (il Tasso, livello 5, ne dà 150).
 - **Ritmo previsto**: livello 6 verso il giorno 7, livello 11 verso il giorno 20, livello 17 verso il giorno 45, livello 20 a fine annata (giorno 56 circa). Così ogni re delle bestie cade nella sua stagione (vedi capitolo 18).
 
 **A ogni livello Garonio guadagna:**
@@ -172,7 +172,7 @@ Con i soldi guadagnati Garonio può scegliere come scaricare lo stress:
 | Punti abilità | +1 (vedi 11.3) |
 | Attacco | +2 (già nel codice) |
 | Difesa | +1 (già nel codice) |
-| Vita massima | +5 (100 al livello 1, 195 al 20) |
+| Vita massima | +5 (100 al livello 1, 195 al 20, 245 al 30) |
 | Fatica dei lavori | −4% (già nel codice, fino a −40%) |
 
 **Titoli di Garonio** (compaiono sotto il ritratto, i personaggi li usano nei dialoghi):
@@ -183,11 +183,15 @@ Con i soldi guadagnati Garonio può scegliere come scaricare lo stress:
 | 5‑9 | **Il Garzone** | Si sbloccano trattore da solo e capannoni. Volpi e topi grossi. |
 | 10‑14 | **Il Bracciante** | Missioni lunghe di due giorni, vendita in fiera. Cinghiali. |
 | 15‑19 | **Il Fattore** | Il Gigante chiede consiglio (quasi). Lupi. |
-| 20 | **La Leggenda della Bassa** | Titolo finale dopo i tre re. |
+| 20‑24 | **La Leggenda della Bassa** | Dopo i tre re. Boss del laghetto e del castello. |
+| 25‑29 | **Il Terrore dei Fossi** | Nemici feroci ovunque, pepite nel bottino. |
+| 30 | **Il Padrone della Bassa** | Endgame: sfide leggendarie e Mister Mountain (capitolo 24). |
 
 ### 11.2 Nemici legati al livello
 
-Ogni nemico ha un **livello minimo** sotto il quale non compare mai negli incontri casuali, e un **livello consigliato** per affrontarlo senza rischi. Gli incontri casuali scelgono solo nemici con livello minimo ≤ livello di Garonio, e mai più di 3 livelli sopra di lui. Le tane delle bestie leggendarie invece si possono raggiungere anche prima: Garonio sente un brivido («Qui non ci torno finché non sono più forte...») e si può fuggire, ma vincere è quasi impossibile.
+Ogni nemico ha un **livello minimo** sotto il quale non compare mai negli incontri casuali, e un **livello consigliato** per affrontarlo senza rischi. Gli incontri casuali scelgono solo nemici con livello minimo ≤ livello di Garonio, e mai più di 3 livelli sopra di lui.
+
+**Ogni nemico ha il suo livello** (scritto accanto al nome nello scontro, «Lv 12»): nasce vicino al livello di Garonio (da 2 sotto a 3 sopra), dentro l'intervallo della sua specie (una nutria va dal 1 al 14, un lupo dal 14 al 33). Vita, attacco, difesa ed esperienza crescono col livello, quindi un nemico del tuo livello resta sempre una minaccia. In più tutti i nemici hanno +60% di Vita e +50% di attacco rispetto al prototipo, che era troppo facile. Il 12% dei nemici nasce **feroce** (+3 livelli, alone rosso, più forte e con bottino sicuro), il 22% al livello 30. Numeri in `src/data/nemici.js` (DIFFICOLTA, scalaNemico). Le tane delle bestie leggendarie invece si possono raggiungere anche prima: Garonio sente un brivido («Qui non ci torno finché non sono più forte...») e si può fuggire, ma vincere è quasi impossibile.
 
 | Nemico | Dove | Liv. minimo | Liv. consigliato | Note |
 |---|---|---|---|---|
@@ -762,3 +766,59 @@ Sprite nuovi da fare: Mamma, Zeno, il Consulente, il Bubetto, la Vigilessa (a pi
 - **Collezionabili**: tappi di birra, santini e figurine nascosti nei fossi, che il Consulente aiuta a trovare. Completare una collezione dà un portafortuna.
 - **Viaggio rapido coi mezzi**: con la Punto, scelta di destinazione dalla mappa grande (costa benzina e tempo, ma niente guida).
 - **Scommesse al bar** (fatto: `src/scommesse.js`, con le **gare di trattori** guidate davvero in `src/gare.js`): il Consulente organizza scommesse sulle risse e sulle gare col trattore di Ermes e Mister Frank.
+
+## 24. Missioni secondarie coi boss ed endgame al livello 30
+
+Il gioco punta sull'**esplorazione**: ogni edificio e ogni zona della mappa ha una missione secondaria che finisce con un **boss**. Il livello 30 non è la fine: è l'inizio del gioco libero.
+
+### 24.1 Come funziona una missione col boss
+
+1. Un personaggio la offre nel dialogo («❗» come le altre secondarie), quando Garonio ha il livello minimo.
+2. Accettata, la **tana** compare in rosso sulla minimappa (fuori, con un segno a terra che pulsa; negli edifici, accanto a un mobile).
+3. All'ora giusta, vicino alla tana, **«⚔️ Affronta»**. Se Garonio è troppo debole (2 livelli sotto) sente il brivido e può rinunciare.
+4. Lo scontro ha **meccaniche** proprie: rinforzi, furia sotto metà Vita (anche due azioni a turno), cure, scudo (un turno intoccabile), **colpo caricato** annunciato un turno prima (conviene Difendersi), aura di stress, furti di soldi.
+5. Vinto: **bottino subito** (un pezzo unico: arma o vestito) e la **paga** tornando da chi l'ha chiesto.
+
+I boss sono difficili apposta: a pari livello servono 8‑15 turni, le cure dello zaino e il Difendi al momento giusto.
+
+### 24.2 I boss
+
+| Lv | Boss | Dove | Chi la dà | Bottino |
+|---|---|---|---|---|
+| 5 | Il Tasso dei salami | Casa (buco in cantina) | Mamma | Berretto di pelo di tasso |
+| 6 | Il Generale Piccione | Piazza (fontana) | Vigilessa | Medaglia del Generale (e una multa cancellata) |
+| 7 | Sor Ugo, il Malato Immaginario | Studio medico | Assunta | Ricettario (cure +30%) |
+| 8 | Brutus, il cane del Postino | Cascina del Postino | Postino | Collare di Brutus (sblocca il Fischio al cane) |
+| 9 | La Faina Argentata | Pollaio, di sera | Mamma | Stola d'argento |
+| 10 | La Dorifora Regina | Cascina del Patata | Patata | Corazza di dorifora |
+| 11 | Il Mago dei Lucchetti | Retro del magazzino, di notte | Bubetto | Piede di porco (arma) |
+| 12 | Il Dottor Placebo | Farmacia | Dottor Pastiglia | Valigetta dei campioni |
+| 13 | Forchetta d'Oro, il critico | Pizzeria, a cena | Gennaro | Forchettone d'oro (arma) |
+| 14 | Lo Spaventapasseri del Mais | Fienile, di notte | Consulente | Cappello di paglia |
+| 15 | Il Pipistrellone | Chiesa (corda delle campane) | Suor Carmela | Mantello del Pipistrellone |
+| 16 | Ottavio il Rottamaio | Officina di Zeno | Zeno | Chiave inglese da 32 (arma) |
+| 17 | Il Biondo e i teppisti | Davanti al kebab, a tarda sera | Kemal | Giubbotto con le borchie |
+| 18 | Il Toro «Dollaro» | Ranch di Mister Frank | Frank | Elmo con le corna |
+| 19 | La Regina dei calabroni | Deposito di casa | Mamma | Pungiglione, miele |
+| 21 | Ercole «il Pompato» | Palestra | Sergente | Cintura (Vita +30) |
+| 23 | Il Siluro | Laghetto, all'alba | Don Peppino | Arpione (arma) |
+| 25 | L'Armatura del Trisavolo | Castello | Ambrogio | Spadone ed elmo |
+| 27 | Tonino il Buttafuori | Night Paradiso, di notte | Loredana | Occhiali scuri e anfibi |
+| 30 | **Mister Mountain** (finale) | Piazza del bar, di notte | Consulente, dopo tutti gli altri | Il sigaro di Mister Mountain |
+
+I tre re delle bestie (capitolo 18) restano i boss di canale, capannoni e bosco, ora coi livelli da boss: Re dei Ratti 10, Re delle Nutrie 16, Re dei Lupi 22. Il bar ha già il suo boss (Rocco).
+
+### 24.3 Bottino
+
+Ogni nemico può lasciare qualcosa: pelli di nutria, code di ratto e di volpe, piume e gingilli delle gazze, zanne di cinghiale, pellicce di lupo, miele, e ogni tanto un oggetto utile (panino, sciroppo, caffè...). I nemici feroci lasciano sempre qualcosa. Dal livello 22 cadono anche le **pepite della Bassa** (150€). Tutto si vende al Bubetto. Tabelle in `src/data/boss.js` (BOTTINO).
+
+### 24.4 Endgame: livello 30
+
+Al livello 30 Garonio diventa **Il Padrone della Bassa** e comincia il gioco libero:
+
+- **Sfide leggendarie**: ogni boss battuto torna una volta alla settimana, segnato in oro sulla minimappa, dal livello 32 fino al 36 (sale a ogni vittoria). Paga 300‑600€, pepite, elisir e, con un po' di fortuna, un pezzo raro: Zappa d'oro della Bassa, Tuta della Leggenda, Stivali delle sette cascine, Corona della Bassa.
+- **Mister Mountain**: battuti tutti gli altri boss, il Consulente organizza il duello finale davanti al bar.
+- Più nemici feroci in giro (22%) e più bottino.
+
+Per provare tutto: `?pilot` nell'indirizzo, sezione **👹 Boss e livelli** (combatti un boss, vai alla tana di una missione, livello 30, sfide leggendarie pronte).
+

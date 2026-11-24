@@ -2,7 +2,7 @@
 // Tutti i numeri stanno in src/data/progressione.js e src/data/armi.js.
 //
 // API (game.prog):
-//   addXp(n)                    esperienza; gestisce i livelli (max 20) e i punti abilità
+//   addXp(n)                    esperienza; gestisce i livelli (max 30) e i punti abilità
 //   maxHealth()                 Vita massima (100 + 5 a livello + bonus)
 //   atk() / def()               attacco e difesa per il combattimento (livello + arma + vestiti + abilità)
 //   bonus('chiave')             somma degli effetti di abilità, vestiti e arma (vedi src/data/progressione.js)

@@ -430,4 +430,4 @@ export class Menu {
 
 const ICONE_RAMI = { resistenza: '💪', nervi: '🧘', agricoltore: '🌽', allevatore: '🐖', furbizia: '🦊', lottatore: '👊', parlantina: '🗣️', meccanico: '🔧' };
 const ICONE_SLOT = { testa: '🧢', corpo: '🦺', piedi: '🥾', portafortuna: '🍀' };
-const ICONE_ARMI = { zappa: '⛏️', rastrello: '🧹', badile: '🪏', forcone: '🔱', falce: '🌙', roncola: '🔪', motosega: '🪚', zappaFolgorata: '⚡' };
+const ICONE_ARMI = { zappa: '⛏️', rastrello: '🧹', badile: '🪏', forcone: '🔱', falce: '🌙', roncola: '🔪', motosega: '🪚', zappaFolgorata: '⚡', piedeDiPorco: '🪝', forchettone: '🍴', chiaveInglese: '🔧', arpione: '🔱', spadone: '⚔️', zappaDoro: '🏆' };

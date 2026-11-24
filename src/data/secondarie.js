@@ -13,7 +13,7 @@
 //  dai         oggetti dati a Garonio quando accetta (es. il pacco da consegnare)
 //  torna       true = finita la parte "evento", bisogna tornare da chi l'ha data per la paga (default true)
 //  premio      { soldi, xp, oggetti: { id: n }, armi: [id], vestiti: [id], amicizia: { png: delta } }
-//  requisiti   { livello, giorno, amicizia: { png: min }, dopo: 'idMissione' }
+//  requisiti   { livello, giorno, amicizia: { png: min }, dopo: 'idMissione', check: game => bool }
 //  giorni      giorni di tempo dopo averla accettata (facoltativo): scaduto il tempo, fallisce
 //  truffaldina true = missione del Gigante contro i vicini (rischio di farsi beccare: lavoro "cascine")
 //  grazie / scusa   frasi quando la consegni / quando manca qualcosa

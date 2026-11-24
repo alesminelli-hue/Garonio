@@ -12,10 +12,14 @@
 //   start(c) · heroTurn(c) → true salta il turno di Garonio · enemyTurn(c, e) → true = turno gestito dallo script
 //   enemyMove(c, e, mossa) dopo una mossa nemica · roundEnd(c) · immune(e) → true = non si può colpire
 //   hit(c, e, danno) · skill(c, id) · item(c, id, bersaglio)
-// c.addEnemy(id, { noXp }) aggiunge un nemico a scontro in corso (es. il Re dei Ratti chiama rinforzi).
+// c.addEnemy(id, { noXp, lv, feroce }) aggiunge un nemico a scontro in corso (es. il Re dei Ratti chiama rinforzi).
+// Livelli: ogni nemico nasce con un suo livello (src/data/nemici.js → livelloNemico, scalaNemico, statBoss).
+// enemies può contenere anche oggetti { id, lv, feroce } per fissare il livello (sfide leggendarie dei boss).
 import * as PIX from './pixel.js';
 import * as HDA from './hd/animali.js';
 import { MOSSE_ARMI, MOSSE_GARONIO, NEMICI_PICCOLI, OGGETTI } from './data/armi.js';
+import { NEMICI, DIFFICOLTA, livelloNemico, scalaNemico, statBoss } from './data/nemici.js';
+import { LIVELLI } from './data/progressione.js';
 
 const rand = (a, b) => a + Math.random() * (b - a);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -230,7 +234,7 @@ export class Combat {
     // nemici, con lettere se sono più di uno dello stesso tipo
     this.enemies = [];
     this.enemyBox.innerHTML = '';
-    enemies.forEach(id => this.addEnemy(id));
+    enemies.forEach(x => (typeof x === 'string' ? this.addEnemy(x) : this.addEnemy(x.id, x)));
     this._refresh();
     this._anim = setInterval(() => this._idleAnim(), 260);
 
@@ -254,21 +258,46 @@ export class Combat {
   }
 
   // nemico nuovo nello scontro; le lettere (A, B, C...) distinguono quelli dello stesso tipo
-  addEnemy(id, { noXp = false } = {}) {
+  addEnemy(id, { noXp = false, lv = null, feroce = null } = {}) {
     const d = ENEMIES[id];
+    const st = this._statistiche(id, d, lv, feroce);
     const wrap = el('div', 'b-enemy', this.enemyBox);
     wrap.style.setProperty('--size', d.size);
     wrap.style.setProperty('--row', this.enemies.length);
-    const info = el('div', 'b-einfo', wrap, `<span>${d.name}</span><div class="track"><div class="fill"></div></div>`);
+    if (st.feroce) wrap.classList.add('feroce');
+    if (d.boss) wrap.classList.add('boss');
+    const info = el('div', 'b-einfo', wrap, `<span></span>${st.lv ? `<em class="b-elv${d.boss ? ' boss' : ''}">Lv ${st.lv}</em>` : ''}<div class="track"><div class="fill"></div></div>`);
     const cv = el('canvas', 'b-sprite', wrap);
     const frames = d.frames();
     drawFrame(cv, frames[0]);
-    const e = { id, def: d, name: d.name, hp: d.hp, max: d.hp, atk: d.atk, def_: d.def, spd: d.spd, scared: 0, sleep: 0, stun: 0, blind: 0, frames, wrap, cv, fill: info.querySelector('.fill'), alive: true, noXp, label: info.querySelector('span') };
+    const nome = (st.feroce ? `${d.name} feroce` : d.name);
+    const e = { id, def: d, name: nome, hp: st.hp, max: st.hp, atk: st.atk, def_: st.def, spd: st.spd, xp: st.xp, money: st.money, lv: st.lv, feroce: st.feroce,
+      scared: 0, sleep: 0, stun: 0, blind: 0, frames, wrap, cv, fill: info.querySelector('.fill'), alive: true, noXp, label: info.querySelector('span') };
+    e.label.textContent = nome;
     wrap.addEventListener('click', () => this.input && this.input('target', e));
     this.enemies.push(e);
-    const same = this.enemies.filter(o => o.id === id);
-    if (same.length > 1) same.forEach((o, i) => { o.name = `${d.name} ${'ABCDEFGH'[i] || i + 1}`; o.label.textContent = o.name; });
+    const same = this.enemies.filter(o => o.id === id && o.feroce === e.feroce);
+    if (same.length > 1) same.forEach((o, i) => { o.name = `${nome} ${'ABCDEFGH'[i] || i + 1}`; o.label.textContent = o.name; });
     return e;
+  }
+
+  // livello e statistiche di un nemico che entra nello scontro
+  _statistiche(id, d, lv, feroce) {
+    const n = NEMICI[id], level = this.s.level;
+    const base = { hp: d.hp, atk: d.atk, def: d.def, spd: d.spd, xp: d.xp, money: d.money || 0, lv: d.lv || n?.cons || 0, feroce: false };
+    // boss: statistiche dal livello (src/data/nemici.js → statBoss)
+    if (d.boss && (d.lv || lv)) {
+      const L = lv || d.lv;
+      return { ...base, ...statBoss(L, d.mul), money: d.money || 0, lv: L };
+    }
+    // nemici del bar e senza scheda: come sono scritti (le risse hanno le loro regole)
+    if (!n?.lv || d.bar || this.place === 'bar') return base;
+    if (feroce == null) {
+      const p = level >= LIVELLI.max ? DIFFICOLTA.feroceEndgame : DIFFICOLTA.feroce;
+      feroce = !NEMICI_PICCOLI.includes(id) && level >= 3 && Math.random() < p;
+    }
+    const L = lv || livelloNemico(id, level, { feroce });
+    return { ...base, ...scalaNemico(d, L, n.cons, { feroce }), lv: L, feroce };
   }
 
   async _hook(name, ...args) {
@@ -290,8 +319,8 @@ export class Combat {
     const { game } = this, s = this.s;
     clearInterval(this._anim);
     if (result === 'win') {
-      const xp = this.enemies.reduce((a, e) => a + (e.noXp ? 0 : e.def.xp), 0);
-      const money = this.enemies.reduce((a, e) => a + (e.noXp ? 0 : e.def.money), 0);
+      const xp = this.enemies.reduce((a, e) => a + (e.noXp ? 0 : e.xp ?? e.def.xp), 0);
+      const money = this.enemies.reduce((a, e) => a + (e.noXp ? 0 : e.money ?? e.def.money), 0);
       const calm = this.place === 'bar' ? 10 : 3;
       game.audio.sfx('level');
       this._heroPose('win');
@@ -299,7 +328,10 @@ export class Combat {
       s.money += money;
       await this._say(`Vittoria! +${xp} esperienza${money ? `, +${money}€ (offre il bar)` : ''}, stress -${calm}.`, 2200, true);
       game._xp(xp);
-      for (const e of this.enemies) game.emit?.('nemicoSconfitto', { id: e.id, place: this.place });
+      for (const e of this.enemies) game.emit?.('nemicoSconfitto', { id: e.id, place: this.place, lv: e.lv, feroce: !!e.feroce, noXp: !!e.noXp });
+      // bottino: lo decide src/boss.js (tabelle in src/data/boss.js)
+      const bottino = game.boss?.bottino?.(this.enemies.filter(e => !e.noXp), this.place) || [];
+      if (bottino.length) await this._say(`Bottino: ${bottino.join(', ')}.`, 2000, true);
     } else if (result === 'lose') {
       game.audio.sfx('ko');
       game.emit?.('sconfitta', { place: this.place });
