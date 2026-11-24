@@ -233,12 +233,12 @@ Le tracce originali stanno in `assets/music/`. La **mappa centrale** è `assets/
 
 | Scena (nel codice) | Traccia | Quando suona |
 |---|---|---|
-| `intro` | **`intro.mp3`** (da fare con Suno) | Schermata del titolo e prologo |
-| `base` / `notte` / `bar` | **`sottofondo.mp3`** (da fare con Suno) | A piedi: giornata, sera e bar |
+| `intro` | **Grand Theft Tractor** (`intro.mp3`) | Schermata del titolo e prologo |
+| `base` / `notte` / `bar` | **Morning in the Valleys** (`sottofondo.mp3`), alternato a Grand Theft Tractor | A piedi: giornata, sera e bar |
 | `guida` | **📻 Radio Bassa FM:** tutte le canzoni (Il Conte della Bassa, Canaglia, Sunset Truciolone, Pappa Garonio, Mister Scarogna, Palestra Delirio, Boborriello, Rabbia incontrollata) in ordine sparso, col titolo che compare in un avviso | Alla guida di Vespa, Punto o trattore |
 | `rabbia` / `nemico` / `combattimento` | musichetta 8‑bit (lista vuota) | Stress oltre 85, nemici, scontri |
 
-**Le canzoni si sentono solo alla radio dei mezzi** (e al juke‑box del bar, che ha gli stessi dischi). Per mettere l'intro e la musica di sottofondo basta copiare in `assets/music/` i brani fatti con Suno chiamandoli esattamente `intro.mp3` e `sottofondo.mp3`: finché mancano suona la musichetta 8‑bit. I titoli delle canzoni stanno in `playlist.json` sotto `titoli`.
+**Le canzoni si sentono solo alla radio dei mezzi** (e al juke‑box del bar, che ha gli stessi dischi). A piedi il sottofondo e il tema del titolo si alternano: finita una traccia parte l'altra. I titoli delle canzoni stanno in `playlist.json` sotto `titoli`.
 
 Per aggiungere una traccia basta mettere il file `.mp3` nella cartella e scriverne il nome nella lista della scena giusta (se ci sono più tracce, suonano a rotazione).
 
