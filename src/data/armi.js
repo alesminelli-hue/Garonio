@@ -42,6 +42,9 @@ export const ARMI = {
   mietinebbia:{ nome: 'Falce Mietinebbia',             liv: 25, atk: 27, mossa: 'falciata', mossa2: 'mezzaluna',  fuori: 'falcia il grano e la malinconia', bottino: true, albero: true },
   // Babbo Natale smemorato (src/speciali.js): solo se gli paghi Madame Svetlana al Welcome
   bastoneZucchero: { nome: 'Bastone di Zucchero Polare', liv: 1, atk: 29, mossa: 'renneInCarica', mossa2: 'sacchettoCarbone', fuori: 'profuma di menta', leggendario: true, bottino: true },
+  // Parco Oglio (src/parco.js): il Diavoletto del Forcone, raro. Banco del Gigante (src/banco.js): da costruire
+  forconcinoInfernale: { nome: 'Forconcino Infernale del Diavoletto', liv: 1, atk: 28, mossa: 'spazzata', mossa2: 'infilzata', fuori: 'scalda le mani d\'inverno', leggendario: true, bottino: true },
+  falceLunare: { nome: 'Falce Lunare Spaccanebbia', liv: 1, atk: 26, mossa: 'falciata', mossa2: 'mezzaluna', fuori: 'taglia la nebbia a fette', leggendario: true, bottino: true, banco: true },
   // endgame: solo dalle sfide leggendarie (livello 30)
   zappaDoro:     { nome: 'Zappa d\'oro della Bassa', liv: 30, atk: 30, mossa: 'zappataDoro', mossa2: 'raccoltoFinale', fuori: 'zappa le zolle e luccica', leggendario: true, bottino: true },
 };
@@ -179,6 +182,13 @@ export const VESTITI = {
   cappelloNatale:  { nome: 'Berretto Tintinnante di Babbo Natale', slot: 'testa', bonus: { def: 5, stress: 0.15 }, trofeo: true, desc: 'difesa +5, stress −15%. Il pon pon fa «din»' },
   maglioneRenne:   { nome: 'Maglione Rudolph Edizione Limitata',    slot: 'corpo', bonus: { def: 12, stress: 0.1 }, trofeo: true, desc: 'difesa +12, stress −10%. Fatto a mano dalla signora Claus' },
   mantelloAlghe:   { nome: 'Mantello Melmoso della Palude', slot: 'corpo', bonus: { def: 16, cure: 0.1 }, trofeo: true, desc: 'difesa +16, cure +10%. Gocciola sempre' },
+  // Parco Oglio (src/parco.js): mostri, Vecchio Camper e Boss MM
+  mantelloVampiro: { nome: 'Mantello del Conte di Casalpusterlengo', slot: 'corpo', bonus: { def: 14, critico: 0.05 }, trofeo: true, desc: 'difesa +14, critico +5%. Fodera rosso sangue (di pomodoro)' },
+  cappelloBossMM:  { nome: 'Il Cappello di Boss MM', slot: 'testa', bonus: { def: 9, stress: 0.12, guardie: 1 }, trofeo: true, desc: 'difesa +9, stress −12%. Le guardie del parco ti vedono la metà' },
+  // Banco del Gigante (src/banco.js): roba costruita in officina
+  elmoCavaliere:   { nome: 'Elmo del Cavaliere Contadino', slot: 'testa', bonus: { def: 11, atk: 2 }, banco: true, desc: 'difesa +11, attacco +2. Era un secchio del latte' },
+  calzettoni:      { nome: 'Calzettoni di Lana di Dolly', slot: 'piedi', bonus: { def: 4, velocita: 0.15, freddo: 1 }, banco: true, desc: 'difesa +4, cammini +15%, niente freddo. Pizzicano' },
+  stivaliReazione: { nome: 'Stivali a Reazione del Gigante', slot: 'piedi', bonus: { def: 5, velocita: 0.42 }, banco: true, desc: 'difesa +5, cammini +42%. Puzzano di miscela' },
   // endgame: sfide leggendarie
   tutaLeggenda:    { nome: 'Tuta della Leggenda',      slot: 'corpo', bonus: { def: 15, fatica: 0.1 }, leggendario: true, desc: 'difesa +15, lavori −10% fatica' },
   stivaliSette:    { nome: 'Stivali delle sette cascine', slot: 'piedi', bonus: { def: 7, velocita: 0.35 }, leggendario: true, desc: 'difesa +7, cammini +35%' },
@@ -231,4 +241,30 @@ export const OGGETTI = {
   cartolina:{ nome: 'Cartolina da Rimini 1987', icona: '💌', effetto: { stress: -15 }, combattimento: 'self', vendita: 8 },
   biscotti: { nome: 'Biscotti della Signora Claus', icona: '🍪', effetto: { health: 30, stress: -12 }, combattimento: 'self', vendita: 5 },
   carbone:  { nome: 'Carbone di Prima Scelta', icona: '🪨', effetto: { danno: 20 }, combattimento: 'one', vendita: 1 },
+  // alberi di stagione (src/alberi.js)
+  sambuco:  { nome: 'Fiori di Sambuco Profumatissimi', icona: '🌼', effetto: { stress: -12 }, combattimento: 'self', vendita: 3 },
+  ciliegie: { nome: 'Ciliegie Duroni del Prete', icona: '🍒', effetto: { health: 20, tired: -6 }, combattimento: 'self', vendita: 4 },
+  ghiacciolo: { nome: 'Ghiacciolo di Ramo Appuntito', icona: '🧊', effetto: { danno: 18 }, combattimento: 'one', vendita: 1 },
+  // Parco Oglio (src/parco.js): bottino dei mostri, «lavoretti» del Vecchio Camper, coppiette
+  lenzuolo: { nome: 'Lenzuolo Infestato del Mugnaio', icona: '👻', vendita: 12 },
+  ossoFortunato: { nome: 'Osso Fortunato del Bracconiere', icona: '🦴', vendita: 16 },
+  cristalloAlieno: { nome: 'Cristallo Verdognolo Extraterrestre', icona: '💎', vendita: 60 },
+  nasoRosso: { nome: 'Naso Rosso Strombazzante', icona: '🔴', effetto: { stress: -18 }, combattimento: 'self', vendita: 8 },
+  bende:    { nome: 'Bende Millenarie del Conte', icona: '🩹', effetto: { health: 45, guarisce: 1 }, combattimento: 'self', vendita: 9 },
+  pozione:  { nome: 'Pozione Fumante della Strega', icona: '🧪', effetto: { health: 65, stress: -10 }, combattimento: 'self', vendita: 25 },
+  legna:    { nome: 'Legna di Pioppo del Parco', icona: '🪵', vendita: 6 },
+  cartello: { nome: 'Cartello «VIETATO» Svitato', icona: '🪧', vendita: 5 },
+  uovaAnatra: { nome: 'Uova d\'Anatra Protetta', icona: '🥚', effetto: { health: 22 }, combattimento: 'self', vendita: 7 },
+  pesceOglio: { nome: 'Luccio dell\'Oglio di Frodo', icona: '🐟', effetto: { health: 38 }, combattimento: 'self', vendita: 14 },
+  fotoSfocata: { nome: 'Foto Sfocata della Coppietta', icona: '📷', vendita: 30 },
+  // stalla (src/stalla.js)
+  latte:    { nome: 'Latte Appena Munto della Carolina', icona: '🥛', effetto: { health: 22, tired: -8 }, combattimento: 'self', vendita: 4 },
+  lana:     { nome: 'Lana Arruffata di Dolly', icona: '🧶', vendita: 14 },
+  uovoOca:  { nome: 'Uovo d\'Oca Gigantesco', icona: '🥚', effetto: { health: 32 }, combattimento: 'self', vendita: 8 },
+  // Banco del Gigante (src/banco.js)
+  tortaMele: { nome: 'Torta di Mele della Nonna Adalgisa', icona: '🥧', effetto: { health: 85, stress: -15 }, combattimento: 'self', vendita: 20 },
+  croccante: { nome: 'Croccante Spaccadenti alle Noci', icona: '🍬', effetto: { tired: -35, health: 15 }, combattimento: 'self', vendita: 12 },
+  zabaione: { nome: 'Zabaione Corroborante del Nonno', icona: '🍮', effetto: { health: 55, tired: -25, stress: -12 }, combattimento: 'self', vendita: 18 },
+  fritturaOglio: { nome: 'Frittura Mista dell\'Oglio', icona: '🍤', effetto: { health: 110, stress: -8 }, combattimento: 'self', vendita: 30 },
+  bombaPigne: { nome: 'Bomba di Pigne del Gigante', icona: '💣', effetto: { danno: 45 }, combattimento: 'one', vendita: 10 },
 };

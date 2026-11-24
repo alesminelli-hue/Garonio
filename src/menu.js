@@ -326,6 +326,11 @@ export class Menu {
       }
     }
     out.push(grid);
+    // completi (src/collezione.js): 2 pezzi danno metà bonus, tutti il bonus pieno
+    for (const c of this.game.collezione?.completi?.() || []) {
+      if (c.n < 2) continue;
+      out.push(h('small', 'mn-desc2', `${c.def.icona} ${c.def.nome} ${c.n}/${c.tot}${c.n >= c.tot ? ' ✔' : ' (metà bonus)'}: ${c.def.desc}`));
+    }
     return out;
   }
 
@@ -437,6 +442,6 @@ function icona(id, emoji) {
   return d;
 }
 const ICONE_SLOT = { testa: '🧢', corpo: '🦺', piedi: '🥾', portafortuna: '🍀' };
-const ICONE_ARMI = { zappa: '⛏️', rastrello: '🧹', badile: '🪏', forcone: '🔱', falce: '🌙', roncola: '🔪', motosega: '🪚', zappaFolgorata: '⚡', piedeDiPorco: '🪝', forchettone: '🍴', chiaveInglese: '🔧', arpione: '🔱', spadone: '⚔️', zappaDoro: '🏆', palaForno: '🍕',
+const ICONE_ARMI = { zappa: '⛏️', rastrello: '🧹', badile: '🪏', forcone: '🔱', falce: '🌙', roncola: '🔪', motosega: '🪚', zappaFolgorata: '⚡', piedeDiPorco: '🪝', forchettone: '🍴', chiaveInglese: '🔧', arpione: '🔱', spadone: '⚔️', zappaDoro: '🏆', palaForno: '🍕', forconcinoInfernale: '🔱', falceLunare: '🌙',
   vanga: '🪏', falcetto: '🌙', cesoie: '✂️', tridente: '🔱', scure: '🪓', correggiato: '🌾', bastoneZucchero: '🍭',
   zappetta: '⛏️', pettinanebbia: '🧹', palaPolenta: '🥄', forcaVacche: '🔱', roncolaRovi: '🔪', mietinebbia: '🌙' };

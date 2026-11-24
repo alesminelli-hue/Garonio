@@ -849,3 +849,23 @@ Dal giorno 3, certe sere (30%) alle 20 compare nel bosco a sud un vecchietto ves
 - Natasha (150€): la spaccata gli ricorda le renne → Maglione con le renne e 150€.
 - Madame Svetlana (300€): una sberla, «NIKOLAI!», e torna Babbo Natale → **Bastone di zucchero** (arma leggendaria, attacco +29: Renne in carica, Sacchetto di carbone). Le volte dopo: 400€ e biscotti.
 A mezzanotte, se non l'hai portato, si perde di nuovo. Si rincontra dopo almeno 6 giorni. Tono da barzelletta: niente scene.
+
+## 26. Parco Oglio, stalla, Banco del Gigante, completi e album
+
+**26.1 Il Parco Oglio** (src/parco.js, dati src/data/parco.js). Tutta la parte bassa della mappa: bosco fitto, il fiume Oglio con due ponti, sentieri (viale dell'Oglio, sentiero ovest, sentiero del guado). A ovest la **Cascina del Camper**, al centro il **casotto delle Guardie del parco**.
+
+**26.2 Mostri della notte.** Dalle 20 a mezzanotte nel parco girano gruppi di mostri (zona `parco` di src/spawn.js), tutti dal foglio personaggi: Fantasma del mugnaio, Scheletro del bracconiere, Alieno dei cerchi nel mais, Pagliaccio della sagra, Mummia del Conte, Strega della Bassa, Mago Brontolone, Vampiro di Casalpusterlengo, Lupo mannaro del Po, Diavoletto del Forcone. Ognuno ha un intervallo di livelli (dal 3 al 36): possono essere più forti di Garonio. Bottino proprio (lenzuolo, osso fortunato, cristallo alieno, naso rosso, bende, pozione) e due pezzi rari: Mantello del Conte (vampiro) e Forconcino Infernale (diavoletto).
+
+**26.3 Coppiette.** Certe sere (dalle 19) una coppia del paese si sbaciucchia nel bosco (cuoricino rosa sulla minimappa). «👀 Spia la coppietta»: se va bene, una Foto sfocata (si vende) e meno stress; se ti beccano (o passi troppo vicino) li combatti tutti e due: ciabattate, borsettate e «Lo dico a tua madre!».
+
+**26.4 Guardie del parco e Boss MM.** Due guardie (Tarantola e Brambilla, sprite «soldato») fanno il giro dei sentieri; il capo, **Boss MM** (sprite «soldato_capo»), sta al casotto. Se una guardia vede Garonio fare un danno nel parco (7 caselle di giorno, 4,5 di notte, la metà col cappello di Boss MM), si combatte contro una guardia di livello 30 (due se l'altra è vicina). Persa o scappata: multa e stress.
+
+**26.5 Il Vecchio Camper** (sprite «pescatore»). Sei «lavoretti» in fila, pagati bene: tagliare 3 alberi del parco (legna), svitare 3 cartelli «VIETATO», rubare 3 nidiate dell'anatra protetta, pescare di frodo 4 lucci dell'Oglio, rubare la carriola delle guardie e infine il **cappello di Boss MM** (la sera, 19-23, al casotto): boss livello 32 (BOSS.bossmm). Premio finale: il Cappello di Boss MM. Le cose rubate tornano dopo qualche giorno; gli alberi tagliati ricrescono in 5.
+
+**26.6 La stalla** (src/stalla.js). Nel recinto a est della via della stalla: la mucca Carolina (latte), la pecora Dolly (lana, ogni 3 giorni), l'oca Gertrude (uovo d'oca; morde), il cavallo Furia (strigliarlo toglie stress), l'asino Ernesto (scalcia) e il gallo Napoleone (all'alba sveglia meglio di un caffè). Una volta al giorno ciascuno; sette giorni di stalla di fila: 120€.
+
+**26.7 Completi e album** (src/collezione.js). Cinque completi (Mondino, Trebbiatore, Contadino Corazzato, Cavaliere del Banco, Signore della Notte): 2 pezzi addosso danno metà bonus, tutti il bonus pieno. Scheda 📒 Album del menu J: ogni pezzo col suo disegno HD trovato entra nell'album; quelli mancanti sono sagome nere. Premi al 25, 50, 75 e 100%.
+
+**26.8 Il Banco del Gigante** (src/banco.js). Nell'officina di casa il banco da lavoro costruisce roba: Torta di mele, Croccante, Zabaione, Frittura dell'Oglio, Bomba di pigne, Calzettoni di lana, Elmo del Cavaliere Contadino, Stivali a reazione, Falce Lunare Spaccanebbia.
+
+**26.9 Altre chicche.** Gli alberi danno frutti di stagione (ciliegie e sambuco in primavera, castagne in autunno, ghiaccioli in inverno). La **gazza ladra** a volte ti ruba qualcosa e lo nasconde su un albero vicino (punto nero sulla minimappa): scuotilo e torna tutto, con un regalino. D'inverno Babbo Natale smemorato si perde il doppio delle volte e porta regali più grossi.

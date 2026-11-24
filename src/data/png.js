@@ -553,4 +553,58 @@ export const PNG = {
       "Il ponte sollevatore cigola. Zeno dice che è il ponte. Io dico che è la sua schiena.",
     ],
   },
+  // ---------- Parco Oglio (src/parco.js, GDD capitolo 26) ----------
+  camper: {
+    nome: 'Il Vecchio Camper', ruolo: 'Vecchio agricoltore della cascina accanto al Parco Oglio. Odia le guardie, paga benissimo.',
+    posti: [{ ore: [6, 23], x: 54, z: 90.3 }],
+    aspetto: { sprite: 'pescatore', w: 16, h: 24, skin: '#e0a880', hair: '#d8d8d8', hairStyle: 'flat', shirt: '#6a7a3a', pants: '#4a4030', boots: '#2a2018', eyes: 'sleepy' },
+    amicizia: [-10, 100, 10],
+    saluti: [
+      "Ah, il figlio del Gigante. Tuo padre mi deve ancora un sacco di mangime del 1997.",
+      "Lo chiamano parco. Io lo chiamo «il mio bosco con dentro gente in divisa».",
+      "Se vedi Boss MM, digli che il Camper è ancora vivo. Anzi no, non dirgli niente.",
+      "Mi chiamano Camper perché nel '78 ho vissuto sei mesi in un camper. Per una storia di donne. Non chiedere.",
+    ],
+    chiacchiere: [
+      "Le guardie del parco sono livello trenta, dicono. Io alla loro età ero livello quaranta. E senza manganello.",
+      "Una volta in quel fiume pescavo lucci lunghi come una Panda. Adesso serve il permesso anche per guardarli.",
+      "Di notte nel parco gira roba strana. Fantasmi, mummie, uno vestito da pagliaccio. Io chiudo la porta e alzo il volume della radio.",
+      "La sera nel bosco ci vanno le coppiette. Lascia stare, ragazzo. Spiare non porta niente di buono. A parte le foto.",
+    ],
+  },
+  bossmm: {
+    nome: 'Boss MM', ruolo: 'Il capo delle guardie del Parco Oglio. Baffi, fischietto, cappello. Soprattutto il cappello.',
+    posti: [{ ore: [7, 22], x: 111.5, z: 90.4 }],
+    aspetto: { sprite: 'soldato_capo', w: 16, h: 25, skin: '#e8b48a', hair: '#2a1a10', hairStyle: 'flat', shirt: '#4a5a3a', pants: '#3a4a2a', boots: '#111', mustache: '#2a1a10', eyes: 'angry' },
+    amicizia: [-50, 30, -5],
+    saluti: [
+      "Documenti. Scherzo. Però potrei chiederteli.",
+      "Questo è un parco naturale, ragazzo. Qui comanda la natura. E io.",
+      "Hai visto il Vecchio Camper? Se lo vedi, digli che lo tengo d'occhio. Da quarant'anni.",
+      "Il mio cappello? Me l'ha regalato mia madre il giorno del concorso. Guai a chi lo tocca.",
+    ],
+    chiacchiere: [
+      "Le mie guardie sono le migliori della Bassa. Livello trenta. Le ho allenate io, a fischietto.",
+      "Di notte nel parco non ci entro. Non per paura. Per regolamento. Regolamento mio.",
+      "Alla sagra del '84 ho ballato con la ragazza più bella di Casalpusterlengo. Qualcuno se lo ricorda ancora. Qualcuno se lo lega al dito.",
+    ],
+  },
+  guardia1: {
+    nome: 'Guardia Tarantola', ruolo: 'Guardia del Parco Oglio, giro ovest. Fischia sempre.',
+    posti: [{ ore: [6, 24], x: 76, z: 91 }],
+    giro: [[76, 91], [96, 91], [76, 91], [62, 91], [62, 106], [62, 91]], vel: 1.5,
+    aspetto: { sprite: 'soldato', w: 16, h: 24, skin: '#e8b48a', hair: '#3a2a1a', hairStyle: 'flat', shirt: '#4a5a3a', pants: '#3a4a2a', boots: '#111', eyes: 'angry' },
+    amicizia: [-30, 30, 0],
+    saluti: ["Circolare. Il parco è di tutti, ma non è per tutti.", "Tieni le mani dove le vedo. Anche i piedi.", "Fiiiiii! (Fischia, poi ti guarda. Non si sa perché.)"],
+    chiacchiere: ["Se tagli un albero, ti vedo. Se sviti un cartello, ti vedo. Se respiri forte, ti sento.", "Boss MM dice che di notte vediamo la metà. Io dico che di notte dormo la metà."],
+  },
+  guardia2: {
+    nome: 'Guardia Brambilla', ruolo: 'Guardia del Parco Oglio, giro est. Prende appunti su tutto.',
+    posti: [{ ore: [6, 24], x: 118, z: 91 }],
+    giro: [[118, 91], [118, 106], [118, 91], [144, 91], [118, 91], [100, 91]], vel: 1.4,
+    aspetto: { sprite: 'soldato', ricolora: { gradi: 40 }, w: 16, h: 24, skin: '#e8b48a', hair: '#8a5a2a', hairStyle: 'flat', shirt: '#5a5a3a', pants: '#3a4a2a', boots: '#111', eyes: 'normal' },
+    amicizia: [-30, 30, 0],
+    saluti: ["Nome, cognome, soprannome. Scrivo tutto.", "Buongiorno. Oggi ho scritto quattro verbali. A un'anatra.", "Il parco chiude a mezzanotte. Anche se non ha i cancelli."],
+    chiacchiere: ["Ho un blocchetto per i verbali e uno per le poesie. A volte li confondo.", "Il Vecchio Camper? Brava persona. Da lontano."],
+  },
 };

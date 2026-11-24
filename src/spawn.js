@@ -17,7 +17,7 @@ import { surfaceAt } from './map.js';
 
 const H = 60;
 const rand = (a, b) => a + Math.random() * (b - a);
-const PLACE = { campi: 'campo', pollaio: 'campo', capannoni: 'capannoni', bosco: 'bosco', paese: 'paese', ovunque: 'campo' };
+const PLACE = { campi: 'campo', pollaio: 'campo', capannoni: 'capannoni', bosco: 'bosco', paese: 'paese', ovunque: 'campo', parco: 'bosco' };
 
 export class Spawn {
   constructor(game, bestie) {

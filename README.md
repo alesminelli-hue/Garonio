@@ -35,6 +35,9 @@ Il design completo è in [GDD.md](GDD.md).
 - **Quest degli edifici**: palestra, farmacia, ambulatorio, chiesa, castello, kebab, pizzeria, officina e Bubetto hanno missioni nuove.
 - **Il Mostro della Palude**: salta 100 volte sulla riva del laghetto e qualcosa si sveglia (livello 30).
 - **Babbo Natale smemorato**: certe sere compare nel bosco. Portalo al Night Welcome e pagagli una ragazza: con Madame Svetlana ritrova la memoria e ti regala un'arma leggendaria.
+- **Parco Oglio**: bosco e fiume in fondo alla mappa. Di notte mostri di ogni livello, la sera coppiette da spiare (a tuo rischio), guardie del parco di livello 30 e il loro capo Boss MM. Il Vecchio Camper, nella cascina accanto, paga bene chi fa danni nel parco.
+- **Stalla**: Carolina, Dolly, Gertrude, Furia, Ernesto e Napoleone. Mungi, tosa, striglia (e prendi qualche calcio).
+- **Banco del Gigante**: nell'officina di casa costruisci cibi, vestiti e attrezzi con quello che trovi. **Completi** con bonus e **album del bottino** nel menu J.
 - **Livelli fino al 30**: ogni nemico ha il suo livello (accanto al nome nello scontro) e cresce con te; alcuni nascono **feroci** (alone rosso, più forti, bottino sicuro). I nemici lasciano bottino da vendere al Bubetto (pelli, zanne, piume, gingilli, pepite). Al **livello 30** comincia il gioco libero: i boss battuti tornano ogni settimana in versione **leggendaria** (segno dorato) con bottino raro.
 - **Mezzi**: avvicinati alla Vespa, alla Punto o ai trattori e premi **E** per salire o scendere. Si guida con frecce/WASD o con la levetta, **Q** (o il pulsante 📯 sul telefono) suona il clacson.
   - La Vespa blu è veloce ma ogni tanto non parte o si spegne. La Punto bianca consuma benzina e può forare.
