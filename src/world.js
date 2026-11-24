@@ -267,6 +267,7 @@ export class World {
 
   _makeTrees() {
     const R = PIX.rng(42);
+    this.alberi = [];   // tutti gli alberi piantati (src/alberi.js ci nasconde il bottino): { x, z, spr, w, h, bordo }
     const texs = [1, 2, 3, 4, 6, 8].map(s => PIX.toTexture(PIX.tree(s)));
     const pops = [1, 2].map(s => PIX.toTexture(PIX.poplar(s)));
     const clear = (x, z, m = 1) => {
@@ -289,6 +290,7 @@ export class World {
       this.scene.add(s);
       this._paintBlobShadow(s.position.x, s.position.z, w * 0.42, w * 0.22);
       this.solids.push({ x0: s.position.x - 0.3, z0: s.position.z - 0.2, x1: s.position.x + 0.3, z1: s.position.z + 0.2 });
+      this.alberi.push({ x: s.position.x, z: s.position.z, spr: s, w, h, bordo: edge });
     };
     const oak = (x, z) => plant(x, z, texs[(R() * texs.length) | 0], 2.25, 2.875);
     // cornice di alberi sui bordi

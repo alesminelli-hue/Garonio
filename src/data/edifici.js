@@ -175,7 +175,7 @@ export const TESTI_EDIFICI = {
     specchioForte: "Ti guardi allo specchio. Ehi: quello è un muscolo! Piccolo, timido, ma c'è.",
     doccia: "Una doccia calda. Poi fredda. Poi di nuovo calda: lo scaldabagno decide lui. Stanchezza -10, stress -3",
     armadietto: "Il tuo armadietto: una tuta che non lavi da settimane e un deodorante vuoto. Profumo di impegno.",
-    abbonamenti: "Bacheca: «Abbonamento annuale: chiedere al Sergente». «Corso di zumba: chiedere alla Debora». «Chi ha preso i manubri da 10 li riporti. Firmato: tutti».",
+    abbonamenti: "Bacheca: «Abbonamento annuale: chiedere al Sergente». «Corso di zumba: chiedere alla Blu Belga». «Chi ha preso i manubri da 10 li riporti. Firmato: tutti».",
     sergente: "Allenamento col Sergente ({prezzo}€)",
     sergenteDice: "«ATTENTI! Cinquanta flessioni, cento addominali, giro di corsa dell'isolato!» Un'ora di inferno militare.",
   },
@@ -197,7 +197,7 @@ export const TESTI_EDIFICI = {
     voci: [
       "«La Sabrina stasera era qui con un tipo di Lodi. Lei ha pagato. Pensa te.»",
       "«La Federica ordina sempre la diavola. Dice che le piacciono le cose piccanti. E i ragazzi sinceri, ha detto pure.»",
-      "«La Debora mangia solo la pizza senza mozzarella. Tutto il resto lo brucia in palestra.»",
+      "«La Blu Belga mangia solo la pizza senza mozzarella. Tutto il resto lo brucia in palestra.»",
       "«L'Ilenia prende la quattro formaggi e ne lascia tre. Gioca a biliardo meglio di come mangia.»",
     ],
   },

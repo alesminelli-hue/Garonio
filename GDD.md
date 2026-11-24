@@ -824,3 +824,27 @@ Al livello 30 Garonio diventa **Il Padrone della Bassa** e comincia il gioco lib
 
 Per provare tutto: `?pilot` nell'indirizzo, sezione **👹 Boss e livelli** (combatti un boss, vai alla tana di una missione, livello 30, sfide leggendarie pronte).
 
+
+## 25. Alberi col tesoro, quest degli edifici e incontri speciali
+
+### 25.1 Alberi col tesoro (src/alberi.js, src/data/alberi.js)
+Ogni mattina 18 alberi a caso della mappa (fra quelli raggiungibili, non la cornice) nascondono qualcosa. A piedi, vicino a un albero: **«🌳 Scuoti l'albero»** (E). L'albero trema e la roba cade a terra e salta in tasca. Ogni albero si scuote una volta al giorno (fatica +1,5).
+- **Albero col tesoro**: un attrezzo agricolo o un vestito da lavoro che Garonio non ha ancora (gli attrezzi in ordine di livello, fino a 3 livelli sopra il suo), oppure mele, noci, un nido, gingilli, miele, soldi, dal livello 15 una pepita.
+- **Albero normale**: spesso niente, a volte una mela, noci, pigne, una pigna in testa (Vita −4) o una gazza arrabbiata (scontro).
+- Attrezzi (armi `albero: true`): Vanga del nonno (+5, Lv 3), Falcetto da fieno (+8, Lv 6), Cesoie da potatura (+11, Lv 9), Tridente da letame (+15, Lv 13), Scure da legna (+19, Lv 17), Correggiato della trebbiatura (+23, Lv 21).
+- Vestiti: Cappellone di paglia, Fazzoletto rosso, Salopette di jeans, Guanti da lavoro, Stivali di gomma verdi, Zoccoli di legno, Giacca a vento del consorzio.
+- Oggetti nuovi: Mela, Noci, Pigna (si tira), Nido vuoto. Sprite in pixel art in src/sprite_loot.js (anche nel menu J).
+
+### 25.2 Quest degli edifici (src/data/secondarie.js)
+Palestra (Sergente: 60 salti, il frullato del campione), Farmacia (Pastiglia: sciroppo della nonna, polvere di zanna), Ambulatorio (Mutua: una mela al giorno; Assunta: ratti in sala d'attesa), Chiesa (Don Peppino: le gazze delle offerte; Suor Carmela: il presepe di pigne), Castello (Conte: il tappeto di lupo; Ambrogio: l'argenteria), Kebab (Kemal: le patatine), Bella Napoli (Concetta: il pettegolezzo sulla Vigilessa), Officina (Ivan: i pezzi per la Punto), Bubetto (il tesoro tra i rami: scuoti 15 alberi). Usano il bottino nuovo (mele, noci, pigne, nidi, zanne, gingilli) e gli eventi nuovi `salto` e `alberoScosso`.
+
+### 25.3 Il Mostro della Palude (src/speciali.js, BOSS.palude)
+Ogni salto sulla riva del laghetto conta (raggio 9 dal centro). A 20, 40, 60, 80 e 95 salti arrivano gli avvisi (bolle, rane zitte, occhi gialli); al **centesimo** esce il Mostro della Palude: livello 30, zombie verde coperto di alghe. Abbraccio fangoso, alito di fosso (stress), sanguisughe (veleno), ninna nanna (stordisce), risucchio caricato, nutrie di rinforzo, una cura nel fango. Prima vittoria: Mantello di alghe (difesa +16), 2 pepite, trofeo, elisir. Poi si rifà ogni 100 salti con un bottino più piccolo.
+
+### 25.4 Babbo Natale smemorato (src/speciali.js, src/data/speciali.js)
+Dal giorno 3, certe sere (30%) alle 20 compare nel bosco a sud un vecchietto vestito di rosso che ha perso la memoria (tintinnio di campanelli, punto bianco sulla minimappa). «Mi segua, nonno» e lui ti segue. Al Night Welcome, dal catalogo di Sandokan, c'è la voce «Una ragazza per il nonnino (paghi tu)». In base a chi scegli si ricorda più o meno chi è:
+- Jessica (40€): si addormenta, ricorda solo i biscotti → biscotti ×3 e un carbone.
+- Samantha (80€): ballano un liscio → Cappello di Babbo Natale e biscotti.
+- Natasha (150€): la spaccata gli ricorda le renne → Maglione con le renne e 150€.
+- Madame Svetlana (300€): una sberla, «NIKOLAI!», e torna Babbo Natale → **Bastone di zucchero** (arma leggendaria, attacco +29: Renne in carica, Sacchetto di carbone). Le volte dopo: 400€ e biscotti.
+A mezzanotte, se non l'hai portato, si perde di nuovo. Si rincontra dopo almeno 6 giorni. Tono da barzelletta: niente scene.

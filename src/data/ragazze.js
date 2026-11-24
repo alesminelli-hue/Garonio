@@ -15,7 +15,7 @@
 
 export const RAGAZZE = {
   debora: {
-    nome: 'Debora', eta: 32, icona: '🏋️‍♀️',
+    nome: 'Blu Belga', eta: 32, icona: '🏋️‍♀️',
     chi: 'Personal trainer alla palestra «Bicipite d\'Oro» di Codogno. Corre sulla capezzagna la mattina presto.',
     dove: 'Fa jogging sulla capezzagna dalle 7 alle 10:30.',
     jogging: true,
@@ -35,7 +35,7 @@ export const RAGAZZE = {
       "«Oggi è il giorno delle gambe. Per me. Per te è il giorno del divano, come sempre.»",
       "«Il Sergente dice che sei una recluta persa. Io dico che sei una recluta in ritardo. Di dieci anni.»",
     ],
-    primaVolta: "Una ragazza in tuta fucsia ti sorpassa, si ferma e corre sul posto davanti a te. «Debora. Personal trainer. E tu hai la faccia di uno che non fa uno squat dal 2009.»",
+    primaVolta: "Una ragazza in tuta fucsia ti sorpassa, si ferma e corre sul posto davanti a te. «Blu Belga. Personal trainer. E tu hai la faccia di uno che non fa uno squat dal 2009.»",
     approccio: [
       { d: "«Quanti chilometri fai a settimana?»", a: [
         { t: "«Nessuno. Però li guido tutti col trattore.»", tono: 'sincero', r: "(ride) «Almeno sei onesto. Gli altri mi dicono \"una decina\" e poi svengono al primo palo.»" },
@@ -81,7 +81,7 @@ export const RAGAZZE = {
       ] },
       { d: "«Io mangio solo la metà della pizza. L'altra metà la vuoi tu?»", a: [
         { t: "«Mangiala tutta. È il tuo cheat day, te lo meriti.»", tono: 'sicuro', r: "«...Hai detto la cosa giusta. Nessuno mi ha mai detto la cosa giusta.»" },
-        { t: "«Sì sì sì, dammela tutta!»", tono: 'cafone', r: "Garonio si avventa sulla pizza. Debora lo guarda come si guarda un procione nella spazzatura." },
+        { t: "«Sì sì sì, dammela tutta!»", tono: 'cafone', r: "Garonio si avventa sulla pizza. Blu Belga lo guarda come si guarda un procione nella spazzatura." },
         { t: "«Facciamo a metà della metà. Così è un allenamento di coppia.»", tono: 'ironico', r: "«Allenamento di coppia. Mh. Questa la rubo per i miei clienti.»" },
       ] },
       { d: "«Il mio ex correva le maratone. Tu cosa sai fare meglio di lui?»", a: [
@@ -97,7 +97,7 @@ export const RAGAZZE = {
       { d: "«Gennaro mi ha portato la pizza senza mozzarella perché sa che sono a dieta. Gli dico qualcosa?»", a: [
         { t: "«Ci penso io: \"Gennaro, stasera la signorina mangia come un camionista\". E pago io.»", tono: 'sicuro', r: "«Mi hai difesa da una pizza dietetica. Sei un eroe minore, ma un eroe.»" },
         { t: "«Ti do metà della mia. È salsiccia e cipolla, ti faccio un favore.»", tono: 'sincero', r: "«Domani un'ora di tapis roulant. Ma stasera grazie.»" },
-        { t: "«GENNAROOO! PORTA ROBA!»", tono: 'cafone', r: "Gennaro smette di cantare. Tutta la pizzeria si gira. Debora si nasconde dietro al menu." },
+        { t: "«GENNAROOO! PORTA ROBA!»", tono: 'cafone', r: "Gennaro smette di cantare. Tutta la pizzeria si gira. Blu Belga si nasconde dietro al menu." },
       ] },
       { d: "«Dimmi una cosa di cui hai paura. Una vera.»", a: [
         { t: "«Di deludere mio padre. E delle oche. Più delle oche, a dire il vero.»", tono: 'sincero', r: "«Le oche fanno paura anche a me. Sul resto ci lavoriamo. Una ripetizione alla volta.»" },
@@ -109,11 +109,11 @@ export const RAGAZZE = {
     numero: "«Tieni. Il mio numero. Se mi scrivi \"ciao\" con tre punti di sospensione ti blocco.»",
     accetta: "«Un appuntamento? Mh. Ok. Ma niente sushi del discount: l'ultimo mi ha fatto saltare una gara.»",
     rifiuta: "«Uscire con te? Fammi vedere prima che arrivi in fondo alla capezzagna senza fermarti.»",
-    bacio: "A fine serata Debora ti dà un bacio veloce e deciso, come un allenamento a intervalli. «Ok. Promosso. Ci risentiamo.»",
+    bacio: "A fine serata Blu Belga ti dà un bacio veloce e deciso, come un allenamento a intervalli. «Ok. Promosso. Ci risentiamo.»",
     sale: "«Senti... casa mia è qui dietro. Ho la cyclette nuova da farti vedere. E no, non è un modo di dire. Cioè sì. Vieni?»",
-    letto: "Ventidue minuti dopo Debora guarda il cardiofrequenzimetro: «Zona aerobica raggiunta. Bravo, campione.»",
+    letto: "Ventidue minuti dopo Blu Belga guarda il cardiofrequenzimetro: «Zona aerobica raggiunta. Bravo, campione.»",
     reputazione: "«Mi piaci, eh. Ma in paese si dicono cose su di te... la Pina mi ha già scritto tre messaggi. Un'altra volta, ok?»",
-    blocco: "Debora ti supera di corsa senza guardarti. Sulla tuta, la scritta «NON FERMARTI MAI». Vale anche per te.",
+    blocco: "Blu Belga ti supera di corsa senza guardarti. Sulla tuta, la scritta «NON FERMARTI MAI». Vale anche per te.",
     conquistata: [
       "«Ehi, il mio compagno di cyclette. Corri due giri con me?»",
       "«Oggi gambe o braccia? Scherzo. Per te, divano.»",
@@ -725,7 +725,7 @@ export const RAGAZZE = {
   },
 
   marta: {
-    nome: 'Marta', eta: 31, icona: '🎹',
+    nome: 'Balerion', eta: 31, icona: '🎹',
     chi: "Suona l'organo nella chiesa di San Garonio. Dal 2014 al 2016 era la bassista dei «Vespri dell'Apocalisse», punk di Lodi. Tatuaggi sotto le maniche, ironia nera, romantica in modo gotico: ama le cose tristi e belle.",
     dove: "Il pomeriggio in chiesa all'organo (14-18), poi al bar vicino al juke-box (18-20).",
     posti: [{ ore: [14, 18], interno: 'chiesa', x: 11.6, z: 1.5 }, { ore: [18, 20], interno: 'bar', x: 20.0, z: 1.4 }],
@@ -740,7 +740,7 @@ export const RAGAZZE = {
       "«Suor Carmela mi ha visto il tatuaggio. Le ho detto che è un santo. È Sid Vicious. Si è fatta il segno della croce.»",
       "«La nebbia di stasera è perfetta. Sembra un video anni Ottanta girato a Casalpusterlengo.»",
     ],
-    primaVolta: "In chiesa l'organo attacca un accordo cupissimo e si ferma di colpo. Dalla cantoria si sporge una ragazza con le unghie nere. «Ciao. Sono Marta, suono qui. Tu sei quello che dorme al terzo banco. Russi in re minore, lo sapevi?»",
+    primaVolta: "In chiesa l'organo attacca un accordo cupissimo e si ferma di colpo. Dalla cantoria si sporge una ragazza con le unghie nere. «Ciao. Sono Balerion, suono qui. Tu sei quello che dorme al terzo banco. Russi in re minore, lo sapevi?»",
     approccio: [
       { d: "«Che musica ascolti?»", a: [
         { t: "«Liscio. Ma lo ascolto in modo molto triste e profondo.»", tono: 'ironico', r: "«Il liscio esistenziale. \"Romagna mia\" con la nebbia dentro. Ok, mi hai incuriosita.»" },
@@ -791,7 +791,7 @@ export const RAGAZZE = {
       ] },
       { d: "«Se scrivessi una canzone su di te, che titolo avrebbe?»", a: [
         { t: "«\"Ballata per un trattore e un cuore che non parte\".»", tono: 'ironico', r: "«Questa te la rubo. Nei crediti ti metto come \"il Vespa\".»" },
-        { t: "«\"Marta\". Non serve altro.»", tono: 'romantico', r: "«...La canzone doveva essere su di te, Garonio. Ma va bene. Va bene così.»" },
+        { t: "«\"Balerion\". Non serve altro.»", tono: 'romantico', r: "«...La canzone doveva essere su di te, Garonio. Ma va bene. Va bene così.»" },
         { t: "«\"Il più grande di tutti\". Rap, ovviamente.»", tono: 'spaccone', r: "«Un rap su un campanile del Seicento. Le campane si vergognano per te.»" },
       ] },
       { d: "«Mi passi la coperta? Quassù fa freddo.»", a: [
@@ -804,11 +804,11 @@ export const RAGAZZE = {
     numero: "«Il mio numero. Non chiamare durante la messa delle undici: ho la suoneria dei Nirvana.»",
     accetta: "«Va bene. Stasera c'è la luna giusta. Non chiedermi come lo so.»",
     rifiuta: "«No. Mi servono più indizi. Per ora sei un mistero mediocre.»",
-    bacio: "In cima al campanile Marta ti bacia proprio mentre la campana batte le undici. Per poco non restate sordi tutti e due. «Bacio con accompagnamento musicale. Non capita a tutti.»",
+    bacio: "In cima al campanile Balerion ti bacia proprio mentre la campana batte le undici. Per poco non restate sordi tutti e due. «Bacio con accompagnamento musicale. Non capita a tutti.»",
     sale: "«Abito sopra il negozio di dischi chiuso dal 2003. Ho un giradischi e una candela a forma di teschio. Sali?»",
     letto: "Al buio parte un vinile dei Cure. Finisce e gira a vuoto per mezz'ora. Nessuno si alza a cambiarlo.",
     reputazione: "«Mi piaci, sai? Ma Suor Carmela mi ha fatto la predica su di te. Tre ore, senza pause. Sistema la tua fama, io qui ci devo ancora suonare.»",
-    blocco: "Marta ti vede entrare in chiesa e attacca all'organo la Toccata e Fuga. Il messaggio è chiaro: fuga.",
+    blocco: "Balerion ti vede entrare in chiesa e attacca all'organo la Toccata e Fuga. Il messaggio è chiaro: fuga.",
     conquistata: [
       "«Ciao, Vespa. Stasera campanile o jukebox?»",
       "«Ho scritto un pezzo su di te. Dura quattro minuti. Tre sono di nebbia.»",

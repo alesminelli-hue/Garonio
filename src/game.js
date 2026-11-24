@@ -14,6 +14,8 @@ import { Telefono } from './telefono.js';
 import { Progressione, freshProg } from './progressione.js';
 import { Personaggi } from './png.js';
 import { Secondarie } from './secondarie.js';
+import { Alberi } from './alberi.js';
+import { Speciali } from './speciali.js';
 import { Menu } from './menu.js';
 import { Officina } from './officina.js';
 import { Vigilessa } from './vigilessa.js';
@@ -203,6 +205,9 @@ export class Game {
     this.edifici = new EdificiPaese(this); this.edifici.init();
     // boss delle missioni secondarie, bottino dei nemici ed endgame al livello 30 (src/boss.js)
     this.boss = new Boss(this); this.boss.init();
+    // alberi col tesoro (scuoti l'albero), Mostro della Palude e Babbo Natale smemorato (src/alberi.js, src/speciali.js)
+    this.alberi = new Alberi(this); this.alberi.init();
+    this.speciali = new Speciali(this); this.speciali.init();
 
     if (!this.s.introDone) await this.intro();
     else if (this.s.rifaiGiornata) { // giornata ricominciata da capo (vedi _rifaiGiornata)
@@ -846,6 +851,8 @@ export class Game {
     if (this.jumpT > 0) return;
     this.idle = 0; this._wake(); this.jumpT = 0.6; this.audio.sfx('blip');
     this.s.tired = clamp(this.s.tired + 0.5, 0, 100);
+    const P = this.player.group.position;
+    this.emit('salto', { x: P.x, z: P.z, interno: !!this.interni?.attivo });
   }
 
   _animatePlayer(dt) {

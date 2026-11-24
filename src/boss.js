@@ -442,7 +442,7 @@ export class Boss {
   _menuProva() {
     const g = this.game, menu = () => this._menuProva();
     const lista = () => [{ name: '🧪 Boss', text: 'Combatti subito un boss (alza Garonio al suo livello e lo cura).', choices: [
-      ...Object.entries(BOSS).map(([id, b]) => ({ label: `${b.icona} Lv ${b.lv} · ${b.nemico.name} (${b.zona}) · ${this.stato(id)}`, fn: () => { this._prepara(b.lv); setTimeout(() => (b.senzaMissione ? this.inseguimento() : this.affronta(id)), 50); return null; } })),
+      ...Object.entries(BOSS).map(([id, b]) => ({ label: `${b.icona} Lv ${b.lv} · ${b.nemico.name} (${b.zona}) · ${this.stato(id)}`, fn: () => { this._prepara(b.lv); setTimeout(() => (id === 'gennaro' ? this.inseguimento() : id === 'palude' ? g.speciali?.mostro() : this.affronta(id)), 50); return null; } })),
       { label: '◀ Indietro', fn: () => [menu()] },
     ] }];
     const missioni = () => [{ name: '🧪 Missioni dei boss', text: 'Accetta la missione e porta Garonio alla tana (ora compresa).', choices: [
