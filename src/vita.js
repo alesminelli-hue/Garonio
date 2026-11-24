@@ -512,7 +512,7 @@ export class Vita {
       if (f.gatti[c.i]) { g.ui.float('Il gatto ti ignora con eleganza. Per oggi basta.'); return; }
       f.gatti[c.i] = true;
       s.stress = clamp(s.stress - G.carezza, 0, 100);
-      g.ui.toast(fill(pick(G.testi), { s: G.carezza }), 'good'); g.audio.sfx('pick');
+      g.ui.toast(fill(pick(G.testi), { s: G.carezza }), 'good'); g.audio.sfx('meow');
       g.emit('gatto', {});
     } };
   }

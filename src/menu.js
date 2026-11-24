@@ -194,6 +194,19 @@ export class Menu {
 
   _cartello(testo) { return h('div', 'mn-cartello', testo); }
 
+  // riga del volume: − [cursore] + (i pulsanti funzionano anche da tastiera, il cursore col dito)
+  _volume(icona, nome, get, set, prova) {
+    const pct = () => `${Math.round(get() * 100)}%`;
+    const val = h('small', 'mn-vol-val', pct());
+    const r = h('input', 'mn-vol-range'); r.type = 'range'; r.min = 0; r.max = 100; r.step = 5; r.value = Math.round(get() * 100);
+    r.setAttribute('aria-label', `Volume ${nome}`);
+    r.addEventListener('input', () => { set(r.value / 100); val.textContent = pct(); });
+    r.addEventListener('change', () => prova?.());
+    r.addEventListener('keydown', e => e.preventDefault());   // le frecce restano al menu
+    const passo = d => () => { set(Math.round((get() + d) * 20) / 20); prova?.(); return `${icona} ${nome}: ${pct()}`; };
+    return h('div', 'mn-vol', null, [h('span', 'mn-vol-nome', `${icona} ${nome}`), this._azione('−', passo(-0.1), { cls: 'mn-vol-btn' }), r, this._azione('+', passo(0.1), { cls: 'mn-vol-btn' }), val]);
+  }
+
   // ---------- 📋 Missioni ----------
   _missioni() {
     const s = this.s, g = this.game, out = [];
@@ -404,7 +417,9 @@ export class Menu {
     out.push(this._azione('✥ Sposta i pannelli', () => { this.chiudi(); setTimeout(() => g.pannelli?.sposta(true), 50); return ''; }));
     out.push(this._azione('↺ Rimetti a posto', () => { g.pannelli?.ripristina(); return '↺ Fatto.'; }));
     out.push(this._cartello('Audio'));
-    out.push(this._azione('♪ Musica on/off', () => { document.getElementById('btn-music')?.click(); return '♪'; }));
+    out.push(this._azione(g.audio.enabled ? '🔊 Audio acceso (tocca per spegnere)' : '🔇 Audio spento (tocca per accendere)', () => { document.getElementById('btn-music')?.click(); return g.audio.enabled ? '🔊' : '🔇'; }));
+    out.push(this._volume('🎵', 'Musica', () => g.audio.musicVolume, v => g.audio.setMusicVolume(v), null));
+    out.push(this._volume('💥', 'Effetti', () => g.audio.sfxVolume, v => g.audio.setSfxVolume(v), () => g.audio.sfx('coin')));
     out.push(this._cartello('Comandi'));
     out.push(h('div', 'mn-tasti', null, [
       ['WASD', 'muovi'], ['Shift', 'corri'], ['E', 'agisci'], ['Q', 'salta'], ['J', 'menu'], ['N', 'mappa'], ['M', 'musica'], ['R', 'attrezzo'],
