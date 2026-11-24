@@ -85,6 +85,8 @@ export const NEMICI_NUOVI = {
   },
 
   // ---------- i tre re (solo nelle tane) ----------
+  // hp/atk/def qui sotto sono solo di riserva: in combattimento i re usano le statistiche da boss del loro
+  // livello (src/boss.js → RE, src/data/nemici.js → statBoss): Re dei Ratti 10, Re delle Nutrie 16, Re dei Lupi 22.
   re_ratti: {
     name: 'Re dei Ratti', hp: 150, atk: 10, def: 5, spd: 8, xp: 150, money: 0, size: 8.5, sprite: 'reRatti', boss: true,
     fuga: 'crolla sul trono di formaggio.',
@@ -123,7 +125,7 @@ export const GIORNI_STAGIONE = 14;
 // tana.richiede: { vestitoBonus, arma: [..] } · tana.notte: si apre solo dalle 20:00
 export const BESTIE = {
   re_ratti: {
-    nome: 'Re dei Ratti', nemico: 're_ratti', min: 6, cons: 8, stagione: 'primavera',
+    nome: 'Re dei Ratti', nemico: 're_ratti', min: 8, cons: 10, stagione: 'primavera',
     luogo: 'tana_ratti', colore: '#d0a0ff',
     voce: {
       png: 'mamma', etichetta: '🐀 «Mamma, in cantina manca ancora il salame?»',
@@ -161,7 +163,7 @@ export const BESTIE = {
     dopo: { specie: ['ratto', 'ratto_fogna'] },
   },
   re_nutrie: {
-    nome: 'Re delle Nutrie', nemico: 're_nutrie', min: 11, cons: 13, stagione: 'estate',
+    nome: 'Re delle Nutrie', nemico: 're_nutrie', min: 14, cons: 16, stagione: 'estate',
     luogo: 'tana_nutrie', colore: '#f08a1c',
     voce: {
       png: 'consulente', etichetta: '🦫 «Hai sentito di quella nutria grossa?»',
@@ -200,7 +202,7 @@ export const BESTIE = {
     dopo: { specie: ['nutria', 'nutria_gigante', 'nutria_corazzata'] },
   },
   re_lupi: {
-    nome: 'Re dei Lupi', nemico: 're_lupi', min: 17, cons: 19, stagione: 'inverno',
+    nome: 'Re dei Lupi', nemico: 're_lupi', min: 20, cons: 22, stagione: 'inverno',
     luogo: 'tana_lupi', colore: '#60e0ff',
     voce: {
       png: 'zeno', etichetta: '🐺 «Zeno, cos\'è questa storia del lupo bianco?»',

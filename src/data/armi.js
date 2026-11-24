@@ -20,6 +20,14 @@ export const ARMI = {
   motosega:  { nome: 'Motosega',      liv: 16, atk: 15, prezzo: 600, mossa: 'motosegata', mossa2: 'avviamento', fuori: 'taglia alberi', benzina: true },
   // leggendaria: solo dalla cabina della corrente (GDD 20.5)
   zappaFolgorata: { nome: 'Zappa folgorata', liv: 1, atk: 12, mossa: 'scossa', mossa2: 'cortocircuito', fuori: 'zappa e illumina', leggendario: true },
+  // bottino dei boss delle missioni secondarie (src/data/boss.js): non si comprano e non si vendono
+  piedeDiPorco:  { nome: 'Piede di porco del ladro', liv: 1, atk: 13, mossa: 'scasso', mossa2: 'leva', fuori: 'apre i lucchetti', leggendario: true, bottino: true },
+  forchettone:   { nome: 'Forchettone d\'oro',       liv: 1, atk: 15, mossa: 'triplaForchettata', mossa2: 'assaggio', fuori: 'assaggia tutto', leggendario: true, bottino: true },
+  chiaveInglese: { nome: 'Chiave inglese da 32',     liv: 1, atk: 18, mossa: 'sbullonata', mossa2: 'giroDiChiave', fuori: 'svita tutto', leggendario: true, bottino: true },
+  arpione:       { nome: 'Arpione del laghetto',     liv: 1, atk: 21, mossa: 'arpionata', mossa2: 'tiraARiva', fuori: 'pesca i siluri', leggendario: true, bottino: true },
+  spadone:       { nome: 'Spadone del Trisavolo',    liv: 1, atk: 24, mossa: 'fendenteNobile', mossa2: 'colpoDiGrazia', fuori: 'fa scena', leggendario: true, bottino: true },
+  // endgame: solo dalle sfide leggendarie (livello 30)
+  zappaDoro:     { nome: 'Zappa d\'oro della Bassa', liv: 30, atk: 30, mossa: 'zappataDoro', mossa2: 'raccoltoFinale', fuori: 'zappa le zolle e luccica', leggendario: true, bottino: true },
 };
 export const AFFILATURA = { max: 3, atk: 2, prezzi: [30, 60, 120] };
 
@@ -49,6 +57,19 @@ export const MOSSE_ARMI = {
   avviamento:  { nome: 'Strappo d\'avviamento', target: 'self', tired: 0, paura: 2, desc: 'Vrooom! Nessun danno, ma i nemici attaccano più piano per 2 turni. Gratis.' },
   scossa:      { nome: 'Scossa',                target: 'all', pow: 1.6, tired: 8,  stordisce: 1, desc: 'La zappa folgorata dà la scossa a tutti e li stordisce.' },
   cortocircuito: { nome: 'Cortocircuito',       target: 'one', pow: 3.0, tired: 12, desc: 'Tutta la corrente su un nemico solo.' },
+  // armi dei boss
+  scasso:      { nome: 'Scasso',                target: 'one', pow: 1.7, tired: 8,  ignoraDif: 0.8, desc: 'Fa leva sulla corazza: ignora quasi tutta la difesa.' },
+  leva:        { nome: 'Colpo di leva',         target: 'one', pow: 1.3, tired: 8,  stordisce: 1, desc: 'Stordisce un nemico per un turno.' },
+  triplaForchettata: { nome: 'Tripla forchettata', target: 'one', pow: 0.85, tired: 10, colpi: 3, desc: 'Tre colpi di fila sullo stesso nemico.' },
+  assaggio:    { nome: 'Assaggio',              target: 'one', pow: 1.8, tired: 9,  critico: 0.35, desc: 'Un colpo da intenditore: critico facile.' },
+  sbullonata:  { nome: 'Sbullonata',            target: 'one', pow: 1.9, tired: 10, stordisce: 1, desc: 'Colpo forte che stordisce.' },
+  giroDiChiave:{ nome: 'Giro di chiave',        target: 'all', pow: 1.3, tired: 12, desc: 'Gira come una trottola: colpisce tutti.' },
+  arpionata:   { nome: 'Arpionata',             target: 'one', pow: 2.4, tired: 11, critico: 0.2, desc: 'Un colpo profondo, spesso critico.' },
+  tiraARiva:   { nome: 'Tira a riva',           target: 'two', pow: 1.7, tired: 12, desc: 'Arpiona due nemici e li tira giù.' },
+  fendenteNobile: { nome: 'Fendente nobile',    target: 'all', pow: 1.6, tired: 13, ignoraDif: 0.3, desc: 'Tutti i nemici, ignora un terzo della difesa.' },
+  colpoDiGrazia:  { nome: 'Colpo di grazia',    target: 'one', pow: 3.1, tired: 14, desc: 'Il colpo più forte dello spadone.' },
+  zappataDoro: { nome: 'Zappata d\'oro',        target: 'all', pow: 2.1, tired: 12, critico: 0.2, desc: 'Tutti i nemici, critico facile. Luccica.' },
+  raccoltoFinale: { nome: 'Raccolto finale',    target: 'one', pow: 3.6, tired: 14, ignoraDif: 0.5, desc: 'Un colpo enorme che ignora metà difesa.' },
 };
 
 // Mosse che Garonio impara salendo di livello (GDD 15.3). Le prime tre c'erano già.
@@ -100,6 +121,28 @@ export const VESTITI = {
   coronaRatti:     { nome: 'Corona del Re dei Ratti',  slot: 'testa', bonus: { atk: 3, ratti: 1 }, trofeo: true, desc: 'attacco +3, i ratti non rosicchiano il mangime' },
   pellicciaNutrie: { nome: 'Pelliccia del Re delle Nutrie', slot: 'corpo', bonus: { def: 8, nutrie: 0.5 }, trofeo: true, desc: 'difesa +8, nutrie −50%' },
   mantelloLupi:    { nome: 'Mantello del Re dei Lupi', slot: 'corpo', bonus: { def: 10, stress: 0.2 }, trofeo: true, desc: 'difesa +10, stress −20% in combattimento' },
+  // bottino dei boss delle missioni secondarie (src/data/boss.js)
+  berrettoTasso:   { nome: 'Berretto di pelo di tasso', slot: 'testa', bonus: { def: 2, stress: 0.05 }, trofeo: true, desc: 'difesa +2, stress −5%' },
+  medagliaPiccione:{ nome: 'Medaglia del Generale Piccione', slot: 'portafortuna', bonus: { stressPreseInGiro: 0.2, critico: 0.03 }, trofeo: true, desc: 'prese in giro −20% stress, critico +3%' },
+  ricettario:      { nome: 'Ricettario di Sor Ugo',    slot: 'portafortuna', bonus: { cure: 0.3 }, trofeo: true, desc: 'gli oggetti curano +30%' },
+  collareBrutus:   { nome: 'Collare di Brutus',        slot: 'portafortuna', bonus: { cane: 1, def: 2 }, trofeo: true, desc: 'difesa +2, sblocca «Fischio al cane»: Brutus ti segue' },
+  stolaFaina:      { nome: 'Stola della Faina argentata', slot: 'corpo', bonus: { def: 5, velocita: 0.05 }, trofeo: true, desc: 'difesa +5, cammini +5%' },
+  corazzaDorifora: { nome: 'Corazza di Dorifora',      slot: 'corpo', bonus: { def: 7 }, trofeo: true, desc: 'difesa +7. A strisce gialle e nere' },
+  valigetta:       { nome: 'Valigetta dei campioni omaggio', slot: 'portafortuna', bonus: { cure: 0.2, faticaInizioScontro: 8 }, trofeo: true, desc: 'cure +20%, fatica −8 a inizio scontro' },
+  cappelloSpaventapasseri: { nome: 'Cappello dello Spaventapasseri', slot: 'testa', bonus: { def: 4, stress: 0.1 }, trofeo: true, desc: 'difesa +4, stress −10%' },
+  mantelloPipistrello: { nome: 'Mantello del Pipistrellone', slot: 'corpo', bonus: { def: 9, critico: 0.04 }, trofeo: true, desc: 'difesa +9, critico +4%' },
+  giubbottoBorchie:{ nome: 'Giubbotto con le borchie',  slot: 'corpo', bonus: { def: 10, atk: 2 }, trofeo: true, desc: 'difesa +10, attacco +2' },
+  cornaToro:       { nome: 'Elmo con le corna di Dollaro', slot: 'testa', bonus: { atk: 4, def: 5 }, trofeo: true, desc: 'attacco +4, difesa +5' },
+  pungiglione:     { nome: 'Pungiglione della Regina', slot: 'portafortuna', bonus: { critico: 0.08 }, trofeo: true, desc: 'critico +8%' },
+  cinturaPesi:     { nome: 'Cintura da sollevamento',  slot: 'portafortuna', bonus: { vitaMax: 30, def: 2 }, trofeo: true, desc: 'Vita massima +30, difesa +2' },
+  elmoTrisavolo:   { nome: 'Elmo del Trisavolo',       slot: 'testa', bonus: { def: 9 }, trofeo: true, desc: 'difesa +9. Odora di naftalina' },
+  occhialiScuri:   { nome: 'Occhiali scuri da buttafuori', slot: 'testa', bonus: { def: 6, stress: 0.15 }, trofeo: true, desc: 'difesa +6, stress −15%' },
+  scarpeButtafuori:{ nome: 'Anfibi da buttafuori',     slot: 'piedi', bonus: { def: 5, velocita: 0.2 }, trofeo: true, desc: 'difesa +5, cammini +20%' },
+  sigaroMountain:  { nome: 'Il sigaro di Mister Mountain', slot: 'portafortuna', bonus: { atk: 6, critico: 0.1, stress: 0.1 }, trofeo: true, desc: 'attacco +6, critico +10%, stress −10%. Spento, per fortuna' },
+  // endgame: sfide leggendarie
+  tutaLeggenda:    { nome: 'Tuta della Leggenda',      slot: 'corpo', bonus: { def: 15, fatica: 0.1 }, leggendario: true, desc: 'difesa +15, lavori −10% fatica' },
+  stivaliSette:    { nome: 'Stivali delle sette cascine', slot: 'piedi', bonus: { def: 7, velocita: 0.35 }, leggendario: true, desc: 'difesa +7, cammini +35%' },
+  coronaBassa:     { nome: 'Corona della Bassa',       slot: 'testa', bonus: { def: 10, atk: 4, stress: 0.1 }, leggendario: true, desc: 'difesa +10, attacco +4, stress −10%' },
 };
 
 // Consumabili. I primi tre ci sono già nel gioco (si raccolgono). "effetto" è letto da prog.usa().
@@ -124,4 +167,17 @@ export const OGGETTI = {
   integratore: { nome: 'Integratore «Forza Bassa»', icona: '🥤', effetto: { tired: -25 }, combattimento: 'self', prezzo: 6 },
   pizza:    { nome: 'Pizza da asporto',  icona: '🍕', effetto: { health: 40, stress: -5 }, combattimento: 'self', prezzo: 8 },
   kebab:    { nome: 'Kebab da asporto',  icona: '🥙', effetto: { health: 30, tired: -5 }, combattimento: 'self', prezzo: 6 },
+  // bottino dei nemici e dei boss (src/data/boss.js): si vende al Bubetto
+  miele:    { nome: 'Miele dei calabroni', icona: '🍯', effetto: { health: 70, stress: -10 }, combattimento: 'self', vendita: 15 },
+  salame:   { nome: 'Salame recuperato', icona: '🥓', effetto: { health: 55 }, combattimento: 'self', vendita: 12 },
+  pelleNutria: { nome: 'Pelle di nutria', icona: '🟫', vendita: 4 },
+  piuma:    { nome: 'Piuma di gazza',    icona: '🪶', vendita: 3 },
+  gingillo: { nome: 'Gingillo luccicante', icona: '💍', vendita: 25 },
+  zanna:    { nome: 'Zanna di cinghiale', icona: '🦷', vendita: 12 },
+  pelleLupo:{ nome: 'Pelliccia di lupo', icona: '🐺', vendita: 20 },
+  pennaVolpe: { nome: 'Coda di volpe',   icona: '🦊', vendita: 9 },
+  rottame:  { nome: 'Pezzo di ricambio', icona: '⚙️', vendita: 15 },
+  trofeoBoss: { nome: 'Trofeo di un boss', icona: '🏆', vendita: 60 },
+  pepita:   { nome: 'Pepita della Bassa', icona: '🪙', vendita: 150 },
+  elisir:   { nome: 'Elisir del Dottor Pastiglia', icona: '⚗️', effetto: { health: 120, tired: -30, stress: -20 }, combattimento: 'self', vendita: 40 },
 };

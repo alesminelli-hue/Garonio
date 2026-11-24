@@ -17,6 +17,8 @@
 //                                     maiali:box|mangime|parto|infermeria|grata
 //                                     bar:bancone|consulente|tavolo|carte|biliardo|jukebox|annunci|retro
 //                                     magazzino:bancone|scaffali|usato|lavagna
+//   bersaglioExtra(fn)          fn({ edificio, lx, lz, vicino(zona, r) }) => { label, fn } | null: azioni in più vicino ai mobili
+//                               (es. la tana di un boss, src/boss.js); vince sull'azione del mobile.
 //   registra(id, def)           aggiunge un interno nuovo (es. una tana), stesso formato di src/data/interni.js
 //   mondo(id, x, z)             da coordinate locali della stanza a coordinate del mondo
 //   stanza()                    la stanza attuale { id, nome, ... }
@@ -248,6 +250,7 @@ export class Interni {
     if (!this.origini[id]) this.origini[id] = { x: BASE_X + Object.keys(this.origini).length * PASSO, z: BASE_Z };
   }
   aggancia(zona, fn) { this.agganci[zona] = fn; }
+  bersaglioExtra(fn) { (this.extraBersagli ??= []).push(fn); }
   mondo(id, x, z) { const o = this.origini[id]; return { x: o.x + x, z: o.z + z }; }
   stanza() { return this._stanza; }
   etichettaPorta(id) { return PORTE[id]; }
@@ -1185,6 +1188,18 @@ export class Interni {
     // uscita
     const u = def.uscita;
     if (Math.hypot(lx - u.x, lz - u.z) < 1.0) return { label: TESTI.uscita, fn: () => this.esci() };
+    // azioni in più di altri moduli (es. la tana di un boss accanto a un mobile)
+    if (this.extraBersagli?.length) {
+      const vicino = (zona, r = 0.9) => c.mobili.some(({ m }) => {
+        if (m.zona !== zona) return false;
+        const z0 = m.parete ? 0 : m.z, z1 = m.parete ? 0.35 : m.z + m.d;
+        return Math.hypot(Math.max(m.x - lx, 0, lx - (m.x + m.w)), Math.max(z0 - lz, 0, lz - z1)) < r;
+      });
+      for (const f of this.extraBersagli) {
+        const t = f({ edificio: id, lx, lz, vicino });
+        if (t) return { label: t.label, fn: async () => { await t.fn(); await this._dopo(); } };
+      }
+    }
     // mobili
     let best = null, bd = 0.75;
     for (const { m } of c.mobili) {

@@ -449,7 +449,7 @@ export class Bestie {
       { label: 'Mattina (8:00)', fn: () => { this._ora(8); return tempo(); } },
       { label: 'Notte (21:00)', fn: () => { this._ora(21); return tempo(); } },
       { label: 'Stagione successiva (solo per bestie e nemici)', fn: () => { this.st.stagioneProva = STAGIONI[(STAGIONI.indexOf(this.stagione()) + 1) % 4]; return tempo(); } },
-      { label: 'Livello +3', fn: () => { this._livello(Math.min(20, this.s.level + 3)); return tempo(); } },
+      { label: 'Livello +3', fn: () => { this._livello(Math.min(30, this.s.level + 3)); return tempo(); } },
       { label: 'Livello 1', fn: () => { this._livello(1); return tempo(); } },
       { label: '◀ Indietro', fn: () => [menu()] },
     ] }];
