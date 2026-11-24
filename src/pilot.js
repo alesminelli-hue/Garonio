@@ -18,7 +18,7 @@ const POSTI = {
 };
 
 const GUIDA = [
-  "COSA PROVARE (1/4) · ATTREZZI. Tettoia accanto all'officina: E sulla rastrelliera. Il rosso parte con l'aratro, il verde con la seminatrice. Cambia attrezzo, fai il pieno di gasolio, ordina la semente. Nel campo a piedi non si zappa più: serve il trattore.",
+  "COSA PROVARE (1/4) · ATTREZZI. Tettoia accanto al deposito: E sulla rastrelliera. Il rosso parte con l'aratro, il verde con la seminatrice. Cambia attrezzo, fai il pieno di gasolio, ordina la semente. Nel campo a piedi non si zappa più: serve il trattore.",
   "COSA PROVARE (2/4) · CAMPI. Aratro sul campo di mais: le zolle si arano dietro al trattore. Poi seminatrice (consuma semente). Turbina sul rosso vicino al canale: spruzza e bagna. Falciatrice sul verde: raccoglie il maturo nel cassone (40), che si scarica al fienile. Uscendo dal campo fermati per alzare l'attrezzo, sennò la Vigilessa multa.",
   "COSA PROVARE (3/4) · MAIALI. Arrivano il giorno 3. Capannone o cancello del recinto: nutri, pulisci, cura (veterinario o pomata), rinfresca col caldo, vendi. Il giorno 9 di notte c'è il parto (veglia dopo le 21). In autunno, giorno 10, la fiera: servono maiali sani e contenti.",
   "COSA PROVARE (4/4) · ANNATA. Riga dell'annata sotto le barre (tocca per i dettagli): stagione, meteo, fiducia, obiettivo. A fine stagione il Gigante controlla l'obiettivo; dopo l'inverno c'è il finale alla cena di Natale (alto, medio o basso). Missioni nuove per stagione: trebbia, irriga, maiali, semina del grano, salumificio, manutenzione.",

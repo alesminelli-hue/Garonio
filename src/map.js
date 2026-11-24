@@ -32,6 +32,10 @@ export const ROADS = [
   { id: 'vialetto', name: 'Vialetto di casa', type: 'sterrato', width: 2, points: [[74, 54], [74, 68.5]] },
   { id: 'via-maiali', name: 'Via dei Capannoni', type: 'sterrato', width: 2, points: [[125, 54], [125, 69.5]] },
   { id: 'via-ponte', name: 'Strada del ponte', type: 'sterrato', width: 2, points: [[119, 29], [119, -4]] },
+  // il paese nuovo a sud della piazza: chiesa, farmacia, dottore, pizzeria e, giù nel bosco, il castello
+  { id: 'via-roma', name: 'Via Roma', type: 'sterrato', width: 2, points: [[21, 54], [21, 102], [10, 102]] },
+  { id: 'via-chiesa', name: 'Via della Chiesa', type: 'sterrato', width: 2, points: [[2, 76], [21, 76]] },
+  { id: 'via-gennaro', name: 'Vicolo della Pizzeria', type: 'sterrato', width: 2, points: [[21, 74], [38, 74]] },
 ];
 
 // Quanto vanno veloci i mezzi su ogni fondo (1 = piena velocità). Suggerimento per i mezzi guidabili.
@@ -59,6 +63,9 @@ export const ZONES = [
   { tile: 'p', x0: 93, x1: 109, z0: 39, z1: 42, name: 'Aia del Patata' },
   { tile: 'p', x0: 29, x1: 44, z0: 39, z1: 42, name: 'Aia del Postino' },
   { tile: 'p', x0: 134, x1: 152, z0: 38, z1: 42, name: 'Cortile del ranch' },
+  { tile: 'q', x0: 3, x1: 13, z0: 74, z1: 75, name: 'Sagrato della chiesa' },
+  { tile: 'q', x0: 3, x1: 18, z0: 98, z1: 101, name: 'Cortile del castello' },
+  { tile: 'p', x0: 51, x1: 69, z0: 50, z1: 52, name: 'Piazzale del meccanico' },
 ];
 
 // ---------- Edifici ----------
@@ -66,11 +73,23 @@ export const ZONES = [
 // wall: 'casa' | 'metallo' | 'legno' | 'bar' oppure un colore '#rrggbb' (intonaco).
 export const BUILDINGS = [
   { id: 'casa', label: 'CASA', x0: 62, z0: 61, w: 7, d: 5, h: 2.8, wall: 'casa', roof: '#b8432e', windows: 2 },
-  { id: 'officina', label: 'OFFICINA', x0: 80, z0: 60, w: 7, d: 6, h: 3, wall: 'metallo', roof: '#6a7078', windows: 1 },
+  { id: 'officina', label: 'DEPOSITO', x0: 80, z0: 60, w: 7, d: 6, h: 3, wall: 'metallo', roof: '#6a7078', windows: 1 },
   { id: 'bar', label: 'BAR', x0: 10, z0: 45, w: 7, d: 5, h: 2.8, wall: 'bar', roof: '#3a7a4a', windows: 2 },
   { id: 'maiali', label: 'MAIALI', x0: 128, z0: 62, w: 12, d: 6, h: 2.6, wall: 'metallo', roof: '#8a4a32', windows: 0 },
   { id: 'magazzino', label: 'BUBETTO', x0: 41, z0: 44, w: 8, d: 5.5, h: 3.2, wall: 'metallo', roof: '#4a7a5a', windows: 1 },
   { id: 'gallinaio', label: '', x0: 82, z0: 73.5, w: 2.5, d: 2, h: 1.4, wall: 'legno', roof: '#7a4a26', windows: 0, noDoor: true },
+  // edifici del paese esplorabili (interni in src/data/interni.js, personaggi in src/data/png.js)
+  { id: 'chiesa', label: '', x0: 2.5, z0: 68, w: 8, d: 6.4, h: 4.2, wall: '#efe2c4', roof: '#a8462e', windows: 2 },
+  { id: 'farmacia', label: 'FARMACIA', x0: 13.5, z0: 69.4, w: 6, d: 5, h: 2.8, wall: '#ece6d6', roof: '#a83a2a', windows: 1 },
+  { id: 'dottore', label: 'STUDIO MEDICO', x0: 23, z0: 67.4, w: 6, d: 5, h: 3, wall: '#e4ecf0', roof: '#8a3a2a', windows: 2 },
+  { id: 'pizzeria', label: 'PIZZERIA', x0: 30.5, z0: 67.4, w: 6, d: 5, h: 2.8, wall: '#f0d8a8', roof: '#b8432e', windows: 1 },
+  { id: 'kebab', label: 'KEBAB', x0: 17.6, z0: 45.5, w: 4, d: 4, h: 2.8, wall: '#f4e4b8', roof: '#5a4a3a', windows: 0 },
+  { id: 'meccanico', label: 'DA ZENO', x0: 52, z0: 44.4, w: 8, d: 6, h: 3.2, wall: 'metallo', roof: '#3a5a8a', windows: 1 },
+  { id: 'palestra', label: 'PALESTRA', x0: 61, z0: 44.6, w: 7, d: 5.8, h: 3.2, wall: '#d0ccc0', roof: '#4a4a52', windows: 1 },
+  { id: 'castello', label: 'CASTELLO', x0: 5.5, z0: 91, w: 9, d: 7, h: 4.5, wall: '#a8a090', roof: '#8a8476', windows: 0, tetto: 'merli' },
+  { id: 'campanile', label: '', x0: 10.7, z0: 70.4, w: 2, d: 2, h: 7.5, wall: '#b4583a', roof: '#7a3a2a', windows: 0, decor: true, noDoor: true, tetto: 'cuspide' },
+  { id: 'torre-sx', label: '', x0: 2.5, z0: 92, w: 3, d: 3, h: 6.5, wall: '#9a9484', roof: '#7a3a2a', windows: 0, decor: true, noDoor: true, tetto: 'cuspide' },
+  { id: 'torre-dx', label: '', x0: 14.5, z0: 92, w: 3, d: 3, h: 6.5, wall: '#9a9484', roof: '#7a3a2a', windows: 0, decor: true, noDoor: true, tetto: 'cuspide' },
   // scenografia
   { id: 'capannone2', label: '', x0: 142, z0: 62, w: 10, d: 6, h: 2.6, wall: 'metallo', roof: '#8a4a32', windows: 0, decor: true },
   { id: 'fienile', label: 'FIENILE', x0: 51, z0: 19, w: 7, d: 5, h: 3.2, wall: 'legno', roof: '#7a4a26', windows: 0, decor: true },
@@ -100,6 +119,8 @@ export const PROPS = [
   { kind: 'cartello', x: 38, z: 57.4, text: '← BAR' },
   { kind: 'cartello', x: 50.6, z: 57.4, text: 'NIGHT ↓' },   // Night Paradiso (src/paradiso.js)
   { kind: 'cartello', x: 30.5, z: 51.6, text: 'NIGHT →' },
+  { kind: 'cartello', x: 19.2, z: 57.4, text: 'CHIESA ↓' },
+  { kind: 'cartello', x: 19.2, z: 80, text: 'CASTELLO ↓' },
 ];
 
 // ---------- Punti importanti ----------
@@ -119,17 +140,20 @@ export const PLACES = {
     bar: { x: 21, z: 51, dir: 0 },
     campi: { x: 77, z: 27, dir: 0 },
     maiali: { x: 121.5, z: 69.5, dir: 0 },
+    meccanico: { x: 64.5, z: 51, dir: 0 },     // davanti da Zeno (src/officina.js)
   },
 };
 
 // Punti di riferimento per minimappa e cartelli.
 export const LANDMARKS = [
-  { name: 'Casa', x: 65.5, z: 63.5 }, { name: 'Officina', x: 83.5, z: 63 }, { name: 'Bar', x: 13.5, z: 47.5 }, { name: 'Bubetto', x: 45, z: 46.5 },
+  { name: 'Casa', x: 65.5, z: 63.5 }, { name: 'Deposito', x: 83.5, z: 63 }, { name: 'Bar', x: 13.5, z: 47.5 }, { name: 'Bubetto', x: 45, z: 46.5 },
   { name: 'Maiali', x: 134, z: 65 }, { name: 'Campo', x: 74, z: 17 }, { name: 'Orto', x: 65.5, z: 75 },
   { name: 'Pollaio', x: 81, z: 76.5 }, { name: 'Laghetto', x: 35, z: 83.5 },
   { name: 'Paradiso', x: 48, z: 63.5 },
   { name: 'Mercato', x: 33, z: 62 }, { name: 'Gare', x: 61, z: 27.5 },
   { name: 'Patata', x: 101, z: 36.5 }, { name: 'Postino', x: 36.5, z: 36.5 }, { name: 'Frank', x: 144.5, z: 35.5 },
+  { name: 'Chiesa', x: 6.5, z: 71 }, { name: 'Farmacia', x: 16.5, z: 72 }, { name: 'Dottore', x: 26, z: 70 }, { name: 'Pizzeria', x: 33.5, z: 70 },
+  { name: 'Kebab', x: 19.6, z: 47.5 }, { name: 'Zeno', x: 56, z: 47.4 }, { name: 'Palestra', x: 64.5, z: 47.5 }, { name: 'Castello', x: 10, z: 94.5 },
 ];
 
 // ---------- Griglia del terreno ----------

@@ -21,7 +21,14 @@ Il design completo è in [GDD.md](GDD.md).
 - Le nutrie escono dal canale e mangiano le piante del campo: avvicinati e affrontale in uno scontro a turni (Attacca, Abilità, Oggetti, Difendi, Fuggi). Con lo stress sopra 60 si sblocca **Rabbia Incontrollata**.
 - **Magazzino del Bubetto** (parla col Bubetto in paese): armi‑attrezzo (rastrello, badile, forcone, falce, roncola, motosega: escono man mano nell'annata), vestiti, manuali (+1 punto abilità ciascuno), trappole, pomate e la rete anti‑nutria, l'angolo dell'usato che cambia ogni lunedì, e la lavagna con le sue commissioni (piccioni sul silos, ferro vecchio nei fossi, il pacco per il Postino, i soldi di Mister Frank, le code di ratto). Più commissioni fai, più sconto ti fa.
 - **Armi e mosse**: ogni arma porta la sua mossa nel menu Abilità dello scontro (Lottatore grado 3 sblocca la seconda). Coi livelli arrivano Lancio di letame, Colpo di clacson (se arrivi col mezzo), Bestemmia trattenuta, Fischio al cane e Secondo fiato. Nello scontro si usano tutti gli oggetti dello zaino: trappole, panini, grappa, pomata...
-- Officina: Zeno affila l'arma impugnata (3 gradi, +2 attacco l'uno)... se è di buon umore.
+- **Da Zeno** (l'officina di Zeno in paese, sulla provinciale accanto alla palestra): Zeno affila l'arma impugnata (3 gradi, +2 attacco l'uno)... se è di buon umore. Il garzone Ivan sa dirti com'è l'umore del capo, e c'è la macchinetta del caffè. L'officina di casa ora è solo il **deposito** di Garonio e del Gigante (rastrelliera degli attrezzi, armadietti degli upgrade).
+- **Edifici del paese esplorabili** (porta + **E**, ognuno coi suoi orari e i suoi personaggi):
+  - **Chiesa** (Via della Chiesa, col campanile): Don Peppino confessa (stress −12 una volta al giorno) e benedice, Suor Carmela ti fa lavorare in sagrestia; ceri, banchi per un pisolino, il vino della messa e la corda delle campane.
+  - **Castello del Conte** (in fondo a Via Roma, nel bosco): il Conte della Bassa dà un lavoretto al giorno (dopo 3 ti dà la chiave del forziere nelle segrete), Ambrogio il maggiordomo fa la visita guidata; trono, camino, biblioteca (+XP) e armature.
+  - **Farmacia** del Dottor Pastiglia: aspirina, sciroppo ricostituente, pomata e integratore; la bilancia pesapersone.
+  - **Studio medico** del Dottor Mutua con l'infermiera Assunta: visita a 15€ (vita al massimo, una al giorno).
+  - **Palestra «Bicipite d'Oro»** del Sergente: panca, tapis roulant e sacco tolgono stress e danno XP; ogni 5 allenamenti +2 di vita massima (fino a +20).
+  - **Pizzeria «Da Gennaro»** (anche il posto degli appuntamenti) e **Kebab di Kemal** in piazza: pasti al tavolo o da asporto nello zaino.
 - **Mezzi**: avvicinati alla Vespa, alla Punto o ai trattori e premi **E** per salire o scendere. Si guida con frecce/WASD o con la levetta, **Q** (o il pulsante 📯 sul telefono) suona il clacson.
   - La Vespa blu è veloce ma ogni tanto non parte o si spegne. La Punto bianca consuma benzina e può forare.
   - I trattori arano da soli le zolle del campo dove passano e spaventano le nutrie, ma con gli urti o guidando troppo stanco si rompono: arriva Mister Mountain.

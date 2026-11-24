@@ -31,7 +31,7 @@ export class Officina {
         { label: '⚙️ Elaborazioni di Vespa e Punto', fn: () => [this._paginaElab()] },
       ];
     });
-    game.interni?.aggancia?.('officina:ponte', () => game.ui.dialog([this._paginaElab()]));
+    game.interni?.aggancia?.('meccanico:ponte', () => game.ui.dialog([this._paginaElab()]));
     game.on('nuovoGiorno', () => this._nuovoGiorno());
     game.vehicles.blocchi.push(v => this._nonParte(v));
   }
@@ -212,7 +212,7 @@ export class Officina {
     g.ui.toast(`🚚 ${MEZZI_NOMI[v.id]} riportat${v.kind === 'trattore' ? 'o' : 'a'} in azienda: ${prezzo}€${debito ? ` (${debito}€ sul conto di Zeno)` : ''}`, debito ? 'bad' : 'good');
     const righe = [pick(this._zenoAperto() ? ZENO.rimorchio : ZENO.rimorchioNotte)];
     if (debito) righe.push(ZENO.rimorchioDebito(debito));
-    if (v.st.cond <= 0) righe.push('Rotto resta rotto, eh. Per quello vieni in officina.');
+    if (v.st.cond <= 0) righe.push('Rotto resta rotto, eh. Per quello vieni da me in paese.');
     return [this._zeno(righe.join(' '), [{ label: 'Grazie, Zeno', fn: null }])];
   }
 

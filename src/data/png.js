@@ -63,7 +63,7 @@ export const PNG = {
   },
   zeno: {
     nome: 'Zeno il meccanico', ruolo: 'Scorbutico, ripara i mezzi e spesso ti frega.',
-    posti: [{ ore: [7, 19], interno: 'officina', x: 2.2, z: 1.05 }],   // dietro al bancone
+    posti: [{ ore: [7, 19], interno: 'meccanico', x: 2.2, z: 1.05 }],   // dietro al bancone della sua officina in paese («Da Zeno»)
     aspetto: { sprite: 'meccanico', w: 17, h: 24, skin: '#d9a27a', hair: '#4a4a4a', hairStyle: 'flat', shirt: '#5a6a7a', overalls: '#2a3a5a', pants: '#2a3a5a', boots: '#1a1a1a', mustache: '#3a3a3a', eyes: 'angry' },
     amicizia: [-50, 50, -5],
     saluti: [
@@ -155,6 +155,180 @@ export const PNG = {
       "Il mio pozzo è il più profondo della county. Non toccarlo, eh!",
       "Il trattore? No no, quello è il mio horse. Si chiama Thunder.",
       "In America le pannocchie sono grandi così. Io in America non ci sono mai stato, ma lo so.",
+    ],
+  },
+  // ---------- Personaggi degli edifici del paese (interni in src/data/interni.js, scelte in src/edifici.js) ----------
+  donPeppino: {
+    nome: 'Don Peppino', ruolo: 'Il parroco. Confessa, benedice e tifa Milan dal pulpito.',
+    posti: [{ ore: [7, 20], interno: 'chiesa', x: 9.0, z: 2.3 }],   // accanto all'altare
+    aspetto: { sprite: 'prete', w: 16, h: 24, skin: '#e8b48a', hair: '#2a2a2a', hairStyle: 'flat', shirt: '#1e1e24', pants: '#1e1e24', boots: '#111', eyes: 'normal' },
+    amicizia: [-30, 60, 10],
+    saluti: [
+      "Garonio, figliolo! Era da Pasqua del 2009 che non ti vedevo. E anche allora eri venuto per le uova.",
+      "Pace e bene. Soprattutto pace, che tuo padre ieri ha bestemmiato fino al campanile.",
+      "Entra, entra. Qui il Gigante non comanda. Comanda uno più grosso di lui.",
+    ],
+    chiacchiere: [
+      "Il Signore perdona tutto. Il Gigante no, ma il Signore sì.",
+      "La Pina viene a confessarsi tutti i giorni. Non per i suoi peccati: per raccontarmi quelli degli altri.",
+      "Il campanile pende un po'. Il geometra Ballarin dice che è artistico.",
+    ],
+  },
+  suoraCarmela: {
+    nome: 'Suor Carmela', ruolo: 'Tiene in ordine la sagrestia e il paese. Con la bacchetta.',
+    posti: [{ ore: [8, 18], interno: 'chiesa', x: 15.6, z: 3.6 }],
+    aspetto: { sprite: 'suora', w: 16, h: 24, skin: '#f0c8a8', hair: '#1e1e24', hairStyle: 'long', shirt: '#1e1e24', pants: '#1e1e24', boots: '#111', eyes: 'normal' },
+    amicizia: [-30, 50, 0],
+    saluti: [
+      "Garonio. Le scarpe. Fango in sagrestia, no.",
+      "Ti ho visto alla processione. Masticavi la gomma. Il Signore ha visto. Io pure.",
+    ],
+    chiacchiere: [
+      "Il vino della messa è contato. Lo so io quante bottiglie ci sono. E anche Don Peppino lo sa, purtroppo.",
+      "Facevo catechismo a tuo padre. Era già grosso a nove anni. E già non ascoltava.",
+    ],
+  },
+  conte: {
+    nome: 'Il Conte della Bassa', ruolo: 'Ultimo nobile del paese. Castello enorme, conto in banca piccolo.',
+    posti: [{ ore: [10, 21], interno: 'castello', x: 17.0, z: 2.6 }],   // davanti al trono
+    aspetto: { sprite: 'conte', w: 17, h: 24, skin: '#f0d0b8', hair: '#f4f0e4', hairStyle: 'long', shirt: '#1e1e24', pants: '#1e1e24', boots: '#111', eyes: 'normal' },
+    amicizia: [-30, 60, 0],
+    saluti: [
+      "Oh, il giovane del Gigante. Si inchini. Non così tanto, mi fa venire il mal di schiena per lei.",
+      "Benvenuto nella mia umile dimora. Umile per un conte, s'intende.",
+      "Le ricordo che i suoi bisnonni zappavano le mie terre. Ora le zappa lei. Il mondo è giusto.",
+    ],
+    chiacchiere: [
+      "Il mio trisavolo ha combattuto a Solferino. Dalla parte sbagliata, ma con eleganza.",
+      "Il castello ha quarantadue stanze. Ne riscaldo una. Le altre le riscalda la mia dignità.",
+      "Ho venduto gli affreschi per rifare il tetto. Ora piove sugli affreschi del vicino.",
+    ],
+  },
+  ambrogio: {
+    nome: 'Ambrogio', ruolo: 'Il maggiordomo del Conte. Serve la famiglia da tre generazioni e da tre stipendi arretrati.',
+    posti: [{ ore: [9, 21], interno: 'castello', x: 6.6, z: 3.0 }],
+    aspetto: { sprite: 'professore', w: 16, h: 23, skin: '#e8c0a0', hair: '#d8d8d8', hairStyle: 'flat', shirt: '#5a3a22', pants: '#3a3a3a', boots: '#111', eyes: 'normal' },
+    amicizia: [-20, 50, 0],
+    saluti: [
+      "Il signor Conte la riceverà. Forse. Si pulisca i piedi, prego. Tutti e due.",
+      "Desidera un tè? Non ne abbiamo. Ma desiderarlo è gratis.",
+    ],
+    chiacchiere: [
+      "Nelle segrete c'è un forziere. Il signor Conte dice che è vuoto. Il signor Conte dice tante cose.",
+      "Lucido le armature ogni martedì. Quella a destra, una volta, mi ha risposto.",
+    ],
+  },
+  pastiglia: {
+    nome: 'Il Dottor Pastiglia', ruolo: 'Il farmacista. Ha una pillola per tutto, anche per i Gigante.',
+    posti: [{ ore: [8, 20], interno: 'farmacia', x: 6.2, z: 1.3 }],   // dietro al banco
+    aspetto: { sprite: 'farmacista', w: 16, h: 24, skin: '#e8b48a', hair: '#3a2a1a', hairStyle: 'flat', shirt: '#f4f4f0', pants: '#3a3a4a', boots: '#222', eyes: 'normal' },
+    amicizia: [-20, 50, 5],
+    saluti: [
+      "Buongiorno! Mal di schiena da zappa, mal di testa da padre o mal di cuore da bar?",
+      "Ricetta? No? Allora le do quello che darei a me. Cioè una camomilla.",
+    ],
+    chiacchiere: [
+      "Il Bubetto vende la pomata del veterinario. Io vendo quella per le persone. Il tubetto è lo stesso, il prezzo no.",
+      "Mister Mountain compra l'antiacido a scatoloni. Si vede che anche lui ha un capo.",
+    ],
+  },
+  dottorMutua: {
+    nome: 'Il Dottor Mutua', ruolo: 'Il medico condotto. Visita tutti, guarisce qualcuno.',
+    posti: [{ ore: [8, 19], interno: 'dottore', x: 10.0, z: 0.75 }],   // dietro alla scrivania
+    aspetto: { sprite: 'dottore', w: 16, h: 23, skin: '#e8b48a', hair: '#2a2a2a', hairStyle: 'flat', shirt: '#f4f4f0', pants: '#3a3a4a', boots: '#222', eyes: 'normal' },
+    amicizia: [-20, 50, 5],
+    saluti: [
+      "Si accomodi. Dica trentatré. Ecco, già sta meglio.",
+      "Ancora tu? Cos'è stavolta, nutria, trattore o Gigante?",
+    ],
+    chiacchiere: [
+      "Il certificato per non lavorare? A te? Tuo padre mi aspetta sotto casa col forcone.",
+      "Il veterinario e io abbiamo studiato insieme. Lui ha scelto le mucche perché non si lamentano.",
+    ],
+  },
+  assunta: {
+    nome: 'L\'infermiera Assunta', ruolo: 'Gestisce la sala d\'attesa come un campo di battaglia.',
+    posti: [{ ore: [8, 18], interno: 'dottore', x: 5.4, z: 0.8 }],   // dietro alla scrivania dell'accettazione
+    aspetto: { sprite: 'infermiera', w: 16, h: 23, skin: '#f0c8a8', hair: '#6a3a1a', hairStyle: 'long', shirt: '#f4f4f0', pants: '#f4f4f0', boots: '#ddd', eyes: 'normal' },
+    amicizia: [-20, 50, 5],
+    saluti: [
+      "Numero? Non hai preso il numero. Allora aspetti. Sì, anche se non c'è nessuno.",
+      "Siediti. Il dottore arriva. Il dottore arriva sempre. Prima o poi.",
+    ],
+    chiacchiere: [
+      "La Sciura Ines viene ogni mattina. Non è malata: qui c'è il riscaldamento.",
+      "Ho fatto più punture io che le zanzare del laghetto.",
+    ],
+  },
+  sergente: {
+    nome: 'Il Sergente', ruolo: 'Istruttore della palestra «Bicipite d\'Oro». Ex militare, ex tutto.',
+    posti: [{ ore: [7, 23], interno: 'palestra', x: 5.6, z: 3.8 }],
+    aspetto: { sprite: 'sergente', w: 16, h: 24, skin: '#d9a27a', hair: '#2a2a2a', hairStyle: 'flat', shirt: '#5a6a3a', pants: '#5a6a3a', boots: '#2a2a1a', mustache: '#2a2a2a', eyes: 'angry' },
+    amicizia: [-30, 50, 0],
+    saluti: [
+      "RECLUTA! Dieci flessioni. Poi parliamo. Poi altre dieci.",
+      "Quella pancia è un'arma impropria. La sequestriamo a suon di squat.",
+      "Al fronte mangiavamo sassi. Tu cosa mangi? Tortellini? Si vede.",
+    ],
+    chiacchiere: [
+      "La Debora fa la personal trainer qui. È più dura di me. E io ho fatto la naja a Merano.",
+      "Il Bruno «il Toro» si allena qui. Solleva centoventi chili. Poi va al bar e non solleva il portafoglio.",
+    ],
+  },
+  gennaro: {
+    nome: 'Gennaro', ruolo: 'Il pizzaiolo. Napoletano trapiantato nella nebbia, canta per non piangere.',
+    posti: [{ ore: [11, 24], interno: 'pizzeria', x: 2.8, z: 2.2 }],   // accanto al forno
+    aspetto: { sprite: 'cuoco2', w: 17, h: 24, skin: '#e0a986', hair: '#2a2a2a', hairStyle: 'flat', shirt: '#f4f4f0', pants: '#f4f4f0', boots: '#222', mustache: '#2a2a2a', eyes: 'normal' },
+    amicizia: [-20, 60, 10],
+    saluti: [
+      "Uè, Garonio! Margherita? Diavola? Una pizza con le pannocchie? No, quella no, mi rifiuto.",
+      "♪ O sole mio... ♪ Qui il sole lo vedo a luglio, ma la pizza è buona tutto l'anno.",
+    ],
+    chiacchiere: [
+      "Il Gigante una volta ha ordinato la pizza con la panna. Da allora il forno non è più lo stesso.",
+      "La nebbia qua è così fitta che la pizza arriva al tavolo fredda. Anche se il tavolo è di fianco al forno.",
+    ],
+  },
+  concetta: {
+    nome: 'La Concetta', ruolo: 'Cameriera della pizzeria. Sa chi esce con chi prima che lo sappiano loro.',
+    posti: [{ ore: [12, 15], interno: 'pizzeria', x: 7.6, z: 3.2 }, { ore: [18, 24], interno: 'pizzeria', x: 7.6, z: 3.2 }],
+    aspetto: { sprite: 'cameriera2', w: 16, h: 23, skin: '#f0c8a8', hair: '#c8602a', hairStyle: 'long', shirt: '#1e1e24', pants: '#1e1e24', boots: '#222', eyes: 'normal' },
+    amicizia: [-20, 50, 5],
+    saluti: [
+      "Tavolo per uno? Come sempre. Ti porto anche il menu, così fai finta di leggerlo.",
+      "Ciao Garonio! Stasera c'è la Federica al tavolo due. No, non ti ho detto niente.",
+    ],
+    chiacchiere: [
+      "Il Bepi viene qui solo a guardare dalla vetrina. Mai entrato. Dice che l'odore è gratis.",
+      "Mancia? Sì, grazie. Anche un consiglio: non ordinare la pizza all'ananas davanti a Gennaro.",
+    ],
+  },
+  kemal: {
+    nome: 'Kemal', ruolo: 'Il kebabbaro della piazza. Aperto quando tutti gli altri dormono.',
+    posti: [{ ore: [11, 24], interno: 'kebab', x: 3.3, z: 1.0 }],   // dietro al banco, vicino allo spiedo
+    aspetto: { sprite: 'cameriere', w: 16, h: 23, skin: '#c89070', hair: '#1e1e1e', hairStyle: 'flat', shirt: '#f4f4f0', pants: '#1e1e24', boots: '#222', eyes: 'normal' },
+    amicizia: [-20, 60, 10],
+    saluti: [
+      "Ciao amico! Kebab completo? Cipolla? Piccante? Con tuo padre che urla è già abbastanza piccante, eh?",
+      "Garonio! Il mio cliente migliore dopo mezzanotte. Prima di mezzanotte sei il secondo, dopo il Tarcisio.",
+    ],
+    chiacchiere: [
+      "Sono qui da vent'anni. Parlo il dialetto meglio del Bepi. Lui dice di no, in dialetto.",
+      "La ricetta della salsa è segreta. Anche per me, la fa mia zia e non me la dice.",
+    ],
+  },
+  ivan: {
+    nome: 'Ivan', ruolo: 'Il garzone di Zeno. Cuffie in testa, chiave inglese in mano, testa altrove.',
+    posti: [{ ore: [8, 18], interno: 'meccanico', x: 7.2, z: 4.3 }],
+    aspetto: { sprite: 'garzone_cuffie', w: 16, h: 24, skin: '#e8b48a', hair: '#4a2a1a', hairStyle: 'flat', shirt: '#f4f4f0', overalls: '#2a4a8a', pants: '#2a4a8a', boots: '#222', eyes: 'normal' },
+    amicizia: [-20, 50, 5],
+    saluti: [
+      "Eh? Cosa? Aspetta che mi tolgo le cuffie. ...Eh? Cosa?",
+      "Zeno è di là. Se chiede, io stavo lavorando.",
+    ],
+    chiacchiere: [
+      "Zeno dice che il ponte sollevatore è del '74. Io dico che è Zeno a essere del '74.",
+      "Una volta ho cambiato le gomme alla Punto della Vigilessa. Al contrario. Non ditelo a nessuno.",
     ],
   },
 };

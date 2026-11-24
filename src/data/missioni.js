@@ -37,7 +37,7 @@ export const MISSIONI = {
       "Il mais non si pianta da solo, e nemmeno tu ti alzi da solo. Voglio {n} zolle seminate entro le {ora}.",
       "Oggi semina. {n} zolle nel campo grande, entro le {ora}. E dritte, non a zig-zag come l'altra volta.",
     ],
-    consiglio: "Trattori sotto la tettoia, accanto all'officina: il rosso ha l'aratro, il verde la seminatrice. Il campo di mais è a nord: prima ari, poi semini.",
+    consiglio: "Trattori sotto la tettoia, accanto al deposito: il rosso ha l'aratro, il verde la seminatrice. Il campo di mais è a nord: prima ari, poi semini.",
     successo: [
       "Le file sono storte, ma almeno ci sono. Hmpf.",
       "Seminato? Bene. Fra due mesi vediamo se è nato mais o vergogna.",
@@ -287,7 +287,7 @@ Object.assign(MISSIONI, {
       "D'inverno i mezzi si sistemano. Pieno di gasolio ai trattori o un attrezzo da Zeno, entro le {ora}.",
       "I trattori hanno sete e gli attrezzi cigolano. Sistema qualcosa entro le {ora}.",
     ],
-    consiglio: "Cisterna del gasolio sotto la tettoia, accanto all'officina. Le riparazioni degli attrezzi le fa Zeno.",
+    consiglio: "Cisterna del gasolio sotto la tettoia, accanto al deposito. Le riparazioni degli attrezzi le fa Zeno.",
     successo: ["Mezzi sistemati. Zeno ti ha fregato? Sì. Ma meno del solito.", "Bene. Un trattore con il pieno è un trattore felice."],
     rimprovero: ["Il trattore è a secco e tu sei al bar. Indovina chi arriva?", "Niente manutenzione. A primavera si rompe tutto e la colpa è tua."],
   },

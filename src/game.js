@@ -38,6 +38,7 @@ import { Paradiso } from './paradiso.js';
 import { Lavoretti } from './lavoretti.js';
 import { Sorprese } from './sorprese.js';
 import { Diario } from './diario.js';
+import { EdificiPaese } from './edifici.js';
 import { Salvataggi } from './salvataggi.js';
 import { Ragazze } from './ragazze.js';
 import { Mercato } from './mercato.js';
@@ -197,6 +198,8 @@ export class Game {
     this.mercato = new Mercato(this); this.mercato.init();
     this.gare = new Gare(this); this.gare.init();
     this.scommesse = new Scommesse(this); this.scommesse.init();
+    // chiesa, castello, farmacia, dottore, palestra, pizzeria e kebab: azioni e personaggi (src/edifici.js)
+    this.edifici = new EdificiPaese(this); this.edifici.init();
 
     if (!this.s.introDone) await this.intro();
     else if (this.s.rifaiGiornata) { // giornata ricominciata da capo (vedi _rifaiGiornata)
@@ -406,7 +409,7 @@ export class Game {
     const tx = Math.floor(P.x), tz = Math.floor(P.z);
     const area = this.world.areaAt(tx, tz);
     if (area === 'field' && this.attrezzi) { // nel campo grande si lavora col trattore (GDD 20.1)
-      return { tile: [tx, tz], label: 'Campo di mais: qui si lavora col trattore', fn: () => this.ui.toast('Aratro, seminatrice, falciatrice e turbina si agganciano sotto la tettoia, accanto all\'officina.') };
+      return { tile: [tx, tz], label: 'Campo di mais: qui si lavora col trattore', fn: () => this.ui.toast('Aratro, seminatrice, falciatrice e turbina si agganciano sotto la tettoia, accanto al deposito.') };
     }
     if (area === 'field' || area === 'orto') {
       const key = tx + ',' + tz, p = this.s.plots[key];
