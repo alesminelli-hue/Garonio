@@ -70,6 +70,7 @@ export function auto_(tipo, col, f) { return tipo === 'ape' ? HDM.apeLato(col) :
 
 // ---------- Animali ----------
 export function gatto(col, frame = 0) {   // 0/1 passo, 2 dorme
+  const spr = PIX.animale('gatto', frame, 14, 10, { tinta: col, dorme: frame === 2 }); if (spr) return spr;
   return disegna(14, 10, P => {
     if (frame === 2) { P(col, 2, 5, 10, 5); P(col, 9, 3, 4, 4); P(shade(col, 0.7), 1, 7, 3, 2); P(col, 9, 2, 1, 1); P(col, 12, 2, 1, 1); P(INK, 10, 5, 2, 1); return; }
     P(col, 0, 1 + frame, 2, 5);                    // coda alzata
@@ -108,6 +109,7 @@ export function barboncino(frame = 0) {
   });
 }
 export function cane(frame = 0, pelo = '#b89060', scuro = '#6a4a2a') {
+  const spr = PIX.animale('cane', frame, 22, 15, { tinta: pelo }); if (spr) return spr;
   return disegna(22, 15, P => {
     P(scuro, 1, 4 + frame, 3, 2); P(scuro, 3, 5, 2, 2);
     P(pelo, 4, 6, 12, 5); P(scuro, 7, 6, 4, 2);                   // macchia
@@ -207,6 +209,7 @@ export const gnomo = () => disegna(10, 16, P => {
   P('#1a1420', 4, 5, 1, 1); P('#1a1420', 6, 5, 1, 1);
 });
 export function maialino(frame = 0) {
+  const spr = PIX.animale('maiale', frame, 18, 12); if (spr) return spr;
   return disegna(18, 12, P => {
     P('#f0a0b0', 3, 3, 11, 6); P('#e08898', 3, 7, 11, 2);
     P('#f0a0b0', 13, 2, 4, 5); P('#e07888', 16, 4, 2, 2); P('#1a1420', 15, 3, 1, 1); P('#e07888', 13, 1, 2, 2);

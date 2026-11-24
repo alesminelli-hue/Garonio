@@ -172,6 +172,7 @@ const MERCE = {
 
 // ---------- Il maiale (sprite via codice, segnaposto) ----------
 function maiale(frame = 0) {
+  const spr = PIX.animale('maiale', frame, 22, 15); if (spr) return spr;
   const [c, g] = PIX.makeCanvas(22, 15);
   const P = (col, x, y, w, h) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
   P('#e89aa8', 3, 4, 15, 8); P('#f4b4c0', 4, 4, 13, 3);        // corpo

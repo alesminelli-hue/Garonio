@@ -51,7 +51,7 @@ export const MERCATO = {
     {
       id: 'rina', nome: 'La Rina della verdura', x: 26.3, z: 61.2, tenda: '#3f8a3a', merce: 'pomodori',
       compra: ['pomodoro', 'patata'],
-      aspetto: { w: 16, h: 23, skin: '#f0c8a8', hair: '#d8d8d8', hairStyle: 'long', shirt: '#c85a8a', pants: '#4a4a5a', boots: '#2a2a2a', belly: true, eyes: 'normal' },
+      aspetto: { sprite: 'grembiule_verde', w: 16, h: 23, skin: '#f0c8a8', hair: '#d8d8d8', hairStyle: 'long', shirt: '#c85a8a', pants: '#4a4a5a', boots: '#2a2a2a', belly: true, eyes: 'normal' },
       saluti: [
         "Garonio! Cosa mi porti di bello? Non dirmi niente, lo vedo: niente di bello.",
         "Tesoro, i pomodori del mio Gianni erano così grossi che li vendevamo a fette. Era il '78. Che anno.",
@@ -64,7 +64,7 @@ export const MERCATO = {
     {
       id: 'ottavio', nome: 'Ottavio delle uova', x: 30.8, z: 61.2, tenda: '#e8c040', merce: 'uova',
       compra: ['uova'],
-      aspetto: { w: 16, h: 24, skin: '#e8b48a', hair: '#8a8a8a', hairStyle: 'bald', hat: '#f4efe2', shirt: '#f4efe2', pants: '#3a4a6a', boots: '#3a2a1a', mustache: '#6a6a6a', eyes: 'sleepy' },
+      aspetto: { sprite: 'cuoco', w: 16, h: 24, skin: '#e8b48a', hair: '#8a8a8a', hairStyle: 'bald', hat: '#f4efe2', shirt: '#f4efe2', pants: '#3a4a6a', boots: '#3a2a1a', mustache: '#6a6a6a', eyes: 'sleepy' },
       saluti: [
         "Come diceva mio nonno: gallina vecchia fa buon brodo, ma l'uovo oggi è meglio della frittata domani.",
         "Chi va piano va sano e va lontano, e chi va lontano... dove va? Ah, uova. Ne hai?",
@@ -77,7 +77,7 @@ export const MERCATO = {
     {
       id: 'bortolo', nome: 'Il Sor Bortolo, granaglie', x: 35.3, z: 61.2, tenda: '#c87830', merce: 'mais',
       compra: ['mais'],
-      aspetto: { w: 17, h: 24, skin: '#d9a27a', hair: '#e8e8e8', hairStyle: 'grey', hat: '#5a4630', shirt: '#6a7a5a', pants: '#4a3a2a', boots: '#2a1e14', beard: '#e8e8e8', eyes: 'sleepy' },
+      aspetto: { sprite: 'contadino_salopette', w: 17, h: 24, skin: '#d9a27a', hair: '#e8e8e8', hairStyle: 'grey', hat: '#5a4630', shirt: '#6a7a5a', pants: '#4a3a2a', boots: '#2a1e14', beard: '#e8e8e8', eyes: 'sleepy' },
       saluti: [
         "EH? MAIS? HAI DETTO MAIS? PARLA PIÙ FORTE, GIOVANOTTO!",
         "Ai miei tempi le pannocchie le portavamo a piedi. In salita. Tutte e due le strade erano in salita.",
@@ -90,7 +90,7 @@ export const MERCATO = {
     {
       id: 'gilberto', nome: 'Gilberto «Salamella», il norcino', x: 39.8, z: 61.2, tenda: '#a82a2a', merce: 'salami',
       compra: ['salame'],
-      aspetto: { w: 18, h: 25, skin: '#f0b898', hair: '#2a1a1a', hairStyle: 'flat', shirt: '#f4efe2', pants: '#3a3a4a', boots: '#2a2a2a', belly: true, mustache: '#2a1a1a', eyes: 'normal' },
+      aspetto: { sprite: 'pizzaiolo', w: 18, h: 25, skin: '#f0b898', hair: '#2a1a1a', hairStyle: 'flat', shirt: '#f4efe2', pants: '#3a3a4a', boots: '#2a2a2a', belly: true, mustache: '#2a1a1a', eyes: 'normal' },
       saluti: [
         "♪ Nessun dormaaa... ♪ Garonio! Hai salami? Il salame è come l'opera: ci vuole tempo, pazienza e tanto pepe.",
         "♪ La donna è mobileee... ♪ Ma il salame no. Il salame è fedele. Ne porti?",
@@ -105,7 +105,7 @@ export const MERCATO = {
     {
       id: 'nando', nome: 'Nando delle pentole', x: 33, z: 64.2, carretto: true,
       compra: [],
-      aspetto: { w: 16, h: 24, skin: '#e8b48a', hair: '#1a1a1a', hairStyle: 'flat', shirt: '#e8e8e8', tie: '#d8b020', pants: '#2a2a3a', boots: '#6a3a1a', mustache: '#1a1a1a', eyes: 'normal' },
+      aspetto: { sprite: 'venditore', w: 16, h: 24, skin: '#e8b48a', hair: '#1a1a1a', hairStyle: 'flat', shirt: '#e8e8e8', tie: '#d8b020', pants: '#2a2a3a', boots: '#6a3a1a', mustache: '#1a1a1a', eyes: 'normal' },
       saluti: [
         "Signore e signori! Garonio! Avvicinati! La pentola che non attacca! Non attacca neanche se la preghi!",
         "Oggi, solo oggi, solo per te: prezzi da fallimento! Il mio, non il tuo.",

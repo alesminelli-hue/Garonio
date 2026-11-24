@@ -138,7 +138,8 @@ export class Game {
     const W = this.world;
     const gf = PIX.garonioFrames();
     this.player = W.actor(gf.frames, { w: gf.w, h: gf.h, shadow: 0.45 });
-    this.gigante = W.actor(PIX.characterFrames('gigante'), { w: 22 / 16 * 1.3, h: 2.6, shadow: 0.55 });
+    const fg = PIX.characterFrames('gigante'), og = PIX.CHARACTERS.gigante;   // misure dopo i fotogrammi (lo sprite le adatta)
+    this.gigante = W.actor(fg, { w: og.w / 16 * 1.3, h: og.h / 16 * 1.3, shadow: 0.55 });
     const G = PLACES.gigante;
     this.gigante.group.position.set(G.x, 0, G.z);
     W.solids.push({ x0: G.x - 0.3, z0: G.z - 0.2, x1: G.x + 0.3, z1: G.z + 0.2 });
@@ -619,7 +620,7 @@ export class Game {
   async mountain(reason, stress, first = null) {
     if (this.mm) return;
     const P = this.player.group.position;
-    this.mm = this.world.actor(PIX.characterFrames('mountain'), { w: 30 / 16 * 1.25, h: 42 / 16 * 1.25, shadow: 0.8 });
+    this.mm = this.world.actor(PIX.characterFrames('mountain'), { w: PIX.CHARACTERS.mountain.w / 16 * 1.25, h: PIX.CHARACTERS.mountain.h / 16 * 1.25, shadow: 0.8 });
     const side = P.x > 30 ? -1 : 1;
     this.mm.group.position.set(P.x + side * 2.6, 0, P.z + 0.3);
     if (side < 0) this.mm.setFrame(0); else this.mm.setFrame(3);

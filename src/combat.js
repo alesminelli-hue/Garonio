@@ -73,7 +73,7 @@ function boar(frame = 0) {
   return outline(c);
 }
 
-const DRUNK = { w: 18, h: 25, skin: '#e89a80', hair: '#8a8a8a', hairStyle: 'bald', shirt: '#7a8a3a', pants: '#4a4a4a', boots: '#222', belly: true, mustache: '#6a6a6a', eyes: 'sleepy' };
+const DRUNK = { sprite: 'ciccione', w: 18, h: 25, skin: '#e89a80', hair: '#8a8a8a', hairStyle: 'bald', shirt: '#7a8a3a', pants: '#4a4a4a', boots: '#222', belly: true, mustache: '#6a6a6a', eyes: 'sleepy' };
 
 // sprite rivolti a sinistra (verso Garonio)
 const left = canvases => canvases.map(PIX.mirror);
