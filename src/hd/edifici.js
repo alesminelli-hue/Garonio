@@ -608,6 +608,48 @@ export function meccanico() {
   return outline(d.c);
 }
 
+// Consorzio agrario di Mister Rodella: capannone verde, saracinesca aperta sui sacchi di mangime,
+// vetrina con le bustine di semi e il muso di un trattore nuovo in esposizione
+export function consorzio() {
+  const hM = 54, { d, W, mx, my, mw } = base(10, hM, 22);
+  tettoLamiera(d, 0, 0, W, 23, '#2a6a3a');
+  lamiera(d, mx, my, mw, hM, '#c8ccc0');
+  d.P('#2a6a3a', mx, my + hM - 6, mw, 6); d.P('#3e8a4e', mx, my + hM - 6, mw, 1);            // zoccolo verde
+  ombraGronda(d, mx, my, mw);
+  insegna(d, mx + (mw >> 1), my + 4, 'CONSORZIO AGRARIO RODELLA', '#2a6a3a', '#fff2b0', { bordo: '#e0b030' });
+  // saracinesca aperta: sacchi di mangime impilati
+  const sx = mx + 6, sw = 50, sh = 34, sy = my + hM - sh;
+  d.P('#1e1a22', sx, sy, sw, sh);
+  const SA = ramp('#e8dcb8'), SB = ramp('#c8a868');
+  for (let row = 0; row < 3; row++) for (let i = 0; i < 4; i++) {
+    const x = sx + 3 + i * 12 + (row % 2) * 5, y = sy + sh - 9 - row * 8; if (x + 10 > sx + sw - 2) continue;
+    const R = (i + row) % 3 ? SA : SB;
+    d.P(R[2], x, y, 10, 8); d.P(R[3], x, y, 10, 1); d.P(R[1], x, y + 7, 10, 1); d.P('#2a6a3a', x + 3, y + 3, 4, 2);
+  }
+  const S = ramp('#a8adb4'); for (let j = 0; j < 6; j += 2) { d.P(S[3], sx, sy + j, sw, 1); d.P(S[1], sx, sy + j + 1, sw, 1); }
+  d.P('#5a5a62', sx - 2, sy - 2, sw + 4, 2); d.P('#5a5a62', sx - 2, sy, 2, sh); d.P('#5a5a62', sx + sw, sy, 2, sh);
+  // vetrina con le bustine di semi
+  const vx = mx + 64, vy = my + 18, vw = 34, vh = 22, V = ramp('#7fa8c8');
+  d.P('#ece4d0', vx - 1, vy - 1, vw + 2, vh + 2); d.P(V[1], vx, vy, vw, vh); d.P(V[2], vx + 1, vy + 1, vw - 2, vh - 2);
+  for (let i = 0; i < 5; i++) for (let j = 0; j < 2; j++) {
+    const c = ['#d83a2a', '#e8b820', '#3e8a3a', '#e07028', '#8a3aa8'][(i + j * 2) % 5], x = vx + 3 + i * 6, y = vy + 3 + j * 9;
+    d.P('#f4f0e4', x, y, 5, 7); d.P(c, x + 1, y + 1, 3, 3); d.P('#3a3030', x + 1, y + 5, 3, 1);
+  }
+  d.line(vx + 3, vy + vh - 3, vx + 14, vy + 2, V[4]);
+  insegna(d, vx + (vw >> 1), vy + vh + 3, 'SEMI', '#c8302a');
+  // porta
+  porta(d, mx + 104, my + hM - 28, 13, 22, '#2a6a3a', { vetro: true });
+  // muso del trattore in esposizione, con il fiocco
+  const T = ramp('#e07028'), tx = mx + 124, ty = my + hM - 26;
+  d.P(T[2], tx, ty + 6, 28, 14); d.P(T[3], tx, ty + 6, 28, 2); d.P(T[1], tx, ty + 18, 28, 2);
+  d.P(ramp('#7fa8c8')[2], tx + 6, ty - 6, 16, 11); d.P('#3a3a42', tx + 5, ty - 7, 18, 2);
+  d.ball(tx + 5, ty + 21, 6, 6, ramp('#34323a')); d.ball(tx + 23, ty + 21, 6, 6, ramp('#34323a'));
+  d.ball(tx + 5, ty + 21, 2, 2, ramp('#e8b820')); d.ball(tx + 23, ty + 21, 2, 2, ramp('#e8b820'));
+  d.P('#d8302a', tx + 12, ty + 6, 4, 14); d.P('#d8302a', tx, ty + 11, 28, 3); d.ell(tx + 14, ty + 6, 4, 2.5, '#ff5040');   // fiocco
+  lampada(d, mx + 60, my + 14); lampada(d, mx + 100, my + 14);
+  return outline(d.c);
+}
+
 export const EDIFICI = [
   ['Casa di Garonio', () => casa()], ['Officina', officina], ['Bar', bar], ['Alimentari', alimentari],
   ['Tabacchi', tabacchi], ['Municipio', municipio], ['Night Welcome', paradiso], ['Bubetto (magazzino)', magazzino],
@@ -617,7 +659,7 @@ export const EDIFICI = [
   ['Ranch Mister Frank', ranch], ['Fienile', fienile], ['Capannone dei maiali', capannoneMaiali],
   ['Gallinaio', gallinaio], ['Tettoia', tettoia],
   ['Chiesa', chiesa], ['Campanile', campanile], ['Castello', () => castello()], ['Torre', torre], ['Farmacia', farmacia],
-  ['Studio medico', ambulatorio], ['Palestra', palestra], ['Pizzeria', pizzeria], ['Kebab', kebab], ['Meccanico (Zeno)', meccanico],
+  ['Studio medico', ambulatorio], ['Palestra', palestra], ['Pizzeria', pizzeria], ['Kebab', kebab], ['Meccanico (Zeno)', meccanico], ['Consorzio Rodella', consorzio],
 ];
 
 // ---------- Per il gioco (src/world.js): texture delle scatole 3D ----------
@@ -631,7 +673,7 @@ const MAT = {
   chiesa: ['intonaco', '#efe2c4', 'coppi'], campanile: ['mattoni', '#b4583a', 'coppi'], castello: ['pietre', '#a8a090', 'lamiera'],
   'torre-sx': ['pietre', '#9a9484', 'lamiera'], 'torre-dx': ['pietre', '#9a9484', 'lamiera'], farmacia: ['intonaco', '#ece6d6', 'coppi'],
   dottore: ['intonaco', '#e4ecf0', 'coppi'], palestra: ['blocchi', '#d0ccc0', 'lamiera'], pizzeria: ['intonaco', '#f0d8a8', 'coppi'],
-  kebab: ['intonaco', '#f4e4b8', 'lamiera'], meccanico: ['lamiera', '#b4bac2', 'lamiera'],
+  kebab: ['intonaco', '#f4e4b8', 'lamiera'], meccanico: ['lamiera', '#b4bac2', 'lamiera'], consorzio: ['lamiera', '#c8ccc0', 'lamiera'],
 };
 const FACCIATA = {
   casa: () => casa(), officina, bar, alimentari, tabacchi, municipio, paradiso, magazzino, fienile, gallinaio, tettoia, ranch,
@@ -639,11 +681,11 @@ const FACCIATA = {
   'casa-rosa': () => casa({ w: 6, h: 3.4, muro: '#e8a8a0', tetto: '#a83a2a', pers: '#6a4a2a', seed: 3, piani: 2 }),
   'casa-azzurra': () => casa({ w: 6, muro: '#a8c8e0', tetto: '#8a3a2a', pers: '#f4f0e4', seed: 5 }),
   'cascina-patata': () => cascina(), 'cascina-postino': () => cascina({ muro: '#f0d8b8', tetto: '#8a3a2a', w: 7 }),
-  chiesa, campanile, castello: () => castello(), 'torre-sx': torre, 'torre-dx': torre, farmacia, dottore: ambulatorio, palestra, pizzeria, kebab, meccanico,
+  chiesa, campanile, castello: () => castello(), 'torre-sx': torre, 'torre-dx': torre, farmacia, dottore: ambulatorio, palestra, pizzeria, kebab, meccanico, consorzio,
 };
 // edifici la cui facciata ha già l'insegna dipinta (il gioco non ci mette il cartello sopra)
 export const CON_INSEGNA = new Set(['officina', 'bar', 'alimentari', 'tabacchi', 'municipio', 'paradiso', 'magazzino', 'maiali',
-  'chiesa', 'campanile', 'castello', 'torre-sx', 'torre-dx', 'farmacia', 'dottore', 'palestra', 'pizzeria', 'kebab', 'meccanico']);
+  'chiesa', 'campanile', 'castello', 'torre-sx', 'torre-dx', 'farmacia', 'dottore', 'palestra', 'pizzeria', 'kebab', 'meccanico', 'consorzio']);
 
 function parete(tipo, col, w, h, finestre, seed) {
   const d = pen(w, h);

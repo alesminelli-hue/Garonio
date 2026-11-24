@@ -98,7 +98,7 @@ export class Secondarie {
     const a = this.st.attive[id], def = this.defs[id];
     a.stato = 'pronta';
     if (def.torna === false || def.obiettivo.consegna) return;
-    this.game.ui.toast(`Fatto! Torna da ${PNG[def.da]?.nome || 'chi te l\'ha chiesto'}: «${def.titolo}»`, 'good');
+    this.game.ui.toast(`Fatto! Torna da ${PNG[def.da]?.nome || (def.da === 'gigante' ? 'il Gigante' : 'chi te l\'ha chiesto')}: «${def.titolo}»`, 'good');
     this.game.emit('secondaria', { id, stato: 'pronta' });
   }
 

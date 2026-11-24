@@ -93,26 +93,31 @@ export class Vehicles {
   init() {
     const s = this.s;
     s.veh ??= {};
-    for (const id of IDS) {
-      const p = this.parking[id];
-      s.veh[id] ??= { x: p.x, z: p.z, h: p.h, cond: 100, fuel: 100, flat: false };
-      const st = s.veh[id];
-      const kind = kindOf(id), T = VEHICLE_TYPES[kind];
-      const art = vehicleArt(kind, p.color);
-      const tex = {}; for (const k of ['R', 'L', 'F', 'B']) tex[k] = art[k].map(c => toTexture(c));
-      const group = new THREE.Group();
-      const spr = this.world.sprite(tex.R[0], { w: art.R[0].width / VPX, h: art.R[0].height / VPX });
-      group.add(spr);
-      const sh = new THREE.Mesh(new THREE.CircleGeometry(1, 16).rotateX(-Math.PI / 2),
-        new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.28, depthWrite: false }));
-      sh.position.y = 0.02; group.add(sh);
-      this.world.scene.add(group);
-      const v = { id, kind, T, st, art, tex, group, spr, sh, speed: 0, view: null, occ: null, stalled: false, smokeT: 0, puffT: 0 };
-      this.list.push(v);
-      if (!this._free(v, st.x, st.z)) this._findFree(v);
-      this._pose(v);
-    }
+    for (const id of IDS) this.aggiungi(id, this.parking[id]);
     if (s.driving) { const v = this.get(s.driving); if (v) this._mount(v, true); else s.driving = null; }
+  }
+
+  // aggiunge un mezzo (anche a partita in corso: i trattori comprati al Consorzio Rodella, src/consorzio.js)
+  aggiungi(id, p) {
+    const s = this.s;
+    if (this.get(id)) return this.get(id);
+    s.veh[id] ??= { x: p.x, z: p.z, h: p.h, cond: 100, fuel: 100, flat: false };
+    const st = s.veh[id];
+    const kind = kindOf(id), T = VEHICLE_TYPES[kind];
+    const art = vehicleArt(kind, p.color);
+    const tex = {}; for (const k of ['R', 'L', 'F', 'B']) tex[k] = art[k].map(c => toTexture(c));
+    const group = new THREE.Group();
+    const spr = this.world.sprite(tex.R[0], { w: art.R[0].width / VPX, h: art.R[0].height / VPX });
+    group.add(spr);
+    const sh = new THREE.Mesh(new THREE.CircleGeometry(1, 16).rotateX(-Math.PI / 2),
+      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.28, depthWrite: false }));
+    sh.position.y = 0.02; group.add(sh);
+    this.world.scene.add(group);
+    const v = { id, kind, T, st, art, tex, group, spr, sh, speed: 0, view: null, occ: null, stalled: false, smokeT: 0, puffT: 0 };
+    this.list.push(v);
+    if (!this._free(v, st.x, st.z)) this._findFree(v);
+    this._pose(v);
+    return v;
   }
 
   get(id) { return this.list.find(v => v.id === id); }

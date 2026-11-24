@@ -21,7 +21,7 @@ export class Abilita {
   }
 
   _plot(x, z) { return this.s.plots[x + ',' + z]; }
-  _inOrto(x, z) { const o = AREAS.orto; return x >= o.x0 && x < o.x1 && z >= o.z0 && z < o.z1; }
+  _inOrto(x, z) { return [AREAS.orto, AREAS.ortoSalici].some(o => o && x >= o.x0 && x < o.x1 && z >= o.z0 && z < o.z1); }
 
   _raccolto({ crop, x, z }) {
     const g = this.game, P = g.prog;

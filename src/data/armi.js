@@ -44,6 +44,7 @@ export const ARMI = {
   bastoneZucchero: { nome: 'Bastone di Zucchero Polare', liv: 1, atk: 29, mossa: 'renneInCarica', mossa2: 'sacchettoCarbone', fuori: 'profuma di menta', leggendario: true, bottino: true },
   // Parco Oglio (src/parco.js): il Diavoletto del Forcone, raro. Banco del Gigante (src/banco.js): da costruire
   forconcinoInfernale: { nome: 'Forconcino Infernale del Diavoletto', liv: 1, atk: 28, mossa: 'spazzata', mossa2: 'infilzata', fuori: 'scalda le mani d\'inverno', leggendario: true, bottino: true },
+  forconeTaglie: { nome: 'Forcone del Cacciatore di Taglie', liv: 1, atk: 30, mossa: 'spazzata', mossa2: 'infilzata', fuori: 'ha una tacca per ogni taglia riscossa', leggendario: true, bottino: true },
   falceLunare: { nome: 'Falce Lunare Spaccanebbia', liv: 1, atk: 26, mossa: 'falciata', mossa2: 'mezzaluna', fuori: 'taglia la nebbia a fette', leggendario: true, bottino: true, banco: true },
   // endgame: solo dalle sfide leggendarie (livello 30)
   zappaDoro:     { nome: 'Zappa d\'oro della Bassa', liv: 30, atk: 30, mossa: 'zappataDoro', mossa2: 'raccoltoFinale', fuori: 'zappa le zolle e luccica', leggendario: true, bottino: true },
@@ -186,6 +187,8 @@ export const VESTITI = {
   mantelloVampiro: { nome: 'Mantello del Conte di Casalpusterlengo', slot: 'corpo', bonus: { def: 14, critico: 0.05 }, trofeo: true, desc: 'difesa +14, critico +5%. Fodera rosso sangue (di pomodoro)' },
   cappelloBossMM:  { nome: 'Il Cappello di Boss MM', slot: 'testa', bonus: { def: 9, stress: 0.12, guardie: 1 }, trofeo: true, desc: 'difesa +9, stress −12%. Le guardie del parco ti vedono la metà' },
   // Banco del Gigante (src/banco.js): roba costruita in officina
+  distintivo:      { nome: 'Distintivo dello Sceriffo della Bassa', slot: 'portafortuna', bonus: { atk: 4, critico: 0.05 }, desc: 'attacco +4, critico +5%. Di latta, ma luccica' },
+  gambaloneOro:    { nome: 'Gambalone d\'Oro dell\'Agricoltore dell\'Anno', slot: 'portafortuna', bonus: { def: 8, atk: 5, vendite: 0.1 }, trofeo: true, desc: 'attacco +5, difesa +8, vendite +10%. Il trofeo del Concilio' },
   elmoCavaliere:   { nome: 'Elmo del Cavaliere Contadino', slot: 'testa', bonus: { def: 11, atk: 2 }, banco: true, desc: 'difesa +11, attacco +2. Era un secchio del latte' },
   calzettoni:      { nome: 'Calzettoni di Lana di Dolly', slot: 'piedi', bonus: { def: 4, velocita: 0.15, freddo: 1 }, banco: true, desc: 'difesa +4, cammini +15%, niente freddo. Pizzicano' },
   stivaliReazione: { nome: 'Stivali a Reazione del Gigante', slot: 'piedi', bonus: { def: 5, velocita: 0.42 }, banco: true, desc: 'difesa +5, cammini +42%. Puzzano di miscela' },
@@ -267,4 +270,16 @@ export const OGGETTI = {
   zabaione: { nome: 'Zabaione Corroborante del Nonno', icona: '🍮', effetto: { health: 55, tired: -25, stress: -12 }, combattimento: 'self', vendita: 18 },
   fritturaOglio: { nome: 'Frittura Mista dell\'Oglio', icona: '🍤', effetto: { health: 110, stress: -8 }, combattimento: 'self', vendita: 30 },
   bombaPigne: { nome: 'Bomba di Pigne del Gigante', icona: '💣', effetto: { danno: 45 }, combattimento: 'one', vendita: 10 },
+  // l'orto con i semi di Mister Rodella (src/consorzio.js): si seminano nell'orto, si raccolgono, si vendono alla cassa
+  zucchina: { nome: 'Zucchina', icona: '🥒', effetto: { health: 14 }, combattimento: 'self', vendita: 7 },
+  insalata: { nome: 'Cespo d\'Insalata', icona: '🥬', effetto: { health: 10, stress: -4 }, combattimento: 'self', vendita: 5 },
+  zucca:    { nome: 'Zucca Mantovana', icona: '🎃', effetto: { health: 30 }, combattimento: 'self', vendita: 16 },
+  peperone: { nome: 'Peperone', icona: '🫑', effetto: { health: 16, tired: -5 }, combattimento: 'self', vendita: 9 },
+  fragola:  { nome: 'Cestino di Fragole', icona: '🍓', effetto: { health: 12, stress: -8 }, combattimento: 'self', vendita: 12 },
+  semiZucchina: { nome: 'Semi di Zucchina (bustina Rodella)', icona: '🌱', seme: 'zucchina' },
+  semiInsalata: { nome: 'Semi d\'Insalata (bustina Rodella)', icona: '🌱', seme: 'insalata' },
+  semiZucca:    { nome: 'Semi di Zucca (bustina Rodella)', icona: '🌱', seme: 'zucca' },
+  semiPeperone: { nome: 'Semi di Peperone (bustina Rodella)', icona: '🌱', seme: 'peperone' },
+  semiFragola:  { nome: 'Piantine di Fragola (bustina Rodella)', icona: '🌱', seme: 'fragola' },
+  mangimeGold:  { nome: 'Mangime Rodella Gold', icona: '🌾', vendita: 6 },
 };
