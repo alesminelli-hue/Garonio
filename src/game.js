@@ -39,6 +39,7 @@ import { Lavoretti } from './lavoretti.js';
 import { Sorprese } from './sorprese.js';
 import { Diario } from './diario.js';
 import { Salvataggi } from './salvataggi.js';
+import { Ragazze } from './ragazze.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
 export const CONFIG = {
@@ -179,6 +180,7 @@ export class Game {
     this.vita = new Vita(this); this.vita.init();
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
+    this.ragazze = new Ragazze(this); this.ragazze.init();   // le ragazze da corteggiare e gli appuntamenti (src/ragazze.js)
     this.lavoretti = new Lavoretti(this); this.lavoretti.init();   // XP dalle faccende, legna, pesca (src/lavoretti.js)
     this.sorprese = new Sorprese(this); this.sorprese.init();      // easter egg e cose che capitano (src/sorprese.js)
     this.diario = new Diario(this); this.diario.init(); // freccia verso il lavoro scelto, collezionabili e trofei (src/diario.js)

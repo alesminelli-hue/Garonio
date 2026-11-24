@@ -11,6 +11,8 @@
 //   vicino(id, raggio)          Garonio è vicino a quel personaggio?
 //   parla(id)                   apre il dialogo (lo fa già il tasto E)
 //   attore(id)                  lo sprite sulla mappa (per animazioni speciali)
+// Nei dati: def.vel = velocità sul giro (1.4 di serie, chi fa jogging va più svelto);
+//           un posto con fermo: true ferma il giro (es. la ragazza che aspetta all'appuntamento).
 import * as PIX from './pixel.js';
 import { PNG } from './data/png.js';
 import { pick, fill } from './racconto.js';
@@ -71,12 +73,12 @@ export class Personaggi {
       }
       if (!show) continue;
       let moving = false;
-      if (n.def.giro && !p.interno && dt > 0 && !this._parlando) {
+      if (n.def.giro && !p.interno && !p.fermo && dt > 0 && !this._parlando) {
         const [tx, tz] = n.def.giro[n.giroI];
         const dx = tx - n.x, dz = tz - n.z, d = Math.hypot(dx, dz);
         if (d < 0.1) n.giroI = (n.giroI + 1) % n.def.giro.length;
         else {
-          const st = Math.min(d, 1.4 * dt);
+          const st = Math.min(d, (n.def.vel || 1.4) * dt);   // vel: chi fa jogging va più svelto
           n.x += dx / d * st; n.z += dz / d * st; moving = true;
           if (Math.abs(dx) > 0.05) n.dir = dx > 0 ? 1 : -1;
         }
@@ -84,7 +86,7 @@ export class Personaggi {
         const P = this.game.player?.group.position;
         if (P) n.dir = P.x > n.x ? 1 : -1;  // guarda Garonio
       }
-      n.walkT += dt * 6;
+      n.walkT += dt * 6 * Math.max(1, (n.def.vel || 1.4) / 1.4);
       n.a.group.position.set(n.x, 0, n.z);
       n.a.setFrame((n.dir > 0 ? 0 : 3) + (moving ? 1 + (Math.floor(n.walkT) % 2) : 0));
     }
