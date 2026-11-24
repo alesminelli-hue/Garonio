@@ -50,6 +50,7 @@ function canvas(w, h, draw) { const [c, g] = PIX.makeCanvas(w, h); const P = (co
 
 // cane visto di lato, rivolto a destra. frame 0/1 = passo, 2 = dorme
 export function cane(a, frame = 0) {
+  const spr = PIX.animale('cane', frame, 22, 15, { tinta: a.pelo, dorme: frame === 2 }); if (spr) return spr;
   return canvas(22, 15, P => {
     if (frame === 2) {
       P(a.pelo, 3, 9, 15, 5); P(a.pelo, 15, 7, 6, 5); P(a.scuro, 16, 6, 2, 2); P(a.scuro, 0, 11, 4, 2);

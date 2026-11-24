@@ -57,13 +57,13 @@ export class Sorprese {
     });
     // attori che compaiono a seconda del giorno
     PIX.CHARACTERS.turista ??= S.turista.aspetto;
-    this.turista = W.actor(PIX.characterFrames('turista'), { w: 1.25, h: 1.875, shadow: 0.35 }); this.turista.group.visible = false;
-    this.mountain = W.actor(PIX.characterFrames('mountain'), { w: 30 / 16 * 1.25, h: 42 / 16 * 1.25, shadow: 0.7 }); this.mountain.group.visible = false;
+    this.turista = W.actor(PIX.characterFrames('turista'), { w: S.turista.aspetto.w / 16 * 1.25, h: S.turista.aspetto.h / 16 * 1.25, shadow: 0.35 }); this.turista.group.visible = false;
+    this.mountain = W.actor(PIX.characterFrames('mountain'), { w: PIX.CHARACTERS.mountain.w / 16 * 1.25, h: PIX.CHARACTERS.mountain.h / 16 * 1.25, shadow: 0.7 }); this.mountain.group.visible = false;
     this.mountain.group.position.set(S.mountainPesca.x, 0, S.mountainPesca.z); this.mountain.setFrame(3);
     this.banda = S.sagra.banda.map((b, i) => {
       const id = 'banda' + i;
-      PIX.CHARACTERS[id] ??= { w: 16, h: 24, skin: '#e8b48a', hair: '#3a2a1a', hairStyle: 'flat', hat: '#2a2a3a', shirt: b.shirt, pants: '#2a2a3a', boots: '#1a1a1a', eyes: 'normal' };
-      const a = W.actor(PIX.characterFrames(id), { w: 1.25, h: 1.875, shadow: 0.35 });
+      PIX.CHARACTERS[id] ??= { sprite: b.sprite, w: 16, h: 24, skin: '#e8b48a', hair: '#3a2a1a', hairStyle: 'flat', hat: '#2a2a3a', shirt: b.shirt, pants: '#2a2a3a', boots: '#1a1a1a', eyes: 'normal' };
+      const a = W.actor(PIX.characterFrames(id), { w: PIX.CHARACTERS[id].w / 16 * 1.25, h: PIX.CHARACTERS[id].h / 16 * 1.25, shadow: 0.35 });
       a.group.position.set(S.sagra.palco[0] - 1.6 + i * 1.6, 0, S.sagra.palco[1] - 0.4); a.group.visible = false;
       return a;
     });

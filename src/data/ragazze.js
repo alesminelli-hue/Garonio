@@ -21,7 +21,7 @@ export const RAGAZZE = {
     posti: [{ ore: [7, 10.5], x: 27, z: 29.4 }],
     giro: [[27, 29.4], [62, 29.4], [104, 29.4], [62, 29.4]],
     vel: 2.7,
-    aspetto: { w: 15, h: 23, skin: '#e8b48a', hair: '#2a1a12', hairStyle: 'coda', shirt: '#e83a7a', pants: '#2a2a3a', boots: '#f4f4f4', eyes: 'normal' },
+    aspetto: { sprite: 'sportiva', w: 15, h: 23, skin: '#e8b48a', hair: '#2a1a12', hairStyle: 'coda', shirt: '#e83a7a', pants: '#2a2a3a', boots: '#f4f4f4', eyes: 'normal' },
     gusti: { sicuro: 1, sincero: 1, ironico: 0, romantico: 0, spaccone: -1, bisognoso: -1, cafone: -1 },
     posto: 'pizzeria',
     saluti: [
@@ -93,7 +93,7 @@ export const RAGAZZE = {
     posti: [{ ore: [17, 20], x: 80, z: 29.6 }],
     giro: [[80, 29.6], [116, 29.6], [150, 29.6], [116, 29.6]],
     vel: 2.3,
-    aspetto: { w: 15, h: 23, skin: '#f2c8a8', hair: '#c0602a', hairStyle: 'coda', shirt: '#3aa07a', pants: '#3a3a4a', boots: '#e8e0d0', eyes: 'normal' },
+    aspetto: { sprite: 'mora_rosso', w: 15, h: 23, skin: '#f2c8a8', hair: '#c0602a', hairStyle: 'coda', shirt: '#3aa07a', pants: '#3a3a4a', boots: '#e8e0d0', eyes: 'normal' },
     gusti: { ironico: 1, sincero: 1, sicuro: 0, romantico: 0, spaccone: -1, cafone: -1, bisognoso: -1 },
     posto: 'laghetto',
     saluti: [
@@ -162,7 +162,7 @@ export const RAGAZZE = {
     chi: 'Estetista con la Panda rosa. Divorziata, sa cosa vuole e sa riconoscere un cafone da dieci metri.',
     dove: 'Nel pomeriggio alla fontana della piazza, la sera al bancone del bar.',
     posti: [{ ore: [14, 18], x: 10, z: 51.6 }, { ore: [18, 23.5], interno: 'bar', x: 6.3, z: 2.85 }],
-    aspetto: { w: 15, h: 23, skin: '#f0c4a0', hair: '#e8d070', hairStyle: 'long', shirt: '#c03a8a', pants: '#1a1a2a', boots: '#c02a5a', eyes: 'normal' },
+    aspetto: { sprite: 'bionda_bianco', w: 15, h: 23, skin: '#f0c4a0', hair: '#e8d070', hairStyle: 'long', shirt: '#c03a8a', pants: '#1a1a2a', boots: '#c02a5a', eyes: 'normal' },
     gusti: { romantico: 1, sincero: 1, sicuro: 0, ironico: 0, spaccone: -1, cafone: -1, bisognoso: -1 },
     posto: 'pizzeria',
     saluti: [
@@ -231,7 +231,7 @@ export const RAGAZZE = {
     chi: 'Guida il camion del latte. Tosta, battuta sempre pronta, sa smontare un carburatore a occhi chiusi.',
     dove: 'In pausa pranzo al bar, al biliardo. Il pomeriggio al parcheggio del Night.',
     posti: [{ ore: [12, 16], interno: 'bar', x: 15.4, z: 5.9 }, { ore: [16, 19], x: 45, z: 66.6 }],
-    aspetto: { w: 15, h: 23, skin: '#d9a07a', hair: '#1a1a1a', hairStyle: 'coda', hat: '#2a6aa8', shirt: '#2a6aa8', pants: '#5a4a3a', boots: '#3a2a1a', eyes: 'normal' },
+    aspetto: { sprite: 'mora_occhiali', w: 15, h: 23, skin: '#d9a07a', hair: '#1a1a1a', hairStyle: 'coda', hat: '#2a6aa8', shirt: '#2a6aa8', pants: '#5a4a3a', boots: '#3a2a1a', eyes: 'normal' },
     gusti: { ironico: 1, sicuro: 1, sincero: 0, romantico: -1, spaccone: -1, bisognoso: -1, cafone: -1 },
     posto: 'ponte',
     saluti: [
