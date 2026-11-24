@@ -82,7 +82,7 @@ export const BUILDINGS = [
   { id: 'chiesa', label: '', x0: 2.5, z0: 68, w: 8, d: 6.4, h: 4.2, wall: '#efe2c4', roof: '#a8462e', windows: 2 },
   { id: 'farmacia', label: 'FARMACIA', x0: 13.5, z0: 69.4, w: 6, d: 5, h: 2.8, wall: '#ece6d6', roof: '#a83a2a', windows: 1 },
   { id: 'dottore', label: 'STUDIO MEDICO', x0: 23, z0: 67.4, w: 6, d: 5, h: 3, wall: '#e4ecf0', roof: '#8a3a2a', windows: 2 },
-  { id: 'pizzeria', label: 'PIZZERIA', x0: 30.5, z0: 67.4, w: 6, d: 5, h: 2.8, wall: '#f0d8a8', roof: '#b8432e', windows: 1 },
+  { id: 'pizzeria', label: 'BELLA NAPOLI', x0: 30.5, z0: 67.4, w: 6, d: 5, h: 2.8, wall: '#f0d8a8', roof: '#b8432e', windows: 1 },
   { id: 'kebab', label: 'KEBAB', x0: 17.6, z0: 45.5, w: 4, d: 4, h: 2.8, wall: '#f4e4b8', roof: '#5a4a3a', windows: 0 },
   { id: 'meccanico', label: 'DA ZENO', x0: 52, z0: 44.4, w: 8, d: 6, h: 3.2, wall: 'metallo', roof: '#3a5a8a', windows: 1 },
   { id: 'palestra', label: 'PALESTRA', x0: 61, z0: 44.6, w: 7, d: 5.8, h: 3.2, wall: '#d0ccc0', roof: '#4a4a52', windows: 1 },
@@ -98,7 +98,7 @@ export const BUILDINGS = [
   { id: 'casa-azzurra', label: '', x0: 3, z0: 62, w: 6, d: 4, h: 2.8, wall: '#a8c8e0', roof: '#8a3a2a', windows: 2, decor: true },
   { id: 'tabacchi', label: 'TABACCHI', x0: 13, z0: 62, w: 6, d: 4, h: 2.8, wall: '#f0e0b0', roof: '#b8432e', windows: 1, decor: true },
   { id: 'municipio', label: 'MUNICIPIO', x0: 24.6, z0: 44.4, w: 5, d: 5, h: 3.2, wall: '#e8dcc0', roof: '#8a3a2a', windows: 1, decor: true }, // ufficio multe (src/vigilessa.js)
-  { id: 'paradiso', label: 'NIGHT PARADISO', x0: 44, z0: 61, w: 8, d: 5, h: 3, wall: '#6a3a7a', roof: '#2a2030', windows: 1, decor: true }, // svago serale (src/paradiso.js)
+  { id: 'paradiso', label: 'NIGHT WELCOME', x0: 44, z0: 61, w: 8, d: 5, h: 3, wall: '#6a3a7a', roof: '#2a2030', windows: 1, decor: true }, // svago serale (src/paradiso.js)
   { id: 'tettoia', label: '', x0: 88, z0: 61, w: 5, d: 4, h: 2.2, wall: 'legno', roof: '#6a7078', windows: 0, decor: true, noDoor: true },
   // cascine dei vicini (GDD 19.5): la logica è in src/cascine.js, i dati in src/data/vicini.js
   { id: 'cascina-patata', label: 'CASCINA DEL PATATA', x0: 97, z0: 34, w: 8, d: 5, h: 2.8, wall: '#e0c48a', roof: '#a8462e', windows: 2, decor: true },
@@ -117,7 +117,7 @@ export const PROPS = [
   { kind: 'cartello', x: 77.5, z: 57.6, text: 'AZIENDA ↓' },
   { kind: 'cartello', x: 127, z: 57.4, text: 'MAIALI ↓' },
   { kind: 'cartello', x: 38, z: 57.4, text: '← BAR' },
-  { kind: 'cartello', x: 50.6, z: 57.4, text: 'NIGHT ↓' },   // Night Paradiso (src/paradiso.js)
+  { kind: 'cartello', x: 50.6, z: 57.4, text: 'NIGHT ↓' },   // Night Welcome (src/paradiso.js)
   { kind: 'cartello', x: 30.5, z: 51.6, text: 'NIGHT →' },
   { kind: 'cartello', x: 19.2, z: 57.4, text: 'CHIESA ↓' },
   { kind: 'cartello', x: 19.2, z: 80, text: 'CASTELLO ↓' },
@@ -149,10 +149,10 @@ export const LANDMARKS = [
   { name: 'Casa', x: 65.5, z: 63.5 }, { name: 'Deposito', x: 83.5, z: 63 }, { name: 'Bar', x: 13.5, z: 47.5 }, { name: 'Bubetto', x: 45, z: 46.5 },
   { name: 'Maiali', x: 134, z: 65 }, { name: 'Campo', x: 74, z: 17 }, { name: 'Orto', x: 65.5, z: 75 },
   { name: 'Pollaio', x: 81, z: 76.5 }, { name: 'Laghetto', x: 35, z: 83.5 },
-  { name: 'Paradiso', x: 48, z: 63.5 },
+  { name: 'Welcome', x: 48, z: 63.5 },
   { name: 'Mercato', x: 33, z: 62 }, { name: 'Gare', x: 61, z: 27.5 },
   { name: 'Patata', x: 101, z: 36.5 }, { name: 'Postino', x: 36.5, z: 36.5 }, { name: 'Frank', x: 144.5, z: 35.5 },
-  { name: 'Chiesa', x: 6.5, z: 71 }, { name: 'Farmacia', x: 16.5, z: 72 }, { name: 'Dottore', x: 26, z: 70 }, { name: 'Pizzeria', x: 33.5, z: 70 },
+  { name: 'Chiesa', x: 6.5, z: 71 }, { name: 'Farmacia', x: 16.5, z: 72 }, { name: 'Dottore', x: 26, z: 70 }, { name: 'Bella Napoli', x: 33.5, z: 70 },
   { name: 'Kebab', x: 19.6, z: 47.5 }, { name: 'Zeno', x: 56, z: 47.4 }, { name: 'Palestra', x: 64.5, z: 47.5 }, { name: 'Castello', x: 10, z: 94.5 },
 ];
 

@@ -26,6 +26,7 @@ export const ARMI = {
   chiaveInglese: { nome: 'Chiave inglese da 32',     liv: 1, atk: 18, mossa: 'sbullonata', mossa2: 'giroDiChiave', fuori: 'svita tutto', leggendario: true, bottino: true },
   arpione:       { nome: 'Arpione del laghetto',     liv: 1, atk: 21, mossa: 'arpionata', mossa2: 'tiraARiva', fuori: 'pesca i siluri', leggendario: true, bottino: true },
   spadone:       { nome: 'Spadone del Trisavolo',    liv: 1, atk: 24, mossa: 'fendenteNobile', mossa2: 'colpoDiGrazia', fuori: 'fa scena', leggendario: true, bottino: true },
+  palaForno:     { nome: 'Pala del forno di Gennaro', liv: 1, atk: 27, mossa: 'infornata', mossa2: 'margheritaVolante', fuori: 'sforna pizze', leggendario: true, bottino: true },
   // endgame: solo dalle sfide leggendarie (livello 30)
   zappaDoro:     { nome: 'Zappa d\'oro della Bassa', liv: 30, atk: 30, mossa: 'zappataDoro', mossa2: 'raccoltoFinale', fuori: 'zappa le zolle e luccica', leggendario: true, bottino: true },
 };
@@ -68,6 +69,8 @@ export const MOSSE_ARMI = {
   tiraARiva:   { nome: 'Tira a riva',           target: 'two', pow: 1.7, tired: 12, desc: 'Arpiona due nemici e li tira giù.' },
   fendenteNobile: { nome: 'Fendente nobile',    target: 'all', pow: 1.6, tired: 13, ignoraDif: 0.3, desc: 'Tutti i nemici, ignora un terzo della difesa.' },
   colpoDiGrazia:  { nome: 'Colpo di grazia',    target: 'one', pow: 3.1, tired: 14, desc: 'Il colpo più forte dello spadone.' },
+  infornata:   { nome: 'Infornata',             target: 'all', pow: 1.7, tired: 12, letame: 2, desc: 'Una palata di brace: tutti, e sbagliano più spesso per 2 turni.' },
+  margheritaVolante: { nome: 'Margherita volante', target: 'one', pow: 3.2, tired: 13, stordisce: 1, desc: 'Una pizza bollente in faccia: enorme e stordisce.' },
   zappataDoro: { nome: 'Zappata d\'oro',        target: 'all', pow: 2.1, tired: 12, critico: 0.2, desc: 'Tutti i nemici, critico facile. Luccica.' },
   raccoltoFinale: { nome: 'Raccolto finale',    target: 'one', pow: 3.6, tired: 14, ignoraDif: 0.5, desc: 'Un colpo enorme che ignora metà difesa.' },
 };
@@ -138,6 +141,7 @@ export const VESTITI = {
   elmoTrisavolo:   { nome: 'Elmo del Trisavolo',       slot: 'testa', bonus: { def: 9 }, trofeo: true, desc: 'difesa +9. Odora di naftalina' },
   occhialiScuri:   { nome: 'Occhiali scuri da buttafuori', slot: 'testa', bonus: { def: 6, stress: 0.15 }, trofeo: true, desc: 'difesa +6, stress −15%' },
   scarpeButtafuori:{ nome: 'Anfibi da buttafuori',     slot: 'piedi', bonus: { def: 5, velocita: 0.2 }, trofeo: true, desc: 'difesa +5, cammini +20%' },
+  grembiulePizzaiolo: { nome: 'Grembiule di Gennaro', slot: 'corpo', bonus: { def: 13, cure: 0.15 }, trofeo: true, desc: 'difesa +13, gli oggetti curano +15%. Sa di basilico' },
   sigaroMountain:  { nome: 'Il sigaro di Mister Mountain', slot: 'portafortuna', bonus: { atk: 6, critico: 0.1, stress: 0.1 }, trofeo: true, desc: 'attacco +6, critico +10%, stress −10%. Spento, per fortuna' },
   // endgame: sfide leggendarie
   tutaLeggenda:    { nome: 'Tuta della Leggenda',      slot: 'corpo', bonus: { def: 15, fatica: 0.1 }, leggendario: true, desc: 'difesa +15, lavori −10% fatica' },

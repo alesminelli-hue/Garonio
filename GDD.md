@@ -803,8 +803,10 @@ I boss sono difficili apposta: a pari livello servono 8‑15 turni, le cure dell
 | 21 | Ercole «il Pompato» | Palestra | Sergente | Cintura (Vita +30) |
 | 23 | Il Siluro | Laghetto, all'alba | Don Peppino | Arpione (arma) |
 | 25 | L'Armatura del Trisavolo | Castello | Ambrogio | Spadone ed elmo |
-| 27 | Tonino il Buttafuori | Night Paradiso, di notte | Loredana | Occhiali scuri e anfibi |
+| 27 | Tonino il Buttafuori | Night Welcome, di notte | Loredana | Occhiali scuri e anfibi |
 | 30 | **Mister Mountain** (finale) | Piazza del bar, di notte | Consulente, dopo tutti gli altri | Il sigaro di Mister Mountain |
+
+**La pizza non pagata** (Bella Napoli, nessuna missione da accettare): ordinando al tavolo si può scegliere «🏃 Mangia e scappa senza pagare». Garonio esce di corsa, Gennaro lo insegue fuori con la pala del forno ed è **livello 30**: durissimo. Se vinci: la Pala del forno (arma, attacco +27) e il Grembiule di Gennaro, solo la prima volta (dopo, qualche pizza). Se perdi paghi il conto e la piazza ride. Se scappi resta un conto in sospeso (16€): Gennaro non ti serve finché non paghi o non lo sfidi di nuovo.
 
 I tre re delle bestie (capitolo 18) restano i boss di canale, capannoni e bosco, ora coi livelli da boss: Re dei Ratti 10, Re delle Nutrie 16, Re dei Lupi 22. Il bar ha già il suo boss (Rocco).
 

@@ -7,7 +7,7 @@
 //  - auto, Ape e camion del latte passano sulla provinciale (di più all'ora di punta, pochi di notte coi fari),
 //    frenano se Garonio è in mezzo e suonano il clacson (stress); tamponarli è un urto vero (danni, Vigilessa);
 //  - gatti da accarezzare (stress −), corvi che volano via quando passi, anatre sul laghetto, lucciole d'estate;
-//  - lampioni che si accendono al tramonto; la sera le auto parcheggiano davanti al bar e al Night Paradiso.
+//  - lampioni che si accendono al tramonto; la sera le auto parcheggiano davanti al bar e al Night Welcome.
 //
 // API (game.vita):
 //   ora()                      ora del giorno (0-24, decimale)

@@ -328,17 +328,17 @@ export const INTERNI = {
   },
 
   pizzeria: {
-    nome: 'Pizzeria', w: 14, d: 8, h: 3, pavimento: 'cotto', muro: 'piastrelle', musica: 'base',
+    nome: 'Bella Napoli', w: 14, d: 8, h: 3, pavimento: 'cotto', muro: 'piastrelle', musica: 'base',
     orari: [11, 24],
     entrata: { x: 9, z: 7.0 },
     uscita: { x: 9, z: 7.7 },
-    stanze: [{ id: 'sala', nome: 'Pizzeria «Da Gennaro»', x0: 0, x1: 14 }],
+    stanze: [{ id: 'sala', nome: 'Pizzeria «Bella Napoli»', x0: 0, x1: 14 }],
     finestre: [{ x: 10.6, y: 1.3, w: 1.4, h: 1.0 }],
     mobili: [
       { tipo: 'forno', x: 0.4, z: 0.2, w: 2.2, d: 1.5, h: 1.9, zona: 'forno', etichetta: 'Forno a legna' },
       { tipo: 'bancone', x: 3.2, z: 1.6, w: 3.8, d: 0.6, h: 1.05, colore: '#f0ece0', piano: '#c8c8c0', zona: 'bancone', etichetta: 'Ordina al banco' },
       { tipo: 'mensola', parete: true, x: 3.4, y: 1.4, w: 3.4, h: 0.8, merce: 'bottiglie' },
-      { tipo: 'insegna', parete: true, x: 7.6, y: 2.2, w: 2.4, h: 0.45, testo: 'DA GENNARO' },
+      { tipo: 'insegna', parete: true, x: 7.6, y: 2.2, w: 2.4, h: 0.45, testo: 'BELLA NAPOLI' },
       { tipo: 'quadro', parete: true, x: 7.8, y: 1.1, w: 1.6, h: 1.0, zona: 'vesuvio', etichetta: 'Il quadro del Vesuvio' },
       { tipo: 'tavolo', x: 1.0, z: 4.2, w: 1.4, d: 1.0, h: 0.8, colore: '#8a5a32', tovaglia: '#d84a4a', zona: 'tavolo', etichetta: 'Tavolo' },
       { tipo: 'tavolo', x: 4.2, z: 4.2, w: 1.4, d: 1.0, h: 0.8, colore: '#8a5a32', tovaglia: '#d84a4a', zona: 'tavolo', etichetta: 'Tavolo' },

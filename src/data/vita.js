@@ -1,5 +1,5 @@
 // =====================================================================
-//  IL MONDO VIVO — paesani, traffico, animali, imprevisti e Night Paradiso
+//  IL MONDO VIVO — paesani, traffico, animali, imprevisti e Night Welcome
 //  Solo dati e testi: si cambiano senza toccare il codice.
 //  Logica in src/vita.js (paesani, traffico, animali, luci della sera),
 //  src/imprevisti.js (buche, pozzanghere, cantieri, cane randagio, impiccioni, zanzare)
@@ -81,7 +81,7 @@ export const PAESANI = [
     frasi: [
       "Ehi bro. Sto facendo l'imprenditore. Vendo accendini. Con la mia faccia sopra.",
       "Ho la tuta nuova. Identica a quella vecchia. Ma nuova.",
-      "Stasera al Paradiso c'è la serata latino. Io ci vado per il buffet.",
+      "Stasera al Welcome c'è la serata latino. Io ci vado per il buffet.",
       "La Tamara mi ha rotto il naso. Ora respiro meglio da una parte sola. È una scelta di stile.",
     ],
     sulleRagazze: [
@@ -241,12 +241,12 @@ export const IMPREVISTI = {
     graffioTesti: ["Il gatto si lascia accarezzare... e poi ti graffia. Classico."] },
 };
 
-// ---------- Night Paradiso: il catalogo ----------
+// ---------- Night Welcome: il catalogo ----------
 // Solo testi ironici, niente scene: una riga e via. Tutte maggiorenni e consenzienti (e pagate).
 export const PARADISO = {
   apertura: [20, 24],
   porta: [48, 66.4],
-  chiuso: ["Il Night Paradiso apre alle 20:00. L'insegna al neon lampeggia lo stesso, per abitudine.", "Chiuso. Sulla porta un cartello: «Torno subito. Sandokan»."],
+  chiuso: ["Il Night Welcome apre alle 20:00. L'insegna al neon lampeggia lo stesso, per abitudine.", "Chiuso. Sulla porta un cartello: «Torno subito. Sandokan»."],
   giaFatto: "Sandokan, il buttafuori, ti ferma col mignolo: «Per stasera hai già dato, campione. Vai a dormire.»",
   troppoPovero: "Sandokan ti guarda il portafoglio e ride. Ride tanto. Poi ti mette fuori con due dita.",
   benvenuto: [
@@ -271,14 +271,14 @@ export const PARADISO = {
       esito: "Bum bum bum bum. Quattro colpi. Good job!",
       battute: ["«Sono stata a Chiasso. Internazionale. Ho comprato la cioccolata e sono tornata.»", "«La spaccata la faccio solo il venerdì. Gli altri giorni mi faccio spaccare la schiena dal Sergente in palestra.»"] },
     { id: 'svetlana', nome: 'Madame Svetlana, 47', prezzo: 300, stress: 80, xp: 150, vita: 15,
-      desc: "La Regina del Paradiso. Ha visto cose che Mister Mountain si sogna. Accetta solo banconote stirate.",
+      desc: "La Regina del Welcome. Ha visto cose che Mister Mountain si sogna. Accetta solo banconote stirate.",
       esito: "Bum bum bum bum bum bum. Sei colpi e un applauso dalla stanza accanto. GREAT job!",
       battute: ["«Ah, il figlio del Gigante. Tuo padre veniva qui negli anni Novanta. Ballava il twist. Male.»", "«Io ho visto molto, ragazzo. Ho visto Mister Mountain pagare in contanti. Nessuno ci crede.»", "«Queste banconote non sono stirate. Qui si accetta solo denaro elegante.»"] },
   ],
   conferma: 'Sì, lei',
   indietro: 'Torna al catalogo',
   uscita: [
-    "Garonio esce dal Paradiso canticchiando «Romagna mia». Si sente leggero come un sacco di mangime vuoto.",
+    "Garonio esce dal Welcome canticchiando «Romagna mia». Si sente leggero come un sacco di mangime vuoto.",
     "Fuori, l'aria della Bassa non è mai stata così buona. Puzza di letame, ma buona.",
   ],
   // il tranvione: a volte capita e basta
@@ -292,23 +292,23 @@ export const PARADISO = {
     reputazione: 40, stress: 20,
   },
   // il giorno dopo un tranvione, i paesani lo sanno
-  pettegolezzo: ["Ehi, ma è vero quello che dicono del Paradiso? Ahahah!", "Ciao, «good job»! Ahahah!", "Ah, il Re del Paradiso! Com'era Ivan?"],
+  pettegolezzo: ["Ehi, ma è vero quello che dicono del Welcome? Ahahah!", "Ciao, «good job»! Ahahah!", "Ah, il Re del Welcome! Com'era Ivan?"],
 };
 
-// ---------- Night Paradiso: l'interno esplorabile (motore: src/interni.js, logica: src/paradiso.js) ----------
+// ---------- Night Welcome: l'interno esplorabile (motore: src/interni.js, logica: src/paradiso.js) ----------
 export const PARADISO_INTERNO = {
-  nome: 'Night Paradiso', w: 18, d: 8, h: 3.2, pavimento: 'moquette', muro: 'velluto', musica: 'notte',
+  nome: 'Night Welcome', w: 18, d: 8, h: 3.2, pavimento: 'moquette', muro: 'velluto', musica: 'notte',
   entrata: { x: 3, z: 7.0 },
   uscita: { x: 3, z: 7.7 },
   stanze: [
-    { id: 'ingresso', nome: 'Ingresso del Paradiso', x0: 0, x1: 6, luce: 0.85 },
-    { id: 'sala', nome: 'Sala del Paradiso', x0: 6, x1: 18, luce: 0.75, pavimento: 'scacchi' },
+    { id: 'ingresso', nome: 'Ingresso del Welcome', x0: 0, x1: 6, luce: 0.85 },
+    { id: 'sala', nome: 'Sala del Welcome', x0: 6, x1: 18, luce: 0.75, pavimento: 'scacchi' },
   ],
   finestre: [],
   mobili: [
     // ingresso: la reception di Sandokan col catalogo
     { tipo: 'bancone', x: 1, z: 1.7, w: 3, d: 0.6, h: 1.1, colore: '#2a1a2a', piano: '#c8a040', zona: 'catalogo', etichetta: 'Sandokan: il catalogo' },
-    { tipo: 'insegna', parete: true, x: 1.2, y: 2.3, w: 3.4, h: 0.5, testo: 'NIGHT PARADISO' },
+    { tipo: 'insegna', parete: true, x: 1.2, y: 2.3, w: 3.4, h: 0.5, testo: 'NIGHT WELCOME' },
     { tipo: 'pianta', x: 5, z: 0.4, w: 0.5, d: 0.5, h: 1.3 },
     { tipo: 'tappeto', pavimento: true, x: 2, z: 4.2, w: 2.2, d: 2.4, colore: '#a8203a' },
     { tipo: 'zerbino', pavimento: true, x: 2.3, z: 7.25, w: 1.4, d: 0.6, colore: '#5a1a3a' },
@@ -339,10 +339,10 @@ export const PARADISO_GENTE = {
 };
 
 export const PARADISO_TESTI = {
-  entrata: ["Luci viola, musica di Gigi D'Agostino, odore di deodorante alla vaniglia. Benvenuto in Paradiso.", "La porta si chiude alle tue spalle con un «tump» da film. Sandokan ti fa l'occhiolino. Fa paura."],
+  entrata: ["Luci viola, musica di Gigi D'Agostino, odore di deodorante alla vaniglia. Benvenuto al Welcome.", "La porta si chiude alle tue spalle con un «tump» da film. Sandokan ti fa l'occhiolino. Fa paura."],
   bancone: {
     saluto: ["Lola asciuga un bicchiere da quando hai aperto la porta. «Cosa ti servo, bello?»", "«Il figlio del Gigante! Tuo padre veniva qui negli anni '80. Ballava il twist sul bancone.»",
-      "«Benvenuto al Paradiso. Il cocktail della casa è il \"Peccato padano\": Lambrusco e gazzosa.»",
+      "«Benvenuto al Welcome. Il cocktail della casa è il \"Peccato padano\": Lambrusco e gazzosa.»",
       "«Garonio! Tranquillo, qui dentro nessuno ti ha visto. Tranne tutti.»",
       "«Lo specchio dietro il bancone è stato rotto tre volte. Sempre dal Moreno, sempre ballando \"L'amour toujours\".»",
       "«Sandokan sembra cattivo, ma piange coi film di Natale. Il ventiquattro dicembre chiude per lutto.»",
@@ -352,13 +352,13 @@ export const PARADISO_TESTI = {
     ],
     ordini: [
       { label: 'Analcolico alla fragola (5€): stress −6', prezzo: 5, stress: -6, testo: "Rosa, dolce, con l'ombrellino. Garonio si sente molto adulto." },
-      { label: 'Cocktail «Paradiso» (12€): stress −15, stanchezza +5', prezzo: 12, stress: -15, stanchezza: 5, testo: "Blu, fumante, con dentro una ciliegia e forse un pesce. Si vede la musica." },
+      { label: 'Cocktail «Welcome» (12€): stress −15, stanchezza +5', prezzo: 12, stress: -15, stanchezza: 5, testo: "Blu, fumante, con dentro una ciliegia e forse un pesce. Si vede la musica." },
       { label: 'Bottiglia di «champagne» (60€): stress −30, +10 XP', prezzo: 60, stress: -30, xp: 10, testo: "Champagne di Broni. Le bollicine ci sono, il resto è fede. Tutta la sala applaude." },
     ],
   },
   commendatore: [
     "«Ragazzo, io qui ho speso tre capannoni e una Mercedes. Ne è valsa la pena? ...Sì.»",
-    "«Il segreto della vita? Mai dire a tua moglie che vai al Paradiso. Dille che vai a messa. È quasi la stessa cosa, c'è anche qui l'incenso.»",
+    "«Il segreto della vita? Mai dire a tua moglie che vai al Welcome. Dille che vai a messa. È quasi la stessa cosa, c'è anche qui l'incenso.»",
     "«Ti do un consiglio da Commendatore: il tranvione arriva quando ti senti furbo. Quindi non sentirti mai furbo.»",
     "Il Commendatore dorme seduto con un sigaro spento in bocca. Russa a tempo di musica.",
     "«Giovanotto, ai miei tempi un uomo si giudicava dalla cravatta. La tua cravatta è il collo della tuta.»",
@@ -387,7 +387,7 @@ export const PARADISO_TESTI = {
   ],
   pista: { testo: "Garonio si lancia sulla pista. Mosse da trattorista: aratura, semina, falciatura. La sala è perplessa. Stress −6, +3 XP", stress: -6, stanchezza: 4, xp: 3 },
   jukebox: {
-    testo: "Il juke-box del Paradiso ha solo tre dischi, ma sono quelli giusti.",
+    testo: "Il juke-box del Welcome ha solo tre dischi, ma sono quelli giusti.",
     dischi: ["L'amour toujours (Gigi D'Agostino)", "Tu vuò fà l'americano", "Romagna mia (versione dance)"],
     scelto: "Parte «{titolo}». Il Commendatore si sveglia e balla da seduto. Stress −3",
   },

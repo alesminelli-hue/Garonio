@@ -182,7 +182,7 @@ export class Game {
     this.consulente.init();
     this.interni.init();
     this.bestie.init();
-    // il mondo vivo: paesani, traffico, animali, imprevisti e Night Paradiso (src/vita.js, src/imprevisti.js, src/paradiso.js)
+    // il mondo vivo: paesani, traffico, animali, imprevisti e Night Welcome (src/vita.js, src/imprevisti.js, src/paradiso.js)
     this.vita = new Vita(this); this.vita.init();
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();

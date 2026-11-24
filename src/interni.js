@@ -103,7 +103,7 @@ const PAVIMENTI = {
     for (let x = 0; x < W; x += 48) P('#76766f', x, 0, 1, H);
     for (let i = 0; i < W / 30; i++) { const x = r() * W, y = r() * H; P('rgba(40,36,30,0.18)', x, y, 10 + r() * 14, 5 + r() * 6); }
   },
-  moquette: (P, W, H, g, r) => { P('#5a1e4a', 0, 0, W, H); for (let i = 0; i < W * H / 12; i++) P(r() < 0.5 ? '#6a2a5a' : '#4a1640', r() * W, r() * H, 2, 1); },   // Night Paradiso (src/paradiso.js)
+  moquette: (P, W, H, g, r) => { P('#5a1e4a', 0, 0, W, H); for (let i = 0; i < W * H / 12; i++) P(r() < 0.5 ? '#6a2a5a' : '#4a1640', r() * W, r() * H, 2, 1); },   // Night Welcome (src/paradiso.js)
   marmo: (P, W, H, g, r) => { // chiesa: lastre chiare con le fughe e qualche venatura
     for (let y = 0; y < H; y += 16) for (let x = ((y / 16) % 2) * 8; x < W + 16; x += 16) {
       const R = ramp(hdTono(((x + y) / 16) % 2 ? '#e8e0d0' : '#d8ccb8', (hdHash(x, y, 3) - 0.5) * 0.25));
@@ -132,7 +132,7 @@ const MURI = {
   verde: (P, W, H) => { P('#2f5a3e', 0, 0, W, H); for (let x = 0; x < W; x += 10) P('#2a5238', x, 0, 2, H); P('#c8a050', 0, Math.round(H * 0.45), W, 1); zoccolo(P, W, H, '#4a2e16', 12); },
   mattoni: (P, W, H) => { P('#6a5a50', 0, 0, W, H); for (let y = 0; y < H; y += 5) for (let x = (y / 5 % 2) * 6 - 6; x < W; x += 12) { P(tono('#8a4a36', 0.85 + ((x * 3 + y) % 7) * 0.04), x + 1, y + 1, 11, 4); } },
   lamiera: (P, W, H) => { P('#8a96a0', 0, 0, W, H); for (let x = 0; x < W; x += 6) { P('#a4b0b8', x, 0, 2, H); P('#6a7680', x + 4, 0, 1, H); } for (let y = 0; y < H; y += 32) P('#5a6470', 0, y, W, 1); zoccolo(P, W, H, '#5a6068', 8); },
-  velluto: (P, W, H) => { P('#4a1a3e', 0, 0, W, H); for (let x = 0; x < W; x += 6) P('#5a2450', x, 0, 2, H); P('#c8a040', 0, Math.round(H * 0.62), W, 1); P('#2a0e24', 0, H - 4, W, 4); },   // Night Paradiso
+  velluto: (P, W, H) => { P('#4a1a3e', 0, 0, W, H); for (let x = 0; x < W; x += 6) P('#5a2450', x, 0, 2, H); P('#c8a040', 0, Math.round(H * 0.62), W, 1); P('#2a0e24', 0, H - 4, W, 4); },   // Night Welcome
   chiesa: (P, W, H) => { // intonaco chiaro con le lesene e la fascia dorata
     P('#efe4c8', 0, 0, W, H);
     for (let x = 12; x < W; x += 48) { P('#e0d2b0', x, 0, 8, H); P('#f8f0dc', x, 0, 1, H); P('#c8b890', x + 7, 0, 1, H); }

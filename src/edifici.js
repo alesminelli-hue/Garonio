@@ -151,7 +151,7 @@ export class EdificiPaese {
       'palestra:armadietto': () => this._dice(P.armadietto, 'Armadietto'),
       'palestra:abbonamenti': () => this._dice(P.abbonamenti, 'Bacheca'),
       // ----- pizzeria -----
-      'pizzeria:bancone': () => (this._qui('gennaro') ? g.png.parla('gennaro') : this._dice(TESTI_CHIUSO.pizzeria, 'Pizzeria')),
+      'pizzeria:bancone': () => (this._qui('gennaro') ? g.png.parla('gennaro') : this._dice(TESTI_CHIUSO.pizzeria, 'Bella Napoli')),
       'pizzeria:forno': () => this._dice(Z.forno, 'Forno'),
       'pizzeria:vesuvio': () => this._dice(Z.vesuvio, 'Il Vesuvio'),
       'pizzeria:tavolo': () => (this._qui('concetta') || this._qui('gennaro') ? g.ui.dialog([this._menuPizza(true)]) : this._dice(Z.tavolo, 'Tavolo')),
@@ -256,12 +256,18 @@ export class EdificiPaese {
     return this._pg(chi, primo ? 'Cosa ti porto?' : 'Altro?', [
       { label: fill(Z.ordina, { prezzo: PREZZI.pizza }), disabled: s.money < PREZZI.pizza, fn: () => {
         this._paga(PREZZI.pizza); s.health += 30; s.stress -= 10; s.minutes += 40; this._c(); g.audio.sfx('eat'); g.png.cambiaAmicizia('gennaro', 1);
-        return [{ name: 'Pizzeria', text: pick(Z.mangiata) }];
+        return [{ name: 'Bella Napoli', text: pick(Z.mangiata) }];
       } },
       { label: fill(Z.asporto, { prezzo: PREZZI.pizzaAsporto }), disabled: s.money < PREZZI.pizzaAsporto, fn: () => {
         this._paga(PREZZI.pizzaAsporto); g.prog.dai('pizza'); g.ui.toast('🍕 Pizza da asporto nello zaino', 'good');
         return [this._pg('gennaro', Z.asportoDice)];
       } },
+      // side quest: mangia e scappa senza pagare. Gennaro (livello 30) ti insegue fuori (src/boss.js → scappaDallaPizzeria)
+      ...(g.boss && !g.boss.debitoPizza() ? [{ label: fill(Z.scappa || '🏃 Mangia la pizza e scappa senza pagare ({prezzo}€ risparmiati)', { prezzo: PREZZI.pizza }), fn: () => {
+        s.health += 30; s.stress -= 10; s.minutes += 30; this._c(); g.audio.sfx('eat');
+        setTimeout(() => g.boss.scappaDallaPizzeria(), 50);
+        return null;
+      } }] : []),
       { label: 'Niente, grazie', fn: null },
     ]);
   }
@@ -336,7 +342,7 @@ export class EdificiPaese {
       } },
     ]);
     // pizzeria
-    P.aggiungiScelte('gennaro', () => [{ label: '🍕 Ordina', fn: () => [this._menuPizza(true)] }]);
+    P.aggiungiScelte('gennaro', () => g.boss?.debitoPizza() ? g.boss.scelteDebito() : [{ label: '🍕 Ordina', fn: () => [this._menuPizza(true)] }]);
     P.aggiungiScelte('concetta', () => [
       { label: '🍕 Ordina', fn: () => [this._menuPizza(true)] },
       { label: T.pizzeria.pettegolezzi, fn: () => { s().minutes += 10; return [this._pg('concetta', pick(T.pizzeria.voci))]; } },

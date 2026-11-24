@@ -10,7 +10,7 @@
 // API (game.ragazze):
 //   redpill()                 punti red pill 0-100
 //   rango()                   [soglia, nome, descrizione] del rango red pill
-//   reputazione()             reputazione in paese 0-100 (la stessa del Night Paradiso)
+//   reputazione()             reputazione in paese 0-100 (la stessa del Night Welcome)
 //   affinita(id)              affinità con una ragazza
 //   appuntamento()            { id, luogo, giorno, fatto } o null
 // Eventi mandati: conquista { id }, appuntamento { id, luogo, esito }

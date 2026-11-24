@@ -252,7 +252,7 @@ export const BOSS = {
 
   // ---------- PIZZERIA ----------
   critico: {
-    nome: 'Forchetta d\'Oro, il critico', lv: 13, zona: 'Pizzeria', icona: '🍴',
+    nome: 'Forchetta d\'Oro, il critico', lv: 13, zona: 'Pizzeria Bella Napoli', icona: '🍴',
     da: 'gennaro', titolo: 'La recensione maledetta', requisiti: { livello: 10 },
     offerta: "Uè Garonio. Sta venendo il critico «Forchetta d'Oro». Una stella a tutti, e le pizzerie chiudono. Stasera viene da me. Se gli fai cambiare idea... con le maniere forti... io ti faccio la pizza gratis a vita. Quasi a vita.",
     accetta: 'Gli faccio cambiare idea', grazie: "Cinque stelle! CINQUE! Il quadro del Vesuvio ha pianto. Tieni, pizza per tutto l'inverno. E quella forchetta d'oro, appendila al muro. O usala.",
@@ -527,19 +527,19 @@ export const BOSS = {
     vittoria: [{ testo: "L'Armatura si inginocchia: «Sei degno, contadino». Poi si smonta pezzo per pezzo. Restano l'elmo e lo spadone. Ambrogio li lucida e te li porge con un inchino." }],
   },
 
-  // ---------- NIGHT PARADISO ----------
+  // ---------- NIGHT WELCOME ----------
   buttafuori: {
-    nome: 'Tonino il Buttafuori', lv: 27, zona: 'Night Paradiso', icona: '🕶️',
-    da: 'loredana', titolo: 'Il buttafuori del Paradiso', requisiti: { livello: 24 },
-    offerta: "Al Paradiso c'è un buttafuori nuovo, Tonino. Non fa entrare nessuno del paese: dice che puzziamo di stalla. Ha buttato fuori il Consulente, Tarcisio e anche il sindaco. Hai la mia benedizione. Di barista.",
+    nome: 'Tonino il Buttafuori', lv: 27, zona: 'Night Welcome', icona: '🕶️',
+    da: 'loredana', titolo: 'Il buttafuori del Welcome', requisiti: { livello: 24 },
+    offerta: "Al Welcome c'è un buttafuori nuovo, Tonino. Non fa entrare nessuno del paese: dice che puzziamo di stalla. Ha buttato fuori il Consulente, Tarcisio e anche il sindaco. Hai la mia benedizione. Di barista.",
     accetta: 'Gli faccio vedere io la stalla', grazie: "Hanno riaperto le porte a tutti! Il sindaco ha ballato fino all'alba. Questo te lo sei guadagnato. E da stasera il primo giro lo offro io. Uno.",
-    tana: { luogo: 'notte_paese', x: 48, z: 67.4, nome: 'l\'ingresso del Night Paradiso', ore: [21, 24], fuori: "Il Paradiso è chiuso. Tonino arriva col buio (dalle 21)." },
+    tana: { luogo: 'notte_paese', x: 48, z: 67.4, nome: 'l\'ingresso del Night Welcome', ore: [21, 24], fuori: "Il Welcome è chiuso. Tonino arriva col buio (dalle 21)." },
     descr: [
-      { testo: "Davanti al Paradiso c'è un armadio a quattro ante con gli occhiali da sole. Di notte. Ha le braccia conserte e un auricolare." },
+      { testo: "Davanti al Welcome c'è un armadio a quattro ante con gli occhiali da sole. Di notte. Ha le braccia conserte e un auricolare." },
       { testo: "«Tu non entri. Hai il fango sugli stivali. E la faccia da fango.»" },
       { chi: 'garonio', testo: "Il fango è di famiglia. Come le maniere." },
     ],
-    intro: "Tonino si toglie gli occhiali: dal Paradiso escono i suoi colleghi.",
+    intro: "Tonino si toglie gli occhiali: dal Welcome escono i suoi colleghi.",
     nemico: {
       name: 'Tonino il Buttafuori', size: 10.5, sprite: U('bodyguard'), mul: { hp: 1.4, atk: 1.2, def: 1.4, spd: 0.8 }, fuga: 'si rimette gli occhiali e va a fare il buttafuori a Rimini.',
       moves: [
@@ -549,7 +549,7 @@ export const BOSS = {
       ],
     },
     seguaci: ['scagnozzo'],
-    mecc: { rinforzi: { ids: ['scagnozzo'], ogni: 3, max: 2, testo: 'Dal Paradiso esce un altro buttafuori!' }, carica: { ogni: 4, mossa: { name: 'BUTTATO FUORI', pow: 2.4, stress: 10, line: 'Tonino lancia Garonio contro il cassonetto!' }, testo: 'Tonino si scrocchia le nocche... (Difenditi!)' } },
+    mecc: { rinforzi: { ids: ['scagnozzo'], ogni: 3, max: 2, testo: 'Dal Welcome esce un altro buttafuori!' }, carica: { ogni: 4, mossa: { name: 'BUTTATO FUORI', pow: 2.4, stress: 10, line: 'Tonino lancia Garonio contro il cassonetto!' }, testo: 'Tonino si scrocchia le nocche... (Difenditi!)' } },
     bottino: { vestiti: ['occhialiScuri', 'scarpeButtafuori'], oggetti: { trofeoBoss: 1, gingillo: 2 } },
     premio: { soldi: 380, xp: 520, oggetti: { grappa: 3 }, amicizia: { loredana: 18 } },
     vittoria: [{ testo: "Tonino si siede sul marciapiede: «In vent'anni non mi aveva mai buttato fuori nessuno.» Ti regala gli occhiali scuri e gli anfibi, e se ne va a piedi nudi verso Rimini." }],
@@ -594,6 +594,48 @@ export const BOSS = {
       { testo: "Il Gigante, dalla finestra del bar, ci crede eccome. E per la prima volta, applaude." },
     ],
   },
+};
+
+// ---------- Bella Napoli: la pizza non pagata (non è una missione: parte se scappi senza pagare) ----------
+// Gennaro è livello 30: durissimo. Si può rifare ogni volta che scappi; il bottino grosso solo la prima volta.
+BOSS.gennaro = {
+  nome: 'Gennaro furioso', lv: 30, zona: 'Pizzeria Bella Napoli', icona: '🍕', senzaMissione: true,
+  titolo: 'La pizza non pagata',
+  tana: { luogo: 'paese' },
+  fuga: [
+    { testo: "Garonio si alza piano piano, fa finta di andare in bagno... e scatta verso la porta!" },
+    { chi: 'gennaro', nome: 'Gennaro', testo: "UÈ! UÈÈÈ! 'O CONTO! Fermate a chillo!" },
+    { testo: "Garonio è fuori. Respira. Ce l'ha fatta. Poi sente dei passi pesanti, e l'odore di forno a legna che si avvicina." },
+  ],
+  descr: [
+    { testo: "Gennaro esce dalla Bella Napoli con la pala del forno in mano e il grembiule ancora infarinato. Ha gli occhi del Vesuvio nel '44." },
+    { chi: 'gennaro', nome: 'Gennaro', testo: "Tu hai mangiato 'na margherita mia e te ne vai accussì? Mo' t'insegno io 'a creanza!" },
+  ],
+  intro: "Gennaro fa roteare la pala del forno. Non è più il Gennaro che canta.",
+  nemico: {
+    name: 'Gennaro furioso', size: 10, sprite: U('pizzaiolo', { eyes: 'angry' }), mul: { hp: 1.45, atk: 1.25, def: 1.3, spd: 1.1, xp: 1.2 }, fuga: 'si siede sul marciapiede col fiatone. «Almeno sei veloce, guagliò.»',
+    moves: [
+      { name: 'Palata', pow: 1.3, stress: 3, w: 3 },
+      { name: 'Mozzarella in faccia', pow: 0.8, stress: 6, w: 2, stordisce: true, line: 'Una mozzarella di bufala piena in faccia. Garonio non vede niente!' },
+      { name: 'Insulto in napoletano', pow: 0, stress: 13, w: 1, line: "«Si' proprio nu' scurnacchiato!»" },
+      { name: 'Olio bollente', pow: 1.1, stress: 4, w: 1, veleno: [9, 3], line: 'Una schizzata d\'olio piccante bollente! (Vita −9 per 3 turni)' },
+    ],
+  },
+  mecc: {
+    carica: { ogni: 3, mossa: { name: 'PIZZA AL FORNO A LEGNA', pow: 2.5, stress: 10, line: 'Gennaro tira fuori dal forno una pizza rovente e te la stampa addosso!' }, testo: 'Gennaro infila la pala nel forno portatile... (Difenditi!)' },
+    furia: { soglia: 0.4, atk: 1.15, doppio: true, testo: 'Gennaro si toglie il cappello da pizzaiolo: adesso è una questione d\'onore! Attacca due volte.' },
+    cura: { soglia: 0.3, quanto: 0.12, volte: 1, testo: 'Gennaro si mangia al volo un trancio di pizza: si rimette in forze!' },
+  },
+  bottino: { armi: ['palaForno'], vestiti: ['grembiulePizzaiolo'], oggetti: { pizza: 4 } },
+  bottinoRipeti: { oggetti: { pizza: 2 } },
+  vittoria: [
+    { testo: "Gennaro si siede sul marciapiede, senza fiato. Poi scoppia a ridere." },
+    { chi: 'gennaro', nome: 'Gennaro', testo: "Mai visto uno accussì! Tiè, pigliate 'a pala e 'o grembiule: tanto stasera nun inforno cchiù. Però 'a prossima vota... PAGHI!" },
+  ],
+  vittoriaRipeti: [{ chi: 'gennaro', nome: 'Gennaro', testo: "N'ata vota?! Va bene, va bene, hai vinto tu. Ma 'o conto t'o segno 'ncopp' 'o muro!" }],
+  sconfitta: "Gennaro trascina Garonio dentro per un orecchio e gli fa pagare il doppio. Tutta la piazza ha visto.",
+  scappato: "Garonio scappa più veloce di Gennaro. Ma Gennaro non dimentica: alla Bella Napoli adesso c'è un conto in sospeso.",
+  debito: { prezzo: 16, paga: '💶 Paga il conto in sospeso ({prezzo}€)', pagato: "Bravo guagliò. Mo' sì che ragioniamo. Che te porto?", sfida: '⚔️ «Il conto? Vieni a prendertelo!»', saluto: "Tu! Tu tieni 'nu conto aperto cu' me. {prezzo} euro, o fore se ne parla." },
 };
 
 // Tirapiedi dei boss: compaiono solo negli scontri coi boss (non in giro per la mappa).

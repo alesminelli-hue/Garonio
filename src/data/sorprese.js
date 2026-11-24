@@ -80,7 +80,7 @@ export const SORPRESE = {
     ],
     saluto: "Guten Tag! Ich suche... il castello di Grazzano Visconti? Mappa dice qui. Mappa è sbagliata?",
     giusta: { etichetta: 'Indica la strada giusta', testo: "«Danke schön!» Ti dà 5€ e una caramella alla menta di dubbia data. +5 XP", soldi: 5, xp: 5 },
-    paradiso: { etichetta: 'Mandalo al Night Paradiso', testo: "Il turista va al Paradiso. Domani sul giornale di Monaco: «Cultura italiana molto interessante». +3 XP", xp: 3 },
+    paradiso: { etichetta: 'Mandalo al Night Welcome', testo: "Il turista va al Welcome. Domani sul giornale di Monaco: «Cultura italiana molto interessante». +3 XP", xp: 3 },
     finta: { etichetta: 'Fingi di non capire («No spik inglish»)', testo: "Il turista se ne va. Garonio si sente un po' in colpa. Poco." },
   },
   // il portafoglio perso per strada
