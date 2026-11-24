@@ -98,6 +98,8 @@ export const PROPS = [
   { kind: 'cartello', x: 77.5, z: 57.6, text: 'AZIENDA ↓' },
   { kind: 'cartello', x: 127, z: 57.4, text: 'MAIALI ↓' },
   { kind: 'cartello', x: 38, z: 57.4, text: '← BAR' },
+  { kind: 'cartello', x: 50.6, z: 57.4, text: 'NIGHT ↓' },   // Night Paradiso (src/paradiso.js)
+  { kind: 'cartello', x: 30.5, z: 51.6, text: 'NIGHT →' },
 ];
 
 // ---------- Punti importanti ----------
