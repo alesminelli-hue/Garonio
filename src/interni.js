@@ -5,13 +5,15 @@
 // I dati (stanze, mobili, testi) stanno in src/data/interni.js.
 //
 // API (game.interni):
-//   attivo, edificio            true e 'casa' | 'officina' | 'maiali' | 'bar' | 'magazzino' quando Garonio è dentro
+//   attivo, edificio            true e 'casa' | 'officina' | 'maiali' | 'bar' | 'magazzino' | 'meccanico' | 'chiesa' | ... quando Garonio è dentro
 //   entra(id) / esci()          entra o esce (async). game.enter(id) passa da qui.
 //   aggancia('edificio:zona', async ctx => ...)
 //                               sostituisce l'azione di un mobile (tasto E). ctx = { game, edificio, zona, mobile,
 //                               box, reparto, tavolo, predefinito }: predefinito() esegue l'azione di serie.
 //                               Zone: casa:letto|armadio|poster|trofei|tv|divano|tavola|bacheca|calendario|conti|deposito|cantina
-//                                     officina:bancone|ponte|mola|rastrelliera|armadietti
+//                                     officina (il deposito di casa):bancone|scaffale|sacchi|rastrelliera|armadietti
+//                                     meccanico (Zeno, in paese):bancone|ponte|mola|calendario|caffe
+//                                     chiesa, castello, farmacia, dottore, palestra, pizzeria, kebab: vedi src/edifici.js
 //                                     maiali:box|mangime|parto|infermeria|grata
 //                                     bar:bancone|consulente|tavolo|carte|biliardo|jukebox|annunci|retro
 //                                     magazzino:bancone|scaffali|usato|lavagna
@@ -99,6 +101,21 @@ const PAVIMENTI = {
     for (let i = 0; i < W / 30; i++) { const x = r() * W, y = r() * H; P('rgba(40,36,30,0.18)', x, y, 10 + r() * 14, 5 + r() * 6); }
   },
   moquette: (P, W, H, g, r) => { P('#5a1e4a', 0, 0, W, H); for (let i = 0; i < W * H / 12; i++) P(r() < 0.5 ? '#6a2a5a' : '#4a1640', r() * W, r() * H, 2, 1); },   // Night Paradiso (src/paradiso.js)
+  marmo: (P, W, H, g, r) => { // chiesa: lastre chiare con le fughe e qualche venatura
+    for (let y = 0; y < H; y += 16) for (let x = ((y / 16) % 2) * 8; x < W + 16; x += 16) {
+      const R = ramp(hdTono(((x + y) / 16) % 2 ? '#e8e0d0' : '#d8ccb8', (hdHash(x, y, 3) - 0.5) * 0.25));
+      P(R[2], x, y, 16, 16); P(R[3], x, y, 15, 1); P(R[1], x, y + 15, 16, 1); P(R[1], x + 15, y, 1, 16);
+      if (hdHash(x, y, 5) < 0.5) for (let k = 0; k < 6; k++) P(R[1], x + 3 + k * 1.6, y + 4 + Math.sin(k + x) * 3, 1, 1);
+    }
+  },
+  pietra: (P, W, H, g, r) => { // castello: lastroni di pietra irregolari
+    P('#5a564e', 0, 0, W, H);
+    for (let y = 0; y < H; y += 12) { let x = -((y / 12) % 2) * 9; while (x < W) { const l = 14 + Math.floor(r() * 12), R = ramp(hdTono('#8a8476', (r() - 0.5) * 0.5)); P(R[2], x + 1, y + 1, l - 2, 10); P(R[3], x + 1, y + 1, l - 2, 1); P(R[1], x + 1, y + 10, l - 2, 1); x += l; } }
+  },
+  gomma: (P, W, H, g, r) => { // palestra: pavimento in gomma nera a quadrotte
+    for (let y = 0; y < H; y += 16) for (let x = 0; x < W; x += 16) { P('#2e2e34', x, y, 16, 16); P('#3a3a42', x, y, 15, 1); P('#222228', x, y + 15, 16, 1); }
+    for (let i = 0; i < W * H / 40; i++) P(r() < 0.5 ? '#46464e' : '#5a5a3a', r() * W, r() * H, 1, 1);
+  },
   assi: (P, W, H, g, r) => {
     for (let x = 0; x < W; x += 6) { const c = tono('#9a7048', 0.88 + r() * 0.2); P(c, x, 0, 6, H); P(tono(c, 0.7), x, 0, 1, H); for (let y = Math.floor(r() * 40); y < H; y += 40 + Math.floor(r() * 30)) P(tono(c, 0.6), x, y, 6, 1); }
   },
@@ -113,6 +130,27 @@ const MURI = {
   mattoni: (P, W, H) => { P('#6a5a50', 0, 0, W, H); for (let y = 0; y < H; y += 5) for (let x = (y / 5 % 2) * 6 - 6; x < W; x += 12) { P(tono('#8a4a36', 0.85 + ((x * 3 + y) % 7) * 0.04), x + 1, y + 1, 11, 4); } },
   lamiera: (P, W, H) => { P('#8a96a0', 0, 0, W, H); for (let x = 0; x < W; x += 6) { P('#a4b0b8', x, 0, 2, H); P('#6a7680', x + 4, 0, 1, H); } for (let y = 0; y < H; y += 32) P('#5a6470', 0, y, W, 1); zoccolo(P, W, H, '#5a6068', 8); },
   velluto: (P, W, H) => { P('#4a1a3e', 0, 0, W, H); for (let x = 0; x < W; x += 6) P('#5a2450', x, 0, 2, H); P('#c8a040', 0, Math.round(H * 0.62), W, 1); P('#2a0e24', 0, H - 4, W, 4); },   // Night Paradiso
+  chiesa: (P, W, H) => { // intonaco chiaro con le lesene e la fascia dorata
+    P('#efe4c8', 0, 0, W, H);
+    for (let x = 12; x < W; x += 48) { P('#e0d2b0', x, 0, 8, H); P('#f8f0dc', x, 0, 1, H); P('#c8b890', x + 7, 0, 1, H); }
+    P('#c8a040', 0, Math.round(H * 0.42), W, 2); P('#a87a28', 0, Math.round(H * 0.42) + 2, W, 1);
+    zoccolo(P, W, H, '#8a7a68', 16);
+  },
+  pietra: (P, W, H) => { // castello: conci di pietra
+    P('#6a6458', 0, 0, W, H);
+    for (let y = 0; y < H; y += 7) for (let x = -((y / 7) % 2) * 7; x < W; x += 14) { const R = ramp(tono('#9a9484', 0.86 + ((x * 7 + y * 3) % 9) * 0.035)); P(R[2], x + 1, y + 1, 12, 5); P(R[3], x + 1, y + 1, 12, 1); P(R[1], x + 1, y + 5, 12, 1); }
+  },
+  farmacia: (P, W, H) => { // bianco con la fascia verde
+    P('#f2f2ee', 0, 0, W, H); for (let x = 0; x < W; x += 16) P('#e8e8e2', x, 0, 1, H);
+    P('#3a8a5a', 0, Math.round(H * 0.55), W, 3); P('#5aaa7a', 0, Math.round(H * 0.55), W, 1);
+    zoccolo(P, W, H, '#3a6a4a', 10);
+  },
+  palestra: (P, W, H) => { // blocchi di cemento con la riga gialla
+    P('#c8c4b8', 0, 0, W, H);
+    for (let y = 0; y < H; y += 8) { P('#b0aca0', 0, y + 7, W, 1); for (let x = ((y / 8) % 2) * 8; x < W; x += 16) P('#b0aca0', x, y, 1, 7); }
+    P('#e8b030', 0, Math.round(H * 0.6), W, 6); P('#f4d060', 0, Math.round(H * 0.6), W, 1);
+    zoccolo(P, W, H, '#3a3a42', 8);
+  },
   lamiera2: (P, W, H, g, r) => { MURI.lamiera(P, W, H); for (let i = 0; i < W / 4; i++) P('rgba(150,80,30,0.35)', r() * W, r() * H, 2, 3 + r() * 8); },
 };
 function zoccolo(P, W, H, col, h) { const R = ramp(col); P(R[2], 0, H - h, W, h); P(R[4], 0, H - h, W, 1); P(R[3], 0, H - h + 1, W, 1); P(R[1], 0, H - 3, W, 2); P(R[0], 0, H - 1, W, 1); }
@@ -168,6 +206,7 @@ const MERCE = {
   oggetti: r => ({ w: 3 + Math.floor(r() * 2), h: 3 + Math.floor(r() * 3), c: pick(['#c8a070', '#a8a8a0', '#d8c040', '#5a8ab0', '#c8402a']) }),
   bottiglie: r => ({ w: 2, h: 5 + Math.floor(r() * 3), c: pick(['#3a7a3a', '#8a5a2a', '#e8e0c0', '#6a1a2a', '#c8a040']), top: '#2a2a2a' }),
   ricambi: r => ({ w: 3, h: 2 + Math.floor(r() * 3), c: pick(['#6a7078', '#a8b0b8', '#2a2a2a', '#c86a2a']) }),
+  medicine: r => ({ w: 3 + Math.floor(r() * 2), h: 3 + Math.floor(r() * 3), c: pick(['#f4f4f0', '#e8f0f8', '#f8e8e8', '#e8f4e8', '#f8f0d8']), c2: pick(['#3a8a5a', '#d83a3a', '#3a6ac8', '#e8a030']) }),
 };
 
 // ---------- Il maiale (sprite via codice, segnaposto) ----------
@@ -268,7 +307,7 @@ export class Interni {
       { label: TESTI.loredana.ordina, fn: () => [g._barMenu(false)] },
     ]);
     // finché il lavoro "officina" non porta le sue scelte, Zeno ripara come prima
-    g.png.aggiungiScelte('zeno', () => (g.officina || this.edificio !== 'officina' ? [] : g.vehicles.workshopChoices()));
+    g.png.aggiungiScelte('zeno', () => (g.officina || this.edificio !== 'meccanico' ? [] : g.vehicles.workshopChoices()));
   }
 
   _consiglioMamma() {
@@ -758,6 +797,175 @@ export class Interni {
         for (const sx of [-1, 1]) { const g2 = blocco(0.06, h, 0.06, { colore: '#6a4a2a' }); g2.position.set(sx * (w / 2 - 0.1), h / 2, 0.08); g2.rotation.x = -0.12; o.add(g2); }
         break;
       }
+      // ---------- chiesa ----------
+      case 'altare': {
+        o = gruppo();
+        const b = blocco(w, h, d, { colore: '#e8e0d0', fronte: (P, W, H2) => { P('#e8e0d0', 0, 0, W, H2); P('#c8a040', 0, 0, W, 2); for (let x = 4; x < W - 4; x += 12) { P('#d8ccb8', x, 5, 8, H2 - 9); P('#f4ecdc', x, 5, 8, 1); } P('#c8a040', W / 2 - 1, 6, 2, 8); P('#c8a040', W / 2 - 4, 8, 8, 2); } });
+        b.position.y = h / 2; o.add(b);
+        const tov = blocco(w + 0.06, 0.06, d + 0.06, { colore: '#f8f6ee' }); tov.position.y = h + 0.03; o.add(tov);
+        for (const sx of [-1, 1]) { const ca = blocco(0.1, 0.4, 0.1, { colore: '#f4f0e0' }); ca.position.set(sx * (w / 2 - 0.3), h + 0.26, 0); o.add(ca); const fi = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 4), new THREE.MeshBasicMaterial({ color: '#ffd060' })); fi.position.set(sx * (w / 2 - 0.3), h + 0.5, 0); o.add(fi); }
+        const lib = blocco(0.5, 0.06, 0.35, { colore: '#a8302a' }); lib.position.set(0.2, h + 0.09, 0); lib.rotation.y = 0.2; o.add(lib);
+        break;
+      }
+      case 'candele': {
+        o = gruppo();
+        const b = blocco(w, h * 0.75, d, { colore: '#6a4a2a', fronte: legno('#6a4a2a') }); b.position.y = h * 0.375; o.add(b);
+        const fm = new THREE.MeshBasicMaterial({ color: '#ffc850' });
+        for (let i = 0; i < 9; i++) { const x = -w / 2 + 0.15 + (i % 5) * (w - 0.3) / 4, z = i < 5 ? -0.1 : 0.1, hh = 0.12 + (i * 37 % 5) * 0.03; const c = blocco(0.06, hh, 0.06, { colore: '#f4f0e0' }); c.position.set(x + (i >= 5 ? 0.12 : 0), h * 0.75 + hh / 2, z); o.add(c); const f = new THREE.Mesh(new THREE.SphereGeometry(0.035, 5, 4), fm); f.position.set(x + (i >= 5 ? 0.12 : 0), h * 0.75 + hh + 0.04, z); o.add(f); }
+        c.fuochi = (c.fuochi || []).concat([fm]);
+        break;
+      }
+      case 'confessionale': {
+        o = blocco(w, h, d, { colore: '#5a3218', fronte: (P, W, H2, g, r) => { legno('#5a3218', true)(P, W, H2, g, r); const m3 = W / 3; for (let i = 0; i < 3; i++) { P(i === 1 ? '#3a1e0c' : '#8a2a2a', i * m3 + 2, 10, m3 - 4, H2 - 14); if (i !== 1) for (let y = 12; y < H2 - 6; y += 3) P('#6a1e1e', i * m3 + 2, y, m3 - 4, 1); } P('#c8a040', W / 2 - 1, 2, 2, 6); P('#c8a040', W / 2 - 3, 4, 6, 2); } });
+        o.position.y = h / 2; break;
+      }
+      case 'banco': {
+        o = gruppo();
+        const col = m.colore || '#6a3a1c';
+        const seduta = blocco(w, 0.08, d * 0.6, { colore: col, sopra: legno(col) }); seduta.position.set(0, h * 0.5, d * 0.15); o.add(seduta);
+        const schienale = blocco(w, h * 0.55, 0.07, { colore: col, fronte: legno(col) }); schienale.position.set(0, h * 0.72, -d / 2 + 0.05); o.add(schienale);
+        for (const sx of [-1, 1]) { const f = blocco(0.08, h, d, { colore: tono(col, 0.8), fronte: legno(tono(col, 0.8), true) }); f.position.set(sx * (w / 2 - 0.04), h / 2, 0); o.add(f); }
+        break;
+      }
+      case 'acquasantiera': case 'offerte': {
+        o = gruppo();
+        if (m.tipo === 'acquasantiera') {
+          const col = blocco(0.16, h - 0.2, 0.16, { colore: '#d8ccb8' }); col.position.y = (h - 0.2) / 2; o.add(col);
+          const v = new THREE.Mesh(new THREE.CylinderGeometry(w / 2, w / 2.6, 0.2, 10), C('#e8e0d0')); v.position.y = h - 0.1; o.add(v);
+          const ac = new THREE.Mesh(new THREE.CircleGeometry(w / 2 - 0.04, 10).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#8ac8e8' })); ac.position.y = h - 0.01; ac.userData.piatto = true; o.add(ac);
+        } else {
+          const col = blocco(0.14, h - 0.35, 0.14, { colore: '#5a3218' }); col.position.y = (h - 0.35) / 2; o.add(col);
+          const cs = blocco(w, 0.35, d, { colore: '#7a5a32', fronte: (P, W, H2) => { P('#7a5a32', 0, 0, W, H2); P('#2a1a10', W / 2 - 3, 2, 6, 1); P('#f4ecd6', 2, H2 - 5, W - 4, 3); } }); cs.position.y = h - 0.175; o.add(cs);
+        }
+        break;
+      }
+      // ---------- castello ----------
+      case 'armatura': {
+        o = gruppo();
+        const ferro = '#a8b0b8';
+        const base = blocco(w, 0.15, d, { colore: '#5a4a3a' }); base.position.y = 0.075; o.add(base);
+        const gambe = blocco(0.36, 0.75, 0.24, { colore: ferro, fronte: (P, W, H2) => { P('#a8b0b8', 0, 0, W, H2); P('#7a828a', W / 2, 0, 1, H2); P('#d0d8e0', 1, 0, 1, H2); } }); gambe.position.y = 0.52; o.add(gambe);
+        const busto = blocco(0.5, 0.6, 0.3, { colore: ferro, fronte: (P, W, H2) => { P('#a8b0b8', 0, 0, W, H2); P('#d0d8e0', 2, 1, 2, H2 - 2); P('#7a828a', 0, H2 - 2, W, 2); P('#c83a2a', W / 2 - 1, 3, 2, 4); } }); busto.position.y = 1.2; o.add(busto);
+        const elmo = blocco(0.3, 0.32, 0.3, { colore: ferro, fronte: (P, W, H2) => { P('#a8b0b8', 0, 0, W, H2); P('#1e1e22', 1, H2 / 2 - 1, W - 2, 1); P('#d0d8e0', 1, 1, 1, H2 - 2); } }); elmo.position.y = 1.67; o.add(elmo);
+        const pi = blocco(0.1, 0.18, 0.1, { colore: '#c83a2a' }); pi.position.y = 1.92; o.add(pi);
+        const lancia = blocco(0.05, h + 0.4, 0.05, { colore: '#6a4a2a' }); lancia.position.set(w / 2 - 0.05, (h + 0.4) / 2, 0.1); o.add(lancia);
+        const punta = blocco(0.1, 0.2, 0.04, { colore: ferro }); punta.position.set(w / 2 - 0.05, h + 0.5, 0.1); o.add(punta);
+        break;
+      }
+      case 'cassapanca': case 'forziere': {
+        const col = m.tipo === 'forziere' ? '#6a3a1c' : '#7a4a26';
+        o = blocco(w, h, d, { colore: col, fronte: (P, W, H2, g, r) => { legno(col)(P, W, H2, g, r); P('#3a3a42', 0, 3, W, 2); P('#3a3a42', 0, H2 - 4, W, 2); P('#3a3a42', 3, 0, 2, H2); P('#3a3a42', W - 5, 0, 2, H2); P('#e0c060', W / 2 - 2, H2 / 2 - 2, 4, 5); P('#2a2a2a', W / 2 - 1, H2 / 2, 2, 2); } });
+        o.position.y = h / 2; break;
+      }
+      case 'camino': {
+        o = gruppo();
+        const pietra = (P, W, H2) => { P('#8a8476', 0, 0, W, H2); for (let y = 0; y < H2; y += 5) for (let x = (y / 5 % 2) * 5; x < W; x += 10) { P('#a49e90', x + 1, y + 1, 8, 3); P('#b8b2a4', x + 1, y + 1, 8, 1); } };
+        const corpo = blocco(w, h, d, { colore: '#8a8476', fronte: (P, W, H2) => { pietra(P, W, H2); const bw = W * 0.6, bx = (W - bw) / 2, by = H2 * 0.45; P('#1a1210', bx, by, bw, H2 - by); P('#5a564e', bx - 2, by - 3, bw + 4, 3); } });
+        corpo.position.y = h / 2; o.add(corpo);
+        const mens = blocco(w + 0.2, 0.12, d + 0.1, { colore: '#6a5a48' }); mens.position.y = h * 0.42; o.add(mens);
+        const fuoco = new THREE.MeshBasicMaterial({ color: '#ff8a30' });
+        for (const [x, s] of [[-0.25, 0.16], [0.05, 0.22], [0.3, 0.14]]) { const f = new THREE.Mesh(new THREE.ConeGeometry(s, s * 2.4, 5), fuoco); f.position.set(x, 0.12 + s * 1.2, d / 2 - 0.05); o.add(f); }
+        const legna = blocco(0.8, 0.1, 0.25, { colore: '#5a3a1c' }); legna.position.set(0, 0.08, d / 2 - 0.05); o.add(legna);
+        c.fuochi = (c.fuochi || []).concat([fuoco]);
+        break;
+      }
+      case 'trono': {
+        o = gruppo();
+        const oro = '#c8a040', vel = '#a82a3a';
+        const sed = blocco(w, 0.5, d, { colore: oro, fronte: (P, W, H2) => { P(oro, 0, 0, W, H2); P('#e8c860', 0, 0, W, 1); P(vel, 3, 2, W - 6, H2 - 4); } }); sed.position.y = 0.25; o.add(sed);
+        const cus = blocco(w - 0.2, 0.12, d - 0.2, { colore: vel }); cus.position.y = 0.56; o.add(cus);
+        const sch = blocco(w, h - 0.5, 0.16, { colore: oro, fronte: (P, W, H2) => { P(oro, 0, 0, W, H2); P('#e8c860', 0, 0, W, 1); P(vel, 3, 5, W - 6, H2 - 8); P(oro, W / 2 - 2, 8, 4, 4); P('#3a6ac8', W / 2 - 1, 9, 2, 2); for (const x of [2, W / 2 - 1, W - 4]) P('#e8c860', x, 0, 2, 3); } });
+        sch.position.set(0, 0.5 + (h - 0.5) / 2, -d / 2 + 0.08); o.add(sch);
+        for (const sx of [-1, 1]) { const br = blocco(0.12, 0.35, d - 0.1, { colore: oro }); br.position.set(sx * (w / 2 - 0.06), 0.7, 0.02); o.add(br); }
+        break;
+      }
+      // ---------- farmacia e dottore ----------
+      case 'espositore': {
+        o = gruppo();
+        for (let i = 0; i < 3; i++) { const p = blocco(w - i * 0.15, 0.06, d - i * 0.15, { colore: '#e8e8e4' }); p.position.y = 0.3 + i * 0.4; o.add(p); for (let k = 0; k < 3; k++) { const sc = blocco(0.18, 0.22, 0.12, { colore: ['#e85a8a', '#3a8ac8', '#f0c030', '#3e8a4a'][(i + k) % 4] }); sc.position.set(-0.25 + k * 0.25, 0.44 + i * 0.4, 0); o.add(sc); } }
+        const asta = blocco(0.06, h, 0.06, { colore: '#9aa4ac' }); asta.position.y = h / 2; o.add(asta);
+        const cart = blocco(0.6, 0.25, 0.04, { colore: '#d83a3a', fronte: (P, W, H2) => { P('#d83a3a', 0, 0, W, H2); P('#f4f0e4', 2, 1, W - 4, 2); } }); cart.position.y = h + 0.1; o.add(cart);
+        break;
+      }
+      case 'bilancia': {
+        o = gruppo();
+        const pedana = blocco(w, 0.12, d, { colore: '#d8d8d8' }); pedana.position.y = 0.06; o.add(pedana);
+        const col = blocco(0.12, h - 0.4, 0.12, { colore: '#c83a2a' }); col.position.set(0, (h - 0.4) / 2 + 0.1, -d / 2 + 0.1); o.add(col);
+        const qu = blocco(0.45, 0.45, 0.14, { colore: '#c83a2a', fronte: (P, W, H2) => { P('#c83a2a', 0, 0, W, H2); P('#f4f0e4', 2, 2, W - 4, H2 - 4); P('#2a2a2a', W / 2, 3, 1, H2 / 2 - 2); P('#2a2a2a', 3, H2 - 4, W - 6, 1); } }); qu.position.set(0, h - 0.2, -d / 2 + 0.1); o.add(qu);
+        break;
+      }
+      case 'lettino': {
+        o = gruppo();
+        const tela2 = blocco(w, 0.15, d, { colore: '#4a7aa8', sopra: (P, W, H2) => { P('#4a7aa8', 0, 0, W, H2); P('#f4f4f0', 2, 1, W - 4, H2 - 2); P('#e8e8e4', 2, 1, 8, H2 - 2); } }); tela2.position.y = h - 0.075; o.add(tela2);
+        for (const [lx, lz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { const g2 = blocco(0.07, h - 0.15, 0.07, { colore: '#9aa4ac' }); g2.position.set(lx * (w / 2 - 0.1), (h - 0.15) / 2, lz * (d / 2 - 0.1)); o.add(g2); }
+        break;
+      }
+      // ---------- palestra ----------
+      case 'panca': {
+        o = gruppo();
+        const s = blocco(w * 0.8, 0.12, 0.35, { colore: '#2a2a30', sopra: pieno('#3a3a44') }); s.position.set(0, 0.45, 0); o.add(s);
+        for (const sx of [-1, 1]) { const g2 = blocco(0.08, 0.45, 0.3, { colore: '#9aa4ac' }); g2.position.set(sx * w * 0.32, 0.22, 0); o.add(g2); const sup = blocco(0.07, h - 0.1, 0.07, { colore: '#9aa4ac' }); sup.position.set(sx * w * 0.3, (h - 0.1) / 2, -d / 2 + 0.1); o.add(sup); }
+        const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, w + 0.3, 6).rotateZ(Math.PI / 2), C('#c8c8d0')); bar.position.set(0, h, -d / 2 + 0.1); o.add(bar);
+        for (const sx of [-1, 1]) { const di = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.08, 12).rotateZ(Math.PI / 2), C('#2a2a30')); di.position.set(sx * (w / 2 + 0.05), h, -d / 2 + 0.1); o.add(di); }
+        break;
+      }
+      case 'manubri': {
+        o = gruppo();
+        const r2 = blocco(w, 0.08, d, { colore: '#3a3a42' }); r2.position.y = 0.5; o.add(r2);
+        const r3 = blocco(w, 0.08, d, { colore: '#3a3a42' }); r3.position.y = 0.95; o.add(r3);
+        for (const sx of [-1, 1]) { const g2 = blocco(0.08, h, d, { colore: '#4a4a52' }); g2.position.set(sx * (w / 2 - 0.04), h / 2, 0); o.add(g2); }
+        for (let i = 0; i < 6; i++) for (const y of [0.6, 1.05]) { const k = 0.08 + (i % 3) * 0.02; const mb = blocco(0.3, k * 2, k * 2, { colore: ['#2a2a30', '#c83a2a', '#3a6ac8'][i % 3] }); mb.position.set(-w / 2 + 0.25 + i * (w - 0.5) / 5, y + k, 0); o.add(mb); }
+        break;
+      }
+      case 'tapis': {
+        o = gruppo();
+        const nastro = blocco(w, 0.18, d, { colore: '#2a2a30', sopra: (P, W, H2) => { P('#2a2a30', 0, 0, W, H2); for (let y = 2; y < H2; y += 4) P('#3a3a42', 2, y, W - 4, 1); P('#9aa4ac', 0, 0, 1, H2); P('#9aa4ac', W - 1, 0, 1, H2); } }); nastro.position.y = 0.09; o.add(nastro);
+        for (const sx of [-1, 1]) { const g2 = blocco(0.06, h - 0.2, 0.06, { colore: '#9aa4ac' }); g2.position.set(sx * (w / 2 - 0.05), 0.18 + (h - 0.2) / 2, -d / 2 + 0.15); o.add(g2); }
+        const qu = blocco(w, 0.25, 0.2, { colore: '#3a3a42', fronte: (P, W, H2) => { P('#3a3a42', 0, 0, W, H2); P('#3ac85a', 3, 1, W - 6, 2); P('#c83a2a', 2, H2 - 2, 2, 1); } }); qu.position.set(0, h, -d / 2 + 0.15); o.add(qu);
+        break;
+      }
+      case 'sacco': {
+        o = gruppo();
+        const sac = new THREE.Mesh(new THREE.CylinderGeometry(w / 2, w / 2, 1.3, 12), C('#a82a2a')); sac.position.y = 1.15; o.add(sac);
+        const fa = new THREE.Mesh(new THREE.CylinderGeometry(w / 2 + 0.01, w / 2 + 0.01, 0.1, 12), C('#2a2a30')); fa.position.y = 1.55; o.add(fa);
+        const cat = blocco(0.03, h - 1.8, 0.03, { colore: '#6a6a72' }); cat.position.y = 1.8 + (h - 1.8) / 2; o.add(cat);
+        break;
+      }
+      case 'doccia': {
+        o = gruppo();
+        const piatto = blocco(w, 0.08, d, { colore: '#e8eef0' }); piatto.position.y = 0.04; o.add(piatto);
+        const vetro = new THREE.Mesh(new THREE.BoxGeometry(0.04, h - 0.2, d), new THREE.MeshLambertMaterial({ color: '#b8d8e8', transparent: true, opacity: 0.45 })); vetro.position.set(-w / 2 + 0.02, h / 2, 0); o.add(vetro);
+        const tubo = blocco(0.05, h - 0.4, 0.05, { colore: '#c8c8d0' }); tubo.position.set(0, (h - 0.4) / 2, -d / 2 + 0.06); o.add(tubo);
+        const sof = blocco(0.3, 0.06, 0.3, { colore: '#c8c8d0' }); sof.position.set(0, h - 0.4, -d / 2 + 0.25); o.add(sof);
+        const tenda = blocco(w * 0.6, h - 0.5, 0.03, { colore: '#e8e0a0', fronte: (P, W, H2) => { P('#e8e0a0', 0, 0, W, H2); for (let x = 0; x < W; x += 4) P('#d8c870', x, 0, 1, H2); P('#3a8ac8', 3, H2 / 3, W - 6, 2); } }); tenda.position.set(w * 0.18, (h - 0.5) / 2 + 0.3, d / 2 - 0.02); o.add(tenda);
+        break;
+      }
+      // ---------- pizzeria, kebab, Zeno ----------
+      case 'forno': {
+        o = gruppo();
+        const base = blocco(w, 0.9, d, { colore: '#b4583a', fronte: (P, W, H2) => { P('#b4583a', 0, 0, W, H2); for (let y = 0; y < H2; y += 4) for (let x = (y / 4 % 2) * 4; x < W; x += 8) { P('#c86a48', x + 1, y + 1, 6, 2); } P('#3a2a1a', W / 2 - 8, H2 - 9, 16, 7); P('#8a5a2a', W / 2 - 7, H2 - 8, 14, 2); } });
+        base.position.y = 0.45; o.add(base);
+        const cupola = new THREE.Mesh(new THREE.SphereGeometry(Math.min(w, d) / 2, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), C('#c8784a'));
+        cupola.scale.set(w / Math.min(w, d), 0.9, d / Math.min(w, d)); cupola.position.y = 0.9; o.add(cupola);
+        const bocca = new THREE.Mesh(new THREE.CircleGeometry(0.28, 10, 0, Math.PI), new THREE.MeshBasicMaterial({ color: '#ff8a30' })); bocca.position.set(0, 0.92, d / 2 + 0.01); bocca.userData.piatto = true; o.add(bocca);
+        const can = blocco(0.3, h - 0.9, 0.3, { colore: '#8a8476' }); can.position.set(0, 0.9 + (h - 0.9) / 2 + 0.4, -d / 4); o.add(can);
+        c.fuochi = (c.fuochi || []).concat([bocca.material]);
+        break;
+      }
+      case 'spiedo': {
+        o = gruppo();
+        const base = blocco(w, 0.9, d, { colore: '#9aa4ac', fronte: (P, W, H2) => { P('#9aa4ac', 0, 0, W, H2); P('#c8401a', 1, 2, W - 2, 3); } }); base.position.y = 0.45; o.add(base);
+        const carne = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, h - 1.05, 10), new THREE.MeshLambertMaterial({ map: tex(1, 1, (P, W, H2, g, r) => { P('#a8602a', 0, 0, W, H2); for (let i = 0; i < 60; i++) P(r() < 0.5 ? '#c8803a' : '#7a3a1a', r() * W, r() * H2, 2, 1); }) }));
+        carne.position.y = 0.95 + (h - 1.05) / 2; o.add(carne);
+        const asta = blocco(0.03, h - 0.85, 0.03, { colore: '#c8c8d0' }); asta.position.y = 0.9 + (h - 0.85) / 2; o.add(asta);
+        const res = blocco(0.06, h - 1.1, 0.4, { colore: '#ff6a2a' }); res.position.set(-w / 2 + 0.05, 0.95 + (h - 1.1) / 2, 0); o.add(res);
+        c.ruote.push(Object.assign(carne, { asse: 'y' }));
+        break;
+      }
+      case 'macchinetta': {
+        o = blocco(w, h, d, { colore: '#3a3a42', fronte: (P, W, H2) => { P('#3a3a42', 0, 0, W, H2); P('#c8a040', 2, 2, W - 4, 6); P('#2a1a10', 4, 3, W - 8, 4); P('#1e1e22', 3, H2 * 0.45, W - 6, 8); P('#f4f0e4', W / 2 - 1, H2 * 0.45 + 4, 3, 3); for (let i = 0; i < 3; i++) P('#d83a3a', 3 + i * 4, H2 * 0.75, 2, 2); } });
+        o.position.y = h / 2; break;
+      }
       // ---------- appesi al muro ----------
       case 'poster': o = quadro(w, h, (P, W, H2) => { P('#f4e8c8', 0, 0, W, H2); P('#8ac8e8', 2, 2, W - 4, H2 * 0.55); P('#5aa83a', 2, H2 * 0.55, W - 4, H2 * 0.25); P('#c83a2a', W * 0.25, H2 * 0.35, W * 0.4, H2 * 0.25); P('#2a2a2a', W * 0.25, H2 * 0.58, 5, 5); P('#2a2a2a', W * 0.58, H2 * 0.55, 7, 7); P('#f0d050', W * 0.5, H2 * 0.25, 3, 4); P('#2a2a2a', 3, H2 - 5, W - 6, 2); }); break;
       case 'trofei': o = quadro(w, h, (P, W, H2) => { P('#6a3a1c', 0, 0, W, H2); P('#8a5a32', 1, 1, W - 2, H2 - 2); P('#4a2a12', 1, H2 - 2, W - 2, 1); for (let x = 4; x < W - 2; x += Math.floor(W / 3)) P('#c8c8c8', x + 3, 3, 1, 1); }); c.trofei = { o, m }; break;
@@ -766,6 +974,18 @@ export class Interni {
       case 'salami': o = quadro(w, h, (P, W, H2) => { P('#5a3a22', 0, 0, W, 2); for (let x = 2; x < W - 3; x += 5) { const l = 6 + (x * 7) % 4; P('#d8c8a0', x + 1, 2, 1, 2); P('#8a2a2a', x, 4, 3, l); P('#a84a3a', x, 4, 1, l); P('#f0e0d0', x + 1, 6, 1, 1); } }); break;
       case 'buco': o = quadro(w, h, (P, W, H2) => { P('#1a1210', 2, 2, W - 4, H2 - 2); P('#2a1e1a', 3, 1, W - 6, 2); P('#6a5a50', 0, H2 - 3, 3, 3); P('#6a5a50', W - 4, H2 - 2, 4, 2); P('#e8c050', W - 6, H2 - 3, 2, 1); P('#ff3a3a', W / 2 - 2, H2 / 2, 1, 1); P('#ff3a3a', W / 2 + 1, H2 / 2, 1, 1); }); break;
       case 'mensola': o = quadro(w, h, F.scaffale(m.merce)); break;
+      case 'crocifisso': o = quadro(w, h, (P, W, H2) => { const cx = W / 2; P('#5a3218', cx - 2, 0, 4, H2); P('#5a3218', 1, H2 * 0.25, W - 2, 4); P('#7a4a26', cx - 1, 0, 1, H2); P('#e8c8a0', cx - 1, H2 * 0.2, 3, 3); P('#e8c8a0', cx - 1, H2 * 0.3, 2, H2 * 0.35); P('#e8c8a0', 3, H2 * 0.27, W - 6, 1); P('#c8a040', cx - 2, 0, 4, 2); }); break;
+      case 'vetrata': o = quadro(w, h, (P, W, H2) => { const r0 = W / 2; P('#3a3a42', 0, r0, W, H2 - r0); for (let y = 0; y < r0; y++) for (let x = 0; x < W; x++) { const nx = (x + 0.5 - r0) / r0, ny = (y + 0.5 - r0) / r0; if (nx * nx + ny * ny <= 1) P('#3a3a42', x, y); } const cols = [m.colore || '#3a5aa8', '#f0c030', '#d83a2a', '#3e8a4a', '#8a4ac8']; for (let y = 2; y < H2 - 2; y += 4) for (let x = 2; x < W - 2; x += 4) { const nx = (x + 2 - r0) / r0, ny = (y + 2 - r0) / r0; if (y < r0 && nx * nx + ny * ny > 0.7) continue; P(cols[(x * 3 + y * 7) % 5], x, y, 3, 3); } P('#f4ecc8', W / 2 - 2, H2 * 0.3, 4, 6); P('#f8e080', W / 2 - 3, H2 * 0.3 - 3, 6, 3); }); break;
+      case 'corda': o = quadro(w, h, (P, W, H2) => { P('#c8a870', W / 2 - 1, 0, 2, H2 - 6); for (let y = 0; y < H2 - 6; y += 3) P('#a8885a', W / 2 - 1, y, 1, 1); P('#a82a2a', 0, H2 - 8, W, 6); P('#d84a3a', 1, H2 - 8, 1, 6); }); break;
+      case 'arazzo': o = quadro(w, h, (P, W, H2, g, r) => { const col = m.colore || '#8a2a2a'; P('#5a3a1c', 0, 0, W, 2); P(col, 1, 2, W - 2, H2 - 5); P('#c8a040', 1, 2, W - 2, 1); P('#c8a040', 1, H2 - 4, W - 2, 1); P('#6a8a4a', 3, H2 * 0.65, W - 6, H2 * 0.25); for (let i = 0; i < 5; i++) { const x = 5 + i * (W - 10) / 4, y = H2 * 0.4 + (i % 2) * 4; P('#e8e0c8', x, y, 3, 6); P('#a8b0b8', x - 1, y - 2, 5, 2); P('#6a4a2a', x + 3, y - 4, 1, 10); } P('#f0c030', W / 2 - 3, 6, 6, 6); for (let x = 1; x < W - 1; x += 2) P('#c8a040', x, H2 - 3, 1, 3); }); break;
+      case 'stemma': o = quadro(w, h, (P, W, H2) => { P('#2f4f8a', 1, 0, W - 2, H2 * 0.65); for (let y = H2 * 0.65; y < H2; y++) { const k = (y - H2 * 0.65) / (H2 * 0.35); P('#2f4f8a', 1 + k * W / 2, y, W - 2 - k * W, 1); } P('#f0c030', W / 2 - 1, 2, 2, H2 * 0.7); P('#f0c030', 3, H2 * 0.3, W - 6, 2); }); break;
+      case 'ritratto': o = quadro(w, h, (P, W, H2) => { P('#c8a040', 0, 0, W, H2); P('#8a6a20', 1, 1, W - 2, H2 - 2); P(m.colore || '#3a2a4a', 3, 3, W - 6, H2 - 6); P('#f0d0b0', W / 2 - 3, H2 * 0.25, 6, 7); P('#f4f0e4', W / 2 - 4, H2 * 0.18, 8, 4); P('#1e1622', W / 2 - 2, H2 * 0.32, 1, 1); P('#1e1622', W / 2 + 1, H2 * 0.32, 1, 1); P('#1e1e24', W / 2 - 6, H2 * 0.48, 12, H2 * 0.45); P('#f4f0e4', W / 2 - 1, H2 * 0.48, 2, 3); }); break;
+      case 'catene': o = quadro(w, h, (P, W, H2) => { for (const x of [3, W - 5]) { for (let y = 0; y < H2 - 6; y += 3) { P('#6a6a72', x, y, 2, 2); P('#4a4a52', x + 1, y + 1, 1, 2); } P('#5a5a62', x - 2, H2 - 6, 6, 4); } }); break;
+      case 'croce': o = quadro(w, h, (P, W, H2) => { const c2 = W / 2; P('#2a8a4a', c2 - 2, 0, 5, H2); P('#2a8a4a', c2 - 7, H2 / 2 - 2, 15, 5); P('#5ac87a', c2 - 1, 1, 3, H2 - 2); P('#5ac87a', c2 - 6, H2 / 2 - 1, 13, 3); }); break;
+      case 'ottotipo': o = quadro(w, h, (P, W, H2) => { P('#f8f8f4', 0, 0, W, H2); P('#c8c8c4', 0, 0, W, 1); const righe = [['E', 6], ['FP', 4], ['TOZ', 3], ['LPED', 2], ['PECFD', 1]]; let y = 2; for (const [s2, k] of righe) { const tw = s2.length * (k * 2 + 1); for (let i = 0; i < s2.length; i++) P('#1e1e22', (W - tw) / 2 + i * (k * 2 + 1), y, k * 2, k * 2); y += k * 2 + 2; } }); break;
+      case 'specchio': o = quadro(w, h, (P, W, H2) => { P('#8a8a92', 0, 0, W, H2); P('#b8d4e0', 1, 1, W - 2, H2 - 2); for (let i = 0; i < 3; i++) { P('#e8f4f8', 4 + i * 12, H2 - 4, 6, 1); for (let k = 0; k < H2 - 6; k++) P('#d8eef4', 6 + i * 12 + k * 0.6, H2 - 4 - k, 1, 1); } }); break;
+      case 'quadro': o = quadro(w, h, (P, W, H2) => { P('#c8a040', 0, 0, W, H2); P('#7ab8e8', 2, 2, W - 4, H2 * 0.55); P('#2a5a9a', 2, H2 * 0.68, W - 4, H2 - H2 * 0.68 - 2); const cx = W * 0.55; for (let y = 0; y < H2 * 0.4; y++) P('#6a5a4a', cx - y * 1.1, H2 * 0.3 + y, y * 2.2 + 2, 1); P('#9a9a9a', cx - 2, H2 * 0.12, 5, 5); P('#4a8a3a', 2, H2 * 0.62, W - 4, 2); }); break;
+      case 'menu': o = quadro(w, h, (P, W, H2) => { P('#1e1e22', 0, 0, W, H2); const cols = ['#e8a030', '#c8401a', '#3e8a4a']; for (let i = 0; i < 3; i++) { const x = 2 + i * (W - 4) / 3, ww = (W - 4) / 3 - 2; P(cols[i], x, 2, ww, H2 * 0.45); P('#f4e0b0', x + 2, 4, ww - 4, H2 * 0.3); P('#f4f0e4', x, H2 * 0.6, ww * 0.7, 1); P('#f0c030', x + ww - 5, H2 * 0.6, 4, 2); P('#f4f0e4', x, H2 * 0.75, ww * 0.5, 1); } }); break;
       case 'insegna': { const cv = PIX.sign(m.testo); o = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshLambertMaterial({ map: PIX.toTexture(cv), transparent: true, alphaTest: 0.1 })); o.userData.piatto = true; break; }
       case 'stecche': o = quadro(w, h, (P, W, H2) => { P('#5a3018', 0, 0, W, 3); P('#5a3018', 0, H2 - 3, W, 3); for (let x = 2; x < W - 1; x += 3) { P('#d8b070', x, 3, 1, H2 - 6); P('#2a2a2a', x, H2 - 5, 1, 2); P('#4a8ac8', x, 3, 1, 1); } }); break;
       case 'porta': o = quadro(w, h, (P, W, H2, g, r) => { legno('#6a3a1c', true)(P, W, H2, g, r); P('#3a2010', 0, 0, W, 2); P('#3a2010', 0, 0, 2, H2); P('#3a2010', W - 2, 0, 2, H2); P(tono('#6a3a1c', 0.8), 4, 4, W - 8, H2 * 0.4); P(tono('#6a3a1c', 0.8), 4, H2 * 0.5, W - 8, H2 * 0.42); P('#e0c060', W - 5, H2 * 0.5, 2, 2); P('#f4f0e0', 4, 6, W - 8, 4); P('#c83a2a', 5, 7, W - 10, 2); }); break;
@@ -890,7 +1110,8 @@ export class Interni {
     if (W._sky) for (const v of c.vetri) v.color.copy(W._sky).lerp(new THREE.Color('#ffffff'), notte ? 0.05 : 0.25);
     // dettagli animati
     const t = performance.now() / 1000;
-    for (const r of c.ruote) r.rotation.x = t * 12;
+    for (const r of c.ruote) { if (r.asse === 'y') r.rotation.y = t * 1.2; else r.rotation.x = t * 12; }
+    if (c.fuochi) for (const f of c.fuochi) f.color.setHSL(0.08 + Math.sin(t * 9) * 0.012, 1, 0.56 + Math.sin(t * 13 + 1) * 0.05);
     if (c.tv) c.tv.color.setHSL(0, 0, 0.85 + Math.sin(t * 7) * 0.08 + Math.sin(t * 2.3) * 0.07);
     if (c.jukebox) c.jukebox.color.setHSL((t * 0.2) % 1, this._musica ? 0.5 : 0.15, 0.85);
     for (const av of Object.values(c.avventori)) { if (!av.visibile) continue; const P = g.player.group.position, o = this.origini.bar; av.a.setFrame((P.x - o.x) > av.x ? 0 : 3); }
@@ -1101,15 +1322,18 @@ export class Interni {
           g.emit('traccia', { bestia: 'ratti', luogo: 'cantina' });
         } else if (res === 'lose') await g.mountain('sconfitta', 15);
       },
-      // ---------- officina ----------
-      'officina:bancone': async () => {
-        if (g.png.dove('zeno')) await g.png.parla('zeno');
-        else await this._dice(T.officina.zenoAssente, 'Officina');
-      },
-      'officina:ponte': async () => { await this._dice(T.officina.ponte, 'Ponte sollevatore'); },
-      'officina:mola': async () => { await this._dice(T.officina.mola, 'Mola'); },
+      // ---------- deposito (l'officina di casa) e officina di Zeno in paese ----------
+      'officina:bancone': async () => { await this._dice(pick(T.officina.banco), 'Banco da lavoro'); },
+      'officina:scaffale': async () => { await this._dice(T.officina.scaffale, 'Scaffale'); },
+      'officina:sacchi': async () => { await this._dice(T.officina.sacchi, 'Concime'); },
       'officina:rastrelliera': async () => { await this._dice(T.officina.rastrelliera, 'Rastrelliera'); },
       'officina:armadietti': async () => { await g.enter('officina', true); },
+      'meccanico:bancone': async () => {
+        if (g.png.dove('zeno')) await g.png.parla('zeno');
+        else await this._dice(T.officina.zenoAssente, 'Da Zeno');
+      },
+      'meccanico:ponte': async () => { await this._dice(T.officina.ponte, 'Ponte sollevatore'); },
+      'meccanico:mola': async () => { await this._dice(T.officina.mola, 'Mola'); },
       // ---------- capannone dei maiali ----------
       'maiali:box': async (m) => {
         const b = this.cache.maiali.maiali.find(x => x.box === m.box);

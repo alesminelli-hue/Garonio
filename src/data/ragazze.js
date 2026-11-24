@@ -298,7 +298,7 @@ export const RAGAZZE = {
 
 // ---------- Luoghi degli appuntamenti (la sera, dalle 20 alle 23:30) ----------
 export const LUOGHI = {
-  pizzeria: { nome: 'Pizzeria «Da Gennaro» in piazza', breve: 'la pizzeria in piazza', costo: 25, x: 18.5, z: 51.4,
+  pizzeria: { nome: 'Pizzeria «Da Gennaro» in Via Roma', breve: 'la pizzeria di Gennaro', costo: 25, x: 34.6, z: 73.1,
     intro: "Pizzeria «Da Gennaro», tovaglie a quadretti, Gennaro che canta. Il Bepi guarda da fuori col naso sul vetro." },
   laghetto: { nome: 'Gelato al laghetto', breve: 'il laghetto', costo: 8, x: 34, z: 76.6,
     intro: "Due coni al pistacchio, la luna sul laghetto, le anatre che dormono. Una rana canta stonata." },

@@ -169,7 +169,7 @@ export function officina() {
   for (let j = 0; j < 16; j += 2) { d.P(S[3], sx, sy + j, sw, 1); d.P(S[1], sx, sy + j + 1, sw, 1); }
   d.P(S[0], sx, sy + 16, sw, 1);
   d.P('#5a5a62', sx - 2, sy - 2, sw + 4, 2); d.P('#5a5a62', sx - 2, sy, 2, sh); d.P('#5a5a62', sx + sw, sy, 2, sh);
-  insegna(d, mx + (mw >> 1), my + 4, 'OFFICINA', '#2f4f8a');
+  insegna(d, mx + (mw >> 1), my + 4, 'DEPOSITO', '#2f4f8a');
   finestra(d, mx + mw - 22, my + 20, { pers: '#6a7078', w: 12, h: 10 });
   for (const [x, yy] of [[mx + mw - 26, 0], [mx + mw - 26, 5], [mx + mw - 18, 0]]) { // gomme impilate
     const G = ramp('#34323a'); d.P(G[2], x, my + hM - 6 - yy, 8, 5); d.P(G[3], x, my + hM - 6 - yy, 8, 1); d.P(G[0], x + 3, my + hM - 4 - yy, 2, 2);
@@ -384,6 +384,230 @@ export function tettoia() {
   return outline(d.c);
 }
 
+// ---------- Edifici del paese esplorabili (chiesa, castello, negozi, meccanico) ----------
+function arco(d, x, y, w, h, col) { // vano ad arco a tutto sesto, pieno di col
+  const r = w / 2;
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
+    const nx = (i + 0.5 - r) / r, ny = (j + 0.5 - r) / r;
+    if (j >= r || nx * nx + ny * ny <= 1) d.P(col, x + i, y + j);
+  }
+}
+function pietre(d, x, y, w, h, col, seed = 3) { // conci di pietra irregolari
+  const R = ramp(col);
+  d.P(R[1], x, y, w, h);
+  for (let j = 0; j < h; j += 6) {
+    let i = -((j / 6) % 2) * 5 - (hash(j, 1, seed) * 4 | 0);
+    while (i < w) {
+      const l = 8 + (hash(i, j, seed) * 7 | 0), xx = Math.max(x, x + i), ww = Math.min(x + w, x + i + l - 1) - xx;
+      if (ww > 0) {
+        const B = ramp(tone(col, (hash(i, j, seed + 2) - 0.5) * 0.5));
+        d.P(B[2], xx, y + j, ww, Math.min(5, h - j)); d.P(B[3], xx, y + j, ww, 1); d.P(B[1], xx, y + j + Math.min(4, h - j - 1), ww, 1);
+      }
+      i += l;
+    }
+  }
+}
+function vetrina(d, x, y, w, h, merce = []) {
+  const V = ramp('#7fa8c8');
+  d.P('#ece4d0', x - 1, y - 1, w + 2, h + 2); d.P(V[2], x, y, w, h);
+  merce.forEach(([mx, my, mw, mh, c]) => d.P(c, x + mx, y + my, mw, mh));
+  d.line(x + 3, y + h - 3, x + Math.min(w - 3, h + 1), y + 2, V[4]);
+}
+
+export function chiesa() {
+  const hM = 67, { d, W, mx, my, mw } = base(8, hM, 28);
+  tettoCoppi(d, 0, 0, W, 29, '#a8462e');
+  intonaco(d, mx, my, mw, hM, '#efe2c4', 21, 0);
+  ombraGronda(d, mx, my, mw);
+  const cx = mx + (mw >> 1);
+  // timpano e lesene
+  const C = ramp('#d8c8a0');
+  d.poly([[mx + 6, my + 22], [cx, my + 6], [mx + mw - 6, my + 22]], C[3]);
+  d.poly([[mx + 12, my + 20], [cx, my + 10], [mx + mw - 12, my + 20]], C[2]);
+  d.P(C[1], mx + 6, my + 22, mw - 12, 2);
+  for (const x of [mx + 6, mx + 26, mx + mw - 32, mx + mw - 12]) { d.P(C[3], x, my + 24, 6, hM - 26); d.P(C[1], x + 5, my + 24, 1, hM - 26); }
+  // croce in cima
+  d.P('#c8a040', cx - 1, my - 2, 2, 9); d.P('#c8a040', cx - 4, my + 1, 8, 2);
+  // rosone
+  d.ell(cx, my + 31, 7, 7, '#ece4d0'); d.ell(cx, my + 31, 6, 6, '#3a5aa8');
+  for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; d.P(['#d8382a', '#f0c030', '#3e8a4a', '#f4f0e4'][k % 4], cx + Math.cos(a) * 3.5, my + 31 + Math.sin(a) * 3.5, 2, 2); }
+  d.P('#f0c030', cx - 1, my + 30, 2, 2);
+  // portale ad arco
+  const pw = 18, ph = 25, px = cx - pw / 2, py = my + hM - ph - 2;
+  arco(d, px - 2, py - 2, pw + 4, ph + 2, '#d8c8a0');
+  arco(d, px, py, pw, ph, '#5a3218');
+  const L = ramp('#6a3a1c');
+  for (let i = 2; i < pw - 1; i += 3) d.P(L[1], px + i, py + 9, 1, ph - 9);
+  d.P(INK, cx, py + 3, 1, ph - 3); d.P('#e0c060', cx - 3, py + 15, 2, 2); d.P('#e0c060', cx + 2, py + 15, 2, 2);
+  // finestre ad arco laterali
+  for (const x of [mx + 14, mx + mw - 21]) { arco(d, x - 1, my + 30, 9, 15, '#d8c8a0'); arco(d, x, my + 31, 7, 13, '#3a5aa8'); d.P('#d8382a', x + 2, my + 37, 3, 3); d.P('#f0c030', x + 3, my + 34, 1, 2); }
+  // gradini del sagrato
+  const G = ramp('#b8b0a0'); d.P(G[3], px - 8, my + hM - 2, pw + 16, 1); d.P(G[2], px - 8, my + hM - 1, pw + 16, 1);
+  return outline(d.c);
+}
+
+export function campanile() {
+  const hM = 120, { d, W, mx, my, mw } = base(2, hM, 10);
+  tettoLamiera(d, 0, 0, W, 11, '#7a3a2a');
+  mattoni(d, mx, my, mw, hM, '#b4583a');
+  const C = ramp('#d8c8a0');
+  d.P(C[3], mx, my, mw, 3); d.P(C[2], mx, my + 40, mw, 2); d.P(C[2], mx, my + 76, mw, 2);
+  // cella campanaria con la campana
+  arco(d, mx + 6, my + 8, 20, 28, '#1e1418');
+  const B = ramp('#c8a040'); d.ball(mx + 16, my + 22, 6, 6, B); d.P(B[1], mx + 9, my + 26, 14, 3); d.P('#5a3a22', mx + 15, my + 12, 2, 5);
+  // orologio
+  d.ell(mx + 16, my + 56, 9, 9, C[1]); d.ell(mx + 16, my + 56, 8, 8, '#f4f0e4');
+  for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; d.P(INK, mx + 16 + Math.cos(a) * 6.5, my + 56 + Math.sin(a) * 6.5); }
+  d.line(mx + 16, my + 56, mx + 16, my + 51, INK); d.line(mx + 16, my + 56, mx + 20, my + 57, INK);
+  // feritoie
+  for (const y of [my + 84, my + 100]) { d.P('#1e1418', mx + 14, y, 4, 9); d.P(C[3], mx + 13, y + 9, 6, 1); }
+  return outline(d.c);
+}
+
+export function castello({ w = 9 } = {}) {
+  const hM = 72, { d, W, mx, my, mw } = base(w, hM, 10);
+  pietre(d, mx, my - 10, mw, hM + 10, '#a8a090', 9);
+  // merli sul davanti (in vista sopra il muro)
+  const P2 = ramp('#a8a090');
+  for (let x = mx; x < mx + mw; x += 12) d.P('#00000000', x + 6, my - 10, 6, 6);
+  d.g.clearRect(0, 0, W, my - 4);
+  for (let x = mx; x < mx + mw - 4; x += 12) { d.P(P2[2], x, my - 6, 7, 6); d.P(P2[3], x, my - 6, 7, 1); }
+  ombraGronda(d, mx, my, mw);
+  const cx = mx + (mw >> 1);
+  // portone ad arco con la grata alzata
+  const pw = 26, ph = 34, px = cx - pw / 2, py = my + hM - ph;
+  arco(d, px - 3, py - 3, pw + 6, ph + 3, '#7a7466');
+  arco(d, px, py, pw, ph, '#1e1418');
+  const L = ramp('#6a3a1c');
+  arco(d, px + 2, py + 6, pw - 4, ph - 6, L[2]);
+  for (let i = px + 4; i < px + pw - 3; i += 4) d.P(L[1], i, py + 10, 1, ph - 10);
+  for (let j = py + 14; j < py + ph; j += 8) d.P('#3a3a42', px + 3, j, pw - 6, 1);
+  for (let i = px + 1; i < px + pw - 1; i += 4) d.P('#4a4a52', i, py + 1, 2, 5); // punte della grata
+  // stemma e stendardi
+  const S = ramp('#2f4f8a');
+  d.P(S[2], cx - 6, my + 8, 12, 12); d.P(S[3], cx - 6, my + 8, 12, 1); d.poly([[cx - 6, my + 20], [cx + 6, my + 20], [cx, my + 26]], S[2]);
+  d.P('#f0c030', cx - 1, my + 11, 2, 10); d.P('#f0c030', cx - 4, my + 14, 8, 2);
+  for (const x of [mx + 18, mx + mw - 28]) {
+    const R = ramp('#a8302a'); d.P('#5a5a62', x - 1, my + 6, 12, 1);
+    d.P(R[2], x, my + 7, 10, 22); d.P(R[3], x, my + 7, 1, 22); d.poly([[x, my + 29], [x + 10, my + 29], [x + 5, my + 33]], R[2]);
+    d.P('#f0c030', x + 3, my + 14, 4, 4);
+  }
+  // feritoie
+  for (const x of [mx + 12, mx + 40, mx + mw - 44, mx + mw - 16]) { d.P('#1e1418', x, my + 40, 3, 10); d.P('#1e1418', x - 2, my + 44, 7, 2); }
+  return outline(d.c);
+}
+
+export function torre() {
+  const hM = 104, { d, W, mx, my, mw } = base(3, hM, 10);
+  pietre(d, mx, my - 10, mw, hM + 10, '#9a9484', 13);
+  d.g.clearRect(0, 0, W, my - 4);
+  const P2 = ramp('#9a9484');
+  for (let x = mx; x < mx + mw - 4; x += 10) { d.P(P2[2], x, my - 6, 6, 6); d.P(P2[3], x, my - 6, 6, 1); }
+  ombraGronda(d, mx, my, mw);
+  for (const y of [my + 20, my + 50, my + 80]) { arco(d, mx + 20, y, 8, 12, '#1e1418'); d.P('#f4d878', mx + 22, y + 6, 4, 4); }
+  return outline(d.c);
+}
+
+export function farmacia() {
+  const hM = 45, { d, W, mx, my, mw } = base(6, hM, 24);
+  tettoCoppi(d, 0, 0, W, 25, '#a83a2a');
+  intonaco(d, mx, my, mw, hM, '#ece6d6', 23, 0);
+  ombraGronda(d, mx, my, mw);
+  insegna(d, mx + 36, my + 4, 'FARMACIA', '#2a8a4a');
+  // croce verde luminosa a bandiera
+  const G = ramp('#3ac85a'), cx = mx + mw - 12, cy = my + 13;
+  d.P('#5a5a62', cx - 8, cy, 3, 1);
+  d.P(G[1], cx - 5, cy - 2, 11, 5); d.P(G[1], cx - 2, cy - 5, 5, 11); d.P(G[3], cx - 4, cy - 1, 9, 3); d.P(G[3], cx - 1, cy - 4, 3, 9); d.P(G[4], cx, cy, 1, 1);
+  vetrina(d, mx + 8, my + 20, 34, 18, [[3, 10, 4, 6, '#f4f0e4'], [9, 12, 3, 4, '#d83a2a'], [14, 9, 5, 7, '#3a8ac8'], [21, 11, 4, 5, '#f0c030'], [27, 10, 4, 6, '#3e8a4a'], [2, 16, 30, 1, '#c8c8c8']]);
+  porta(d, mx + 56, my + hM - 22, 13, 20, '#3a6a4a', { vetro: true });
+  d.P('#f4f0e4', mx + 74, my + 26, 12, 10); d.P('#2a8a4a', mx + 74, my + 26, 12, 2); for (let j = my + 30; j < my + 35; j += 2) d.P('#8a8a8a', mx + 76, j, 8, 1); // orari
+  return outline(d.c);
+}
+
+export function ambulatorio() {
+  const hM = 48, { d, W, mx, my, mw } = base(6, hM, 26);
+  tettoCoppi(d, 0, 0, W, 27, '#8a3a2a');
+  intonaco(d, mx, my, mw, hM, '#e4ecf0', 25, 1);
+  ombraGronda(d, mx, my, mw);
+  insegna(d, mx + (mw >> 1), my + 4, 'STUDIO MEDICO', '#2f5e9a');
+  finestra(d, mx + 14, my + 20, { pers: '#4a6a8a', w: 12, h: 12 });
+  finestra(d, mx + mw - 26, my + 20, { pers: '#4a6a8a', w: 12, h: 12 });
+  porta(d, mx + 42, my + hM - 24, 13, 22, '#4a5a6a', { vetro: true });
+  // targa d'ottone e croce rossa
+  d.P('#c8a040', mx + 58, my + 26, 9, 6); d.P('#8a6a20', mx + 59, my + 28, 7, 1); d.P('#8a6a20', mx + 59, my + 30, 5, 1);
+  d.P('#f4f0e4', mx + 45, my + 16, 7, 7); d.P('#d83a2a', mx + 47, my + 17, 3, 5); d.P('#d83a2a', mx + 46, my + 18, 5, 3);
+  vaso(d, mx + 34, my + hM - 9);
+  return outline(d.c);
+}
+
+export function palestra() {
+  const hM = 51, { d, W, mx, my, mw } = base(7, hM, 20);
+  tettoPiatto(d, 0, 0, W, 21, '#4a4a52');
+  blocchi(d, mx, my, mw, hM, '#d0ccc0');
+  ombraGronda(d, mx, my, mw);
+  // fascia gialla e insegna
+  d.P('#e8b030', mx, my + 5, mw, 12); d.P('#f4d060', mx, my + 5, mw, 1); d.P('#a87a18', mx, my + 16, mw, 1);
+  text(d, "BICIPITE D'ORO", mx + ((mw - textWidth("BICIPITE D'ORO")) >> 1), my + 9, '#2a2228', '#f8e8a0');
+  // vetrate con i pesi dentro
+  vetrina(d, mx + 6, my + 24, 52, 20, [[4, 12, 16, 2, '#3a3a42'], [3, 9, 3, 8, '#2a2a30'], [18, 9, 3, 8, '#2a2a30'], [30, 6, 3, 13, '#c83a2a'], [29, 5, 5, 2, '#5a5a62'], [40, 14, 9, 4, '#3a3a42']]);
+  porta(d, mx + 70, my + hM - 23, 14, 21, '#3a3a42', { vetro: true });
+  // manubrio dipinto
+  d.P('#2a2228', mx + 92, my + 30, 3, 10); d.P('#2a2228', mx + 95, my + 34, 10, 2); d.P('#2a2228', mx + 105, my + 30, 3, 10);
+  return outline(d.c);
+}
+
+export function pizzeria() {
+  const hM = 45, { d, W, mx, my, mw } = base(6, hM, 26);
+  tettoCoppi(d, 0, 0, W, 27, '#b8432e');
+  intonaco(d, mx, my, mw, hM, '#f0d8a8', 27, 1);
+  ombraGronda(d, mx, my, mw);
+  insegna(d, mx + (mw >> 1), my + 3, 'DA GENNARO', '#2a7a3a');
+  tenda(d, mx + 4, my + 14, mw - 8, '#c8302a');
+  // vetrina col forno acceso
+  vetrina(d, mx + 8, my + 26, 34, 14, [[4, 4, 12, 9, '#6a3a22'], [7, 7, 6, 5, '#ff9a30'], [8, 8, 4, 3, '#ffe060'], [21, 6, 8, 2, '#f4f0e4'], [20, 8, 10, 1, '#d84a3a']]);
+  porta(d, mx + 56, my + hM - 22, 13, 20, '#6a4a2a', { vetro: true });
+  // tricolore
+  d.P('#2a8a3a', mx + 76, my + 26, 4, 8); d.P('#f4f2ea', mx + 80, my + 26, 4, 8); d.P('#d8302a', mx + 84, my + 26, 4, 8);
+  vaso(d, mx + 48, my + hM - 9);
+  return outline(d.c);
+}
+
+export function kebab() {
+  const hM = 45, { d, W, mx, my, mw } = base(4, hM, 22);
+  tettoPiatto(d, 0, 0, W, 23, '#5a4a3a');
+  intonaco(d, mx, my, mw, hM, '#f4e4b8', 29, 0);
+  ombraGronda(d, mx, my, mw);
+  d.P('#c8401a', mx, my + 4, mw, 11); d.P('#e86a2a', mx, my + 4, mw, 1);
+  text(d, 'KEBAB', mx + ((mw - textWidth('KEBAB')) >> 1), my + 7, '#fff0c0', '#6a1a0a');
+  // vetrina con lo spiedo che gira
+  vetrina(d, mx + 4, my + 20, 26, 18, [[10, 3, 2, 14, '#8a8a90'], [7, 5, 8, 10, '#a8602a'], [8, 6, 2, 8, '#c8803a'], [17, 12, 6, 3, '#e8e0c0']]);
+  porta(d, mx + 38, my + hM - 22, 12, 20, '#4a3a2a', { vetro: true });
+  d.P('#2a2228', mx + 52, my + 22, 9, 12); d.P('#f4f0e4', mx + 53, my + 24, 7, 1); d.P('#f4f0e4', mx + 53, my + 27, 5, 1); d.P('#f4f0e4', mx + 53, my + 30, 6, 1); // lavagnetta
+  return outline(d.c);
+}
+
+export function meccanico() {
+  const hM = 51, { d, W, mx, my, mw } = base(8, hM, 22);
+  tettoLamiera(d, 0, 0, W, 23, '#3a5a8a');
+  lamiera(d, mx, my, mw, hM, '#b4bac2');
+  ombraGronda(d, mx, my, mw);
+  insegna(d, mx + 44, my + 4, 'DA ZENO', '#c8302a');
+  // saracinesca aperta: dentro il ponte con una macchina sollevata
+  const sx = mx + 8, sw = 64, sh = 36, sy = my + hM - sh;
+  d.P('#1e1a22', sx, sy, sw, sh);
+  d.P('#4a4a52', sx + 10, sy + 24, 3, 12); d.P('#4a4a52', sx + 50, sy + 24, 3, 12); d.P('#e8c030', sx + 8, sy + 22, 48, 2);
+  const A = ramp('#d8d4c8'); d.P(A[2], sx + 14, sy + 12, 36, 9); d.P(A[3], sx + 18, sy + 7, 24, 5); d.P('#7fa8c8', sx + 21, sy + 8, 18, 3);
+  d.ball(sx + 20, sy + 21, 3, 3, ramp('#34323a')); d.ball(sx + 44, sy + 21, 3, 3, ramp('#34323a'));
+  const S = ramp('#a8adb4'); for (let j = 0; j < 6; j += 2) { d.P(S[3], sx, sy + j, sw, 1); d.P(S[1], sx, sy + j + 1, sw, 1); }
+  d.P('#5a5a62', sx - 2, sy - 2, sw + 4, 2); d.P('#5a5a62', sx - 2, sy, 2, sh); d.P('#5a5a62', sx + sw, sy, 2, sh);
+  // porta, gomme e cartello GOMMISTA
+  porta(d, mx + 88, my + hM - 22, 12, 20, '#3a5a8a', { vetro: true });
+  insegna(d, mx + 109, my + 24, 'GOMME', '#2a2a30');
+  for (const [x, yy] of [[mx + 104, 0], [mx + 104, 5], [mx + 113, 0]]) { const G = ramp('#34323a'); d.P(G[2], x, my + hM - 6 - yy, 8, 5); d.P(G[3], x, my + hM - 6 - yy, 8, 1); d.P(G[0], x + 3, my + hM - 4 - yy, 2, 2); }
+  d.g.fillStyle = 'rgba(20,16,24,0.35)'; d.g.fillRect(sx + 20, my + hM - 2, 16, 2);
+  return outline(d.c);
+}
+
 export const EDIFICI = [
   ['Casa di Garonio', () => casa()], ['Officina', officina], ['Bar', bar], ['Alimentari', alimentari],
   ['Tabacchi', tabacchi], ['Municipio', municipio], ['Night Paradiso', paradiso], ['Bubetto (magazzino)', magazzino],
@@ -392,6 +616,8 @@ export const EDIFICI = [
   ['Cascina del Patata', () => cascina()], ['Cascina del Postino', () => cascina({ muro: '#f0d8b8', tetto: '#8a3a2a', w: 7 })],
   ['Ranch Mister Frank', ranch], ['Fienile', fienile], ['Capannone dei maiali', capannoneMaiali],
   ['Gallinaio', gallinaio], ['Tettoia', tettoia],
+  ['Chiesa', chiesa], ['Campanile', campanile], ['Castello', () => castello()], ['Torre', torre], ['Farmacia', farmacia],
+  ['Studio medico', ambulatorio], ['Palestra', palestra], ['Pizzeria', pizzeria], ['Kebab', kebab], ['Meccanico (Zeno)', meccanico],
 ];
 
 // ---------- Per il gioco (src/world.js): texture delle scatole 3D ----------
@@ -402,6 +628,10 @@ const MAT = {
   'casa-rosa': ['intonaco', '#e8a8a0', 'coppi'], 'casa-azzurra': ['intonaco', '#a8c8e0', 'coppi'], tabacchi: ['intonaco', '#f0e0b0', 'coppi'],
   municipio: ['intonaco', '#e8dcc0', 'coppi'], paradiso: ['intonaco', '#6a3a7a', 'coppi'], tettoia: ['legno', '#8a5a32', 'lamiera'],
   'cascina-patata': ['intonaco', '#e0c48a', 'coppi'], 'cascina-postino': ['intonaco', '#f0d8b8', 'coppi'], ranch: ['legno', '#9a6a3a', 'lamiera'],
+  chiesa: ['intonaco', '#efe2c4', 'coppi'], campanile: ['mattoni', '#b4583a', 'coppi'], castello: ['pietre', '#a8a090', 'lamiera'],
+  'torre-sx': ['pietre', '#9a9484', 'lamiera'], 'torre-dx': ['pietre', '#9a9484', 'lamiera'], farmacia: ['intonaco', '#ece6d6', 'coppi'],
+  dottore: ['intonaco', '#e4ecf0', 'coppi'], palestra: ['blocchi', '#d0ccc0', 'lamiera'], pizzeria: ['intonaco', '#f0d8a8', 'coppi'],
+  kebab: ['intonaco', '#f4e4b8', 'lamiera'], meccanico: ['lamiera', '#b4bac2', 'lamiera'],
 };
 const FACCIATA = {
   casa: () => casa(), officina, bar, alimentari, tabacchi, municipio, paradiso, magazzino, fienile, gallinaio, tettoia, ranch,
@@ -409,9 +639,11 @@ const FACCIATA = {
   'casa-rosa': () => casa({ w: 6, h: 3.4, muro: '#e8a8a0', tetto: '#a83a2a', pers: '#6a4a2a', seed: 3, piani: 2 }),
   'casa-azzurra': () => casa({ w: 6, muro: '#a8c8e0', tetto: '#8a3a2a', pers: '#f4f0e4', seed: 5 }),
   'cascina-patata': () => cascina(), 'cascina-postino': () => cascina({ muro: '#f0d8b8', tetto: '#8a3a2a', w: 7 }),
+  chiesa, campanile, castello: () => castello(), 'torre-sx': torre, 'torre-dx': torre, farmacia, dottore: ambulatorio, palestra, pizzeria, kebab, meccanico,
 };
 // edifici la cui facciata ha già l'insegna dipinta (il gioco non ci mette il cartello sopra)
-export const CON_INSEGNA = new Set(['officina', 'bar', 'alimentari', 'tabacchi', 'municipio', 'paradiso', 'magazzino', 'maiali']);
+export const CON_INSEGNA = new Set(['officina', 'bar', 'alimentari', 'tabacchi', 'municipio', 'paradiso', 'magazzino', 'maiali',
+  'chiesa', 'campanile', 'castello', 'torre-sx', 'torre-dx', 'farmacia', 'dottore', 'palestra', 'pizzeria', 'kebab', 'meccanico']);
 
 function parete(tipo, col, w, h, finestre, seed) {
   const d = pen(w, h);
@@ -419,6 +651,7 @@ function parete(tipo, col, w, h, finestre, seed) {
   else if (tipo === 'lamiera') lamiera(d, 0, 0, w, h, col);
   else if (tipo === 'legno') legno(d, 0, 0, w, h, col);
   else if (tipo === 'blocchi') blocchi(d, 0, 0, w, h, col);
+  else if (tipo === 'pietre') pietre(d, 0, 0, w, h, col);
   else mattoni(d, 0, 0, w, h, col);
   ombraGronda(d, 0, 0, w);
   if (finestre && w >= 40) finestra(d, (w >> 1) - 5, Math.max(8, h - 28), { pers: tipo === 'intonaco' ? '#3e7a4a' : '#6a7078' });

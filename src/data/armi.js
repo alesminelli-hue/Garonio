@@ -118,4 +118,10 @@ export const OGGETTI = {
   paccoSegreto: { nome: 'Pacco «riservato»', icona: '🎁', missione: true },
   codaRatto: { nome: 'Coda di ratto',    icona: '🐀', vendita: 2 },
   ferro:    { nome: 'Ferro vecchio',     icona: '🔩', vendita: 3 },
+  // farmacia, pizzeria e kebab del paese (src/edifici.js)
+  aspirina: { nome: 'Aspirina',          icona: '💊', effetto: { stress: -12, health: 5 }, combattimento: 'self', prezzo: 4 },
+  sciroppo: { nome: 'Sciroppo ricostituente', icona: '🧪', effetto: { health: 45 }, combattimento: 'self', prezzo: 9 },
+  integratore: { nome: 'Integratore «Forza Bassa»', icona: '🥤', effetto: { tired: -25 }, combattimento: 'self', prezzo: 6 },
+  pizza:    { nome: 'Pizza da asporto',  icona: '🍕', effetto: { health: 40, stress: -5 }, combattimento: 'self', prezzo: 8 },
+  kebab:    { nome: 'Kebab da asporto',  icona: '🥙', effetto: { health: 30, tired: -5 }, combattimento: 'self', prezzo: 6 },
 };

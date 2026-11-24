@@ -88,7 +88,7 @@ export class Negozio {
     I.aggancia('magazzino:scaffali', ctx => this.apri(ctx?.reparto));
     I.aggancia('magazzino:usato', () => this.apri('usato'));
     I.aggancia('magazzino:lavagna', () => this.lavagna());
-    I.aggancia('officina:mola', () => this.affila());
+    I.aggancia('meccanico:mola', () => this.affila());   // la mola sta da Zeno, in paese
   }
 
   // ---------- Pilot di prova ----------
@@ -113,7 +113,7 @@ export class Negozio {
         return ok('Livello 12, 2000€, magazzino completo, oggetti per lo scontro e il cane. Spendi i punti abilità col menu J (prova Lottatore).');
       } },
       { label: '🏪 Vai al magazzino del Bubetto', fn: () => { vai(45, 50.8); return ok('Davanti al magazzino: E sulla porta, poi bancone, scaffali, usato e lavagna.'); } },
-      { label: '🔧 Vai in officina da Zeno (affilatura)', fn: () => { vai(85, 68.5); return ok('Davanti all\'officina: dentro c\'è la mola, oppure parla con Zeno.'); } },
+      { label: '🔧 Vai da Zeno in paese (affilatura)', fn: () => { vai(56, 51.2); return ok('Davanti all\'officina di Zeno: dentro c\'è la mola, oppure parla con Zeno.'); } },
       { label: '🕊️ Vai al silos (piccioni)', fn: () => { vai(121, 69); s.minutes = Math.max(s.minutes, 9 * 60); return ok('Silos: i piccioni girano di giorno tra la piazza e il silos.'); } },
       { label: '⚔️ Scontro di prova (2 nutrie + cinghiale)', fn: () => { setTimeout(() => g.combat.start({ enemies: ['nutria', 'nutria', 'cinghiale'], place: 'campo' }), 50); return null; } },
       { label: '📋 Lavagna: accetta o completa la prossima commissione', fn: () => ok(prossima()) },

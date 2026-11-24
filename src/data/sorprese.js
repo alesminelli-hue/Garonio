@@ -52,7 +52,7 @@ export const SORPRESE = {
   },
   // cinque nani da giardino nascosti per la mappa: trovali tutti
   gnomi: {
-    posti: [[55.5, 26.2], [44, 87], [151, 60.5], [3.5, 74], [117, 33]],
+    posti: [[55.5, 26.2], [44, 87], [151, 60.5], [12.5, 78.4], [117, 33]],
     xp: 10, premio: { soldi: 100, xp: 60 },
     trovato: "Un nano da giardino! Ha la faccia di uno che sa delle cose. ({n}/5) +{xp} XP",
     tutti: "TUTTI E CINQUE I NANI! Si mettono in fila e cantano «Romagna mia». Poi spariscono lasciando {soldi}€. +{xp} XP",

@@ -72,6 +72,19 @@ USATI = {
     'barbuto':           (2, 5, 2),   # Rocco il camionista
     'hippie_barba':      (2, 5, 3),   # banda della sagra
     'commendatore':      (2, 5, 8),   # il Commendatore
+    # edifici del paese (chiesa, castello, farmacia, dottore, palestra, pizzeria, kebab, meccanico)
+    'prete':             (2, 5, 5),   # Don Peppino, il parroco
+    'suora':             (2, 5, 7),   # Suor Carmela
+    'conte':             (1, 1, 8),   # il Conte della Bassa
+    'professore':        (2, 3, 5),   # Ambrogio, il maggiordomo del castello
+    'farmacista':        (1, 1, 4),   # il Dottor Pastiglia, farmacista
+    'dottore':           (2, 0, 7),   # il Dottor Mutua, medico condotto
+    'infermiera':        (2, 0, 8),   # l'infermiera Assunta
+    'sergente':          (2, 2, 5),   # il Sergente, istruttore della palestra
+    'cuoco2':            (2, 0, 5),   # Gennaro, il pizzaiolo
+    'cameriera2':        (1, 3, 9),   # la Concetta, cameriera della pizzeria
+    'cameriere':         (2, 0, 6),   # Kemal del kebab
+    'garzone_cuffie':    (2, 3, 1),   # Ivan, il garzone di Zeno
 }
 ANIMALI = {'maiale', 'gallina', 'gatto', 'cane'}
 

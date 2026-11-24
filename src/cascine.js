@@ -420,7 +420,7 @@ export class Cascine {
 
   _prendiErpice() {
     this.f.erpice = 'garonio'; this._mostraErpice();
-    this.game.ui.toast('Hai l\'erpice in spalla. Pesa. Portalo sotto la tettoia, vicino all\'officina.', '');
+    this.game.ui.toast('Hai l\'erpice in spalla. Pesa. Portalo sotto la tettoia, vicino al deposito.', '');
   }
   _lasciaErpice() {
     this.f.erpice = 'tettoia'; this._mostraErpice();

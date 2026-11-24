@@ -28,7 +28,7 @@ export const STAGIONI = [
     intro: [
       { testo: "Capitolo 1 · Primavera: «Si semina». La terra è morbida, l'aria profuma di letame. Garonio starnutisce." },
       { chi: 'gigante', testo: "Primavera, Garonio. Si ara, si semina, e arrivano i maiali. Entro due settimane voglio 40 zolle di mais seminate e quattro maiali sani nel capannone." },
-      { chi: 'gigante', testo: "Nel campo non si va più con la zappa come i nonni. Trattore e attrezzo, sotto la tettoia accanto all'officina. Il rosso ha l'aratro, il verde la seminatrice." },
+      { chi: 'gigante', testo: "Nel campo non si va più con la zappa come i nonni. Trattore e attrezzo, sotto la tettoia accanto al deposito. Il rosso ha l'aratro, il verde la seminatrice." },
     ],
   },
   {
@@ -197,13 +197,13 @@ export const LAVORO_CAMPI = {
   riparaPerPunto: 1.2,          // € per ogni punto di stato da riparare (da Zeno)
   // campo del grano del Gigante (dentro la zona dorata a ovest, vicino al fienile)
   campoGrano: { x0: 28, x1: 46, z0: 11, z1: 21, name: 'Campo del grano' },
-  rastrelliera: { x: 94.6, z: 65.4 },   // dove si agganciano gli attrezzi (tettoia, accanto all'officina)
+  rastrelliera: { x: 94.6, z: 65.4 },   // dove si agganciano gli attrezzi (tettoia, accanto al deposito)
 };
 
 // Battute di lavoro (a caso)
 export const BATTUTE_LAVORO = {
   senzaAttrezzo: "Il trattore senza attrezzo è solo un modo rumoroso di andare a spasso.",
-  seccoGasolio: "Il trattore tossisce e si ferma: gasolio finito! Cisterna sotto la tettoia, accanto all'officina.",
+  seccoGasolio: "Il trattore tossisce e si ferma: gasolio finito! Cisterna sotto la tettoia, accanto al deposito.",
   riservaGasolio: "Spia del gasolio accesa. Il trattore ha sete.",
   niente: "Niente semente! Il Bubetto in paese ne vende, oppure ordinala alla tettoia.",
   cassonePieno: "Cassone pieno! Portalo al fienile, vicino al campo del grano.",

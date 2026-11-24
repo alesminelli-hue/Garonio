@@ -14,7 +14,7 @@ export const MERCATO = {
   ore: [7, 13],                // aperto dalle 7 alle 13
   // piazzola davanti al municipio, a sud della provinciale
   area: { x0: 23.5, z0: 59.2, x1: 42.5, z1: 65.2 },
-  cartello: { x: 22.6, z: 59.4, testo: 'MERCATO GIOVEDÌ' },
+  cartello: { x: 23.5, z: 59.4, testo: 'MERCATO GIOVEDÌ' },
   saturazione: 0.04,           // ogni pezzo venduto allo stesso banco abbassa il prezzo del 4%...
   saturazioneMin: 0.55,        // ...fino al 55%
   oscillazione: [0.7, 1.9],    // il prezzo della settimana va dal 70% al 190% del prezzo della cassa

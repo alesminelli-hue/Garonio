@@ -269,8 +269,8 @@ export class Vehicles {
     const v = best, name = v.T.label ?? v.T.name, sul = v.T.article === 'il' ? 'sul' : 'sulla';
     if (v.st.cond <= 0 && this.game.officina) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore rotto' : name + ' rotta'}: chiama Zeno (riparazione o rimorchio)`, fn: () => this.game.officina.chiama(v) };
     if (this.aSecco(v) && this.game.officina && !this.game.officina.aCasa(v)) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore' : name} a secco: chiama il rimorchio`, fn: () => this.game.officina.chiama(v) };
-    if (v.st.cond <= 0) return { label: v.kind === 'trattore' ? 'Trattore rotto: va riparato in officina' : `${name} rotta: va riparata in officina`, fn: () => this._brokenMsg(v) };
-    if (v.kind === 'punto' && v.st.fuel <= 0) return { label: 'Punto a secco: fai il pieno in officina', fn: () => this._brokenMsg(v) };
+    if (v.st.cond <= 0) return { label: v.kind === 'trattore' ? 'Trattore rotto: va riparato da Zeno' : `${name} rotta: va riparata da Zeno`, fn: () => this._brokenMsg(v) };
+    if (v.kind === 'punto' && v.st.fuel <= 0) return { label: 'Punto a secco: fai il pieno da Zeno', fn: () => this._brokenMsg(v) };
     if (v.kind === 'vespa') return { label: 'Sali sulla Vespa e prova a metterla in moto', fn: () => this.tryMount(v) };
     return { label: `Sali ${sul} ${name}`, fn: () => this.tryMount(v) };
   }
@@ -420,7 +420,7 @@ export class Vehicles {
     // consumi e guasti
     if (v.kind === 'punto') {
       st.fuel = clamp(st.fuel - dist * T.fuelPerUnit * M.benzina, 0, 100);
-      if (st.fuel <= 0) { this.ui.toast('La Punto tossisce e si ferma: benzina finita! Una tanica costa 10€ in officina.', 'bad'); this.audio.sfx('stall'); this.dismount(true); return; }
+      if (st.fuel <= 0) { this.ui.toast('La Punto tossisce e si ferma: benzina finita! Una tanica costa 10€ da Zeno.', 'bad'); this.audio.sfx('stall'); this.dismount(true); return; }
       if (st.fuel < 15 && !v.fuelWarned) { v.fuelWarned = true; this.ui.toast('Spia della riserva accesa!', 'bad'); }
       if (st.fuel >= 15) v.fuelWarned = false;
     }

@@ -155,16 +155,37 @@ export class World {
     const box = new THREE.Mesh(new THREE.BoxGeometry(b.w, b.h, b.d), [M(side), M(side), M(back), M(back), M(front), M(back)]);
     box.position.set(b.x0 + b.w / 2, b.h / 2, b.z0 + b.d / 2);
     this.scene.add(box);
-    // tetto a capanna
+    // tetto: a capanna (di serie), a cuspide (campanile, torri) o piatto coi merli (castello)
     const o = 0.3, rh = b.d * 0.45;
-    const shape = new THREE.Shape();
-    shape.moveTo(-b.d / 2 - o, 0); shape.lineTo(b.d / 2 + o, 0); shape.lineTo(0, rh); shape.lineTo(-b.d / 2 - o, 0);
-    const geo = new THREE.ExtrudeGeometry(shape, { depth: b.w + o * 2, bevelEnabled: false });
-    geo.rotateY(Math.PI / 2);
     const rt = PIX.toTexture(hd.roof, true);
     rt.repeat.set(1, 1);
-    const roof = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: rt }));
-    roof.position.set(b.x0 - o, b.h, b.z0 + b.d / 2);
+    let roof;
+    if (b.tetto === 'merli') {
+      const pm = side.clone(); pm.needsUpdate = true;
+      roof = new THREE.Group();
+      const top = new THREE.Mesh(new THREE.BoxGeometry(b.w, 0.12, b.d), new THREE.MeshLambertMaterial({ color: '#8a8476' }));
+      top.position.set(b.w / 2, 0.06, b.d / 2); roof.add(top);
+      const mm = new THREE.MeshLambertMaterial({ map: pm });
+      const n = Math.max(2, Math.round(b.w / 0.9)), nz = Math.max(2, Math.round(b.d / 0.9));
+      for (let i = 0; i < n; i += 2) for (const z of [0.18, b.d - 0.18]) { const m = new THREE.Mesh(new THREE.BoxGeometry(b.w / n, 0.5, 0.36), mm); m.position.set((i + 0.5) * b.w / n, 0.25, z); roof.add(m); }
+      for (let i = 0; i < nz; i += 2) for (const x of [0.18, b.w - 0.18]) { const m = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.5, b.d / nz), mm); m.position.set(x, 0.25, (i + 0.5) * b.d / nz); roof.add(m); }
+      roof.position.set(b.x0, b.h, b.z0);
+      roof.material = top.material;
+    } else if (b.tetto === 'cuspide') {
+      const r = Math.max(b.w, b.d) / 2 * 1.42 + 0.1;
+      const geo = new THREE.ConeGeometry(r, Math.max(b.w, b.d) * 1.1, 4, 1);
+      geo.rotateY(Math.PI / 4);
+      roof = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: rt }));
+      roof.scale.set(b.w / Math.max(b.w, b.d), 1, b.d / Math.max(b.w, b.d));
+      roof.position.set(b.x0 + b.w / 2, b.h + Math.max(b.w, b.d) * 0.55, b.z0 + b.d / 2);
+    } else {
+      const shape = new THREE.Shape();
+      shape.moveTo(-b.d / 2 - o, 0); shape.lineTo(b.d / 2 + o, 0); shape.lineTo(0, rh); shape.lineTo(-b.d / 2 - o, 0);
+      const geo = new THREE.ExtrudeGeometry(shape, { depth: b.w + o * 2, bevelEnabled: false });
+      geo.rotateY(Math.PI / 2);
+      roof = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: rt }));
+      roof.position.set(b.x0 - o, b.h, b.z0 + b.d / 2);
+    }
     this.scene.add(roof);
     // insegna
     if (b.label && !hd.insegna) {
