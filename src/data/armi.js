@@ -27,6 +27,15 @@ export const ARMI = {
   arpione:       { nome: 'Arpione del laghetto',     liv: 1, atk: 21, mossa: 'arpionata', mossa2: 'tiraARiva', fuori: 'pesca i siluri', leggendario: true, bottino: true },
   spadone:       { nome: 'Spadone del Trisavolo',    liv: 1, atk: 24, mossa: 'fendenteNobile', mossa2: 'colpoDiGrazia', fuori: 'fa scena', leggendario: true, bottino: true },
   palaForno:     { nome: 'Pala del forno di Gennaro', liv: 1, atk: 27, mossa: 'infornata', mossa2: 'margheritaVolante', fuori: 'sforna pizze', leggendario: true, bottino: true },
+  // attrezzi agricoli nascosti sugli alberi (src/alberi.js, src/data/alberi.js): si trovano scuotendo gli alberi giusti
+  vanga:      { nome: 'Vanga del nonno',        liv: 3,  atk: 5,  mossa: 'badilata', mossa2: 'palata',     fuori: 'scava dritto come un tempo', bottino: true, albero: true },
+  falcetto:   { nome: 'Falcetto da fieno',      liv: 6,  atk: 8,  mossa: 'falciata', mossa2: 'mezzaluna',  fuori: 'taglia l\'erba dei fossi', bottino: true, albero: true },
+  cesoie:     { nome: 'Cesoie da potatura',     liv: 9,  atk: 11, mossa: 'sfoltita', mossa2: 'fendente',   fuori: 'pota le viti del Conte', bottino: true, albero: true },
+  tridente:   { nome: 'Tridente da letame',     liv: 13, atk: 15, mossa: 'spazzata', mossa2: 'infilzata',  fuori: 'gira il letame (e i nemici)', bottino: true, albero: true },
+  scure:      { nome: 'Scure da legna',         liv: 17, atk: 19, mossa: 'fendente', mossa2: 'colpoDiGrazia', fuori: 'spacca la legna per l\'inverno', bottino: true, albero: true },
+  correggiato:{ nome: 'Correggiato della trebbiatura', liv: 21, atk: 23, mossa: 'pettinata', mossa2: 'spazzata', fuori: 'batte il grano come nel 1950', bottino: true, albero: true },
+  // Babbo Natale smemorato (src/speciali.js): solo se gli paghi Madame Svetlana al Welcome
+  bastoneZucchero: { nome: 'Bastone di zucchero di Babbo Natale', liv: 1, atk: 29, mossa: 'renneInCarica', mossa2: 'sacchettoCarbone', fuori: 'profuma di menta', leggendario: true, bottino: true },
   // endgame: solo dalle sfide leggendarie (livello 30)
   zappaDoro:     { nome: 'Zappa d\'oro della Bassa', liv: 30, atk: 30, mossa: 'zappataDoro', mossa2: 'raccoltoFinale', fuori: 'zappa le zolle e luccica', leggendario: true, bottino: true },
 };
@@ -69,6 +78,8 @@ export const MOSSE_ARMI = {
   tiraARiva:   { nome: 'Tira a riva',           target: 'two', pow: 1.7, tired: 12, desc: 'Arpiona due nemici e li tira giù.' },
   fendenteNobile: { nome: 'Fendente nobile',    target: 'all', pow: 1.6, tired: 13, ignoraDif: 0.3, desc: 'Tutti i nemici, ignora un terzo della difesa.' },
   colpoDiGrazia:  { nome: 'Colpo di grazia',    target: 'one', pow: 3.1, tired: 14, desc: 'Il colpo più forte dello spadone.' },
+  renneInCarica:    { nome: 'Renne in carica',       target: 'all', pow: 1.8, tired: 12, stordisce: 1, desc: 'Nove renne travolgono tutti: stordisce per un turno.' },
+  sacchettoCarbone: { nome: 'Sacchetto di carbone',  target: 'one', pow: 3.0, tired: 13, ignoraDif: 0.5, desc: 'Per chi è stato cattivo: un nemico, ignora metà della difesa.' },
   infornata:   { nome: 'Infornata',             target: 'all', pow: 1.7, tired: 12, letame: 2, desc: 'Una palata di brace: tutti, e sbagliano più spesso per 2 turni.' },
   margheritaVolante: { nome: 'Margherita volante', target: 'one', pow: 3.2, tired: 13, stordisce: 1, desc: 'Una pizza bollente in faccia: enorme e stordisce.' },
   zappataDoro: { nome: 'Zappata d\'oro',        target: 'all', pow: 2.1, tired: 12, critico: 0.2, desc: 'Tutti i nemici, critico facile. Luccica.' },
@@ -143,6 +154,18 @@ export const VESTITI = {
   scarpeButtafuori:{ nome: 'Anfibi da buttafuori',     slot: 'piedi', bonus: { def: 5, velocita: 0.2 }, trofeo: true, desc: 'difesa +5, cammini +20%' },
   grembiulePizzaiolo: { nome: 'Grembiule di Gennaro', slot: 'corpo', bonus: { def: 13, cure: 0.15 }, trofeo: true, desc: 'difesa +13, gli oggetti curano +15%. Sa di basilico' },
   sigaroMountain:  { nome: 'Il sigaro di Mister Mountain', slot: 'portafortuna', bonus: { atk: 6, critico: 0.1, stress: 0.1 }, trofeo: true, desc: 'attacco +6, critico +10%, stress −10%. Spento, per fortuna' },
+  // vestiti agricoli nascosti sugli alberi (src/alberi.js)
+  cappellone:      { nome: 'Cappellone di paglia',     slot: 'testa', bonus: { def: 3, stress: 0.08 }, albero: true, desc: 'difesa +3, stress −8%. Fa ombra anche al trattore' },
+  fazzolettoRosso: { nome: 'Fazzoletto rosso da collo', slot: 'portafortuna', bonus: { critico: 0.04, stress: 0.03 }, albero: true, desc: 'critico +4%, stress −3%' },
+  salopette:       { nome: 'Salopette di jeans',       slot: 'corpo', bonus: { def: 5, fatica: 0.06 }, albero: true, desc: 'difesa +5, lavori −6% fatica' },
+  guantiLavoro:    { nome: 'Guanti da lavoro',         slot: 'portafortuna', bonus: { atk: 3, fatica: 0.04 }, albero: true, desc: 'attacco +3, lavori −4% fatica' },
+  stivaliGomma:    { nome: 'Stivali di gomma verdi',   slot: 'piedi', bonus: { def: 3, velocita: 0.12 }, albero: true, desc: 'difesa +3, cammini +12%. Fanno «squish»' },
+  zoccoli:         { nome: 'Zoccoli di legno',         slot: 'piedi', bonus: { velocita: 0.28 }, albero: true, desc: 'cammini +28%. Si sentono arrivare da Lodi' },
+  giaccaVento:     { nome: 'Giacca a vento del consorzio', slot: 'corpo', bonus: { def: 9, freddo: 1 }, albero: true, desc: 'difesa +9, niente fatica extra col freddo' },
+  // Babbo Natale smemorato e Mostro della Palude (src/speciali.js)
+  cappelloNatale:  { nome: 'Cappello di Babbo Natale', slot: 'testa', bonus: { def: 5, stress: 0.15 }, trofeo: true, desc: 'difesa +5, stress −15%. Il pon pon fa «din»' },
+  maglioneRenne:   { nome: 'Maglione con le renne',    slot: 'corpo', bonus: { def: 12, stress: 0.1 }, trofeo: true, desc: 'difesa +12, stress −10%. Fatto a mano dalla signora Claus' },
+  mantelloAlghe:   { nome: 'Mantello di alghe della Palude', slot: 'corpo', bonus: { def: 16, cure: 0.1 }, trofeo: true, desc: 'difesa +16, cure +10%. Gocciola sempre' },
   // endgame: sfide leggendarie
   tutaLeggenda:    { nome: 'Tuta della Leggenda',      slot: 'corpo', bonus: { def: 15, fatica: 0.1 }, leggendario: true, desc: 'difesa +15, lavori −10% fatica' },
   stivaliSette:    { nome: 'Stivali delle sette cascine', slot: 'piedi', bonus: { def: 7, velocita: 0.35 }, leggendario: true, desc: 'difesa +7, cammini +35%' },
@@ -184,4 +207,11 @@ export const OGGETTI = {
   trofeoBoss: { nome: 'Trofeo di un boss', icona: '🏆', vendita: 60 },
   pepita:   { nome: 'Pepita della Bassa', icona: '🪙', vendita: 150 },
   elisir:   { nome: 'Elisir del Dottor Pastiglia', icona: '⚗️', effetto: { health: 120, tired: -30, stress: -20 }, combattimento: 'self', vendita: 40 },
+  // cose che cadono dagli alberi (src/alberi.js) e regali di Babbo Natale
+  mela:     { nome: 'Mela',              icona: '🍎', effetto: { health: 15, tired: -5 }, combattimento: 'self', vendita: 2 },
+  noci:     { nome: 'Noci',              icona: '🌰', effetto: { health: 10, stress: -4 }, combattimento: 'self', vendita: 3 },
+  pigna:    { nome: 'Pigna',             icona: '🌲', effetto: { danno: 10 }, combattimento: 'one', vendita: 1 },
+  nido:     { nome: 'Nido vuoto',        icona: '🪺', vendita: 6 },
+  biscotti: { nome: 'Biscotti di Natale', icona: '🍪', effetto: { health: 30, stress: -12 }, combattimento: 'self', vendita: 5 },
+  carbone:  { nome: 'Carbone della Befana', icona: '🪨', effetto: { danno: 20 }, combattimento: 'one', vendita: 1 },
 };

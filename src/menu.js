@@ -17,6 +17,7 @@ import { RAMI, GRADI_LIVELLO, LIVELLI } from './data/progressione.js';
 import { ARMI, VESTITI, OGGETTI, SLOT, NOMI_SLOT, MOSSE_ARMI, AFFILATURA } from './data/armi.js';
 import { PNG } from './data/png.js';
 import { portrait } from './pixel.js';
+import { iconaUrl } from './sprite_loot.js';
 
 const pallini = (g, max = 4) => '●'.repeat(g) + '○'.repeat(max - g);
 
@@ -306,7 +307,7 @@ export class Menu {
       const a = ARMI[id]; if (!a) continue;
       const su = p.arma().id === id, aff = s.prog.affilatura?.[id];
       const b = this._azione('', () => { if (su) return `${a.nome}: già in mano.`; p.impugna(id); return `🪓 ${a.nome}`; }, { cls: 'mn-cassetta scelta' + (su ? ' on' : '') });
-      b.append(h('div', 'mn-icon', ICONE_ARMI[id] || '🔧'), h('small', 'mn-nome', a.nome), h('div', 'mn-chips', null, [h('span', 'chip', `🗡️+${a.atk}`), aff ? h('span', 'chip', `✨${aff}`) : null]));
+      b.append(icona(id, ICONE_ARMI[id] || '🔧'), h('small', 'mn-nome', a.nome), h('div', 'mn-chips', null, [h('span', 'chip', `🗡️+${a.atk}`), aff ? h('span', 'chip', `✨${aff}`) : null]));
       if (su) b.appendChild(h('span', 'mn-spunta', '✔'));
       armi.appendChild(b);
     }
@@ -319,7 +320,7 @@ export class Menu {
       for (const id of mie) {
         const v = VESTITI[id], su = p.indossato(slot) === id;
         const b = this._azione('', () => { if (su) { p.togli(slot); return `Tolto: ${v.nome}`; } p.indossa(id); return `${ICONE_SLOT[slot]} ${v.nome}`; }, { cls: 'mn-cassetta scelta' + (su ? ' on' : '') });
-        b.append(h('div', 'mn-icon', ICONE_SLOT[slot]), h('small', 'mn-nome', v.nome), h('small', 'mn-desc2', v.desc));
+        b.append(icona(id, ICONE_SLOT[slot]), h('small', 'mn-nome', v.nome), h('small', 'mn-desc2', v.desc));
         if (su) b.appendChild(h('span', 'mn-spunta', '✔'));
         grid.appendChild(b);
       }
@@ -429,5 +430,12 @@ export class Menu {
 }
 
 const ICONE_RAMI = { resistenza: '💪', nervi: '🧘', agricoltore: '🌽', allevatore: '🐖', furbizia: '🦊', lottatore: '👊', parlantina: '🗣️', meccanico: '🔧' };
+// icona di un'arma o di un vestito: lo sprite in pixel art se c'è (src/sprite_loot.js), sennò l'emoji
+function icona(id, emoji) {
+  const url = iconaUrl(id), d = h('div', 'mn-icon', url ? null : emoji);
+  if (url) { const im = document.createElement('img'); im.src = url; im.alt = ''; im.style.cssText = 'width:28px;height:28px;image-rendering:pixelated'; d.appendChild(im); }
+  return d;
+}
 const ICONE_SLOT = { testa: '🧢', corpo: '🦺', piedi: '🥾', portafortuna: '🍀' };
-const ICONE_ARMI = { zappa: '⛏️', rastrello: '🧹', badile: '🪏', forcone: '🔱', falce: '🌙', roncola: '🔪', motosega: '🪚', zappaFolgorata: '⚡', piedeDiPorco: '🪝', forchettone: '🍴', chiaveInglese: '🔧', arpione: '🔱', spadone: '⚔️', zappaDoro: '🏆', palaForno: '🍕' };
+const ICONE_ARMI = { zappa: '⛏️', rastrello: '🧹', badile: '🪏', forcone: '🔱', falce: '🌙', roncola: '🔪', motosega: '🪚', zappaFolgorata: '⚡', piedeDiPorco: '🪝', forchettone: '🍴', chiaveInglese: '🔧', arpione: '🔱', spadone: '⚔️', zappaDoro: '🏆', palaForno: '🍕',
+  vanga: '🪏', falcetto: '🌙', cesoie: '✂️', tridente: '🔱', scure: '🪓', correggiato: '🌾', bastoneZucchero: '🍭' };

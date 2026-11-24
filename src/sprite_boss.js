@@ -181,3 +181,6 @@ export function segnoBoss() {
   P('#ff5060', 3, 4, 10, 1); P('#ff5060', 7, 1, 1, 8);
   return outline(c);
 }
+
+// ---------- Laghetto (incontro speciale, src/speciali.js): il Mostro della Palude ----------
+export { mostroPalude } from './sprite_loot.js';

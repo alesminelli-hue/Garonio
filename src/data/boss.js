@@ -638,6 +638,39 @@ BOSS.gennaro = {
   debito: { prezzo: 16, paga: '💶 Paga il conto in sospeso ({prezzo}€)', pagato: "Bravo guagliò. Mo' sì che ragioniamo. Che te porto?", sfida: '⚔️ «Il conto? Vieni a prendertelo!»', saluto: "Tu! Tu tieni 'nu conto aperto cu' me. {prezzo} euro, o fore se ne parla." },
 };
 
+// ---------- Laghetto: il Mostro della Palude (non è una missione: esce se salti 100 volte sulla riva, src/speciali.js) ----------
+// Livello 30, durissimo. Si può rifare ogni 100 salti; il bottino grosso solo la prima volta.
+BOSS.palude = {
+  nome: 'Il Mostro della Palude', lv: 30, zona: 'Laghetto', icona: '🧟', senzaMissione: true,
+  titolo: 'Cento salti sulla riva',
+  tana: { luogo: 'laghetto' },
+  intro: "Il Mostro della Palude allunga le braccia piene di alghe. Puzza di fosso, di carpa e di 1974.",
+  nemico: {
+    name: 'Il Mostro della Palude', size: 11, sprite: { fn: 'mostroPalude' }, mul: { hp: 1.4, atk: 1.1, def: 1.2, spd: 0.85, xp: 1.3 }, fuga: 'torna sott\'acqua borbottando. Stanotte non dormirai.',
+    moves: [
+      { name: 'Abbraccio fangoso', pow: 1.3, stress: 3, w: 3 },
+      { name: 'Alito di fosso', pow: 0.6, stress: 7, w: 2, line: 'Un alito che sa di carpa morta e uova sode. Garonio lacrima.' },
+      { name: 'Sanguisughe', pow: 0.9, stress: 4, w: 1, veleno: [10, 3], line: 'Tre sanguisughe grosse come zucchine! (Vita −10 per 3 turni)' },
+      { name: 'Ninna nanna della palude', pow: 0.4, stress: 6, w: 0.6, stordisce: true, line: 'Il Mostro canta una ninna nanna gorgogliante. Garonio si addormenta in piedi!' },
+    ],
+  },
+  mecc: {
+    rinforzi: { ogni: 5, max: 1, ids: ['nutria_gigante'], testo: 'Dall\'acqua arrivano le nutrie: il Mostro è il loro re!' },
+    carica: { ogni: 4, mossa: { name: 'RISUCCHIO DELLA PALUDE', pow: 2.4, stress: 10, line: 'Il fango risucchia Garonio fino alla cintura!' }, testo: 'L\'acqua del laghetto comincia a girare come un lavandino... (Difenditi!)' },
+    cura: { soglia: 0.35, quanto: 0.12, volte: 1, testo: 'Il Mostro si rotola nel fango e le ferite si chiudono. Che schifo. Che efficacia.' },
+  },
+  bottino: { vestiti: ['mantelloAlghe'], oggetti: { pepita: 2, trofeoBoss: 1, elisir: 1 } },
+  bottinoRipeti: { oggetti: { pepita: 1, miele: 2 } },
+  vittoria: [
+    { testo: "Il Mostro della Palude crolla nella melma con un «blob» lunghissimo. Poi alza un dito, come per dire qualcosa." },
+    { chi: 'garonio', testo: "Cosa? Parla!" },
+    { testo: "«...Basta saltare. Io qua sotto dormo.» E sparisce. Sulla riva lascia un mantello di alghe intrecciate, caldo e appiccicoso." },
+  ],
+  vittoriaRipeti: [{ testo: "Il Mostro torna giù borbottando: «Ancora?! Cento salti! Ma non hai un lavoro?»" }],
+  sconfitta: "Garonio si sveglia sulla riva, coperto di alghe, con una rana nel taschino. Il Mostro è tornato a dormire. Il contatore dei salti, pure.",
+  scappato: "Garonio scappa a gambe levate. Il Mostro lo guarda andare via e torna sott'acqua. Per richiamarlo serviranno altri cento salti.",
+};
+
 // Tirapiedi dei boss: compaiono solo negli scontri coi boss (non in giro per la mappa).
 // Statistiche a livello "cons", poi crescono come tutti i nemici (src/data/nemici.js → scalaNemico).
 export const TIRAPIEDI = {
