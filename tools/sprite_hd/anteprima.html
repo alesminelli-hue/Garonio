@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Garonio · nuovi sprite (anteprima)</title>
+<style>
+  body { margin: 0; background: #2a3550; color: #f0ead8; font: 14px/1.4 system-ui, sans-serif; }
+  .foglio { display: block; margin: 0 0 24px 0; }
+</style>
+</head>
+<body>
+<div id="out"></div>
+<script type="module">
+import { SEZIONI } from './sezioni.js';
+const out = document.getElementById('out');
+const only = new URLSearchParams(location.search).get('s');
+window.FOGLI = {};
+for (const sez of SEZIONI) {
+  if (only && only !== sez.id) continue;
+  const c = sez.render();
+  c.className = 'foglio'; c.id = sez.id;
+  out.appendChild(c);
+  window.FOGLI[sez.id] = c;
+}
+window.PRONTO = true;
+</script>
+</body>
+</html>
