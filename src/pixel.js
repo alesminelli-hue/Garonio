@@ -1,6 +1,7 @@
 // Pixel art generata via codice (segnaposto finché non avremo gli sprite veri).
 // Ogni funzione restituisce un <canvas> piccolo che poi diventa una texture "nearest".
 import * as THREE from 'three';
+import { ATLANTE, ATLANTE_FILE } from './data/sprite_personaggi.js';
 
 export const PX = 16; // pixel per unità di mondo (1 casella = 16 px)
 
@@ -60,7 +61,9 @@ export function mirror(src) {
 // ---------- Personaggi ----------
 // o: { w,h, skin, hair, hairStyle:'messy'|'bald'|'flat'|'grey', hat, shirt, pants, boots,
 //      overalls, beard, mustache, belly, tie, eyes:'sleepy'|'angry'|'normal'|'sad' }
+//    sprite: nome nell'atlante dei personaggi disegnati (vedi sotto): se c'è, si usa quello al posto del segnaposto
 export function humanoid(o, frame = 0) {
+  if (o.sprite && SPR[o.sprite]) return spriteUmano(o, frame);
   const W = o.w, H = o.h;
   const [c, g] = makeCanvas(W, H);
   const P = (col, x, y, w, h) => { g.fillStyle = col; g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); };
@@ -140,10 +143,10 @@ export function humanoid(o, frame = 0) {
 
 export const CHARACTERS = {
   garonio: { w: 16, h: 24, skin: '#f2c39b', hair: '#5a3a22', hairStyle: 'messy', hat: '#3f8f3a', shirt: '#c8453c', overalls: '#3a5fa8', pants: '#3a5fa8', boots: '#4a2e1c', eyes: 'sleepy' },
-  gigante: { w: 22, h: 32, skin: '#e8b48a', hair: '#9a9a9a', hairStyle: 'bald', shirt: '#b03a2e', plaid: true, pants: '#5a4630', boots: '#2e2218', mustache: '#8a8a8a', belly: true, belt: '#2e2218', eyes: 'angry' },
-  mountain: { w: 30, h: 42, skin: '#d9a27a', hair: '#2a1d14', hairStyle: 'flat', shirt: '#2b2b3a', pants: '#22222e', boots: '#111111', beard: '#2a1d14', tie: '#c0242c', belly: true, eyes: 'angry' },
-  bullo: { w: 16, h: 24, skin: '#e0a986', hair: '#1c1c1c', hairStyle: 'flat', shirt: '#2f2f2f', pants: '#3c5a8a', boots: '#222', eyes: 'angry' },
-  barista: { w: 16, h: 24, skin: '#f0c8a8', hair: '#a0522d', hairStyle: 'long', shirt: '#ffffff', pants: '#333', boots: '#222', eyes: 'normal' },
+  gigante: { sprite: 'contadino_forcone', w: 22, h: 32, skin: '#e8b48a', hair: '#9a9a9a', hairStyle: 'bald', shirt: '#b03a2e', plaid: true, pants: '#5a4630', boots: '#2e2218', mustache: '#8a8a8a', belly: true, belt: '#2e2218', eyes: 'angry' },
+  mountain: { sprite: 'boss_sigaro', w: 30, h: 42, skin: '#d9a27a', hair: '#2a1d14', hairStyle: 'flat', shirt: '#2b2b3a', pants: '#22222e', boots: '#111111', beard: '#2a1d14', tie: '#c0242c', belly: true, eyes: 'angry' },
+  bullo: { sprite: 'bullo', w: 16, h: 24, skin: '#e0a986', hair: '#1c1c1c', hairStyle: 'flat', shirt: '#2f2f2f', pants: '#3c5a8a', boots: '#222', eyes: 'angry' },
+  barista: { sprite: 'barista', w: 16, h: 24, skin: '#f0c8a8', hair: '#a0522d', hairStyle: 'long', shirt: '#ffffff', pants: '#333', boots: '#222', eyes: 'normal' },
 };
 
 // frames: [idleR, walk1R, walk2R, idleL, walk1L, walk2L]
@@ -168,6 +171,7 @@ export function nutria(frame = 0) {
 }
 
 export function chicken(frame = 0) {
+  const spr = animale('gallina', frame, 12, 12); if (spr) return spr;
   const [c, g] = makeCanvas(12, 12);
   const P = (col, x, y, w, h) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
   P('#f4f0e6', 2, 5, 7, 4);
@@ -516,6 +520,8 @@ const portraitCache = {};
 export function portrait(key) {
   if (key === 'garonio' && garonioSheet) return garonioSheet.portrait;
   if (portraitCache[key]) return portraitCache[key];
+  const o = CHARACTERS[key];
+  if (o?.sprite && SPR[o.sprite]) return (portraitCache[key] = ritrattoSprite(SPR[o.sprite].c));
   const src = humanoid(CHARACTERS[key], 0);
   const headH = Math.round(src.height * 0.5);
   const [c, g] = makeCanvas(48, 48);
@@ -524,4 +530,100 @@ export function portrait(key) {
   const dw = src.width * scale, dh = headH * scale;
   g.drawImage(src, 0, 0, src.width, headH, (48 - dw) / 2, 48 - dh, dw, dh);
   return (portraitCache[key] = c.toDataURL());
+}
+
+// ---------- Personaggi e animali disegnati (assets/sprites/personaggi.png) ----------
+// L'atlante lo crea tools/taglia_personaggi.py dai due fogli in assets/sprites/originali/.
+// Un personaggio usa uno sprite se il suo aspetto ha sprite: 'nome'. L'altezza in gioco resta quella
+// dell'aspetto (per l'altezza relativa della figura) e la larghezza segue le proporzioni del disegno.
+// Gli animali (gallina, maiale, gatto, cane) prendono lo sprite dentro le loro funzioni di disegno.
+const SPR = {};   // nome -> { c: canvas, k: altezza relativa }
+
+export async function loadPersonaggi() {
+  try {
+    const img = await loadImage(ATLANTE_FILE);
+    for (const [nome, [x, y, w, h, k]] of Object.entries(ATLANTE)) {
+      const [c, g] = makeCanvas(w, h);
+      g.drawImage(img, x, y, w, h, 0, 0, w, h);
+      SPR[nome] = { c, k };
+    }
+  } catch { /* senza atlante restano i segnaposto disegnati via codice */ }
+}
+export const haSprite = nome => !!SPR[nome];
+
+// fotogramma: lo sprite appoggiato in basso al centro; nel fotogramma 1 (passo) si alza di un pixel
+function spriteFrame(src, frame, W = src.width, H = src.height + 1) {
+  const [c, g] = makeCanvas(W, H);
+  g.drawImage(src, Math.round((W - src.width) / 2), H - src.height - (frame === 1 ? 1 : 0));
+  return c;
+}
+
+function spriteUmano(o, frame) {
+  const { c: src, k } = SPR[o.sprite];
+  if (o._h0 == null) {   // una volta sola: misure dell'aspetto adattate al disegno
+    o._h0 = o.h;
+    o.h = Math.round(o._h0 * k * 10) / 10;
+    o.w = Math.round(o.h * src.width / (src.height + 1) * 10) / 10;
+  }
+  return spriteFrame(src, frame);
+}
+
+// pelo ricolorato (gatti e cani di colori diversi): i toni arancio e marroni diventano la tinta
+const tinteCache = {};
+function tingi(nome, tinta) {
+  const key = nome + tinta;
+  if (tinteCache[key]) return tinteCache[key];
+  const src = SPR[nome].c;
+  const [c, g] = makeCanvas(src.width, src.height);
+  g.drawImage(src, 0, 0);
+  const img = g.getImageData(0, 0, c.width, c.height), d = img.data;
+  const n = parseInt(tinta.slice(1), 16), tr = n >> 16 & 255, tg = n >> 8 & 255, tb = n & 255;
+  const pelo = [], lum = (r, gg, b) => 0.3 * r + 0.59 * gg + 0.11 * b;
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], gg = d[i + 1], b = d[i + 2];
+    if (!d[i + 3]) continue;
+    const mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
+    if (mx > 60 && (mx - mn) / mx > 0.3 && r >= gg && gg > b) pelo.push(i);   // arancio, marrone
+  }
+  if (pelo.length) {
+    const lm = pelo.reduce((t, i) => t + lum(d[i], d[i + 1], d[i + 2]), 0) / pelo.length;
+    const lt = lum(tr, tg, tb) || 1;
+    for (const i of pelo) {
+      const f = lum(d[i], d[i + 1], d[i + 2]) / lm;
+      d[i] = Math.min(255, tr * f); d[i + 1] = Math.min(255, tg * f); d[i + 2] = Math.min(255, tb * f);
+      if (lt < 40) { d[i] += 18 * f; d[i + 1] += 18 * f; d[i + 2] += 22 * f; }   // nero: un filo di riflesso
+    }
+  }
+  g.putImageData(img, 0, 0);
+  return (tinteCache[key] = c);
+}
+
+// Sprite di un animale dentro una tela con le proporzioni del segnaposto (w x h), così chi lo usa
+// tiene le sue misure. tinta: colore del pelo. dorme: schiacciato a terra. null se lo sprite non c'è.
+export function animale(nome, frame, w, h, { tinta, dorme } = {}) {
+  if (!SPR[nome]) return null;
+  let src = tinta ? tingi(nome, tinta) : SPR[nome].c;
+  if (dorme) {
+    const [c, g] = makeCanvas(src.width, Math.round(src.height * 0.55));
+    g.drawImage(src, 0, 0, src.width, src.height, 0, 0, c.width, c.height);
+    src = c;
+  }
+  const asp = w / h;
+  let H = SPR[nome].c.height + 1, W = Math.round(H * asp);
+  if (W < src.width) { W = src.width; H = Math.round(W / asp); }
+  return spriteFrame(src, dorme ? 0 : frame, W, H);
+}
+
+// ritratto: la testa (parte alta dello sprite) su sfondo blu
+function ritrattoSprite(src) {
+  const rows = Math.round(src.height * 0.55);
+  const d = src.getContext('2d').getImageData(0, 0, src.width, rows).data;
+  let sx = 0, n = 0;
+  for (let y = 0; y < rows; y++) for (let x = 0; x < src.width; x++) if (d[(y * src.width + x) * 4 + 3]) { sx += x; n++; }
+  const cx = n ? sx / n : src.width / 2, lato = rows;
+  const [c, g] = makeCanvas(96, 96);
+  g.fillStyle = '#26305a'; g.fillRect(0, 0, 96, 96);
+  const scale = Math.max(1, Math.floor(92 / lato)), dl = lato * scale;
+  g.drawImage(src, Math.round(cx - lato / 2), 0, lato, lato, (96 - dl) / 2, 96 - dl, dl, dl);
+  return c.toDataURL();
 }

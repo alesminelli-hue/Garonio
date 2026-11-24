@@ -69,7 +69,7 @@ export const SORPRESE = {
   // il turista tedesco che si è perso
   turista: {
     probabilita: 0.25, ore: [10, 17], x: 22, z: 51.3,
-    aspetto: { w: 16, h: 24, skin: '#f8d0b0', hair: '#f0e080', hairStyle: 'flat', hat: '#e8e0c0', shirt: '#f080a0', pants: '#e8d8a8', boots: '#a07050', eyes: 'normal' },
+    aspetto: { sprite: 'escursionista', w: 16, h: 24, skin: '#f8d0b0', hair: '#f0e080', hairStyle: 'flat', hat: '#e8e0c0', shirt: '#f080a0', pants: '#e8d8a8', boots: '#a07050', eyes: 'normal' },
     nome: 'Turista tedesco',
     saluto: "Guten Tag! Ich suche... il castello di Grazzano Visconti? Mappa dice qui. Mappa è sbagliata?",
     giusta: { etichetta: 'Indica la strada giusta', testo: "«Danke schön!» Ti dà 5€ e una caramella alla menta di dubbia data. +5 XP", soldi: 5, xp: 5 },
@@ -95,7 +95,7 @@ export const SORPRESE = {
   // la sagra del paese: ogni 7 giorni, la sera in piazza
   sagra: {
     ogni: 7, giornoSfasato: 6, ore: [19, 24], palco: [26, 50.6],
-    banda: [{ shirt: '#c83a2e' }, { shirt: '#3a5fc8' }, { shirt: '#e8c040' }],
+    banda: [{ shirt: '#c83a2e', sprite: 'chitarrista' }, { shirt: '#3a5fc8', sprite: 'punk_chitarra' }, { shirt: '#e8c040', sprite: 'hippie_barba' }],
     annuncio: "🎉 Stasera c'è la Sagra del Cotechino in piazza! Banda, liscio e salamelle.",
     balla: { etichetta: 'Balla il liscio con la Sciura Ines', testo: "Valzer, mazurka e polca. La Sciura Ines balla meglio di te. Molto meglio. Stress −12, +8 XP", stress: -12, xp: 8, stanchezza: 5 },
     salamella: { etichetta: 'Salamella e lambrusco (4€)', prezzo: 4, testo: "Salamella con le cipolle. Il paradiso esiste ed è unto. Stress −8, Vita +10", stress: -8, vita: 10 },

@@ -5,7 +5,7 @@ import { Game, CONFIG, hasSave } from './game.js';
 import { Salvataggi } from './salvataggi.js';
 import { UI } from './ui.js';
 import { Audio } from './audio.js';
-import { loadGaronio } from './pixel.js';
+import { loadGaronio, loadPersonaggi } from './pixel.js';
 import { PLACES } from './map.js';
 import { Minimap } from './minimap.js';
 import { Pannelli } from './pannelli.js';
@@ -38,7 +38,7 @@ window.addEventListener('resize', resize); resize();
 
 const audio = new Audio();
 const ui = new UI(audio);
-await loadGaronio();
+await Promise.all([loadGaronio(), loadPersonaggi()]);
 const world = new World(scene);
 world.build();
 const game = new Game(world, ui, audio);

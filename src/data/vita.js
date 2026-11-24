@@ -19,35 +19,35 @@ export const METE = {
 export const PAESANI = [
   {
     id: 'ines', nome: 'La Sciura Ines', ore: [7, 19], casa: 'casaAzzurra', mete: ['alimentari', 'piazza', 'municipio', 'tabacchi', 'fontana'], impiccione: 0.9,
-    aspetto: { w: 15, h: 21, skin: '#f0c8a8', hair: '#d8d8e0', hairStyle: 'long', shirt: '#7a4a8a', pants: '#3a3040', boots: '#2a1a1a', eyes: 'normal' },
+    aspetto: { sprite: 'sciura', w: 15, h: 21, skin: '#f0c8a8', hair: '#d8d8e0', hairStyle: 'long', shirt: '#7a4a8a', pants: '#3a3040', boots: '#2a1a1a', eyes: 'normal' },
   },
   {
     id: 'bepi', nome: 'Il Bepi', ore: [8, 12], ore2: [15, 19], casa: 'tabacchi', mete: ['strisce', 'fermata', 'piazza', 'bar', 'vialetto'], impiccione: 0.5, umarell: true,
-    aspetto: { w: 16, h: 23, skin: '#e8b48a', hair: '#bbbbbb', hairStyle: 'bald', hat: '#6a5a4a', shirt: '#8a8a70', pants: '#4a4a3a', boots: '#2a2018', mustache: '#cccccc', belly: true, eyes: 'normal' },
+    aspetto: { sprite: 'anziano_coppola', w: 16, h: 23, skin: '#e8b48a', hair: '#bbbbbb', hairStyle: 'bald', hat: '#6a5a4a', shirt: '#8a8a70', pants: '#4a4a3a', boots: '#2a2018', mustache: '#cccccc', belly: true, eyes: 'normal' },
   },
   {
     id: 'gino', nome: 'Il Gino del tabacchi', ore: [7, 20], casa: 'tabacchi', mete: ['tabacchi', 'bar', 'piazza', 'strisce'], impiccione: 0.4, umarell: true,
-    aspetto: { w: 16, h: 24, skin: '#e0a986', hair: '#3a2a1a', hairStyle: 'flat', shirt: '#e8e0c8', pants: '#2a2a3a', boots: '#1a1a1a', mustache: '#3a2a1a', eyes: 'normal' },
+    aspetto: { sprite: 'uomo_gilet', w: 16, h: 24, skin: '#e0a986', hair: '#3a2a1a', hairStyle: 'flat', shirt: '#e8e0c8', pants: '#2a2a3a', boots: '#1a1a1a', mustache: '#3a2a1a', eyes: 'normal' },
   },
   {
     id: 'giusy', nome: 'La Giusy parrucchiera', ore: [9, 19], casa: 'casaRosa', mete: ['casaRosa', 'alimentari', 'piazza', 'bar', 'fontana'], impiccione: 0.7,
-    aspetto: { w: 15, h: 23, skin: '#f0c0a0', hair: '#e0a020', hairStyle: 'long', shirt: '#e05080', pants: '#1a1a2a', boots: '#a02040', eyes: 'normal' },
+    aspetto: { sprite: 'bionda_rosa', w: 15, h: 23, skin: '#f0c0a0', hair: '#e0a020', hairStyle: 'long', shirt: '#e05080', pants: '#1a1a2a', boots: '#a02040', eyes: 'normal' },
   },
   {
     id: 'moreno', nome: 'Il Moreno in tuta', ore: [16, 23.5], casa: 'casaRosa', mete: ['bar', 'paradiso', 'piazza', 'fermata'], impiccione: 0.3,
-    aspetto: { w: 16, h: 24, skin: '#e8b08a', hair: '#1a1a1a', hairStyle: 'flat', shirt: '#2050c0', pants: '#2050c0', boots: '#f0f0f0', eyes: 'normal' },
+    aspetto: { sprite: 'tuta_felpa', w: 16, h: 24, skin: '#e8b08a', hair: '#1a1a1a', hairStyle: 'flat', shirt: '#2050c0', pants: '#2050c0', boots: '#f0f0f0', eyes: 'normal' },
   },
   {
     id: 'sbrana', nome: 'Il Dottor Sbrana, veterinario', ore: [8, 18], casa: 'municipio', mete: ['capannoni', 'aia', 'vialetto', 'bar'], impiccione: 0.5,
-    aspetto: { w: 16, h: 24, skin: '#f0c8a8', hair: '#6a6a6a', hairStyle: 'flat', shirt: '#f4f4f4', pants: '#4a5a6a', boots: '#3a2a1a', beard: '#6a6a6a', eyes: 'normal' },
+    aspetto: { sprite: 'veterinario', w: 16, h: 24, skin: '#f0c8a8', hair: '#6a6a6a', hairStyle: 'flat', shirt: '#f4f4f4', pants: '#4a5a6a', boots: '#3a2a1a', beard: '#6a6a6a', eyes: 'normal' },
   },
   {
     id: 'ornella', nome: "L'Ornella col barboncino", ore: [7, 10], ore2: [17, 21], casa: 'casaAzzurra', mete: ['laghetto', 'piazza', 'strisce', 'fontana', 'fermata'], impiccione: 0.6, cagnolino: true,
-    aspetto: { w: 15, h: 22, skin: '#f0c8a8', hair: '#8a3a2a', hairStyle: 'long', shirt: '#40a090', pants: '#3a3a4a', boots: '#2a2a2a', eyes: 'normal' },
+    aspetto: { sprite: 'donna_grembiule', w: 15, h: 22, skin: '#f0c8a8', hair: '#8a3a2a', hairStyle: 'long', shirt: '#40a090', pants: '#3a3a4a', boots: '#2a2a2a', eyes: 'normal' },
   },
   {
     id: 'walter', nome: 'Il Walter pensionato', ore: [8, 12], ore2: [14, 19], casa: 'municipio', mete: ['strisce', 'ponte', 'fermata', 'piazza', 'vialetto'], impiccione: 0.6, umarell: true,
-    aspetto: { w: 16, h: 22, skin: '#e8b48a', hair: '#e0e0e0', hairStyle: 'grey', hat: '#3a4a3a', shirt: '#a07050', pants: '#5a5040', boots: '#2a2018', eyes: 'normal' },
+    aspetto: { sprite: 'anziano_bastone', w: 16, h: 22, skin: '#e8b48a', hair: '#e0e0e0', hairStyle: 'grey', hat: '#3a4a3a', shirt: '#a07050', pants: '#5a5040', boots: '#2a2018', eyes: 'normal' },
   },
 ];
 
@@ -109,8 +109,8 @@ export const IMPREVISTI = {
     // strade dove può comparire (la provinciale no: serve al traffico)
     strade: ['capezzagna', 'via-mulino', 'via-campi', 'via-est', 'via-maiali', 'via-ponte'],
     operai: [
-      { nome: 'Operaio Gianni', aspetto: { w: 16, h: 24, skin: '#d9a27a', hair: '#3a2a1a', hairStyle: 'flat', hat: '#f0d020', shirt: '#f07020', pants: '#3a4a6a', boots: '#2a2a2a', belly: true, eyes: 'sleepy' } },
-      { nome: 'Operaio Franco', aspetto: { w: 16, h: 24, skin: '#e8b48a', hair: '#1a1a1a', hairStyle: 'flat', hat: '#f0d020', shirt: '#f07020', pants: '#3a4a6a', boots: '#2a2a2a', mustache: '#2a1a1a', eyes: 'normal' } },
+      { nome: 'Operaio Gianni', aspetto: { sprite: 'operaio_casco', w: 16, h: 24, skin: '#d9a27a', hair: '#3a2a1a', hairStyle: 'flat', hat: '#f0d020', shirt: '#f07020', pants: '#3a4a6a', boots: '#2a2a2a', belly: true, eyes: 'sleepy' } },
+      { nome: 'Operaio Franco', aspetto: { sprite: 'operaio_gilet', w: 16, h: 24, skin: '#e8b48a', hair: '#1a1a1a', hairStyle: 'flat', hat: '#f0d020', shirt: '#f07020', pants: '#3a4a6a', boots: '#2a2a2a', mustache: '#2a1a1a', eyes: 'normal' } },
     ],
     frasi: [
       "«Lavori in corso, si passa di là.» «Di là dove?» «Di là.»",
@@ -179,7 +179,7 @@ export const PARADISO = {
     { id: 'natasha', nome: 'Natasha, 33', prezzo: 150, stress: 55, xp: 70,
       desc: "«Ballerina internazionale». Internazionale nel senso che una volta è stata a Chiasso. Fa la spaccata, ma solo il venerdì.",
       esito: "Bum bum bum bum. Quattro colpi. Good job!" },
-    { id: 'valentina', nome: 'Madame Valentina, 47', prezzo: 300, stress: 80, xp: 150, vita: 15,
+    { id: 'svetlana', nome: 'Madame Svetlana, 47', prezzo: 300, stress: 80, xp: 150, vita: 15,
       desc: "La Regina del Paradiso. Ha visto cose che Mister Mountain si sogna. Accetta solo banconote stirate.",
       esito: "Bum bum bum bum bum bum. Sei colpi e un applauso dalla stanza accanto. GREAT job!" },
   ],
@@ -237,9 +237,9 @@ export const PARADISO_INTERNO = {
 
 // personaggi dentro (coordinate locali della stanza) e cosa dicono
 export const PARADISO_GENTE = {
-  sandokan: { nome: 'Sandokan, il buttafuori', x: 2.5, z: 1.2, aspetto: { w: 20, h: 28, skin: '#d9a27a', hair: '#1a1a1a', hairStyle: 'bald', shirt: '#1a1a24', pants: '#1a1a24', boots: '#0a0a0a', beard: '#1a1a1a', tie: '#c0242c', belly: true, eyes: 'angry' } },
-  lola: { nome: 'Lola, la barista', x: 9, z: 1.2, aspetto: { w: 15, h: 23, skin: '#f0c0a0', hair: '#1a1a2a', hairStyle: 'long', shirt: '#c83a8a', pants: '#1a1a2a', boots: '#2a1a2a', eyes: 'normal' } },
-  commendatore: { nome: 'Il Commendatore', x: 13.5, z: 1.7, aspetto: { w: 17, h: 24, skin: '#e8b48a', hair: '#e0e0e0', hairStyle: 'grey', shirt: '#f4f4f4', pants: '#3a3a4a', boots: '#1a1a1a', tie: '#3a3aa8', mustache: '#e0e0e0', belly: true, eyes: 'sleepy' } },
+  sandokan: { nome: 'Sandokan, il buttafuori', x: 2.5, z: 1.2, aspetto: { sprite: 'bodyguard', w: 20, h: 28, skin: '#d9a27a', hair: '#1a1a1a', hairStyle: 'bald', shirt: '#1a1a24', pants: '#1a1a24', boots: '#0a0a0a', beard: '#1a1a1a', tie: '#c0242c', belly: true, eyes: 'angry' } },
+  lola: { nome: 'Lola, la barista', x: 9, z: 1.2, aspetto: { sprite: 'cameriera_vassoio', w: 15, h: 23, skin: '#f0c0a0', hair: '#1a1a2a', hairStyle: 'long', shirt: '#c83a8a', pants: '#1a1a2a', boots: '#2a1a2a', eyes: 'normal' } },
+  commendatore: { nome: 'Il Commendatore', x: 13.5, z: 1.7, aspetto: { sprite: 'commendatore', w: 17, h: 24, skin: '#e8b48a', hair: '#e0e0e0', hairStyle: 'grey', shirt: '#f4f4f4', pants: '#3a3a4a', boots: '#1a1a1a', tie: '#3a3aa8', mustache: '#e0e0e0', belly: true, eyes: 'sleepy' } },
   geometra: { nome: 'Il Geometra Ballarin', x: 13.6, z: 4.3 },
   moreno: { nome: 'Il Moreno in tuta', x: 16.3, z: 4.3 },
 };

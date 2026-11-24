@@ -381,10 +381,10 @@ export const BAR = {
 
 // Aspetto dei personaggi del bar (ritratti nei dialoghi), stesso formato di src/pixel.js
 export const ASPETTO = {
-  tarcisio: { w: 16, h: 24, skin: '#e8a080', hair: '#c8c8c8', hairStyle: 'bald', shirt: '#6a5a3a', pants: '#4a4a4a', boots: '#222', mustache: '#d8d8d8', belly: true, eyes: 'sleepy' },
-  pina: { w: 16, h: 24, skin: '#f0c8a8', hair: '#c8c0e0', hairStyle: 'long', shirt: '#9a4a8a', pants: '#4a3a5a', boots: '#222', eyes: 'normal' },
-  geometra: { w: 16, h: 24, skin: '#f0c8a8', hair: '#3a2a1a', hairStyle: 'flat', shirt: '#3a6a9a', tie: '#e0c020', pants: '#2a2a3a', boots: '#111', eyes: 'normal' },
-  ermes: { w: 16, h: 24, skin: '#e8b48a', hair: '#d8a040', hairStyle: 'messy', hat: '#d03030', shirt: '#2a8a4a', pants: '#3a5fa8', boots: '#4a2e1c', eyes: 'normal' },
+  tarcisio: { sprite: 'ubriaco_birra', w: 16, h: 24, skin: '#e8a080', hair: '#c8c8c8', hairStyle: 'bald', shirt: '#6a5a3a', pants: '#4a4a4a', boots: '#222', mustache: '#d8d8d8', belly: true, eyes: 'sleepy' },
+  pina: { sprite: 'nonna', w: 16, h: 24, skin: '#f0c8a8', hair: '#c8c0e0', hairStyle: 'long', shirt: '#9a4a8a', pants: '#4a3a5a', boots: '#222', eyes: 'normal' },
+  geometra: { sprite: 'geometra', w: 16, h: 24, skin: '#f0c8a8', hair: '#3a2a1a', hairStyle: 'flat', shirt: '#3a6a9a', tie: '#e0c020', pants: '#2a2a3a', boots: '#111', eyes: 'normal' },
+  ermes: { sprite: 'felpa_cappellino', w: 16, h: 24, skin: '#e8b48a', hair: '#d8a040', hairStyle: 'messy', hat: '#d03030', shirt: '#2a8a4a', pants: '#3a5fa8', boots: '#4a2e1c', eyes: 'normal' },
 };
 
 // ---------------------------------------------------------------------
@@ -650,6 +650,6 @@ export const BAR_STORIA = {
 };
 
 // Aspetto di Bruno e Rocco (Bruno è più grosso del bullo generico)
-ASPETTO.bruno = { w: 19, h: 26, skin: '#e0a986', hair: '#1c1c1c', hairStyle: 'flat', shirt: '#2f2f2f', pants: '#3c5a8a', boots: '#222', belly: true, mustache: '#1c1c1c', eyes: 'angry' };
-ASPETTO.rocco = { w: 19, h: 26, skin: '#d9a27a', hair: '#5a3a22', hairStyle: 'flat', hat: '#2a5a9a', shirt: '#f4f4f4', pants: '#3a3a4a', boots: '#1a1a1a', beard: '#5a3a22', belly: true, eyes: 'angry' };
-ASPETTO.amicoBruno = { w: 17, h: 24, skin: '#e8b48a', hair: '#7a4a2a', hairStyle: 'messy', shirt: '#5a2a2a', pants: '#2a2a3a', boots: '#222', eyes: 'angry' };
+ASPETTO.bruno = { sprite: 'canottiera', w: 19, h: 26, skin: '#e0a986', hair: '#1c1c1c', hairStyle: 'flat', shirt: '#2f2f2f', pants: '#3c5a8a', boots: '#222', belly: true, mustache: '#1c1c1c', eyes: 'angry' };
+ASPETTO.rocco = { sprite: 'barbuto', w: 19, h: 26, skin: '#d9a27a', hair: '#5a3a22', hairStyle: 'flat', hat: '#2a5a9a', shirt: '#f4f4f4', pants: '#3a3a4a', boots: '#1a1a1a', beard: '#5a3a22', belly: true, eyes: 'angry' };
+ASPETTO.amicoBruno = { sprite: 'cresta', w: 17, h: 24, skin: '#e8b48a', hair: '#7a4a2a', hairStyle: 'messy', shirt: '#5a2a2a', pants: '#2a2a3a', boots: '#222', eyes: 'angry' };

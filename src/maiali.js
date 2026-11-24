@@ -326,6 +326,7 @@ export class Maiali {
 
 // maiale rosa, di lato verso destra
 function maiale(frame) {
+  const spr = PIX.animale('maiale', frame, 22, 15); if (spr) return spr;
   const [c, g] = PIX.makeCanvas(22, 15);
   const P = (col, x, y, w, h) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
   P('#f0a0a8', 3, 4, 15, 7); P('#f8c0c8', 4, 4, 12, 2); P('#d88088', 3, 9, 15, 2);  // corpo

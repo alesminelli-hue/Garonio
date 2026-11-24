@@ -21,7 +21,7 @@ export const VICINI = {
     cane: { id: 'bollito', nome: 'Bollito', x: 95.5, z: 40.8, vista: [5, 40], udito: 3, sguardo: N, dorme: 0.55,
       aspetto: { pelo: '#c89a5a', scuro: '#8a6234', taglia: 1 } },
     garzone: { id: 'ugo', nome: 'Ugo, il nipote del Patata', ore: [7, 19], giro: [[92, 27], [112, 27]], vista: [6, 35], udito: 2,
-      aspetto: { w: 15, h: 22, skin: '#f0c098', hair: '#c8a050', hairStyle: 'messy', shirt: '#e07a3a', pants: '#4a5a8a', boots: '#3a2a1a', eyes: 'sleepy' } },
+      aspetto: { sprite: 'cappellino_rosso', w: 15, h: 22, skin: '#f0c098', hair: '#c8a050', hairStyle: 'messy', shirt: '#e07a3a', pants: '#4a5a8a', boots: '#3a2a1a', eyes: 'sleepy' } },
     battute: [
       "Garonio! Guarda questa patata. Non è bellissima? Ha la faccia di mia mamma.",
       "Ehi Garonio, sei pallido. Ti serve una patata.",
@@ -84,7 +84,7 @@ export const VICINI = {
     cane: { id: 'sceriffo', nome: 'Sceriffo', x: 138.5, z: 40.8, vista: [7, 40], udito: 4, sguardo: N, dorme: 0.25,
       aspetto: { pelo: '#3a2a1e', scuro: '#1e140c', taglia: 1.25 } },
     garzone: { id: 'kevin', nome: 'Kevin, il garzone di Frank', ore: [7, 19], giro: [[124, 27], [150, 27]], vista: [7, 35], udito: 2.5,
-      aspetto: { w: 16, h: 24, skin: '#e8b090', hair: '#e0c060', hairStyle: 'messy', hat: '#c8b080', shirt: '#4a7ab0', plaid: true, pants: '#3a4a7a', boots: '#6a3a1a', eyes: 'normal' } },
+      aspetto: { sprite: 'ragazzo_zaino', w: 16, h: 24, skin: '#e8b090', hair: '#e0c060', hairStyle: 'messy', hat: '#c8b080', shirt: '#4a7ab0', plaid: true, pants: '#3a4a7a', boots: '#6a3a1a', eyes: 'normal' } },
     battute: [
       "Hey boy! Il mio horse oggi ha fatto 3 chilometri senza spegnersi. Record della county!",
       "Howdy, Garonio! Qui nel Texas della Bassa il sole tramonta alle sette. Come da voi, ma più western.",
