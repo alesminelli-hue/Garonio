@@ -83,6 +83,19 @@ Nel codice si usa sempre e solo `audio.setScene('nome-scena')` (elenco in `src/a
 
 Per aggiungere una traccia: copia il file `.mp3` nella cartella e scrivi il suo nome nella lista della scena. Se una lista è vuota suona una musichetta 8‑bit di riserva.
 
+## Effetti sonori
+
+Tutti gli effetti sono **sintetizzati al volo** con la Web Audio API in `src/sfx.js`: nessun file audio esterno, quindi nessuna licenza di terzi da rispettare (sono codice del gioco come il resto). Passano da un bus separato dalla musica con un compressore leggero.
+
+- **Mezzi**: motore continuo di Vespa (2 tempi), Punto e trattore (diesel) che sale di giri con la velocità, avviamento, motore che si spegne, clacson, incidenti; traffico che passa sulla provinciale.
+- **Combattimento**: colpi a vuoto, pugni, colpi critici, Garonio colpito, schivate, uovo spiaccicato, KO.
+- **Mondo**: passi diversi su erba, sterrato, asfalto, ponte, campo, fango e pavimenti (il fango quando piove), porte che si aprono e chiudono, galline, maiali, anatre, nutrie, gatti, cani, fischietto della Vigilessa, uccellini di giorno, grilli la sera, pioggia, vento con nebbia o neve, brusio e bicchieri al bar.
+- **Interfaccia**: click, monete, livello, errore.
+
+Nel codice: `audio.sfx('nome')`, oppure `audio.sfx('nome', { x, z })` per un suono nel mondo (più piano da lontano, a destra o a sinistra). L'elenco dei nomi è in cima a `src/sfx.js`.
+
+**Volumi**: nel menu (**J**) → ⚙️ Opzioni ci sono Musica ed Effetti separati, ricordati dal browser. Il tasto **M** (o ♪) spegne e riaccende tutto l'audio.
+
 ## Struttura
 
 | File | Cosa contiene |
