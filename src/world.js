@@ -8,6 +8,29 @@ import { MAP_W, MAP_H, AREAS, BUILDINGS, ZONES, ROADS, PROPS, PLACES, CANAL, bui
 // I dati della mappa (luoghi, strade, zone) stanno in map.js.
 export { MAP_W, MAP_H, AREAS, BUILDINGS } from './map.js';
 
+// Margine laterale dei muri: il raggio di collisione (0.28) è più stretto della figura disegnata,
+// e senza questo la spalla e il braccio entravano nei fianchi degli edifici e nei mobili.
+export const SPALLE = 0.2;
+
+// Sprite «in piedi» per la profondità. Gli sprite di three.js sono rivolti alla camera, che guarda
+// dall'alto in diagonale: la loro parte alta pende all'indietro e, davanti a un muro o a un mobile,
+// la testa di Garonio finisce dentro il muro e sparisce (sembra risucchiato). Qui l'immagine resta
+// identica sullo schermo, ma la profondità di ogni vertice viene presa da un piano verticale che
+// passa per i piedi: chi sta davanti a un muro resta tutto davanti, chi sta dietro resta dietro.
+// (Vale per tutti gli sprite; la metà sotto l'ancora, negli sprite centrati, resta com'era.)
+if (!THREE.ShaderLib.sprite.vertexShader.includes('spriteInPiedi')) {
+  THREE.ShaderLib.sprite.vertexShader = THREE.ShaderLib.sprite.vertexShader.replace(
+    'gl_Position = projectionMatrix * mvPosition;',
+    `vec3 spriteInPiedi = viewMatrix[ 1 ].xyz;            // il «su» del mondo visto dalla camera
+	vec3 nPiano = vec3( 0.0, - spriteInPiedi.z, spriteInPiedi.y ); // normale del piano verticale rivolto alla camera
+	float dPiano = dot( nPiano, mvPosition.xyz );
+	float tPiano = dot( nPiano, modelViewMatrix[ 3 ].xyz ) / ( abs( dPiano ) < 1e-5 ? 1e-5 : dPiano );
+	vec4 mvProf = vec4( mvPosition.xyz * clamp( tPiano, 0.5, 1.0 ), 1.0 );
+	vec4 clipProf = projectionMatrix * mvProf;
+	gl_Position = projectionMatrix * mvPosition;
+	gl_Position.z = clipProf.z / clipProf.w * gl_Position.w;`);
+}
+
 export class World {
   constructor(scene) {
     this.scene = scene;
@@ -173,7 +196,8 @@ export class World {
       s.position.set(b.x0 + b.w / 2, b.h - 0.5, b.z0 + b.d + 0.36);
       this.scene.add(s);
     }
-    this.solids.push({ x0: b.x0, z0: b.z0, x1: b.x0 + b.w, z1: b.z0 + b.d });
+    // px: margine in più sui fianchi, perché lo sprite (braccia comprese) è più largo del raggio di collisione
+    this.solids.push({ x0: b.x0, z0: b.z0, x1: b.x0 + b.w, z1: b.z0 + b.d, px: SPALLE });
     b.mats = [...box.material, roof.material];
     b.mats.forEach(m => { m.transparent = true; });
     if (!b.decor) b.door = { x: b.x0 + b.w / 2, z: b.z0 + b.d + 0.5 };
@@ -386,7 +410,7 @@ export class World {
     const cell = this._idx.get(((x / 8) | 0) + ',' + ((z / 8) | 0));
     if (x < 0 || z < 0 || x >= MAP_W || z >= MAP_H) return true;
     if (!cell) return false;
-    for (const s of cell) if (x + r > s.x0 && x - r < s.x1 && z + r * 0.6 > s.z0 && z - r * 0.6 < s.z1) return true;
+    for (const s of cell) { const rx = r + (s.px || 0); if (x + rx > s.x0 && x - rx < s.x1 && z + r * 0.6 > s.z0 && z - r * 0.6 < s.z1) return true; }
     return false;
   }
 

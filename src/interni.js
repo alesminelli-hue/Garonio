@@ -26,6 +26,7 @@ import { ramp, tone as hdTono, hash as hdHash } from './hd/kit.js';
 import * as HDO from './hd/oggetti.js';
 import { INTERNI, TESTI, MAIALI_FINTI, JUKEBOX, PORTE } from './data/interni.js';
 import { BUILDINGS, MAP_W, PLACES } from './map.js';
+import { SPALLE } from './world.js';
 import { VESTITI } from './data/armi.js';
 import { PNG } from './data/png.js';
 import { BAR, NOMI } from './data/dialoghi.js';
@@ -374,9 +375,10 @@ export class Interni {
     if (!this.attivo) return true;
     const def = this.defs[this.edificio], o = this.origini[this.edificio];
     const lx = x - o.x, lz = z - o.z, rz = r * 0.6;
-    if (lx - r < 0.08 || lx + r > def.w - 0.08 || lz - rz < 0.3 || lz + rz > def.d - 0.02) return true;
+    const rx = r + SPALLE;   // sui fianchi la figura è più larga del raggio: niente spalle dentro i muri
+    if (lx - rx < 0.08 || lx + rx > def.w - 0.08 || lz - rz < 0.3 || lz + rz > def.d - 0.02) return true;
     for (const s of this.cache[this.edificio]?.solidi || []) {
-      if (lx + r > s.x0 && lx - r < s.x1 && lz + rz > s.z0 && lz - rz < s.z1) return true;
+      if (lx + rx > s.x0 && lx - rx < s.x1 && lz + rz > s.z0 && lz - rz < s.z1) return true;
     }
     return false;
   }
