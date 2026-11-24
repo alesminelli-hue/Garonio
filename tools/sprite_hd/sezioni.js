@@ -3,6 +3,9 @@ import { TERRENI } from '../../src/hd/terreno.js';
 import { OGGETTI, PAESE, COLTURE } from '../../src/hd/oggetti.js';
 import { MEZZI, ATTREZZI, TRAFFICO } from '../../src/hd/mezzi.js';
 import { EDIFICI } from '../../src/hd/edifici.js';
+import { NUTRIE } from '../../src/hd/animali.js';
+import { pezzo } from '../../src/hd/collezionabili.js';
+import { COLLEZIONI } from '../../src/data/diario.js';
 import { scena } from './scena.js';
 
 const BG = '#3b5182', BG2 = '#34497a';
@@ -55,6 +58,8 @@ export const SEZIONI = [
   { id: 'edifici', render: () => foglio('Edifici (stesse misure della mappa: 16 px = 1 casella · zoom 3×)', EDIFICI, { scale: 3, maxW: 1800 }) },
   { id: 'mezzi', render: () => foglio('Mezzi di Garonio (vuoti: Garonio alla guida si aggiunge come adesso · zoom 4×)', MEZZI, { scale: 4, maxW: 1500 }) },
   { id: 'attrezzi', render: () => foglio('Attrezzi del trattore e traffico del paese (zoom 4×)', [...ATTREZZI, ...TRAFFICO], { scale: 4, maxW: 1700 }) },
+  { id: 'nutrie', render: () => foglio('Nutrie (zoom 5×)', NUTRIE, { scale: 5, maxW: 1700 }) },
+  { id: 'collezionabili', render: () => foglio('Collezionabili: tappi, santini e figurine (zoom 6×, l\'ultimo di ogni riga col luccichio)', Object.entries(COLLEZIONI).flatMap(([c, C]) => C.pezzi.map((p, i) => [p.nome, () => pezzo(c, p.id, i === 7)])), { scale: 6, maxW: 1700 }) },
   { id: 'oggetti', render: () => foglio('Oggetti di campagna (zoom 4×)', OGGETTI, { scale: 4, maxW: 1700 }) },
   { id: 'paese', render: () => foglio('Arredo del paese (zoom 4×)', PAESE, { scale: 4, maxW: 1700 }) },
   { id: 'colture', render: () => foglio('Colture: germoglio, crescita, maturo (zoom 5×)', COLTURE, { scale: 5, maxW: 1700 }) },

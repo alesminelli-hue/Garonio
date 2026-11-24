@@ -1,4 +1,4 @@
-# Sprite HD (anteprima, non ancora nel gioco)
+# Sprite HD
 
 Nuova pixel art disegnata via codice per terreno, mezzi, edifici e oggetti, nello stile dei fogli personaggi
 (contorno scuro, luce da in alto a sinistra, ombre che virano al viola).
@@ -7,6 +7,8 @@ Nuova pixel art disegnata via codice per terreno, mezzi, edifici e oggetti, nell
 - `terreno.js` caselle 16x16 ripetibili
 - `oggetti.js` alberi, colture, roba di campagna, arredo del paese
 - `mezzi.js` Vespa, Punto, trattori (3 viste), attrezzi, traffico
+- `animali.js` nutrie: nutria, Mamma Nutria, nutria corazzata, Re delle Nutrie (2 fotogrammi)
+- `collezionabili.js` tappi, santini e figurine del diario (un disegno per pezzo)
 - `edifici.js` tutti gli edifici di `src/map.js`, stesse larghezze
 - `scena.js` prova d'insieme
 

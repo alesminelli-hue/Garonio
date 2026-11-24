@@ -14,6 +14,7 @@
 //   hit(c, e, danno) · skill(c, id) · item(c, id, bersaglio)
 // c.addEnemy(id, { noXp }) aggiunge un nemico a scontro in corso (es. il Re dei Ratti chiama rinforzi).
 import * as PIX from './pixel.js';
+import * as HDA from './hd/animali.js';
 import { MOSSE_ARMI, MOSSE_GARONIO, NEMICI_PICCOLI, OGGETTI } from './data/armi.js';
 
 const rand = (a, b) => a + Math.random() * (b - a);
@@ -83,7 +84,7 @@ const humanLeft = o => [0, 1, 2].map(f => PIX.mirror(PIX.humanoid(o, f)));
 // moves: pow = forza del colpo (0 = nessun danno), stress = stress che provoca, w = probabilità relativa
 export const ENEMIES = {
   nutria: {
-    name: 'Nutria', hp: 16, atk: 6, def: 1, spd: 6, xp: 5, money: 0, size: 3.2,
+    name: 'Nutria', hp: 16, atk: 6, def: 1, spd: 6, xp: 5, money: 0, size: 3.2, mappa: 18 / 16,
     frames: () => left([PIX.nutria(0), PIX.nutria(1)]),
     moves: [
       { name: 'Morso', pow: 1, stress: 1, w: 3 },
@@ -92,8 +93,8 @@ export const ENEMIES = {
     ],
   },
   nutria_gigante: {
-    name: 'Mamma Nutria', hp: 40, atk: 9, def: 3, spd: 4, xp: 14, money: 0, size: 4.2,
-    frames: () => left([PIX.nutria(0), PIX.nutria(1)]),
+    name: 'Mamma Nutria', hp: 40, atk: 9, def: 3, spd: 4, xp: 14, money: 0, size: 4.2, mappa: 1.5,
+    frames: () => left([HDA.mammaNutria(0), HDA.mammaNutria(1)]),
     moves: [
       { name: 'Morsone', pow: 1.2, stress: 2, w: 3 },
       { name: 'Schiacciata di pancia', pow: 1.6, stress: 3, w: 1 },

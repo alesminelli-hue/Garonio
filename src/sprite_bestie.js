@@ -2,6 +2,7 @@
 // Ogni funzione disegna l'animale rivolto a DESTRA, con due fotogrammi (frame 0 e 1).
 // Il combattimento li specchia verso sinistra (verso Garonio); la mappa usa entrambe le direzioni.
 import * as PIX from './pixel.js';
+import * as HDA from './hd/animali.js';
 
 function outline(c, color = '#1a1420') {
   const g = c.getContext('2d');
@@ -95,35 +96,9 @@ export function piccione(f = 0) {
 }
 
 // ---------- Nutrie ----------
-export function nutriaCorazzata(f = 0) {
-  const [c, P] = canvas(22, 14);
-  P('#5a4028', 0, 9 - f, 6, 2);                                         // coda
-  P('#7a5434', 5, 5, 11, 7);                                            // corpo
-  P('#6a5a3a', 5, 3, 11, 4); P('#8a7a50', 6, 3, 3, 2); P('#8a7a50', 11, 3, 3, 2); // placche di fango secco
-  P('#4a3a24', 9, 3, 1, 4); P('#4a3a24', 14, 3, 1, 4);
-  P('#7a5434', 15, 4, 6, 6); P('#6a5a3a', 15, 3, 5, 2);                 // testa con elmetto di fango
-  P('#1a1420', 18, 6, 1, 1);
-  P('#f08a1c', 20, 9, 1, 2); P('#f08a1c', 19, 9, 1, 2);                 // denti arancioni
-  P('#5a3c22', 6, 12, 2, 2 - f); P('#5a3c22', 13, 12, 2, 1 + f);
-  return outline(c);
-}
-
-export function reNutrie(f = 0) {
-  const [c, P] = canvas(36, 24);
-  P('#5a4028', 0, 16 - f, 9, 3);                                        // coda enorme
-  P('#7a5434', 7, 7, 20, 13); P('#8f6640', 9, 7, 14, 4);                // corpo
-  P('#6a5a3a', 10, 6, 5, 3); P('#6a5a3a', 18, 6, 5, 3);                 // fango
-  P('#c89a6a', 13, 13, 10, 5);                                          // pancia
-  P('#7a5434', 24, 5, 10, 10); P('#8f6640', 25, 5, 7, 3);               // testa
-  P('#4a8a3a', 24, 1, 9, 3); P('#4a8a3a', 24, 0, 1, 2); P('#4a8a3a', 28, 0, 1, 2); P('#4a8a3a', 32, 0, 1, 2); // corona di canne
-  P('#f0d050', 28, 2, 1, 1);
-  P('#1a1420', 29, 7, 2, 2); P('#e8d0b0', 26, 8, 3, 1);                 // occhio con cicatrice
-  P('#1a1420', 33, 9, 2, 1);                                            // naso
-  P('#f08a1c', 31, 12, 2, 4); P('#f08a1c', 33, 12, 2, 4);               // dentoni arancioni
-  P('#5a3c22', 9, 20, 4, 4 - f); P('#5a3c22', 22, 20, 4, 3 + f);
-  P('#3a78c0', 4, 21, 3, 1); P('#3a78c0', 27, 22, 4, 1);                // goccioline
-  return outline(c);
-}
+// HD in src/hd/animali.js (risoluzione doppia: in mappa la misura la dà `mappa` di src/data/bestie.js)
+export const nutriaCorazzata = HDA.nutriaCorazzata;
+export const reNutrie = HDA.reNutrie;
 
 // ---------- Lupi ----------
 function wolf(f, big, colBody, colLight, colDark) {
