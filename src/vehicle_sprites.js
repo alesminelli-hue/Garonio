@@ -255,6 +255,10 @@ function puntoBack(occ) {
 const TR = {
   rosso: { base: '#c83a2a', light: '#e86048', dark: '#8a2418' },
   verde: { base: '#3f8a3a', light: '#62b050', dark: '#285c26' },
+  // trattori dei rivali nelle gare (src/gare.js)
+  giallo: { base: '#e8b820', light: '#f8d860', dark: '#a87c10' },
+  blu: { base: '#2a5aa8', light: '#4a80d0', dark: '#1a3a70' },
+  arancio: { base: '#e07028', light: '#f09858', dark: '#a04a18' },
 };
 
 function tractorSide(occ, col) {
