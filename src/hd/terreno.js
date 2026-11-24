@@ -194,7 +194,7 @@ export function fango(pozza = true) {
     for (let y = 0; y < T; y++) for (let x = 0; x < T; x++) if (hash(x >> 1, y >> 1, 12) < 0.3) W(R[1], x, y);
     const Pz = ramp('#5c4630');
     if (pozza) { d.ell(9, 9, 4.5, 2.5, Pz[1]); d.ell(9, 9.5, 3, 1.5, Pz[0]); d.P('#a8987c', 7, 8, 2, 1); d.P('#c8b89c', 7, 8); }
-    for (const [x, y] of [[2, 3], [4, 4], [12, 2]]) { W(R[0], x, y); W(R[0], x + 1, y); W(R[3], x, y - 1); } // impronte
+    if (pozza) for (const [x, y] of [[2, 3], [4, 4], [12, 2]]) { W(R[1], x, y); W(R[1], x + 1, y); W(R[3], x, y - 1); } // impronte
   });
 }
 

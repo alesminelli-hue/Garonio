@@ -22,6 +22,8 @@
 // Eventi: entrato { edificio }, uscito { edificio }, traccia { bestia, luogo }.
 import * as THREE from 'three';
 import * as PIX from './pixel.js';
+import { ramp, tone as hdTono, hash as hdHash } from './hd/kit.js';
+import * as HDO from './hd/oggetti.js';
 import { INTERNI, TESTI, MAIALI_FINTI, JUKEBOX, PORTE } from './data/interni.js';
 import { BUILDINGS, MAP_W, PLACES } from './map.js';
 import { VESTITI } from './data/armi.js';
@@ -52,24 +54,33 @@ function tela(wu, hu, draw, seed = 1) {
   return c;
 }
 const tex = (wu, hu, draw, seed) => PIX.toTexture(tela(wu, hu, draw, seed));
+// superfici in stile HD (src/hd/kit.js): toni con l'ombra che vira al viola e la luce al giallo
 const rumore = (col, k = 0.06) => (P, W, H, g, r) => {
   P(col, 0, 0, W, H);
-  for (let i = 0; i < W * H / 6; i++) P(tono(col, 1 + (r() - 0.5) * k * 2), r() * W, r() * H, 1, 1);
+  const sp = hdTono(col, -k * 5), sl = hdTono(col, k * 5), s = (r() * 1000) | 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const n = hdHash(x >> 1, y >> 1, s) * 0.6 + hdHash(x, y, s + 1) * 0.4;
+    if (n < 0.14) P(sp, x, y); else if (n > 0.88) P(sl, x, y);
+  }
 };
 const pieno = (col, bordo = true) => (P, W, H, g, r) => {
-  rumore(col, 0.05)(P, W, H, g, r);
-  if (bordo) { P(tono(col, 0.7), 0, 0, W, 1); P(tono(col, 0.7), 0, H - 1, W, 1); P(tono(col, 0.75), 0, 0, 1, H); P(tono(col, 0.75), W - 1, 0, 1, H); P(tono(col, 1.15), 1, 1, W - 2, 1); }
+  rumore(col, 0.04)(P, W, H, g, r);
+  if (bordo) {
+    const R = ramp(col);
+    P(R[4], 1, 1, W - 2, 1); P(R[3], 1, 2, W - 2, 1); P(R[3], 1, 1, 1, H - 2);
+    P(R[1], 1, H - 3, W - 2, 2); P(R[1], W - 2, 1, 1, H - 2);
+  }
 };
 const legno = (col, verticale = false) => (P, W, H, g, r) => {
-  P(col, 0, 0, W, H);
-  const n = verticale ? W : H;
+  const n = verticale ? W : H, L = verticale ? H : W;
   for (let i = 0; i < n; i += 4) {
-    const c2 = tono(col, 0.92 + r() * 0.16);
-    verticale ? P(c2, i, 0, 4, H) : P(c2, 0, i, W, 4);
-    verticale ? P(tono(col, 0.7), i, 0, 1, H) : P(tono(col, 0.7), 0, i, W, 1);
+    const R = ramp(hdTono(col, (r() - 0.5) * 0.35));
+    const A = (c, o, a, len, t = 1) => verticale ? P(c, i + o, a, t, len) : P(c, a, i + o, len, t);
+    A(R[2], 0, 0, L, 4); A(hdTono(R[2], 0.45), 0, 0, L); A(hdTono(R[2], -0.7), 3, 0, L);
+    for (let k = 0; k < L / 12; k++) { const a = r() * L; A(hdTono(R[2], -0.4), 1 + (r() < 0.5 ? 0 : 1), a, 3 + r() * 5); }     // venature
+    if (r() < 0.15) { const a = r() * (L - 3); A(R[0], 1, a, 2, 2); A(R[3], 1, a - 1, 1); }                    // nodo
   }
-  for (let i = 0; i < W * H / 14; i++) P(tono(col, 0.85), r() * W, r() * H, verticale ? 1 : 2, verticale ? 2 : 1);
-  P(tono(col, 0.6), 0, H - 1, W, 1); P(tono(col, 0.6), W - 1, 0, 1, H);
+  const R = ramp(col); P(R[0], 0, H - 1, W, 1); P(R[0], W - 1, 0, 1, H);
 };
 
 // pavimenti: dipinti su una tela grande quanto la stanza
@@ -77,11 +88,11 @@ const PAVIMENTI = {
   parquet: (P, W, H, g, r) => {
     for (let y = 0; y < H; y += 4) {
       let x = -Math.floor(r() * 24);
-      while (x < W) { const l = 20 + Math.floor(r() * 18), c = tono('#b07848', 0.9 + r() * 0.18); P(c, x, y, l, 4); P(tono(c, 0.72), x, y + 3, l, 1); P(tono(c, 0.65), x + l - 1, y, 1, 4); x += l; }
+      while (x < W) { const l = 20 + Math.floor(r() * 18), R = ramp(hdTono('#b07848', (r() - 0.5) * 0.7)); P(R[2], x, y, l, 4); P(R[3], x, y, l, 1); P(R[1], x, y + 3, l, 1); P(R[0], x + l - 1, y, 1, 4); if (r() < 0.4) P(R[1], x + 3 + r() * (l - 8), y + 1 + (r() < 0.5 ? 0 : 1), 4, 1); x += l; }
     }
   },
-  cotto: (P, W, H) => { for (let y = 0; y < H; y += 8) for (let x = 0; x < W; x += 8) { const c = tono('#c0643a', 0.9 + ((x * 7 + y * 13) % 5) * 0.04); P(c, x, y, 8, 8); P(tono(c, 0.7), x, y + 7, 8, 1); P(tono(c, 0.75), x + 7, y, 1, 8); P(tono(c, 1.12), x, y, 7, 1); } },
-  scacchi: (P, W, H) => { for (let y = 0; y < H; y += 8) for (let x = 0; x < W; x += 8) { const b = ((x + y) / 8) % 2; P(b ? '#2c2a30' : '#e8e0d0', x, y, 8, 8); P(b ? '#3a3840' : '#f4eee0', x, y, 7, 1); } },
+  cotto: (P, W, H) => { for (let y = 0; y < H; y += 8) for (let x = 0; x < W; x += 8) { const R = ramp(hdTono('#c0643a', (((x * 7 + y * 13) % 5) - 2) * 0.12)); P(R[2], x, y, 8, 8); P(R[3], x, y, 7, 1); P(R[3], x, y, 1, 7); P(R[4], x, y); P(R[1], x + 1, y + 6, 6, 1); P(R[0], x, y + 7, 8, 1); P(R[0], x + 7, y, 1, 8); } },
+  scacchi: (P, W, H) => { for (let y = 0; y < H; y += 8) for (let x = 0; x < W; x += 8) { const R = ramp(((x + y) / 8) % 2 ? '#34323a' : '#e4dccb'); P(R[2], x, y, 8, 8); P(R[3], x, y, 7, 1); P(R[3], x, y, 1, 7); P(R[1], x + 1, y + 7, 7, 1); P(R[1], x + 7, y + 1, 1, 7); } },
   cemento: (P, W, H, g, r) => {
     rumore('#8a8a84', 0.08)(P, W, H, g, r);
     for (let x = 0; x < W; x += 48) P('#76766f', x, 0, 1, H);
@@ -104,7 +115,7 @@ const MURI = {
   velluto: (P, W, H) => { P('#4a1a3e', 0, 0, W, H); for (let x = 0; x < W; x += 6) P('#5a2450', x, 0, 2, H); P('#c8a040', 0, Math.round(H * 0.62), W, 1); P('#2a0e24', 0, H - 4, W, 4); },   // Night Paradiso
   lamiera2: (P, W, H, g, r) => { MURI.lamiera(P, W, H); for (let i = 0; i < W / 4; i++) P('rgba(150,80,30,0.35)', r() * W, r() * H, 2, 3 + r() * 8); },
 };
-function zoccolo(P, W, H, col, h) { P(col, 0, H - h, W, h); P(tono(col, 1.25), 0, H - h, W, 1); P(tono(col, 0.7), 0, H - 1, W, 1); }
+function zoccolo(P, W, H, col, h) { const R = ramp(col); P(R[2], 0, H - h, W, h); P(R[4], 0, H - h, W, 1); P(R[3], 0, H - h + 1, W, 1); P(R[1], 0, H - 3, W, 2); P(R[0], 0, H - 1, W, 1); }
 
 // facce dei mobili
 const F = {
@@ -455,7 +466,19 @@ export class Interni {
   _mobile(m, c, seme) {
     const M = t => new THREE.MeshLambertMaterial({ map: t });
     const C = (col) => new THREE.MeshLambertMaterial({ color: col });
+    // contorno scuro sui bordi di ogni faccia: i mobili si staccano come gli sprite HD
+    const orla = draw => (P, W, H2, g, r) => {
+      draw(P, W, H2, g, r);
+      if (W < 4 || H2 < 4) return;
+      const im = g.getImageData(0, 0, W, H2), dd = im.data;
+      const scurisci = (x, y, k) => { const i = (y * W + x) * 4; dd[i] *= k; dd[i + 1] *= k; dd[i + 2] *= k * 1.06; };
+      for (let x = 0; x < W; x++) { scurisci(x, 0, 0.55); scurisci(x, H2 - 1, 0.5); }
+      for (let y = 1; y < H2 - 1; y++) { scurisci(0, y, 0.55); scurisci(W - 1, y, 0.5); }
+      g.putImageData(im, 0, 0);
+    };
     const blocco = (w, h, d, { fronte, lato, sopra, colore = '#8a6a42' } = {}) => {
+      fronte = fronte && orla(fronte); lato = lato && orla(lato); sopra = sopra && orla(sopra);
+      if (!fronte) fronte = orla(pieno(colore)); if (!lato) lato = orla(pieno(tono(colore, 0.85))); if (!sopra) sopra = orla(pieno(tono(colore, 1.1)));
       const L = lato ? M(tex(d, h, lato, seme)) : M(tex(d, h, pieno(tono(colore, 0.85)), seme));
       const T = sopra ? M(tex(w, d, sopra, seme + 1)) : M(tex(w, d, pieno(tono(colore, 1.1)), seme + 1));
       const Fm = fronte ? M(tex(w, h, fronte, seme + 2)) : M(tex(w, h, pieno(colore), seme + 2));
@@ -519,7 +542,7 @@ export class Interni {
       case 'pianta': {
         o = gruppo();
         const vaso = blocco(w, 0.4, d, { colore: '#b8603a' }); vaso.position.y = 0.2; o.add(vaso);
-        const fo = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex(1, 1.1, (P, W, H2, g, r) => { for (let i = 0; i < 60; i++) { const x = W / 2 + (r() - 0.5) * W * 0.9, y = H2 * 0.95 - r() * H2 * 0.9; P(r() < 0.5 ? '#3a8a3a' : '#2a6a2a', x, y, 2, 3); } P('#4a3a2a', W / 2, H2 - 4, 1, 4); }, seme), alphaTest: 0.5 }));
+        const fo = new THREE.Sprite(new THREE.SpriteMaterial({ map: PIX.toTexture(HDO.piantaFoglie(seme)), alphaTest: 0.5 }));
         fo.center.set(0.5, 0); fo.scale.set(1, 1.1, 1); fo.position.y = 0.35; o.add(fo);
         this.game.world.spriteMats.add(fo.material);
         break;

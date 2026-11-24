@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import * as HDT from './hd/terreno.js';
 import * as HDO from './hd/oggetti.js';
+import * as HDK from './hd/kit.js';
 
 export const PX = 16; // pixel per unità di mondo (1 casella = 16 px)
 
@@ -232,13 +233,13 @@ export function bubble(text) {
 
 // Insegna con testo, per gli edifici.
 export function sign(text) {
-  const w = Math.max(32, text.length * 6 + 8);
-  const [c, g] = makeCanvas(w, 12);
-  g.fillStyle = '#6e4826'; g.fillRect(0, 0, w, 12);
-  g.fillStyle = '#9a6a3a'; g.fillRect(1, 1, w - 2, 10);
-  g.fillStyle = '#fff3c8'; g.font = 'bold 9px monospace'; g.textBaseline = 'middle'; g.textAlign = 'center';
-  g.fillText(text, w / 2, 6.5);
-  return c;
+  // insegna di legno in stile HD, scritta col carattere pixel di src/hd/kit.js
+  const w = Math.max(32, HDK.textWidth(text) + 10), d = HDK.pen(w, 12), R = HDK.ramp('#7a4a26');
+  d.P(R[0], 0, 0, w, 12); d.P(R[2], 1, 1, w - 2, 10); d.P(R[3], 1, 1, w - 2, 1); d.P(R[1], 1, 9, w - 2, 2);
+  for (let x = 6; x < w - 4; x += 9) d.P(R[1], x, 2, 3, 1);
+  d.P('#c8c0a8', 2, 2); d.P('#c8c0a8', w - 3, 2); d.P('#c8c0a8', 2, 8); d.P('#c8c0a8', w - 3, 8);
+  HDK.text(d, text, (w - HDK.textWidth(text)) >> 1, 3, '#fff0c8', R[0]);
+  return d.c;
 }
 
 // ---------- Texture delle pareti ----------

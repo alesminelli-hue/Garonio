@@ -56,6 +56,14 @@ export function cespuglio(fiori = false) {
   return outline(d.c);
 }
 
+// Fogliame di una pianta d'appartamento (il vaso lo fa il mobile 3D)
+export function piantaFoglie(seed = 1) {
+  const d = pen(16, 18);
+  d.P('#4a3a2a', 7, 12, 2, 6);
+  chioma(d, [[8, 13, 6, 4], [5, 9, 4, 4], [11, 8, 4, 4], [8, 5, 4, 4]], '#3a8a3a', seed + 90);
+  return outline(d.c);
+}
+
 export function canne() {
   const d = pen(16, 22);
   const G = ramp('#6a8c3a');
