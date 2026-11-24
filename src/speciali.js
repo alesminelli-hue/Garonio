@@ -1,6 +1,6 @@
 // Incontri speciali (GDD capitolo 25):
 //  - Il Mostro della Palude: ogni salto sulla riva del laghetto conta; al centesimo esce lui (boss livello 30,
-//    dati in src/data/boss.js → BOSS.palude, sprite in src/sprite_loot.js). Vinto o no, il contatore riparte.
+//    dati in src/data/boss.js → BOSS.palude, sprite «zombie» del foglio personaggi). Vinto o no, il contatore riparte.
 //  - Babbo Natale smemorato: certe sere alle 20 compare nel bosco a sud (punto bianco sulla minimappa).
 //    «Mi segua, nonno» e ti segue; al Night Welcome, dal catalogo di Sandokan, gli paghi una ragazza:
 //    in base a chi scegli si ricorda più o meno chi è e ti fa un regalo. Con Madame Svetlana torna Babbo Natale
@@ -13,7 +13,7 @@
 // Eventi: emette  mostroPalude { esito }, babboNatale { ragazza }
 // Stato: s.flags.speciali = { salti, paludeVinto, babbo: { stato, giorno, x, z, ultimo, svetlana, volte } }
 import * as PIX from './pixel.js';
-import { babboFrames } from './sprite_loot.js';
+import { babboFrames, babboMisure } from './sprite_loot.js';
 import { PALUDE, BABBO } from './data/speciali.js';
 import { BOSS, TESTI_BOSS as T } from './data/boss.js';
 import { PARADISO } from './data/vita.js';
@@ -131,7 +131,7 @@ export class Speciali {
   _crea(x, z) {
     const W = this.game.world;
     if (this.babbo) this.babbo.actor.remove();
-    const actor = W.actor(babboFrames(), { w: 1.56, h: 2.19, shadow: 0.4 });
+    const fr = babboFrames(), actor = W.actor(fr, { ...babboMisure(), shadow: 0.35 });
     actor.group.position.set(x, 0, z);
     this.babbo = { actor, x, z, dir: -1, walkT: 0 };
     window.__garonio?.minimap?.setMarker('babbo', x, z, '#ffffff');

@@ -66,4 +66,6 @@ export const ATLANTE = {
   cameriera2: [453, 150, 33, 43, 0.953],
   cameriere: [0, 202, 35, 43, 0.94],
   garzone_cuffie: [36, 202, 31, 44, 0.982],
+  babbo_natale: [68, 202, 40, 48, 1.067],
+  zombie: [109, 202, 29, 48, 1.06],
 };

@@ -646,7 +646,7 @@ BOSS.palude = {
   tana: { luogo: 'laghetto' },
   intro: "Il Mostro della Palude allunga le braccia piene di alghe. Puzza di fosso, di carpa e di 1974.",
   nemico: {
-    name: 'Il Mostro della Palude', size: 11, sprite: { fn: 'mostroPalude' }, mul: { hp: 1.4, atk: 1.1, def: 1.2, spd: 0.85, xp: 1.3 }, fuga: 'torna sott\'acqua borbottando. Stanotte non dormirai.',
+    name: 'Il Mostro della Palude', size: 11, sprite: U('zombie', { skin: '#6a9a4a', eyes: 'angry' }), mul: { hp: 1.4, atk: 1.1, def: 1.2, spd: 0.85, xp: 1.3 }, fuga: 'torna sott\'acqua borbottando. Stanotte non dormirai.',
     moves: [
       { name: 'Abbraccio fangoso', pow: 1.3, stress: 3, w: 3 },
       { name: 'Alito di fosso', pow: 0.6, stress: 7, w: 2, line: 'Un alito che sa di carpa morta e uova sode. Garonio lacrima.' },
