@@ -233,8 +233,8 @@ Le tracce originali stanno in `assets/music/`. La **mappa centrale** è `assets/
 
 | Scena (nel codice) | Traccia | Quando suona |
 |---|---|---|
-| `intro` | **Grand Theft Tractor** (`intro.mp3`) | Schermata del titolo e prologo |
-| `base` / `notte` / `bar` | **Morning in the Valleys** (`sottofondo.mp3`), alternato a Grand Theft Tractor | A piedi: giornata, sera e bar |
+| `intro` | **Grand Theft Tractor**, due versioni a turno (`intro.mp3`, `intro_2.mp3`) | Schermata del titolo e prologo |
+| `base` / `notte` / `bar` | **Morning in the Valleys** (`sottofondo.mp3`), alternato alle due versioni di Grand Theft Tractor | A piedi: giornata, sera e bar |
 | `guida` | **📻 Radio Bassa FM:** tutte le canzoni (Il Conte della Bassa, Canaglia, Sunset Truciolone, Pappa Garonio, Mister Scarogna, Palestra Delirio, Boborriello, Rabbia incontrollata) in ordine sparso, col titolo che compare in un avviso | Alla guida di Vespa, Punto o trattore |
 | `rabbia` / `nemico` / `combattimento` | musichetta 8‑bit (lista vuota) | Stress oltre 85, nemici, scontri |
 

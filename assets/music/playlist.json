@@ -1,20 +1,27 @@
 {
   "_info": "MAPPA CENTRALE DELLE MUSICHE. Ogni scena punta a uno o più file di questa cartella. Il codice chiama audio.setScene('nome-scena'): per cambiare una musica si modifica solo questo file. Se una scena ha più tracce, suonano a rotazione nell'ordine scritto (a fine traccia parte la successiva). Lista vuota o file che non c'è = musichetta 8-bit di riserva.",
-  "_slot": "Le canzoni si sentono solo alla RADIO dei mezzi (scena 'guida', in ordine sparso) e al juke-box del bar. A piedi suona il sottofondo (sottofondo.mp3, «Morning in the Valleys»), alternato ogni tanto al tema del titolo (intro.mp3, «Grand Theft Tractor»). Per un'altra versione dell'intro basta aggiungere il file e scriverlo nelle liste 'intro' e 'base'/'notte'/'bar'.",
+  "_slot": "Le canzoni si sentono solo alla RADIO dei mezzi (scena 'guida', in ordine sparso) e al juke-box del bar. A piedi suona il sottofondo (sottofondo.mp3, «Morning in the Valleys»), alternato ogni tanto al tema del titolo «Grand Theft Tractor» (intro.mp3 e intro_2.mp3, a turno). Per un'altra versione dell'intro basta aggiungere il file e scriverlo nelle liste 'intro' e 'base'/'notte'/'bar'.",
   "intro": [
-    "intro.mp3"
+    "intro.mp3",
+    "intro_2.mp3"
   ],
   "base": [
     "sottofondo.mp3",
-    "intro.mp3"
+    "intro.mp3",
+    "sottofondo.mp3",
+    "intro_2.mp3"
   ],
   "notte": [
     "sottofondo.mp3",
-    "intro.mp3"
+    "intro.mp3",
+    "sottofondo.mp3",
+    "intro_2.mp3"
   ],
   "bar": [
     "sottofondo.mp3",
-    "intro.mp3"
+    "intro.mp3",
+    "sottofondo.mp3",
+    "intro_2.mp3"
   ],
   "rabbia": [],
   "nemico": [],
@@ -39,6 +46,7 @@
     "boborriello_re_della_notte.mp3": "Boborriello, re della notte",
     "rabbia_incontrollata.mp3": "Rabbia incontrollata",
     "intro.mp3": "Grand Theft Tractor",
-    "sottofondo.mp3": "Morning in the Valleys"
+    "sottofondo.mp3": "Morning in the Valleys",
+    "intro_2.mp3": "Grand Theft Tractor (seconda versione)"
   }
 }
