@@ -19,16 +19,16 @@ jobs:
   apk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v3
 
+      # l'Android SDK è già installato sul runner (ANDROID_HOME)
       - name: Prepara il progetto Android
         run: ./app-android/prepara.sh ${{ github.run_number }} "1.0.${{ github.run_number }}"
 
