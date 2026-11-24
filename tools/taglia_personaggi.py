@@ -37,11 +37,15 @@ USATI = {
     'uomo_zaino':        (1, 4, 3),   # il Postino
     'ubriaco_birra':     (1, 4, 4),   # Tarcisio
     'hippie':            (1, 4, 5),   # il Bubetto
+    'cuoco':             (1, 0, 3),   # Ottavio delle uova (mercato)
+    'pizzaiolo':         (1, 0, 4),   # Gilberto «Salamella» (mercato)
+    'grembiule_verde':   (1, 0, 5),   # la Rina della verdura (mercato)
     'maiale':            (1, 5, 2),
     'gallina':           (1, 5, 3),
     'gatto':             (1, 5, 6),
     'cane':              (1, 5, 7),
     # foglio 2
+    'contadino_salopette': (2, 0, 0), # il Sor Bortolo (mercato)
     'contadino_patate':  (2, 0, 1),   # il Patata
     'meccanico':         (2, 0, 2),   # Zeno
     'operaio_gilet':     (2, 0, 3),   # operai del cantiere
@@ -51,6 +55,7 @@ USATI = {
     'boss_sigaro':       (2, 1, 8),   # Mister Mountain
     'escursionista':     (2, 2, 7),   # il turista tedesco
     'cowboy_fucile':     (2, 2, 8),   # Mister Frank
+    'venditore':         (2, 1, 3),   # Nando delle pentole (mercato)
     'completo_cravatta': (2, 3, 4),   # il Consulente
     'anziano_coppola':   (2, 3, 6),   # il Bepi
     'nonna':             (2, 3, 7),   # la Pina
