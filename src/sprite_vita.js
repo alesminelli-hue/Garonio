@@ -3,6 +3,7 @@
 // Scala: 16 pixel = 1 casella (PIX.PX). Gli sprite di lato guardano a destra: per la sinistra si usa mirror().
 import * as PIX from './pixel.js';
 import * as HDM from './hd/mezzi.js';
+import * as HDB from './hd/bestiario.js';
 
 const INK = '#1a1420';
 export function outline(c, color = INK) {
@@ -80,34 +81,9 @@ export function gatto(col, frame = 0) {   // 0/1 passo, 2 dorme
     P(shade(col, 0.7), 3, 8, 1, 2 - frame); P(shade(col, 0.7), 5, 8, 1, 1 + frame); P(shade(col, 0.7), 7, 8, 1, 2 - frame); P(shade(col, 0.7), 9, 8, 1, 1 + frame);
   });
 }
-export function corvo(frame = 0) {   // 0 a terra, 1 becca, 2/3 vola
-  return disegna(12, 10, P => {
-    if (frame >= 2) {
-      const up = frame === 2;
-      P('#1e1e26', 4, 5, 5, 2); P('#1e1e26', 8, 4, 3, 2); P('#e0a020', 11, 5, 1, 1);
-      if (up) { P('#2a2a34', 2, 1, 4, 4); P('#2a2a34', 6, 1, 2, 4); } else { P('#2a2a34', 1, 6, 5, 3); P('#2a2a34', 6, 6, 2, 3); }
-      return;
-    }
-    const b = frame === 1 ? 1 : 0;
-    P('#1e1e26', 2, 4, 6, 4); P('#2a2a34', 1, 5, 2, 2);
-    P('#1e1e26', 7, 2 + b, 3, 3); P('#e0a020', 10, 3 + b * 2, 2, 1); P('#f0f0f0', 8, 3 + b, 1, 1);
-    P('#e0a020', 4, 8, 1, 2); P('#e0a020', 6, 8, 1, 2);
-  });
-}
-export function anatra(frame = 0) {
-  return disegna(14, 10, P => {
-    P('#f4f0e6', 2, 4, 9, 4); P('#d8d0c0', 2, 6, 8, 2); P('#f4f0e6', 0, 3, 3, 2);
-    P('#2a8a4a', 9, 1, 4, 4); P('#f0a020', 13, 3, 1, 1); P(INK, 11, 2, 1, 1);
-    P('#8ad0ff', 1, 8 + frame, 11, 1);           // increspatura dell'acqua
-  });
-}
-export function barboncino(frame = 0) {
-  return disegna(11, 9, P => {
-    P('#f4f0f4', 2, 3, 6, 3); P('#f4f0f4', 7, 0, 4, 4); P('#f4f0f4', 0, 1 + frame, 2, 2);
-    P(INK, 9, 1, 1, 1); P('#e05080', 7, 4, 3, 1);
-    P('#d0c8d0', 2, 6, 1, 3 - frame); P('#d0c8d0', 7, 6, 1, 2 + frame);
-  });
-}
+export const corvo = HDB.corvo; // HD fantasy (src/hd/bestiario.js)
+export const anatra = HDB.anatra; // HD fantasy (src/hd/bestiario.js)
+export const barboncino = HDB.barboncino; // HD fantasy (src/hd/bestiario.js)
 export function cane(frame = 0, pelo = '#b89060', scuro = '#6a4a2a') {
   const spr = PIX.animale('cane', frame, 22, 15, { tinta: pelo }); if (spr) return spr;
   return disegna(22, 15, P => {

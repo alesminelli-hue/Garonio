@@ -15,6 +15,7 @@
 // c.addEnemy(id, { noXp }) aggiunge un nemico a scontro in corso (es. il Re dei Ratti chiama rinforzi).
 import * as PIX from './pixel.js';
 import * as HDA from './hd/animali.js';
+import * as HDB from './hd/bestiario.js';
 import { MOSSE_ARMI, MOSSE_GARONIO, NEMICI_PICCOLI, OGGETTI } from './data/armi.js';
 
 const rand = (a, b) => a + Math.random() * (b - a);
@@ -49,30 +50,8 @@ function outline(c, color = '#1a1420') {
   return c;
 }
 
-function fox(frame = 0) {
-  const [c, g] = PIX.makeCanvas(22, 14);
-  const P = (col, x, y, w, h) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
-  P('#d0661e', 0, 5 - frame, 6, 3); P('#f4ead8', 0, 5 - frame, 2, 2);   // coda
-  P('#d8702a', 5, 5, 11, 5); P('#f4ead8', 8, 8, 6, 2);                  // corpo e pancia
-  P('#d8702a', 15, 2, 5, 5); P('#f4ead8', 17, 5, 4, 2);                 // testa e muso
-  P('#d8702a', 15, 0, 2, 2); P('#d8702a', 18, 0, 2, 2);                 // orecchie
-  P('#1a1420', 18, 3, 1, 1); P('#1a1420', 21, 5, 1, 1);                 // occhio e naso
-  P('#3a2418', 6, 10, 2, 3 - frame); P('#3a2418', 13, 10, 2, 2 + frame); // zampe
-  return outline(c);
-}
-
-function boar(frame = 0) {
-  const [c, g] = PIX.makeCanvas(26, 17);
-  const P = (col, x, y, w, h) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
-  P('#4a3a2e', 2, 4, 17, 9); P('#5c4a3a', 3, 4, 14, 3);                 // corpo
-  for (let x = 4; x < 17; x += 3) P('#2e241c', x, 3, 1, 2);            // setole
-  P('#4a3a2e', 17, 5, 7, 7); P('#7a5e4a', 22, 8, 3, 3);                 // testa e grugno
-  P('#f4ead8', 21, 10, 1, 3); P('#f4ead8', 24, 10, 1, 2);               // zanne
-  P('#e04040', 19, 6, 1, 1);                                            // occhio cattivo
-  P('#2e241c', 0, 6, 2, 1);                                             // codina
-  P('#2e241c', 4, 13, 3, 3 - frame); P('#2e241c', 14, 13, 3, 2 + frame);
-  return outline(c);
-}
+// volpe e cinghiale HD in stile fantasy (src/hd/bestiario.js)
+const fox = HDB.volpe, boar = HDB.cinghiale;
 
 const DRUNK = { sprite: 'ciccione', w: 18, h: 25, skin: '#e89a80', hair: '#8a8a8a', hairStyle: 'bald', shirt: '#7a8a3a', pants: '#4a4a4a', boots: '#222', belly: true, mustache: '#6a6a6a', eyes: 'sleepy' };
 
@@ -102,7 +81,7 @@ export const ENEMIES = {
     ],
   },
   volpe: {
-    name: 'Volpe', hp: 24, atk: 8, def: 2, spd: 11, xp: 10, money: 0, size: 3.4,
+    name: 'Volpe', hp: 24, atk: 8, def: 2, spd: 11, xp: 10, money: 0, size: 3.4, mappa: 22 / 16,
     frames: () => left([fox(0), fox(1)]),
     moves: [
       { name: 'Morso rapido', pow: 1, stress: 1, w: 3 },
@@ -111,7 +90,7 @@ export const ENEMIES = {
     ],
   },
   cinghiale: {
-    name: 'Cinghiale', hp: 52, atk: 12, def: 5, spd: 3, xp: 22, money: 0, size: 4.6,
+    name: 'Cinghiale', hp: 52, atk: 12, def: 5, spd: 3, xp: 22, money: 0, size: 4.6, mappa: 26 / 16,
     frames: () => left([boar(0), boar(1)]),
     moves: [
       { name: 'Carica', pow: 1.6, stress: 3, w: 2 },
