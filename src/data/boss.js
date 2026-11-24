@@ -671,6 +671,38 @@ BOSS.palude = {
   scappato: "Garonio scappa a gambe levate. Il Mostro lo guarda andare via e torna sott'acqua. Per richiamarlo serviranno altri cento salti.",
 };
 
+// ---------- Parco Oglio: Boss MM, il capo delle guardie (non è una missione: esce se gli rubi il cappello, src/parco.js) ----------
+// Livello 32, con una guardia (livello 30) al fianco. Si può rifare; il bottino grosso solo la prima volta.
+BOSS.bossmm = {
+  nome: 'Boss MM', lv: 32, zona: 'Parco Oglio', icona: '🎩', senzaMissione: true,
+  titolo: 'Il cappello di Boss MM',
+  tana: { luogo: 'bosco notte' },
+  intro: "Boss MM si sistema i baffi, soffia nel fischietto e fa schioccare le dita. «Tarantola! Brambilla! Uno dei due, insomma!» Ma le guardie dormono: è una questione tra lui e te.",
+  nemico: {
+    name: 'Boss MM', size: 10.5, sprite: U('soldato_capo', { eyes: 'angry' }), mul: { hp: 1.05, atk: 1.05, def: 1.1, spd: 1.0, xp: 1.4 }, fuga: 'si rimette il fischietto in tasca. «Ci rivedremo al prossimo verbale.»',
+    moves: [
+      { name: 'Manganello d\'ordinanza', pow: 1.3, stress: 3, w: 3 },
+      { name: 'FISCHIETTO!', pow: 0.3, stress: 9, w: 1.5, stordisce: true, line: 'FIIIIIIIIIII! Garonio ha le orecchie che fischiano. Non capisce più niente!' },
+      { name: 'Verbale definitivo', pow: 0, stress: 14, w: 1, line: '«Danneggiamento, furto, sguardo insolente. Totale: tutto lo stipendio di tuo padre.»' },
+      { name: 'Testata col berretto', pow: 1.5, stress: 3, w: 1 },
+    ],
+  },
+  mecc: {
+    carica: { ogni: 4, mossa: { name: 'IL SALTO DELLA SAGRA DELL\'84', pow: 2.4, stress: 10, line: 'Boss MM salta come alla sagra dell\'84 e atterra sulla schiena di Garonio!' }, testo: 'Boss MM si sgranchisce le gambe e fischietta un valzer... (Difenditi!)' },
+    furia: { soglia: 0.35, atk: 1.15, testo: 'Boss MM si accorge di non avere il cappello. Diventa viola. ADESSO è arrabbiato.' },
+    cura: { soglia: 0.3, quanto: 0.1, volte: 1, testo: 'Boss MM beve un sorso dalla borraccia d\'ordinanza (non è acqua). Si rimette in forze!' },
+  },
+  bottino: { oggetti: { pepita: 2, trofeoBoss: 1 } },
+  bottinoRipeti: { oggetti: { pepita: 1 } },
+  vittoria: [
+    { testo: "Boss MM si siede su un ceppo, si slaccia il colletto e guarda il suo cappello sotto il tuo braccio." },
+    { chi: 'bossmm', nome: 'Boss MM', testo: "Dillo al Camper... dillo a quel vecchio caprone che la Ornella, alla sagra dell'84, ha ballato con me perché lui pestava i piedi. Non per il cappello." },
+  ],
+  vittoriaRipeti: [{ testo: "Boss MM sospira: «Ancora tu. Il cappello te lo potevo anche prestare, sai?»" }],
+  sconfitta: "Le guardie ti portano fuori dal parco di peso. Boss MM si rimette il cappello, lo spolvera e scrive un verbale lunghissimo.",
+  scappato: "Garonio scappa nel buio. Boss MM fischia per un minuto intero, poi torna al casotto a rimettersi il cappello.",
+};
+
 // Tirapiedi dei boss: compaiono solo negli scontri coi boss (non in giro per la mappa).
 // Statistiche a livello "cons", poi crescono come tutti i nemici (src/data/nemici.js → scalaNemico).
 export const TIRAPIEDI = {

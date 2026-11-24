@@ -34,6 +34,9 @@ export const BABBO = {
   probabilita: 0.3,           // ogni sera
   daGiorno: 3,                // non prima del giorno 3
   pausa: 6,                   // giorni prima di poterlo rincontrare
+  // d'inverno (stagione di src/bestie.js) il nonnino si perde più spesso e porta regali più grossi
+  inverno: { probabilita: 0.6, pausa: 3, extra: { soldi: 120, oggetti: { biscotti: 2, zabaione: 1 } },
+    arrivo: "🔔❄️ Nevica sul bosco a sud e arriva un tintinnio di campanelli... È inverno: il nonnino smemorato è tornato (punto bianco sulla minimappa)." },
   arrivo: "🔔 Dal bosco a sud arriva un tintinnio di campanelli... (c'è qualcuno di strano tra gli alberi: punto bianco sulla minimappa)",
   incontro: [
     { testo: "Tra gli alberi c'è un vecchio con la barba bianca lunghissima, il vestito rosso e un cappello col pon pon. Si guarda intorno spaesato." },

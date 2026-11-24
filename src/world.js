@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import * as PIX from './pixel.js';
 import * as HDE from './hd/edifici.js';
 import * as HDO from './hd/oggetti.js';
-import { MAP_W, MAP_H, AREAS, BUILDINGS, ZONES, ROADS, PROPS, PLACES, CANAL, buildTileGrid, inZone } from './map.js';
+import { MAP_W, MAP_H, AREAS, BUILDINGS, ZONES, ROADS, PROPS, PLACES, CANAL, PONTI_FIUME, buildTileGrid, inZone } from './map.js';
 
 // I dati della mappa (luoghi, strade, zone) stanno in map.js.
 export { MAP_W, MAP_H, AREAS, BUILDINGS } from './map.js';
@@ -68,7 +68,7 @@ export class World {
       for (let z = zn.z0; z < zn.z1; z++) {
         let a = null;
         for (let x = zn.x0; x <= zn.x1; x++) {
-          const on = x < zn.x1 && inZone(zn, x, z);
+          const on = x < zn.x1 && inZone(zn, x, z) && this.grid[z]?.[x] !== 'b';   // i ponti dei sentieri restano liberi
           if (on && a === null) a = x;
           if (!on && a !== null) { this.solids.push({ x0: a + 0.15, z0: z + 0.15, x1: x - 0.15, z1: z + 0.85 }); a = null; }
         }
@@ -263,6 +263,17 @@ export class World {
         p.position.set(x, 0.3, CANAL.z0 - 0.5 + i); this.scene.add(p);
       }
     }
+    // ponti sul fiume Oglio
+    for (const br of PONTI_FIUME) for (const x of [br.x0 - 0.05, br.x1 + 0.05]) {
+      const len = br.z1 - br.z0 + 1;
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, len), mat);
+      rail.position.set(x, 0.55, (br.z0 + br.z1) / 2); this.scene.add(rail);
+      for (let i = 0; i <= len; i += 1) {
+        const p = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.6, 0.14), mat);
+        p.position.set(x, 0.3, br.z0 - 0.5 + i); this.scene.add(p);
+      }
+      this.solids.push({ x0: x - 0.1, z0: br.z0 - 0.4, x1: x + 0.1, z1: br.z1 + 0.4 });
+    }
   }
 
   _makeTrees() {
@@ -304,7 +315,8 @@ export class World {
     // (i pioppi del canale stanno a due caselle e mezza dall'acqua: fra argine e alberi deve passare un trattore che gira)
     for (let x = 4; x < MAP_W - 2; x += 3) { pop(x, 50); pop(x, 58); pop(x, 31); pop(x, 8); }
     // boschetti sparsi
-    const groves = [[10, 72, 6], [50, 92, 5], [100, 85, 7], [150, 90, 6], [105, 40, 5], [45, 38, 4], [140, 42, 5], [12, 22, 5], [95, 70, 3]];
+    const groves = [[10, 72, 6], [50, 92, 5], [100, 85, 7], [150, 90, 6], [105, 40, 5], [45, 38, 4], [140, 42, 5], [12, 22, 5], [95, 70, 3],
+      [52, 106, 6], [80, 104, 7], [96, 107, 6], [128, 107, 7], [148, 104, 6], [88, 93, 3], [140, 93, 3]];   // gli ultimi: il bosco del Parco Oglio
     for (const [gx, gz, r] of groves) for (let i = 0; i < r * 3; i++) oak(gx + (R() - 0.5) * r * 2, gz + (R() - 0.5) * r * 2);
     for (let i = 0; i < 70; i++) oak(2 + R() * (MAP_W - 4), 8 + R() * (MAP_H - 10));
     // cespugli

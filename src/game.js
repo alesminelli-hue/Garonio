@@ -16,6 +16,10 @@ import { Personaggi } from './png.js';
 import { Secondarie } from './secondarie.js';
 import { Alberi } from './alberi.js';
 import { Speciali } from './speciali.js';
+import { Parco } from './parco.js';
+import { Stalla } from './stalla.js';
+import { Collezione } from './collezione.js';
+import { Banco } from './banco.js';
 import { Menu } from './menu.js';
 import { Officina } from './officina.js';
 import { Vigilessa } from './vigilessa.js';
@@ -208,6 +212,12 @@ export class Game {
     // alberi col tesoro (scuoti l'albero), Mostro della Palude e Babbo Natale smemorato (src/alberi.js, src/speciali.js)
     this.alberi = new Alberi(this); this.alberi.init();
     this.speciali = new Speciali(this); this.speciali.init();
+    // Parco Oglio: mostri della notte, coppiette, guardie, Boss MM e il Vecchio Camper (src/parco.js)
+    this.parco = new Parco(this); this.parco.init();
+    // stalla, completi e album del bottino, Banco del Gigante in officina (src/stalla.js, src/collezione.js, src/banco.js)
+    this.stalla = new Stalla(this); this.stalla.init();
+    this.collezione = new Collezione(this); this.collezione.init();
+    this.banco = new Banco(this); this.banco.init();
 
     if (!this.s.introDone) await this.intro();
     else if (this.s.rifaiGiornata) { // giornata ricominciata da capo (vedi _rifaiGiornata)

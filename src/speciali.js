@@ -108,8 +108,9 @@ export class Speciali {
     const b = this.st.babbo, s = this.s;
     if (ora === 0 && b.stato) return this._via(b.stato === 'segue');
     if (ora !== BABBO.ora || b.stato || s.day < BABBO.daGiorno) return;
-    if (b.ultimo != null && s.day - b.ultimo < BABBO.pausa) return;
-    if (Math.random() < BABBO.probabilita) this.babboAppare();
+    const inv = this._inverno() ? BABBO.inverno : null;
+    if (b.ultimo != null && s.day - b.ultimo < (inv?.pausa ?? BABBO.pausa)) return;
+    if (Math.random() < (inv?.probabilita ?? BABBO.probabilita)) this.babboAppare();
   }
 
   babboAppare(x, z) {
@@ -123,10 +124,12 @@ export class Speciali {
     }
     Object.assign(b, { stato: 'bosco', giorno: this.s.day, x, z });
     this._crea(x, z);
-    this.game.ui.toast(BABBO.arrivo);
+    this.game.ui.toast(this._inverno() ? BABBO.inverno.arrivo : BABBO.arrivo);
     this.game.audio.sfx('level');
     return true;
   }
+
+  _inverno() { return this.game.bestie?.stagione?.() === 'inverno'; }
 
   _crea(x, z) {
     const W = this.game.world;
@@ -212,7 +215,7 @@ export class Speciali {
     g.audio.sfx('coin');
     const premio = scelta === 'svetlana' && b.svetlana ? R.premioRipeti : R.premio;
     if (scelta === 'svetlana') b.svetlana = true;
-    const cose = this._dai(premio);
+    const cose = [...this._dai(premio), ...(this._inverno() ? this._dai(BABBO.inverno.extra) : [])];
     b.ultimo = s.day; b.volte = (b.volte || 0) + 1;
     this._via(false);
     g.audio.sfx('level');

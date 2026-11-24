@@ -58,6 +58,7 @@ export class Alberi {
     g.bersagli.push(() => this.bersaglio());
     g.moduli.push({ animate: dt => this.animate(dt) });
     g.pilot?.sezione?.('🌳 Alberi col tesoro', () => this._prova());
+    setTimeout(() => this._segnaGazza(), 500);
   }
 
   // alberi col tesoro di oggi: estratti col giorno come seme, così restano gli stessi fino a domattina
@@ -75,7 +76,8 @@ export class Alberi {
     let best = -1, bd = D.raggio;
     for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
       for (const i of this.griglia.get(`${gx + dx},${gz + dz}`) || []) {
-        const a = this.lista[i], d = Math.hypot(P.x - a.x, P.z - a.z);
+        const a = this.lista[i]; if (a.tagliato) continue;
+        const d = Math.hypot(P.x - a.x, P.z - a.z);
         if (d < bd) { bd = d; best = i; }
       }
     }
@@ -95,6 +97,7 @@ export class Alberi {
     if (!a) return;
     this.tremano.push({ a, x0: a.spr.position.x, t: 0.7 });
     g.audio.sfx('blip'); g.actT = 0.5; g.actName = 'attack';
+    if (st.gazza?.i === i) return this._ritrova(a);
     if (st.scossi.includes(i) && !forza) return g.ui.toast(pick(D.testi.giaScosso));
     st.scossi.push(i);
     s.tired = clamp(s.tired + D.fatica, 0, 100);
@@ -119,6 +122,7 @@ export class Alberi {
         g.ui.toast(fill(D.testi.pignaInTesta, scelta), 'bad');
         break;
       case 'gazza':
+        if (Math.random() < D.testi.gazzaLadra) { this._gazzaLadra(i); break; }
         g.ui.toast(D.testi.gazza, 'bad');
         setTimeout(() => { if (!g.combat.active) g.combat.start({ enemies: ['gazza'], place: 'campo', intro: D.testi.gazza }); }, 400);
         break;
@@ -132,13 +136,52 @@ export class Alberi {
     g.emit('alberoScosso', { tesoro, cosa: scelta.tipo, id: scelta.id });
   }
 
+  // ---------- La gazza ladra ----------
+  // ruba un oggetto (o qualche soldo) e lo nasconde su un albero vicino: scuotendo quello lo riprendi
+  _gazzaLadra(da) {
+    const g = this.game, s = this.s, st = this.st, a0 = this.lista[da];
+    const roba = Object.entries(s.inv || {}).filter(([id, n]) => n > 0 && OGGETTI[id] && !OGGETTI[id].missione);
+    let furto = null;
+    if (roba.length) {
+      const [id, n] = roba[Math.floor(Math.random() * roba.length)], k = Math.min(n, 1 + Math.floor(Math.random() * 3));
+      g.prog.togliOggetto(id, k); furto = { id, n: k };
+    } else if (s.money >= 10) { const n = Math.min(s.money, 10 + Math.floor(Math.random() * 30)); s.money -= n; furto = { soldi: n }; }
+    if (!furto) return g.ui.toast(D.testi.gazzaNiente, 'bad');
+    const vicini = this.validi.filter(i => i !== da && Math.hypot(this.lista[i].x - a0.x, this.lista[i].z - a0.z) < 14 && Math.hypot(this.lista[i].x - a0.x, this.lista[i].z - a0.z) > 4);
+    const i = vicini.length ? vicini[Math.floor(Math.random() * vicini.length)] : da;
+    st.gazza = { i, ...furto };
+    const cosa = furto.soldi ? `${furto.soldi}€` : `${OGGETTI[furto.id].icona} ${OGGETTI[furto.id].nome}${furto.n > 1 ? ` ×${furto.n}` : ''}`;
+    g.ui.toast(fill(D.testi.gazzaRuba, { cosa }), 'bad');
+    g.audio.sfx('bad');
+    this._segnaGazza();
+  }
+  _segnaGazza() {
+    const gz = this.st.gazza, a = gz && this.lista[gz.i];
+    window.__garonio?.minimap?.setMarker('gazzaLadra', a ? a.x : null, a?.z, '#111111');
+  }
+  _ritrova(a) {
+    const g = this.game, s = this.s, gz = this.st.gazza;
+    this.st.gazza = null; this._segnaGazza();
+    const icone = [], cose = [];
+    if (gz.soldi) { s.money += gz.soldi; cose.push(`${gz.soldi}€`); icone.push('soldi'); }
+    else { g.prog.dai(gz.id, gz.n); cose.push(`${OGGETTI[gz.id]?.icona || ''} ${OGGETTI[gz.id]?.nome || gz.id}${gz.n > 1 ? ` ×${gz.n}` : ''}`); icone.push(gz.id); }
+    const extra = Math.random() < 0.35 ? 'uovoGazza' : 'gingillo';
+    g.prog.dai(extra, 1); cose.push(`${OGGETTI[extra].icona} ${OGGETTI[extra].nome}`); icone.push(extra);
+    this._cade(a, icone);
+    g.audio.sfx('coin');
+    g.ui.toast(fill(D.testi.gazzaRitrovata, { cosa: cose.join(', ') }), 'good');
+    g.emit('alberoScosso', { tesoro: true, cosa: 'gazzaLadra' });
+  }
+
   // estrazione: armi e vestiti agricoli solo se ce n'è ancora qualcuno da trovare
   _scegli(lista, R) {
     const s = this.s, p = this.game.prog;
     const armi = Object.entries(ARMI).filter(([id, a]) => a.albero && !p.haArma(id)).map(([id, a]) => [id, a]);
     const vest = Object.keys(VESTITI).filter(id => VESTITI[id].albero && !p.haVestito(id));
+    const stag = this.game.bestie?.stagione?.();
     const ok = lista.filter(x => {
       if (x.daLivello && s.level < x.daLivello) return false;
+      if (x.solo && stag && !x.solo.includes(stag)) return false;
       if (x.tipo === 'arma') return armi.some(([, a]) => a.liv <= s.level + (x.livelloSopra || 0));
       if (x.tipo === 'vestito') return vest.length > 0;
       return true;
@@ -214,6 +257,8 @@ export class Alberi {
         const libero = [...this.tesori()].find(i => !this.st.scossi.includes(i));
         if (libero != null) vai(libero); return null;
       } },
+      { label: '🐦‍⬛ Gazza ladra qui', fn: () => { const i = this._vicino(); if (i >= 0) this._gazzaLadra(i); return null; } },
+      { label: '🐦‍⬛ Vai all\'albero della gazza ladra', fn: () => { if (this.st.gazza) vai(this.st.gazza.i); return null; } },
       { label: '🎁 Scuoti qui: tesoro sicuro', fn: () => { const i = this._vicino(); if (i >= 0) setTimeout(() => this.scuoti(i, 'tesoro'), 50); return null; } },
       { label: '🧺 Dai tutti gli attrezzi e i vestiti degli alberi', fn: () => {
         for (const [id, a] of Object.entries(ARMI)) if (a.albero) g.prog.daiArma(id);

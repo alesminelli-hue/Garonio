@@ -88,8 +88,29 @@ USATI = {
     # incontri speciali (src/speciali.js)
     'babbo_natale':      (1, 4, 8),   # Babbo Natale smemorato, nel bosco di notte
     'zombie':            (1, 6, 5),   # il Mostro della Palude, al laghetto
+    # Parco Oglio (src/parco.js): il vecchio Barba, le guardie del parco, i mostri della notte
+    'pescatore':         (1, 0, 2),   # il vecchio Barba, agricoltore della Cascina dell'Oglio
+    'soldato':           (2, 2, 4),   # le guardie del parco
+    'soldato_capo':      (2, 2, 6),   # Boss MM, il capo delle guardie
+    'alieno':            (1, 6, 0),
+    'mago':              (1, 6, 1),
+    'strega':            (1, 6, 2),
+    'vampiro':           (1, 6, 3),
+    'fantasma':          (1, 6, 4),
+    'mummia':            (1, 6, 6),
+    'scheletro':         (1, 6, 7),
+    'diavolo':           (1, 6, 8),
+    'lupo_mannaro':      (1, 6, 9),
+    'pagliaccio':        (1, 4, 7),
+    # animali della stalla (src/stalla.js)
+    'mucca':             (1, 5, 0),
+    'pecora':            (1, 5, 1),
+    'gallo':             (1, 5, 4),
+    'oca':               (1, 5, 5),
+    'cavallo':           (1, 5, 8),
+    'asino':             (1, 5, 9),
 }
-ANIMALI = {'maiale', 'gallina', 'gatto', 'cane'}
+ANIMALI = {'maiale', 'gallina', 'gatto', 'cane', 'mucca', 'pecora', 'gallo', 'oca', 'cavallo', 'asino'}
 
 
 def figure(path):

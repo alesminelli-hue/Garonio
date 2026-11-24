@@ -11,7 +11,9 @@
 //        │                       ║            silos  ║            │
 //        │              CASA  OFFICINA         CAPANNONI MAIALI    │
 //        │             orto  pollaio          recinto maiali       │
-//        │     laghetto                                            │
+//        │     laghetto      STALLA                                │
+//        │  CASCINA OGLIO ═══ viale del parco ═══ GUARDIE          │
+//        │  ≈≈≈≈≈≈≈≈≈≈≈ fiume Oglio (Parco Oglio, bosco) ≈≈≈≈≈≈≈≈≈≈≈≈ │
 //   z=112└──────────────────────── bosco ─────────────────────────┘
 
 export const MAP_VERSION = 2;          // cambiarlo azzera campi e uova dei vecchi salvataggi
@@ -36,7 +38,17 @@ export const ROADS = [
   { id: 'via-roma', name: 'Via Roma', type: 'sterrato', width: 2, points: [[21, 54], [21, 102], [10, 102]] },
   { id: 'via-chiesa', name: 'Via della Chiesa', type: 'sterrato', width: 2, points: [[2, 76], [21, 76]] },
   { id: 'via-gennaro', name: 'Vicolo della Pizzeria', type: 'sterrato', width: 2, points: [[21, 74], [38, 74]] },
+  // Parco Oglio (src/parco.js): dal vialetto di casa giù fino al bosco e al fiume
+  { id: 'via-parco', name: 'Strada del Parco', type: 'sterrato', width: 2, points: [[74, 68.5], [74, 91], [54, 91]] },
+  { id: 'viale-oglio', name: 'Viale dell\'Oglio', type: 'sterrato', width: 2, points: [[74, 91], [146, 91]] },
+  { id: 'sentiero-ovest', name: 'Sentiero dei pioppi', type: 'sterrato', width: 2, points: [[62, 91], [62, 108]] },
+  { id: 'sentiero-guado', name: 'Sentiero del guado', type: 'sterrato', width: 2, points: [[118, 91], [118, 108]] },
+  { id: 'via-stalla', name: 'Viottolo della stalla', type: 'sterrato', width: 2, points: [[74, 72], [105.5, 72], [105.5, 76]] },
 ];
+
+// Parco Oglio: il fiume e i ponti dei sentieri (parapetti in world.js)
+export const PARCO = { x0: 44, z0: 86, x1: 158, z1: 110 };
+export const PONTI_FIUME = [{ x0: 61, x1: 63, z0: 99, z1: 102 }, { x0: 117, x1: 119, z0: 100, z1: 103 }];
 
 // Quanto vanno veloci i mezzi su ogni fondo (1 = piena velocità). Suggerimento per i mezzi guidabili.
 export const SURFACE_SPEED = { asfalto: 1, piazza: 0.9, ponte: 0.8, sterrato: 0.8, erba: 0.6, campo: 0.45, fango: 0.4, acqua: 0 };
@@ -66,6 +78,11 @@ export const ZONES = [
   { tile: 'q', x0: 3, x1: 13, z0: 74, z1: 75, name: 'Sagrato della chiesa' },
   { tile: 'q', x0: 3, x1: 18, z0: 98, z1: 101, name: 'Cortile del castello' },
   { tile: 'p', x0: 51, x1: 69, z0: 50, z1: 52, name: 'Piazzale del meccanico' },
+  // Parco Oglio: il fiume esce dal laghetto e attraversa il bosco fino al bordo est
+  ...[[39, 42, 87, 102], [39, 76, 99, 102], [73, 76, 95, 102], [73, 105, 95, 98], [102, 105, 95, 103], [102, 136, 100, 103], [133, 136, 96, 103], [133, 160, 96, 99]]
+    .map(([x0, x1, z0, z1]) => ({ tile: 'w', x0, x1, z0, z1, name: 'Fiume Oglio', solid: true })),
+  { tile: 'p', x0: 48, x1: 60, z0: 89, z1: 90, name: 'Aia della Cascina dell\'Oglio' },
+  { tile: 'p', x0: 99, x1: 117, z0: 76, z1: 84, name: 'Recinto della stalla', fence: true, gate: [104, 107] },
 ];
 
 // ---------- Edifici ----------
@@ -104,6 +121,10 @@ export const BUILDINGS = [
   { id: 'cascina-patata', label: 'CASCINA DEL PATATA', x0: 97, z0: 34, w: 8, d: 5, h: 2.8, wall: '#e0c48a', roof: '#a8462e', windows: 2, decor: true },
   { id: 'cascina-postino', label: 'CASCINA DEL POSTINO', x0: 33, z0: 34, w: 7, d: 5, h: 2.8, wall: '#f0d8b8', roof: '#8a3a2a', windows: 2, decor: true },
   { id: 'ranch-frank', label: 'RANCH MISTER FRANK', x0: 140, z0: 33, w: 9, d: 5, h: 3, wall: 'legno', roof: '#7a2a22', windows: 2, decor: true },
+  // Parco Oglio (src/parco.js) e stalla (src/stalla.js)
+  { id: 'cascina-oglio', label: 'CASCINA DEL CAMPER', x0: 49, z0: 84, w: 8, d: 5, h: 2.8, wall: '#d8c08a', roof: '#8a4a2a', windows: 2, decor: true },
+  { id: 'casotto-guardie', label: 'GUARDIE DEL PARCO', x0: 108, z0: 85.4, w: 7, d: 4.4, h: 2.8, wall: 'legno', roof: '#3a5a2a', windows: 1, decor: true },
+  { id: 'stalla', label: 'STALLA', x0: 108, z0: 77, w: 7, d: 4.5, h: 3, wall: 'legno', roof: '#7a4a26', windows: 0, decor: true },
 ];
 
 // ---------- Oggetti di scena ----------
@@ -121,6 +142,8 @@ export const PROPS = [
   { kind: 'cartello', x: 30.5, z: 51.6, text: 'NIGHT →' },
   { kind: 'cartello', x: 19.2, z: 57.4, text: 'CHIESA ↓' },
   { kind: 'cartello', x: 19.2, z: 80, text: 'CASTELLO ↓' },
+  { kind: 'cartello', x: 76.2, z: 86, text: 'PARCO OGLIO ↓' },
+  { kind: 'cartello', x: 72.2, z: 73.4, text: 'STALLA →' },
 ];
 
 // ---------- Punti importanti ----------
@@ -154,6 +177,7 @@ export const LANDMARKS = [
   { name: 'Patata', x: 101, z: 36.5 }, { name: 'Postino', x: 36.5, z: 36.5 }, { name: 'Frank', x: 144.5, z: 35.5 },
   { name: 'Chiesa', x: 6.5, z: 71 }, { name: 'Farmacia', x: 16.5, z: 72 }, { name: 'Dottore', x: 26, z: 70 }, { name: 'Bella Napoli', x: 33.5, z: 70 },
   { name: 'Kebab', x: 19.6, z: 47.5 }, { name: 'Zeno', x: 56, z: 47.4 }, { name: 'Palestra', x: 64.5, z: 47.5 }, { name: 'Castello', x: 10, z: 94.5 },
+  { name: 'Parco Oglio', x: 96, z: 104 }, { name: 'Vecchio Camper', x: 53, z: 86.5 }, { name: 'Guardie', x: 111.5, z: 87.5 }, { name: 'Stalla', x: 108, z: 80 },
 ];
 
 // ---------- Griglia del terreno ----------

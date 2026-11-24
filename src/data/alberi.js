@@ -9,14 +9,20 @@ export const ALBERI = {
   tesoriAlGiorno: 18,     // alberi col tesoro ogni giorno, scelti a caso fra quelli raggiungibili
   raggio: 1.35,           // quanto vicino bisogna stare all'albero
   fatica: 1.5,            // fatica per ogni scossone
+  // solo: ['stagione', ...] = quella roba cade solo in quelle stagioni (src/bestie.js → stagione())
   // albero col tesoro: un'estrazione pesata (w). Armi e vestiti: solo quelli che Garonio non ha,
   // e solo fino a qualche livello sopra il suo (liv dell'arma in src/data/armi.js).
   tesoro: [
     { tipo: 'arma', w: 16, livelloSopra: 3 },
     { tipo: 'vestito', w: 18 },
-    { tipo: 'oggetto', id: 'mela', n: [2, 4], w: 14 },
+    { tipo: 'oggetto', id: 'mela', n: [2, 4], w: 14, solo: ['estate', 'autunno'] },
     { tipo: 'oggetto', id: 'noci', n: [2, 4], w: 10 },
-    { tipo: 'oggetto', id: 'fico', n: [2, 3], w: 7 },
+    { tipo: 'oggetto', id: 'fico', n: [2, 3], w: 7, solo: ['estate', 'autunno'] },
+    { tipo: 'oggetto', id: 'ciliegie', n: [3, 5], w: 9, solo: ['primavera', 'estate'] },
+    { tipo: 'oggetto', id: 'sambuco', n: [2, 3], w: 7, solo: ['primavera'] },
+    { tipo: 'oggetto', id: 'castagna', n: [3, 5], w: 9, solo: ['autunno'] },
+    { tipo: 'oggetto', id: 'ghiacciolo', n: [2, 3], w: 9, solo: ['inverno'] },
+    { tipo: 'oggetto', id: 'biscotti', n: [1, 2], w: 4, solo: ['inverno'] },
     { tipo: 'oggetto', id: 'nido', n: [1, 1], w: 6 },
     { tipo: 'oggetto', id: 'uovoGazza', n: [1, 1], w: 3 },
     { tipo: 'oggetto', id: 'cartolina', n: [1, 1], w: 3 },
@@ -28,13 +34,16 @@ export const ALBERI = {
   // albero normale
   comune: [
     { tipo: 'niente', w: 52 },
-    { tipo: 'oggetto', id: 'mela', n: [1, 2], w: 16 },
+    { tipo: 'oggetto', id: 'mela', n: [1, 2], w: 16, solo: ['estate', 'autunno'] },
+    { tipo: 'oggetto', id: 'ciliegie', n: [1, 3], w: 14, solo: ['primavera', 'estate'] },
+    { tipo: 'oggetto', id: 'sambuco', n: [1, 2], w: 10, solo: ['primavera'] },
+    { tipo: 'oggetto', id: 'ghiacciolo', n: [1, 2], w: 14, solo: ['inverno'] },
     { tipo: 'oggetto', id: 'noci', n: [1, 2], w: 10 },
     { tipo: 'oggetto', id: 'pigna', n: [1, 2], w: 8 },
-    { tipo: 'oggetto', id: 'castagna', n: [1, 3], w: 6 },
-    { tipo: 'oggetto', id: 'fico', n: [1, 1], w: 4 },
+    { tipo: 'oggetto', id: 'castagna', n: [1, 3], w: 14, solo: ['autunno'] },
+    { tipo: 'oggetto', id: 'fico', n: [1, 1], w: 4, solo: ['estate', 'autunno'] },
     { tipo: 'pignaInTesta', vita: 4, w: 8 },
-    { tipo: 'gazza', w: 4 },
+    { tipo: 'gazza', w: 5 },
   ],
   testi: {
     etichetta: "🌳 Scuoti l'albero",
@@ -43,6 +52,11 @@ export const ALBERI = {
     tesoro: ["Qualcosa luccica tra i rami... e ti cade in testa!", "Tonf! Dall'albero cade un fagotto legato con lo spago.", "Chi l'aveva nascosto lassù? Il Bubetto? Tuo nonno? Non importa: è tuo."],
     pignaInTesta: "TOC! Una pigna ti centra in pieno la testa. Vita −{vita}.",
     gazza: "Dal nido salta fuori una gazza furiosa: hai scosso casa sua!",
+    // la gazza ladra: a volte invece di attaccare ti ruba qualcosa e lo nasconde su un altro albero
+    gazzaLadra: 0.5,
+    gazzaRuba: "🐦‍⬛ Una gazza ti piomba addosso, ti sfila {cosa} dalla tasca e vola via! L'ha nascosta su un albero lì intorno (punto nero sulla minimappa).",
+    gazzaNiente: "🐦‍⬛ Una gazza ti piomba addosso, ti fruga nelle tasche... vuote. Se ne va schifata.",
+    gazzaRitrovata: "🐦‍⬛ Dal nido della gazza ladra cade la tua roba: {cosa}! E un regalino per il disturbo.",
     trovato: 'Dall\'albero: {cose}',
   },
 };
