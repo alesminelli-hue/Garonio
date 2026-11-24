@@ -4,6 +4,7 @@
 //   🧥 Equip     · arma e vestiti indossati, si cambiano con un tocco
 //   ⭐ Abilità   · rami di abilità coi loro gradi, si spendono i punti
 //   📊 Scheda    · statistiche di Garonio e amicizie
+//   🏆 Trofei    · trofei e collezionabili (aggiunta da src/diario.js); il 📍 sui lavori sceglie dove punta la freccia
 //
 // API (game.menu):
 //   apri(scheda?)                      apre il menu (scheda: 'missioni' | 'zaino' | 'equip' | 'abilita' | 'scheda')
@@ -44,8 +45,20 @@ export class Menu {
       equip: { icona: '🧥', nome: 'Equip', render: () => this._vestiario() },
       abilita: { icona: '⭐', nome: 'Abilità', render: () => this._abilita() },
       scheda: { icona: '📊', nome: 'Scheda', render: () => this._scheda() },
+      diario: { icona: '📔', nome: 'Diario', render: () => this._diario() },
       opzioni: { icona: '⚙️', nome: 'Opzioni', render: () => this._opzioni() },
     };
+    // ogni avviso che compare a schermo finisce nel diario (salvato con la partita)
+    game.ui.onToast = (text, kind) => this._annota(text, kind);
+  }
+
+  _annota(text, kind) {
+    const s = this.game.s; if (!s || !text || kind === 'small') return;
+    const d = (s.flags.diario ??= []);
+    const last = d[d.length - 1];
+    if (last && last.t === text && last.g === s.day && Math.abs(last.m - s.minutes) < 30) return;
+    d.push({ g: s.day, m: Math.floor(s.minutes), t: String(text), k: kind || '' });
+    if (d.length > 300) d.splice(0, d.length - 300);
   }
   get s() { return this.game.s; }
   get prog() { return this.game.prog; }
@@ -122,6 +135,7 @@ export class Menu {
 
   _badge(id) {
     if (id === 'abilita') return this.s.prog.punti || 0;
+    if (id === 'diario') return Math.max(0, (this.s.flags.diario?.length || 0) - (this.s.flags.diarioLetti || 0));
     if (id === 'missioni') return this.game.quests.attive().length + (this.s.mission && !this.s.mission.done && !this.s.mission.failed ? 1 : 0);
     return 0;
   }
@@ -206,7 +220,7 @@ export class Menu {
           h('b', null, m.text), barra(Math.min(m.progress, m.n), m.n),
           h('div', 'mn-chips', null, [h('span', 'chip', `${Math.min(m.progress, m.n)}/${m.n}`), h('span', 'chip', m.done ? '✅' : m.failed ? '❌' : `⏰ ${dl}`)]),
         ]),
-        m.done ? h('span', 'mn-timbro ok', 'FATTA') : m.failed ? h('span', 'mn-timbro ko', 'FALLITA') : null,
+        m.done ? h('span', 'mn-timbro ok', 'FATTA') : m.failed ? h('span', 'mn-timbro ko', 'FALLITA') : g.diario?.bottone(this, 'gigante'),
       ]));
     } else out.push(h('p', 'mn-vuoto', '😴 Oggi niente ordini.'));
 
@@ -228,6 +242,7 @@ export class Menu {
         this._faccia(d.da),
         h('div', 'mn-nota-c', null, [h('b', null, d.titolo), q.n > 1 && q.stato !== 'pronta' ? barra(q.progresso, q.n) : null, h('div', 'mn-chips', null, chips)]),
         q.stato === 'pronta' ? h('span', 'mn-timbro ok', 'FATTO') : null,
+        g.diario?.bottone(this, 'quest', q.id),
       ]));
     }
 
@@ -238,6 +253,7 @@ export class Menu {
     }
     const fatte = s.quests.fatte.length, fallite = s.quests.fallite.length;
     if (fatte || fallite) out.push(h('p', 'mn-vuoto', `📜 Completate ${fatte}${fallite ? ` · fallite ${fallite}` : ''}`));
+    out.push(...(g.diario?.righe(this) || []));   // freccia e dritte (src/diario.js)
     return out;
   }
 
@@ -368,6 +384,28 @@ export class Menu {
         const v = Math.round(g.png.amicizia(id));
         return h('div', 'mn-chi', null, [this._faccia(id), h('span', 'cuore', v >= 50 ? '❤️' : v >= 20 ? '🧡' : v >= 0 ? '🤍' : '💔'), h('small', null, `${d.nome.replace(/^(Il|La|Lo) /, '')} ${v}`)]);
       })));
+    }
+    return out;
+  }
+
+  // ---------- 📔 Diario degli avvisi ----------
+  _diario() {
+    const s = this.s, d = s.flags.diario || [], out = [];
+    s.flags.diarioLetti = d.length;
+    queueMicrotask(() => this._tabs());
+    out.push(this._cartello('Diario di Garonio'));
+    if (!d.length) { out.push(h('p', 'mn-vuoto', '✏️ Pagine bianche. Per ora non è successo niente.')); return out; }
+    const ora = m => `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(Math.floor(m % 60 / 10) * 10).padStart(2, '0')}`;
+    const icona = k => ({ good: '✅', bad: '❌', warn: '⚠️' }[k] || '•');
+    let giorno = null, pagina = null;
+    for (let i = d.length - 1; i >= 0; i--) {
+      const e = d[i];
+      if (e.g !== giorno) {
+        giorno = e.g;
+        pagina = h('div', 'mn-pagina', null, [h('div', 'mn-data', giorno === s.day ? `Giorno ${giorno} · oggi` : `Giorno ${giorno}`)]);
+        out.push(pagina);
+      }
+      pagina.appendChild(h('div', 'mn-riga ' + (e.k || ''), null, [h('span', 'ora', ora(e.m)), h('span', 'ic', icona(e.k)), h('span', 'tx', e.t)]));
     }
     return out;
   }

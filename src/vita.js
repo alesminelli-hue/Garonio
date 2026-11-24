@@ -177,21 +177,30 @@ export class Vita {
     return [x + rand(-1.2, 1.2), z + rand(-0.4, 0.4)];
   }
 
-  // passo verso (tx, tz) aggirando gli ostacoli; true se arrivato
+  // passo verso (tx, tz) aggirando gli ostacoli; true se arrivato.
+  // Non attraversa mai muri ed edifici: se resta incastrato a lungo si arrende (o.bloccato = true)
+  // e chi lo usa sceglie un'altra meta. Se è già dentro un ostacolo (spuntato addosso), può uscirne.
   _passo(o, tx, tz, sp, dt) {
     const dx = tx - o.x, dz = tz - o.z, d = Math.hypot(dx, dz);
-    if (d < 0.2) return true;
+    o.bloccato = false;
+    if (d < 0.2) { o.stuck = 0; return true; }
     const st = Math.min(d, sp * dt), a0 = Math.atan2(dz, dx);
-    for (const off of [0, 0.6, -0.6, 1.2, -1.2, 1.8, -1.8]) {
+    const dentro = this.W.blocked(o.x, o.z, 0.18);
+    // ostacolo davanti: prova ad aggirarlo, tenendo il lato scelto finché non si libera
+    for (const k of [0, 0.6, 1.2, 1.8, 2.4]) for (const sgn of (o.lato ? [o.lato, -o.lato] : [1, -1])) {
+      const off = k * sgn;
       const nx = o.x + Math.cos(a0 + off) * st, nz = o.z + Math.sin(a0 + off) * st;
-      if (!this.W.blocked(nx, nz, 0.18)) {
-        o.x = nx; o.z = nz; o.stuck = 0;
+      if (dentro || !this.W.blocked(nx, nz, 0.18)) {
+        o.x = nx; o.z = nz;
+        if (k === 0) { o.stuck = 0; o.lato = 0; } else { o.lato = sgn; o.stuck = (o.stuck || 0) + dt * 0.25; }
         const c = Math.cos(a0 + off); if (Math.abs(c) > 0.2) o.dir = c >= 0 ? 1 : -1;
+        if (o.stuck > 4) { o.stuck = 0; o.lato = 0; o.bloccato = true; }
         return false;
       }
+      if (k === 0) break;
     }
     o.stuck = (o.stuck || 0) + dt;
-    if (o.stuck > 1.5) { o.x += dx / d * st; o.z += dz / d * st; }   // si infila (meglio che restare incastrato)
+    if (o.stuck > 1.5) { o.stuck = 0; o.lato = 0; o.bloccato = true; }   // non passa: meglio rinunciare che entrare nei muri
     return false;
   }
 
@@ -206,13 +215,14 @@ export class Vita {
       let moving = false;
       if (p.chiamato) {
         moving = !this._passo(p, p.chiamato.x, p.chiamato.z, 1.8, dt);
-        if (!moving) p.chiamato = null;
+        if (!moving || p.bloccato) { p.chiamato = null; moving = false; }
       } else if (!inGiro) {
         const [hx, hz] = METE[p.def.casa];
-        if (this._passo(p, hx, hz, 1.3, dt)) { this._nascondi(p); continue; }
+        // arrivato alla porta (o la strada è chiusa): torna a casa e sparisce
+        if (this._passo(p, hx, hz, 1.3, dt) || p.bloccato) { this._nascondi(p); continue; }
         moving = true;
       } else if (p.meta) {
-        if (this._passo(p, p.meta[0], p.meta[1], 1.15, dt)) { p.meta = null; p.attesa = rand(4, 14); }
+        if (this._passo(p, p.meta[0], p.meta[1], 1.15, dt) || p.bloccato) { p.meta = null; p.attesa = rand(4, 14); }
         else moving = true;
       } else {
         p.attesa -= dt;
@@ -501,6 +511,7 @@ export class Vita {
       f.gatti[c.i] = true;
       s.stress = clamp(s.stress - G.carezza, 0, 100);
       g.ui.toast(fill(pick(G.testi), { s: G.carezza }), 'good'); g.audio.sfx('meow');
+      g.emit('gatto', {});
     } };
   }
 
