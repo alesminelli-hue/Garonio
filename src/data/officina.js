@@ -13,6 +13,10 @@ export const FASCE = [
   { id: 'rotto',     nome: 'rotto',      min: 0,  prezzo: { vespa: 25, punto: 35, trattore: 70 }, minuti: 180, lento: 1 },
 ];
 export const TRAINO = { prezzo: 10, distanza: 14 }; // se il mezzo rotto è più lontano di così dall'officina, si paga il traino
+// Rimorchio (solo trasporto, niente riparazione): Zeno riporta il mezzo bloccato, rotto o a secco al suo posto in azienda.
+// Costa poco e si può fare anche senza soldi: quello che manca finisce sul conto di Zeno (debito).
+// Di notte (fuori dalle ore di Zeno) viene il nipote e costa il doppio. goccio = carburante lasciato se era a secco.
+export const RIMORCHIO = { prezzo: { vespa: 4, punto: 6, trattore: 8 }, notte: 2, minuti: 45, goccio: 12, ore: [7, 20] };
 export const FATTURA = 0.2;                          // +20% sul prezzo, niente fregature
 
 // ---------- Umore di Zeno (19.2) e fregature (20.3) ----------
@@ -47,6 +51,15 @@ export const ZENO = {
   usatoCede: (nome) => `Il pezzo «nuovo» di Zeno ha mollato: ${nome} −20%.`,
   fattura: ["Con la fattura? ...Va bene. Ma ti guardo male.", "Fattura. Che parola brutta. Ok, ok, lavoro pulito."],
   traino: "Vado a prenderlo col carro attrezzi. Il gasolio lo paghi tu.",
+  rimorchio: [
+    "Arrivo. Tu non toccare niente che peggiori.",
+    "Ancora tu? Aggancio e ti riporto a casa. Il conto corre.",
+    "Lo carico, lo porto in azienda e me ne vado. Non parlarmi durante il viaggio.",
+  ],
+  rimorchioNotte: [
+    "(Risponde il nipote di Zeno, assonnato) Lo zio dorme. Vengo io col carro, ma di notte è doppio.",
+  ],
+  rimorchioDebito: (n) => `Non hai abbastanza? Segno ${n}€ sul conto. Il conto non dimentica.`,
   conto: (n) => `C'è anche il conto vecchio: ${n}€. Me li dai adesso, grazie.`,
   elaboraBene: ["Senti come canta! Merito mio, ovviamente.", "Riuscita. Non dirlo in giro che poi vogliono tutti lo sconto."],
   elaboraMale: ["Eh, capita.", "Non è colpa mia, è il pezzo. Che ho scelto io. Ma è colpa del pezzo.", "I soldi li tengo, il lavoro l'ho fatto. Che sia venuto male è un altro discorso."],

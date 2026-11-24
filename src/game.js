@@ -8,7 +8,9 @@ import { pick, fill, pagina, pagine, ora, variabiliMissione } from './racconto.j
 import { PLACES, MAP_VERSION, coopSpot } from './map.js';
 import { Combat } from './combat.js';
 import { Vehicles } from './vehicles.js';
+import { Derisione } from './derisione.js';
 import { Eventi } from './eventi.js';
+import { Telefono } from './telefono.js';
 import { Progressione, freshProg } from './progressione.js';
 import { Personaggi } from './png.js';
 import { Secondarie } from './secondarie.js';
@@ -19,6 +21,8 @@ import { Cabina } from './cabina.js';
 import { Cascine } from './cascine.js';
 import { Bar } from './bar.js';
 import { Consulente } from './consulente.js';
+import { Negozio } from './negozio.js';
+import { Abilita } from './abilita.js';
 import { puoComparire } from './data/nemici.js';
 import { Attrezzi } from './attrezzi.js';
 import { Maiali } from './maiali.js';
@@ -31,6 +35,7 @@ import { Bestie } from './bestie.js';
 import { Vita } from './vita.js';
 import { Imprevisti } from './imprevisti.js';
 import { Paradiso } from './paradiso.js';
+import { Salvataggi } from './salvataggi.js';
 import { Mercato } from './mercato.js';
 import { Gare } from './gare.js';
 import { Scommesse } from './scommesse.js';
@@ -46,7 +51,6 @@ export const CONFIG = {
   tiredPerHour: 1.5,           // stanchezza che sale solo stando svegli
 };
 
-const SAVE_KEY = 'garonio-save-v1';
 const H = 60;
 
 const ACTIONS = {
@@ -60,12 +64,6 @@ const ACTIONS = {
 };
 
 // Missioni e dialoghi stanno in src/data/missioni.js e src/data/dialoghi.js
-
-const UPGRADES = [
-  { id: 'zappa', label: 'Zappa affilata', desc: 'zappare stanca la metà', price: 40 },
-  { id: 'stivali', label: 'Stivali nuovi', desc: 'cammini più veloce', price: 30 },
-  { id: 'rete', label: 'Rete anti-nutria', desc: 'meno nutrie nel campo', price: 60 },
-];
 
 const rand = (a, b) => a + Math.random() * (b - a);
 const randi = (a, b) => Math.floor(rand(a, b + 1));
@@ -83,7 +81,7 @@ function fresh() {
   };
 }
 
-export function hasSave() { try { return !!localStorage.getItem(SAVE_KEY); } catch { return false; } }
+export function hasSave() { Salvataggi.migra(); return Salvataggi.ce(); }
 
 export class Game {
   constructor(world, ui, audio) {
@@ -113,15 +111,21 @@ export class Game {
     this.bar = new Bar(this);               // trama del bar (src/bar.js)
     this.consulente = new Consulente(this); // consigli e oggetti nascosti (src/consulente.js)
     this.interni = new Interni(this);   // interni degli edifici (src/interni.js)
+    this.salvataggi = new Salvataggi(this); // slot multipli e salvataggio automatico (src/salvataggi.js)
+    this.negozio = new Negozio(this);   // magazzino del Bubetto e affilatura (src/negozio.js)
+    this.abilita = new Abilita(this);   // effetti dei rami di abilità e delle armi fuori dal combattimento
   }
 
   on(name, fn) { return this.ev.on(name, fn); }
   emit(name, data) { this.ev.emit(name, data); }
 
   // ---------- Avvio ----------
-  async start(continueSave) {
+  // slot: '1' | '2' | '3' | 'auto' per caricare, true per l'ultimo salvato, false per una partita nuova
+  async start(slot) {
     let s = null;
-    if (continueSave) { try { s = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch { s = null; } }
+    Salvataggi.migra();
+    if (slot === true) slot = Salvataggi.ultimo();
+    if (slot) s = Salvataggi.apri(slot);
     this.s = Object.assign(fresh(), s || {});
     if (this.s.mapVersion !== MAP_VERSION) { // salvataggio fatto con una mappa vecchia: campi e uova ripartono da zero
       Object.assign(this.s, { plots: {}, eggs: [], px: PLACES.spawn.x, pz: PLACES.spawn.z, mapVersion: MAP_VERSION });
@@ -175,28 +179,40 @@ export class Game {
     this.vita = new Vita(this); this.vita.init();
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
+    this.derisione = new Derisione(this);  // chi ti vede rompere un mezzo ride (src/derisione.js)
+    this.telefono = new Telefono(this); this.telefono.init(); // telefonino a conchiglia (src/telefono.js)
+    this.salvataggi.init();
+    this.negozio.init();
+    this.abilita.init();
     // mercato del giovedì, gare di trattori e scommesse del Consulente (src/mercato.js, src/gare.js, src/scommesse.js)
     this.mercato = new Mercato(this); this.mercato.init();
     this.gare = new Gare(this); this.gare.init();
     this.scommesse = new Scommesse(this); this.scommesse.init();
 
     if (!this.s.introDone) await this.intro();
+    else if (this.s.rifaiGiornata) { // giornata ricominciata da capo (vedi _rifaiGiornata)
+      delete this.s.rifaiGiornata;
+      this.ui.toast(`Giorno ${this.s.day}, di nuovo. Stavolta vedi di non sbagliare.`, 'bad');
+      if (this.s.mission) await this._announceMission(); else await this.morning();
+    }
     else if (!this.s.mission) await this.morning();
   }
 
   save() {
     const p = this.player.group.position;
     this.s.px = p.x; this.s.pz = p.z;
-    try { localStorage.setItem(SAVE_KEY, JSON.stringify(this.s)); } catch { /* spazio pieno o privato */ }
+    Salvataggi.scrivi(Salvataggi.attivo(), this.s); // slot della partita in corso (src/salvataggi.js)
   }
 
-  static reset() { try { localStorage.removeItem(SAVE_KEY); } catch { } }
+  // nuova partita nello slot scelto (cancella quello che c'era)
+  static reset(slot) { Salvataggi.migra(); const id = slot || Salvataggi.liberi()[0] || Salvataggi.attivo(); Salvataggi.cancella(id); Salvataggi.usa(id); }
 
   // ---------- Storia ----------
   async intro() {
     await this.ui.dialog(pagine(INTRO));
     this.s.introDone = true;
     this._pickMission();
+    this._salvaAlba();
     await this._announceMission();
   }
 
@@ -266,10 +282,13 @@ export class Game {
       if (Math.abs(ix) > 0.2) this.facing = ix > 0 ? 1 : -1;
       this.walkT += dt * (this.input.run ? 12 : 8);
       this.idle = 0; this._wake();
-      if (this.input.run) this.s.tired += dt * CONFIG.minutesPerSecond / H * 3;
+      if (this.input.run && !this.prog.bonus('corsaGratis')) this.s.tired += dt * CONFIG.minutesPerSecond / H * 3;
     } else {
       this.idle += dt;
-      if (this.idle > CONFIG.idleDozeSeconds && !this.dozing) { this.dozing = true; this.zzz.visible = true; }
+      if (this.idle > CONFIG.idleDozeSeconds && !this.dozing) {
+        this.dozing = true; this.zzz.visible = true;
+        this.dozeHidden = Math.random() < this.prog.bonus('pisolinoNascosto');   // Furbizia 1: il Gigante non ti vede
+      }
     }
     this.moving = moving;
 
@@ -290,13 +309,14 @@ export class Game {
     const hr = dm / H;
     if (this.dozing) s.tired -= 12 * hr; else s.tired += CONFIG.tiredPerHour * hr;
     if (s.tired > 75) s.stress += 2 * hr;
-    if (s.stress >= 100) s.health -= 8 * hr;
+    if (s.stress >= 100 && !this.prog.bonus('stressImmune')) s.health -= 8 * hr;
     else if (s.stress < 50) s.health += 1 * hr;
-    s.tired = clamp(s.tired, 0, 100); s.stress = clamp(s.stress, 0, 100); s.health = clamp(s.health, 0, s.maxHealth);
+    const tiredMax = 100 + this.prog.bonus('stanchezzaMax');
+    s.tired = clamp(s.tired, 0, tiredMax); s.stress = clamp(s.stress, 0, 100); s.health = clamp(s.health, 0, s.maxHealth);
 
     // il Gigante ti becca a dormire
     const gp = this.gigante.group.position, pp = this.player.group.position;
-    if (this.dozing && s.minutes < 20 * H && gp.distanceTo(pp) < 7 && s.minutes - this.caughtAt > 60) {
+    if (this.dozing && !this.dozeHidden && s.minutes < 20 * H && gp.distanceTo(pp) < 7 && s.minutes - this.caughtAt > 60) {
       this.caughtAt = s.minutes; s.stress += 8; this._wake(); this.idle = 0;
       this.ui.toast(`${NOMI.gigante}: «${pick(GIGANTE.beccatoDormire)}»  Stress +8`, 'bad'); this.audio.sfx('bad');
     }
@@ -304,7 +324,7 @@ export class Game {
     // piante
     for (const [k, p] of Object.entries(s.plots)) {
       if (!p.crop || !p.water || p.stage >= 3) continue;
-      p.g = (p.g || 0) + dm;
+      p.g = (p.g || 0) + dm * (1 + this.prog.bonus('crescita'));
       const G = CONFIG.growMinutes[p.crop];
       const st = p.g >= G ? 3 : p.g >= G * 0.5 ? 2 : p.g >= G * 0.08 ? 1 : 0;
       if (st !== p.stage) { p.stage = st; const [x, z] = k.split(',').map(Number); this.world.setPlot(x, z, p); }
@@ -321,7 +341,7 @@ export class Game {
     if (hNow !== this.saveHour) { this.saveHour = hNow; this.save(); this.emit('ora', { ora: hNow % 24 }); }
 
     if (s.health <= 0) this._faint();
-    else if (s.tired >= 100) this._collapse();
+    else if (s.tired >= tiredMax) this._collapse();
     else if (s.minutes >= 24 * H) { this.ui.toast('È mezzanotte: Garonio crolla dove si trova.', 'bad'); this.sleep(true); }
   }
 
@@ -336,6 +356,7 @@ export class Game {
     } else if (this.s.minutes >= m.deadline) {
       m.failed = true;
       this.emit('missioneFallita', { id: m.id });
+      if (this.abilita.perdona()) return;   // Furbizia 4: il Gigante «non vede» la prima missione fallita della settimana
       this.mountain('missione', d?.stressFallimento ?? 30, d && fill(pick(d.rimprovero), variabiliMissione(m)));
     }
   }
@@ -399,7 +420,7 @@ export class Game {
   _cost(kind) {
     const a = ACTIONS[kind];
     let tired = a.tired * this.prog.fatica();
-    if (kind === 'zappa' && this.s.upgrades.zappa) tired *= 0.5;
+    if (kind === 'zappa') tired *= 1 - 0.2 * (this.s.prog.affilatura.zappa || 0);   // zappa affilata da Zeno
     this.s.tired += tired;
     this.s.stress += a.stress + (this.s.tired > 70 ? 0.5 : 0);
     this.s.minutes += a.min;
@@ -422,14 +443,17 @@ export class Game {
     if (area === 'field') this.s.today.seminaCampo++;
     else this.s.today.seminaOrto = (this.s.today.seminaOrto || 0) + 1;
   }
-  water(key, x, z) { const p = this.s.plots[key]; p.water = true; this.world.setPlot(x, z, p); this._cost('annaffia'); this.s.today.annaffiate++; }
+  water(key, x, z) {
+    const p = this.s.plots[key]; p.water = true; this.world.setPlot(x, z, p); this._cost('annaffia'); this.s.today.annaffiate++;
+    this.emit('annaffiato', { x, z });
+  }
   harvest(key, x, z) {
     const p = this.s.plots[key];
     this.s.inv[p.crop]++; this.ui.float(p.crop === 'mais' ? '+1 pannocchia' : '+1 pomodoro');
     const crop = p.crop;
     this.s.plots[key] = { crop: null, stage: 0, water: false, g: 0 };
     this.world.setPlot(x, z, this.s.plots[key]); this._cost('raccogli'); this.s.today.raccolti++;
-    this.emit('raccolto', { crop });
+    this.emit('raccolto', { crop, x, z });
   }
   pickEgg(e) {
     this.s.eggs.splice(this.s.eggs.indexOf(e), 1);
@@ -474,6 +498,7 @@ export class Game {
       if (this.nutrie.filter(n => n.state !== 'flee').length < max) this._spawnNutria();
       let gap = Math.max(35, 110 - s.day * 10) * rand(0.7, 1.3);
       if (s.upgrades.rete) gap *= 2;
+      if (this.prog.arma().id === 'badile') gap *= 1.3;   // il badile ha scavato le tane: meno nutrie
       s.nextNutria = s.minutes + gap;
     }
     for (const n of [...this.nutrie]) {
@@ -611,7 +636,9 @@ export class Game {
 
   // ---------- Riposo, crolli e nuovo giorno ----------
   async _collapse() {
-    if (this.locked) return; this.locked = true;
+    if (this.locked) return;
+    if (this.abilita.rialzati()) return;   // Resistenza 4: una volta al giorno si rialza da solo
+    this.locked = true;
     this.ui.toast('Garonio è sfinito e crolla a dormire per terra...', 'bad');
     this.vehicles.crashAsleep();
     this.ko = true; this.player.setFrame((this.facing > 0 ? 0 : PIX.GARONIO_N) + PIX.GARONIO_ANIM.ko[0]);
@@ -632,8 +659,34 @@ export class Game {
     await this.mountain('svenuto', 15);
   }
 
+  // copia della partita all'inizio della giornata (missione già scelta): serve a rifarla se va male
+  _salvaAlba() {
+    const p = this.player.group.position;
+    this.s.px = p.x; this.s.pz = p.z;
+    Salvataggi.scriviAlba(this.s);
+  }
+
+  // La missione del giorno è saltata: a fine giornata si riparte da capo, dalla mattina stessa.
+  // Ricarica la pagina con la copia dell'alba (stessa missione, soldi e stato di quella mattina).
+  async _rifaiGiornata() {
+    const s = this.s, alba = Salvataggi.leggiAlba();
+    if (!s.mission?.failed || !alba || alba.day !== s.day) return false;
+    this.locked = true;
+    await this.ui.dialog(pagine([
+      { chi: 'gigante', testo: `Garonio. Oggi: «${s.mission.text}». Fatto? No. Allora la giornata non conta: domani non arriva finché non la fai giusta.` },
+      { testo: 'La giornata ricomincia da capo, dalla mattina. Come se niente fosse. Quasi.' },
+    ]));
+    await this.ui.fade(true);
+    alba.rifaiGiornata = true;
+    Salvataggi.scrivi(Salvataggi.attivo(), alba);
+    Salvataggi.ricaricaCon(Salvataggi.attivo());
+    return true;
+  }
+
   async sleep(forced = false, fainted = false) {
-    if (this.locked) return; this.locked = true;
+    if (this.locked) return;
+    if (await this._rifaiGiornata()) return;
+    this.locked = true;
     const s = this.s;
     await this.ui.fade(true);
     s.day++; s.minutes = 6 * H; this.saveHour = 6;
@@ -651,6 +704,7 @@ export class Game {
     this._wake(); this.idle = 0;
     this._pickMission();
     this.save();
+    this._salvaAlba();
     await this.ui.fade(false);
     this.locked = false;
     this.ui.toast(`Giorno ${s.day}`, 'good');
@@ -696,12 +750,8 @@ export class Game {
       }
       this.inBar = false;
     } else if (id === 'officina') {
-      const choices = UPGRADES.map(u => ({
-        label: s.upgrades[u.id] ? `${u.label} ✔` : `${u.label} (${u.price}€): ${u.desc}`,
-        disabled: !!s.upgrades[u.id] || s.money < u.price,
-        fn: () => { s.money -= u.price; s.upgrades[u.id] = true; if (u.id === 'stivali') this.prog.daiVestito('stivali', true); this.audio.sfx('coin'); this.ui.toast(`Comprato: ${u.label}!`, 'good'); },
-      }));
-      choices.push(...this.vehicles.workshopChoices());
+      // gli attrezzi ora si comprano dal Bubetto; qui si affila l'arma (src/negozio.js) e si sistemano i mezzi
+      const choices = [...this.negozio.scelteOfficina(), ...this.vehicles.workshopChoices()];
       choices.push({ label: 'Esci', fn: null });
       await this.ui.dialog([{ name: 'Officina', text: pick(OFFICINA.benvenuto), choices }]);
     } else if (id === 'maiali') {
@@ -810,6 +860,7 @@ export class Game {
     this.vehicles.animate(dt);
     this.png.update(dt);
     for (const m of this.moduli) m.animate?.(dt);
+    this.negozio.update(dt);
     const P = this.player.group.position;
     this.zzz.position.set(P.x + 0.5, 1.6 + Math.sin(performance.now() / 400) * 0.08, P.z);
     // galline

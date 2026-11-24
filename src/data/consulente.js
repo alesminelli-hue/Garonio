@@ -111,7 +111,7 @@ export const BATTUTE_CONSULENTE = {
     "Garonio, sai cosa? Di te mi fido. Da adesso ti do le dritte buone, quelle che non do neanche a mio cugino.",
     "Siamo una squadra, io e te. Io penso, tu cammini. Funziona.",
   ],
-  telefono: "Garonio, tieni. È il mio telefono di riserva: ci sono solo io in rubrica. Da domani le dritte te le mando per messaggio, così non devi venire fin qui. Però il caffè me lo offri lo stesso, quando passi.",
+  telefono: "Garonio, dammi quel catorcio a conchiglia. Ecco: ti ho salvato il mio numero riservato, quello che hanno in tre. Da domani le dritte te le mando per messaggio, così non devi venire fin qui. Però il caffè me lo offri lo stesso, quando passi.",
   messaggio: "📱 Messaggio dal Consulente: «{testo}»",
   amicizia: "Siamo al livello {livello} su 5: «{nome}». Consigli seguiti: {seguiti}.",
 };
