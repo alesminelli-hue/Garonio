@@ -1,0 +1,12 @@
+{
+  "name": "gt-tractor-android",
+  "private": true,
+  "description": "Guscio Android (Capacitor) di Grand Theft Tractor: impacchetta il gioco in un APK che funziona offline. Vedi LEGGIMI.md.",
+  "dependencies": {
+    "@capacitor/android": "8.6.2",
+    "@capacitor/cli": "8.6.2",
+    "@capacitor/core": "8.6.2",
+    "@capacitor/filesystem": "8.1.5",
+    "@capacitor/share": "8.0.3"
+  }
+}

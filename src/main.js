@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { World, MAP_W, MAP_H } from './world.js';
 import { Game, CONFIG, hasSave } from './game.js';
 import { Salvataggi } from './salvataggi.js';
+import { avviaApp } from './app.js';
 import { UI } from './ui.js';
 import { Audio } from './audio.js';
 import { loadGaronio, loadPersonaggi } from './pixel.js';
@@ -182,6 +183,7 @@ $('btn-load').hidden = !hasSave();
 $('btn-load').addEventListener('click', () => slotTitolo('carica'));
 // caricamento chiesto dal menu in partita (la pagina si ricarica e riparte da quello slot)
 { const r = Salvataggi.richiesta(); if (r) begin(r); }
+avviaApp(); // versione app: offline, installazione, salvataggi permanenti (src/app.js)
 
 // ---------- Ciclo ----------
 const clock = new THREE.Clock();
