@@ -1,0 +1,21 @@
+{
+  "name": "Grand Theft Tractor: Goodville City",
+  "short_name": "GT Tractor",
+  "description": "Survival gestionale con elementi JRPG: sopravvivi alle giornate in azienda agricola, al Gigante e a Mister Mountain.",
+  "lang": "it",
+  "id": "./",
+  "start_url": "./?app=1",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#141c4a",
+  "theme_color": "#141c4a",
+  "categories": ["games"],
+  "icons": [
+    { "src": "assets/icone/icona-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icone/icona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icone/icona-maschera-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/icone/icona-maschera-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

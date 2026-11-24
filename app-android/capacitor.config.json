@@ -1,0 +1,11 @@
+{
+  "appId": "com.garonio.gttractor",
+  "appName": "GT Tractor",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#141c4a",
+    "allowMixedContent": false,
+    "captureInput": false,
+    "webContentsDebuggingEnabled": false
+  }
+}

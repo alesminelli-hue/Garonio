@@ -59,6 +59,13 @@ Il design completo è in [GDD.md](GDD.md).
 - **Livelli e abilità**: a ogni livello (fino al 20) guadagni un punto abilità da spendere nel menu (**J**) in uno dei sette rami.
 - Il gioco si salva da solo nel browser.
 
+
+## Sul telefono
+
+- **Android:** scarica [GT-Tractor.apk](https://github.com/alesminelli-hue/Garonio/releases/download/android/GT-Tractor.apk) e aprilo per installarlo (la prima volta Android chiede di consentire l'installazione da Chrome o da File). Parte a schermo intero e funziona senza internet. Per aggiornare si installa il nuovo APK sopra il vecchio: i salvataggi restano. Dettagli in `app-android/LEGGIMI.md`.
+- **iPhone:** apri il gioco con Safari → Condividi → «Aggiungi alla schermata Home». Diventa un'icona che si apre a schermo intero e funziona offline (service worker `sw.js`, che chiede sempre i file nuovi quando c'è rete).
+- **Salvataggi:** restano sul telefono. Nel menu 💾 Partite → «Esporta salvataggi» crea un file da tenere su iCloud/Drive; «Importa» lo rimette, anche su un altro telefono.
+
 ## Provarlo sul computer
 
 Il gioco è fatto solo di file statici, ma il browser deve aprirlo tramite un piccolo server (non con doppio click sul file).
