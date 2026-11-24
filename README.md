@@ -38,6 +38,9 @@ Il design completo è in [GDD.md](GDD.md).
 - **Imprevisti** che alzano lo stress: **buche** sulle strade (rovinano Vespa, Punto e trattori: poi paghi Zeno; la Punto può forare), **pozzanghere** nei giorni di pioggia (calzini bagnati, la Vespa scoda, le auto ti fanno la doccia), **cantieri** con transenne, operai e umarell, il **cane randagio** che ti insegue (scappa correndo, scaccialo, lanciagli un uovo o affrontalo), i **paesani impiccioni** che attaccano bottone e le **zanzare** la sera vicino all'acqua.
 - **Night Paradiso** (accanto al paese, aperto dalle 20): il catalogo, con descrizioni ironiche. Più spendi, più scende lo stress e più esperienza prendi. Una sera sola al giorno. Occhio al **tranvione**: a volte va male e perdi tutti i soldi, il rispetto al bar e la reputazione in paese.
 - Per provare dalla console: `garonio.imprevisti.prova('cane' | 'buca' | 'pozze' | 'cantiere' | 'impiccione')`.
+- **Diario e freccia**: nel menu (**J**) ogni lavoro ha il pulsante 📍. La freccia gialla a terra, il segnalino sopra la meta e la linea sulla minimappa portano lì (in automatico seguono la missione del Gigante).
+- **Collezionabili**: 8 tappi di birra, 8 santini e 8 figurine nascosti in giro. Luccicano solo da vicino; il Consulente, per 3€, dice dov'è il più vicino. Ogni collezione completa regala un portafortuna.
+- **Trofei**: scheda 🏆 nel menu, per esempio «Scansafatiche d'oro» dopo 50 notti di sonno. Alcuni sono segreti.
 - **Livelli e abilità**: a ogni livello (fino al 20) guadagni un punto abilità da spendere nel menu (**J**) in uno dei sette rami.
 - Il gioco si salva da solo nel browser.
 

@@ -35,6 +35,7 @@ import { Bestie } from './bestie.js';
 import { Vita } from './vita.js';
 import { Imprevisti } from './imprevisti.js';
 import { Paradiso } from './paradiso.js';
+import { Diario } from './diario.js';
 import { Salvataggi } from './salvataggi.js';
 
 // ===== Valori facili da ritoccare per bilanciare il gioco =====
@@ -176,6 +177,7 @@ export class Game {
     this.vita = new Vita(this); this.vita.init();
     this.imprevisti = new Imprevisti(this); this.imprevisti.init();
     this.paradiso = new Paradiso(this); this.paradiso.init();
+    this.diario = new Diario(this); this.diario.init(); // freccia verso il lavoro scelto, collezionabili e trofei (src/diario.js)
     this.derisione = new Derisione(this);  // chi ti vede rompere un mezzo ride (src/derisione.js)
     this.telefono = new Telefono(this); this.telefono.init(); // telefonino a conchiglia (src/telefono.js)
     this.salvataggi.init();
@@ -312,6 +314,7 @@ export class Game {
     if (this.dozing && !this.dozeHidden && s.minutes < 20 * H && gp.distanceTo(pp) < 7 && s.minutes - this.caughtAt > 60) {
       this.caughtAt = s.minutes; s.stress += 8; this._wake(); this.idle = 0;
       this.ui.toast(`${NOMI.gigante}: «${pick(GIGANTE.beccatoDormire)}»  Stress +8`, 'bad'); this.audio.sfx('bad');
+      this.emit('beccatoDormire', {});
     }
 
     // piante
