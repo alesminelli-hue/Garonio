@@ -21,6 +21,7 @@ import { PNG } from './data/png.js';
 import { VESTITI } from './data/armi.js';
 import { LUOGHI, DOVE_MISSIONE, DOVE_OGGETTO, DOVE_EVENTO, COLLEZIONI, DRITTA_COLLEZIONI as DR, TROFEI, TESTI_DIARIO as T } from './data/diario.js';
 import { pick, fill } from './racconto.js';
+import { pezzo as pezzoHD } from './hd/collezionabili.js';
 
 const H = 60;
 const PEZZI = Object.entries(COLLEZIONI).flatMap(([c, d]) => d.pezzi.map(p => ({ ...p, coll: c })));
@@ -55,16 +56,10 @@ function segnalinoCanvas() {
   P('#fff6c0', 4, 1, 2, 5);
   return c;
 }
-// pezzo da collezione a terra: due fotogrammi (luccichio acceso/spento)
-function pezzoCanvas(coll, luce) {
-  const [c, g] = PIX.makeCanvas(10, 10);
-  const P = (col, x, y, w, h) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
-  if (coll === 'tappi') { P('#1a1420', 2, 4, 6, 5); P('#e0b030', 3, 5, 4, 3); P('#fff0a0', 3, 5, 2, 1); }
-  else if (coll === 'santini') { P('#1a1420', 2, 2, 6, 8); P('#f0e8d0', 3, 3, 4, 6); P('#6a9ad8', 4, 4, 2, 2); P('#e0b030', 4, 3, 2, 1); }
-  else { P('#1a1420', 2, 2, 6, 8); P('#ffffff', 3, 3, 4, 6); P('#d84a3a', 3, 6, 4, 3); P('#e8b48a', 4, 4, 2, 2); }
-  if (luce) { P('#ffffff', 8, 0, 1, 3); P('#ffffff', 7, 1, 3, 1); P('#fff6a0', 0, 3, 1, 1); }
-  return c;
-}
+// pezzo da collezione a terra: due fotogrammi (luccichio acceso/spento), disegno HD per ogni pezzo (src/hd/collezionabili.js)
+const pezzoCanvas = (p, luce) => pezzoHD(p.coll, p.id, luce);
+const albumIcona = {};
+function iconaAlbum(coll, id) { return (albumIcona[id] ??= pezzoHD(coll, id, false).toDataURL()); }
 
 export class Diario {
   constructor(game) {
@@ -214,7 +209,7 @@ export class Diario {
     // collezionabili
     for (const p of PEZZI) {
       if (this.st.pezzi[p.id]) continue;
-      const a = W.actor([pezzoCanvas(p.coll, false), pezzoCanvas(p.coll, true)], { w: 0.6, h: 0.6, shadow: 0.2 });
+      const a = W.actor([pezzoCanvas(p, false), pezzoCanvas(p, true)], { w: 0.75, h: 0.75, shadow: 0.22 });
       a.group.position.set(p.x, 0, p.z); a.group.visible = false;
       this.pezzi.push({ p, a });
     }
@@ -445,7 +440,8 @@ export class Diario {
       const album = el('div', 'mn-album');
       for (const p of C.pezzi) {
         const ok = st.pezzi[p.id];
-        const c = el('div', 'mn-figu' + (ok ? ' ok' : ''), null, [el('span', null, ok ? C.icona : '❔'), el('small', null, ok ? p.nome : '???')]);
+        const ico = ok ? Object.assign(document.createElement('img'), { className: 'mn-figu-img', src: iconaAlbum(cid, p.id), alt: '' }) : el('span', null, '❔');
+        const c = el('div', 'mn-figu' + (ok ? ' ok' : ''), null, [ico, el('small', null, ok ? p.nome : '???')]);
         if (ok) c.title = p.testo;
         album.appendChild(c);
       }
@@ -476,6 +472,7 @@ export class Diario {
 .mn-figu { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; border-radius: 5px; background: rgba(90,58,26,.10); border: 2px dashed rgba(90,58,26,.35); text-align: center; color: #6a4a2a; }
 .mn-figu span { font-size: 20px; opacity: .45; }
 .mn-figu small { font-size: 9px; line-height: 1.1; }
+.mn-figu-img { width: 40px; height: 40px; image-rendering: pixelated; }
 .mn-figu.ok { background: #fff2b8; color: #3a2414; border: 2px solid #c89a20; }
 .mn-figu.ok span { opacity: 1; }
 .mn-premio { display: block; margin: 4px 2px 0; color: #5a3a1a; }

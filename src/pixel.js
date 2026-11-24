@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import * as HDT from './hd/terreno.js';
 import * as HDO from './hd/oggetti.js';
 import * as HDK from './hd/kit.js';
+import * as HDA from './hd/animali.js';
 import { ATLANTE, ATLANTE_FILE } from './data/sprite_personaggi.js';
 
 export const PX = 16; // pixel per unità di mondo (1 casella = 16 px)
@@ -160,18 +161,8 @@ export function characterFrames(key) {
 }
 
 // ---------- Animali ----------
-export function nutria(frame = 0) {
-  const [c, g] = makeCanvas(18, 12);
-  const P = (col, x, y, w, h) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
-  P('#6b4a2e', 0, 7 - frame, 5, 2);           // coda
-  P('#7a5434', 4, 4, 10, 6);                   // corpo
-  P('#8f6640', 5, 4, 7, 2);
-  P('#7a5434', 12, 3, 5, 5);                   // testa
-  P('#1a1420', 15, 4, 1, 1);                   // occhio
-  P('#f08a1c', 16, 7, 1, 2);                   // denti arancioni!
-  P('#5a3c22', 5, 10, 2, 1 + frame); P('#5a3c22', 11, 10, 2, 2 - frame); // zampe
-  return outline(c);
-}
+// nutria HD (src/hd/animali.js): 36x24, il doppio dei vecchi 18x12; in mappa resta larga 18/16 di casella
+export function nutria(frame = 0) { return HDA.nutria(frame); }
 
 export function chicken(frame = 0) {
   const spr = animale('gallina', frame, 12, 12); if (spr) return spr;
