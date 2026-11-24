@@ -268,7 +268,7 @@ export class Sorprese {
     const g = this.game, s = this.s, f = this.f, T = S.turista;
     const pag = (text, choices) => ({ who: 'turista', name: T.nome, text, choices });
     const fatto = () => { f.turista = 'fatto'; s.minutes += 15; };
-    await g.ui.dialog([pag(T.saluto, [
+    await g.ui.dialog([...(T.frasi?.length && Math.random() < 0.6 ? [pag(pick(T.frasi))] : []), pag(T.saluto, [
       { label: T.giusta.etichetta, fn: () => { fatto(); s.money += T.giusta.soldi; g._xp(T.giusta.xp); g.audio.sfx('coin'); g.emit('sorpresa', { tipo: 'turista', esito: 'giusta' }); return [pag(T.giusta.testo)]; } },
       { label: T.paradiso.etichetta, fn: () => { fatto(); g._xp(T.paradiso.xp); g.emit('sorpresa', { tipo: 'turista', esito: 'paradiso' }); return [pag(T.paradiso.testo)]; } },
       { label: T.finta.etichetta, fn: () => { fatto(); return [pag(T.finta.testo)]; } },

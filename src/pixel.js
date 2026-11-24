@@ -456,7 +456,7 @@ export function portrait(key) {
   if (key === 'garonio' && garonioSheet) return garonioSheet.portrait;
   if (portraitCache[key]) return portraitCache[key];
   const o = CHARACTERS[key];
-  if (o?.sprite && SPR[o.sprite]) return (portraitCache[key] = ritrattoSprite(SPR[o.sprite].c));
+  if (o?.sprite && SPR[o.sprite]) return (portraitCache[key] = ritrattoSprite(sorgenteUmano(o)));
   const src = humanoid(CHARACTERS[key], 0);
   const headH = Math.round(src.height * 0.5);
   const [c, g] = makeCanvas(48, 48);
@@ -494,13 +494,52 @@ function spriteFrame(src, frame, W = src.width, H = src.height + 1) {
 }
 
 function spriteUmano(o, frame) {
-  const { c: src, k } = SPR[o.sprite];
+  const { k } = SPR[o.sprite], src = sorgenteUmano(o);
   if (o._h0 == null) {   // una volta sola: misure dell'aspetto adattate al disegno
     o._h0 = o.h;
     o.h = Math.round(o._h0 * k * 10) / 10;
     o.w = Math.round(o.h * src.width / (src.height + 1) * 10) / 10;
   }
   return spriteFrame(src, frame);
+}
+
+// Variante di uno sprite umano, per non avere due personaggi identici: aspetto.ricolora =
+//   { gradi: rotazione della tinta dei vestiti (i colori accesi, non pelle e capelli castani), capelli: '#rrggbb' }
+// capelli: i toni scuri e caldi (castani) diventano quel colore, con la stessa luce.
+const variantiCache = {};
+function sorgenteUmano(o) {
+  const base = SPR[o.sprite].c, v = o.ricolora;
+  if (!v) return base;
+  const key = o.sprite + JSON.stringify(v);
+  if (variantiCache[key]) return variantiCache[key];
+  const [c, g] = makeCanvas(base.width, base.height);
+  g.drawImage(base, 0, 0);
+  const img = g.getImageData(0, 0, c.width, c.height), d = img.data;
+  const cap = v.capelli ? parseInt(v.capelli.slice(1), 16) : null;
+  const [cr, cg, cb] = cap == null ? [] : [cap >> 16 & 255, cap >> 8 & 255, cap & 255];
+  for (let i = 0; i < d.length; i += 4) {
+    if (!d[i + 3]) continue;
+    const r = d[i] / 255, gg = d[i + 1] / 255, b = d[i + 2] / 255;
+    const mx = Math.max(r, gg, b), mn = Math.min(r, gg, b), l = (mx + mn) / 2, ch = mx - mn;
+    if (ch < 0.08) continue;                                  // grigi, bianchi, neri e contorni
+    const s = ch / (1 - Math.abs(2 * l - 1));
+    let h = mx === r ? ((gg - b) / ch) % 6 : mx === gg ? (b - r) / ch + 2 : (r - gg) / ch + 4;
+    h = (h * 60 + 360) % 360;
+    const caldo = h >= 8 && h <= 48;                          // pelle e capelli castani
+    if (caldo) {
+      if (cap != null && l < 0.45 && s > 0.15) {             // capelli
+        const f = l / 0.3;
+        d[i] = Math.min(255, cr * f + 10 * f); d[i + 1] = Math.min(255, cg * f + 10 * f); d[i + 2] = Math.min(255, cb * f + 12 * f);
+      }
+      continue;
+    }
+    if (!v.gradi || s < 0.3) continue;
+    const h2 = (h + v.gradi + 360) % 360, x = ch * (1 - Math.abs((h2 / 60) % 2 - 1)), m = l - ch / 2;
+    const [r1, g1, b1] = h2 < 60 ? [ch, x, 0] : h2 < 120 ? [x, ch, 0] : h2 < 180 ? [0, ch, x] : h2 < 240 ? [0, x, ch] : h2 < 300 ? [x, 0, ch] : [ch, 0, x];
+    d[i] = (r1 + m) * 255; d[i + 1] = (g1 + m) * 255; d[i + 2] = (b1 + m) * 255;
+  }
+  g.putImageData(img, 0, 0);
+  return (variantiCache[key] = c);
 }
 
 // pelo ricolorato (gatti e cani di colori diversi): i toni arancio e marroni diventano la tinta

@@ -71,6 +71,13 @@ export const SORPRESE = {
     probabilita: 0.25, ore: [10, 17], x: 22, z: 51.3,
     aspetto: { sprite: 'escursionista', w: 16, h: 24, skin: '#f8d0b0', hair: '#f0e080', hairStyle: 'flat', hat: '#e8e0c0', shirt: '#f080a0', pants: '#e8d8a8', boots: '#a07050', eyes: 'normal' },
     nome: 'Turista tedesco',
+    // prima del saluto, a volte, una chiacchiera
+    frasi: [
+      "Guten Tag! Dov'è il lago di Garda? ...Ah. Molto lontano? Ma qui c'è la nebbia, sembra il lago!",
+      "Io fotografare trattore! Molto romantico! In Germania i trattori sono puliti. Questo è autentico.",
+      "Ho mangiato la pizza all'ananas da Gennaro. Gennaro mi ha guardato come un nemico della patria.",
+      "Questo paese è wunderbar! Tutti urlano, ma con amore. Come mia moglie.",
+    ],
     saluto: "Guten Tag! Ich suche... il castello di Grazzano Visconti? Mappa dice qui. Mappa è sbagliata?",
     giusta: { etichetta: 'Indica la strada giusta', testo: "«Danke schön!» Ti dà 5€ e una caramella alla menta di dubbia data. +5 XP", soldi: 5, xp: 5 },
     paradiso: { etichetta: 'Mandalo al Night Paradiso', testo: "Il turista va al Paradiso. Domani sul giornale di Monaco: «Cultura italiana molto interessante». +3 XP", xp: 3 },
