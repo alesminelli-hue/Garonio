@@ -7,7 +7,7 @@ import { pen, ramp, tone, outline, rng, INK } from './kit.js';
 
 // ---------- Attrezzi del pittore ----------
 // occhio anime: contorno, iride a due toni, pupilla, due riflessi
-function occhio(d, x, y, w, h, iride, { pupilla = INK, cattivo = false, brilla = false } = {}) {
+export function occhio(d, x, y, w, h, iride, { pupilla = INK, cattivo = false, brilla = false } = {}) {
   const I = ramp(iride);
   d.P(INK, x - 1, y - 1, w + 2, h + 2);
   d.P(I[1], x, y, w, h); d.P(I[3], x, y + Math.ceil(h / 2), w, Math.floor(h / 2)); d.P(I[0], x, y, w, 1);
@@ -37,7 +37,7 @@ function codaFolta(d, pts, R, punta) {
   if (punta) { const [x, y, r] = pts[pts.length - 1]; d.ball(x, y, r, r * 0.8, ramp(punta)); }
 }
 // luce di contorno: i pixel con il vuoto sopra (o in alto a sinistra) si schiariscono verso il giallo
-function rim(c, k = 0.38, col = [255, 244, 214]) {
+export function rim(c, k = 0.38, col = [255, 244, 214]) {
   const g = c.getContext('2d'), { width: w, height: h } = c;
   const img = g.getImageData(0, 0, w, h), a = img.data;
   const vuoto = (x, y) => x < 0 || y < 0 || a[(y * w + x) * 4 + 3] === 0;
