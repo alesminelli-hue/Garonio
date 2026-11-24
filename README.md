@@ -29,6 +29,8 @@ Il design completo è in [GDD.md](GDD.md).
   - **Studio medico** del Dottor Mutua con l'infermiera Assunta: visita a 15€ (vita al massimo, una al giorno).
   - **Palestra «Bicipite d'Oro»** del Sergente: panca, tapis roulant e sacco tolgono stress e danno XP; ogni 5 allenamenti +2 di vita massima (fino a +20).
   - **Pizzeria «Da Gennaro»** (anche il posto degli appuntamenti) e **Kebab di Kemal** in piazza: pasti al tavolo o da asporto nello zaino.
+- **Boss e missioni secondarie** (GDD capitolo 24): ogni edificio e zona della mappa ha un boss. I personaggi te lo chiedono nel dialogo (❗), la tana compare in rosso sulla minimappa e all'ora giusta premi **E** su «⚔️ Affronta». Venti boss dal livello 5 al 30 (il Tasso in cantina, il Generale Piccione in piazza, Brutus del Postino, la Dorifora del Patata, il Pipistrellone del campanile, il Toro di Frank, l'Armatura del castello... fino a **Mister Mountain**), con meccaniche diverse: rinforzi, furia, cure, scudo e colpi caricati (quando si carica, Difenditi!). Ognuno lascia un pezzo unico: armi nuove (piede di porco, forchettone d'oro, chiave inglese, arpione, spadone) e vestiti.
+- **Livelli fino al 30**: ogni nemico ha il suo livello (accanto al nome nello scontro) e cresce con te; alcuni nascono **feroci** (alone rosso, più forti, bottino sicuro). I nemici lasciano bottino da vendere al Bubetto (pelli, zanne, piume, gingilli, pepite). Al **livello 30** comincia il gioco libero: i boss battuti tornano ogni settimana in versione **leggendaria** (segno dorato) con bottino raro.
 - **Mezzi**: avvicinati alla Vespa, alla Punto o ai trattori e premi **E** per salire o scendere. Si guida con frecce/WASD o con la levetta, **Q** (o il pulsante 📯 sul telefono) suona il clacson.
   - La Vespa blu è veloce ma ogni tanto non parte o si spegne. La Punto bianca consuma benzina e può forare.
   - I trattori arano da soli le zolle del campo dove passano e spaventano le nutrie, ma con gli urti o guidando troppo stanco si rompono: arriva Mister Mountain.
@@ -89,8 +91,8 @@ Le colonne sonore stanno in `assets/music/` e si collegano alle scene in `assets
 
 | Scena (nel codice) | Traccia | Quando suona |
 |---|---|---|
-| `intro` | **Grand Theft Tractor** (`intro.mp3`) | Schermata del titolo e prologo |
-| `base` / `notte` / `bar` | **Morning in the Valleys** (`sottofondo.mp3`), alternato a Grand Theft Tractor | A piedi: giornata, sera e bar |
+| `intro` | **Grand Theft Tractor**, due versioni a turno (`intro.mp3`, `intro_2.mp3`) | Schermata del titolo e prologo |
+| `base` / `notte` / `bar` | **Morning in the Valleys** (`sottofondo.mp3`), alternato alle due versioni di Grand Theft Tractor | A piedi: giornata, sera e bar |
 | `guida` | **📻 Radio Bassa FM:** tutte le canzoni (Il Conte della Bassa, Canaglia, Sunset Truciolone, Pappa Garonio, Mister Scarogna, Palestra Delirio, Boborriello, Rabbia incontrollata) in ordine sparso, col titolo che compare in un avviso | Alla guida di Vespa, Punto o trattore |
 | `rabbia` / `nemico` / `combattimento` | musichetta 8‑bit (lista vuota) | Stress oltre 85, nemici, scontri |
 

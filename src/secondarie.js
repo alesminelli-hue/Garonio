@@ -42,6 +42,7 @@ export class Secondarie {
     if (r.livello && s.level < r.livello) return false;
     if (r.giorno && s.day < r.giorno) return false;
     if (r.dopo && this.stato(r.dopo) !== 'fatta') return false;
+    if (r.check && !r.check(this.game)) return false;
     for (const [p, min] of Object.entries(r.amicizia || {})) if (this.game.png.amicizia(p) < min) return false;
     return true;
   }

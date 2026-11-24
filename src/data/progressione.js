@@ -3,8 +3,10 @@
 //  Solo numeri e testi: si può ritoccare senza toccare il codice.
 // =====================================================================
 
+// Livello massimo 30: è l'endgame. Arrivati lì si sbloccano le sfide leggendarie dei boss (src/boss.js)
+// e comincia il gioco libero. La velocità resta quella di prima (livello × 20 per salire).
 export const LIVELLI = {
-  max: 20,
+  max: 30,
   xpPer: level => level * 20,        // esperienza per passare dal livello L al L+1
   perLivello: { atk: 2, def: 1, vitaMax: 5, punti: 1 },
   vitaBase: 100,
@@ -18,6 +20,8 @@ export const TITOLI = [
   { da: 10, nome: 'Il Bracciante' },
   { da: 15, nome: 'Il Fattore' },
   { da: 20, nome: 'La Leggenda della Bassa' },
+  { da: 25, nome: 'Il Terrore dei Fossi' },
+  { da: 30, nome: 'Il Padrone della Bassa' },
 ];
 export const titolo = level => [...TITOLI].reverse().find(t => level >= t.da).nome;
 

@@ -52,6 +52,12 @@ body.in-battle #touch, body.in-battle #hud, body.in-battle #prompt { display: no
 .b-enemy.dead { opacity: 0; transform: translateX(40px); transition: opacity .7s, transform .7s; pointer-events: none; }
 .b-einfo { font-size: 11px; text-align: center; margin-bottom: 4px; white-space: nowrap; text-shadow: 1px 1px 0 #000; }
 .b-einfo .track { width: 70px; height: 6px; margin: 2px auto 0; }
+.b-einfo .b-elv { font-style: normal; font-size: 10px; margin-left: 4px; padding: 0 3px; border-radius: 3px; background: rgba(0,0,0,.45); color: #cfe6ff; }
+.b-einfo .b-elv.boss { background: #7a1020; color: #ffe08a; }
+.b-enemy.feroce .b-einfo span { color: #ff9a6a; }
+.b-enemy.feroce .b-sprite { filter: drop-shadow(0 0 3px rgba(255,80,40,.75)); }
+.b-enemy.boss .b-einfo span { color: #ffe08a; font-weight: bold; }
+.b-enemy.boss .b-einfo .track { width: 110px; height: 8px; }
 .b-einfo .fill { background: #e04848; }
 
 .b-sprite.hit { animation: b-hit .45s steps(2); }
