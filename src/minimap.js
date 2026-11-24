@@ -50,12 +50,35 @@ export class Minimap {
     if (x === null || x === undefined) this.markers.delete(id); else this.markers.set(id, { x, z, color, glyph });
   }
 
+  // Meta della freccia del diario (src/diario.js): linea tratteggiata dal giocatore e cerchio che pulsa; null per toglierla.
+  setRotta(x, z, testo = '') {
+    if (x === null || x === undefined) { this.rotta = null; if (this.rottaEl) this.rottaEl.hidden = true; return; }
+    this.rotta = { x, z };
+    if (!this.rottaEl) { this.rottaEl = document.createElement('div'); this.rottaEl.className = 'mm-rotta'; this.el.appendChild(this.rottaEl); }
+    if (this.rottaEl.textContent !== testo) this.rottaEl.textContent = testo;
+    this.rottaEl.hidden = !testo;
+  }
+
+  _disegnaRotta(g, px, pz) {
+    const S = this.S, r = this.rotta, t = performance.now() / 1000;
+    g.save();
+    g.lineWidth = 2; g.setLineDash([4, 3]); g.lineDashOffset = -t * 12;
+    g.strokeStyle = '#1a1420'; g.beginPath(); g.moveTo(px * S, pz * S); g.lineTo(r.x * S, r.z * S); g.stroke();
+    g.lineWidth = 1; g.strokeStyle = '#ffd84a'; g.stroke();
+    g.setLineDash([]);
+    const R = 6 + Math.sin(t * 5) * 2;
+    g.lineWidth = 3; g.strokeStyle = '#1a1420'; g.beginPath(); g.arc(r.x * S, r.z * S, R, 0, Math.PI * 2); g.stroke();
+    g.lineWidth = 2; g.strokeStyle = '#ffd84a'; g.stroke();
+    g.restore();
+  }
+
   update(px, pz, dt = 0.016) {
     this.t += dt;
     if (this.t < 0.1) return;
     this.t = 0;
     const g = this.canvas.getContext('2d'), S = this.S;
     g.drawImage(this.base, 0, 0);
+    if (this.rotta) this._disegnaRotta(g, px, pz);
     for (const m of this.markers.values()) if (m.glyph) {
       g.fillStyle = '#1a1420'; g.beginPath(); g.arc(m.x * S, m.z * S, 7, 0, Math.PI * 2); g.fill();
       g.fillStyle = m.color; g.beginPath(); g.arc(m.x * S, m.z * S, 5.5, 0, Math.PI * 2); g.fill();

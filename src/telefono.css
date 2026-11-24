@@ -1,0 +1,121 @@
+/* Telefonino a conchiglia (src/telefono.js) */
+
+/* ---------- pulsante 📱 ---------- */
+#btn-tel { position: relative; }
+#btn-tel .tel-badge { position: absolute; top: -5px; left: -5px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: #e04848; color: #fff;
+  font: bold 11px/18px "Courier New", monospace; font-style: normal; text-align: center; border: 2px solid var(--ink); }
+#btn-tel .tel-badge[hidden], #btn-tel .tel-badge:empty { display: none; }
+#btn-tel.squilla { animation: tel-vibra .25s infinite; border-color: #7dff8a !important; box-shadow: 0 0 0 3px rgba(125,255,138,.5), 0 3px 10px rgba(0,0,0,.35) !important; }
+@keyframes tel-vibra { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-14deg) translateX(-2px); } 75% { transform: rotate(14deg) translateX(2px); } }
+/* sul telefono vero: tondo sopra il pulsante E */
+body.touch #hud > #btn-tel { position: fixed; right: calc(max(28px, env(safe-area-inset-right)) + 16px); bottom: calc(max(36px, env(safe-area-inset-bottom)) + 94px);
+  width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; padding: 0; pointer-events: auto; cursor: pointer;
+  background: rgba(30,40,80,.85); color: var(--paper); border: 2px solid rgba(255,255,255,.6); box-shadow: 0 4px 12px rgba(0,0,0,.4);
+  font: inherit; -webkit-tap-highlight-color: transparent; touch-action: none; }
+body.touch #hud > #btn-tel .ic { font-size: 22px; line-height: 1; }
+body.touch #hud > #btn-tel .lb, body.touch #hud > #btn-tel kbd { display: none; }
+body:has(#dialog:not([hidden])) #hud > #btn-tel:not(.squilla) { opacity: 0; pointer-events: none; }
+
+/* ---------- chiamata in arrivo ---------- */
+#tel-squillo { position: fixed; left: 50%; top: max(14px, env(safe-area-inset-top)); transform: translateX(-50%); z-index: 40; pointer-events: auto;
+  display: grid; grid-template-columns: auto 1fr; grid-template-areas: "ico info" "btn btn"; gap: 8px 12px; align-items: center;
+  width: min(380px, calc(100vw - 24px)); padding: 12px 14px; border-radius: 14px; color: var(--paper);
+  background: linear-gradient(180deg, rgba(36,52,104,.97), rgba(20,24,52,.97)); border: 3px solid #7dff8a; box-shadow: 0 0 0 3px var(--ink), 0 10px 30px rgba(0,0,0,.55);
+  animation: tel-entra .3s ease-out; }
+#tel-squillo[hidden] { display: none; }
+#tel-squillo.mm { border-color: #ff5a4a; background: linear-gradient(180deg, rgba(110,20,24,.97), rgba(40,10,14,.97)); }
+@keyframes tel-entra { from { transform: translate(-50%, -140%); } to { transform: translate(-50%, 0); } }
+#tel-squillo .tsq-ico { grid-area: ico; font-size: 34px; animation: tel-vibra .2s infinite; }
+#tel-squillo .tsq-info { grid-area: info; min-width: 0; }
+#tel-squillo .tsq-nome { font-size: 16px; color: var(--gold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#tel-squillo .tsq-sub { font-size: 12px; opacity: .85; animation: blink 1s infinite; }
+#tel-squillo .tsq-btn { grid-area: btn; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#tel-squillo button { position: relative; font: inherit; font-size: 15px; padding: 10px 6px; border-radius: 10px; border: 2px solid var(--ink); color: #fff; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#tel-squillo .tsq-si { background: #2f9a46; } #tel-squillo .tsq-no { background: #b8342c; }
+#tel-squillo button:active { transform: scale(.95); }
+#tel-squillo kbd { position: absolute; right: 4px; top: 3px; font: bold 10px "Courier New", monospace; opacity: .75; }
+body.touch #tel-squillo kbd { display: none; }
+
+/* ---------- il telefono aperto ---------- */
+#telefono { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; pointer-events: auto;
+  --u: min(0.9vh, 0.9dvh, 2vw, 6.2px); }
+#telefono[hidden] { display: none; }
+#telefono .tel-fondo { position: absolute; inset: 0; background: rgba(8,10,24,.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+#telefono .tel { position: relative; width: calc(var(--u) * 48); display: flex; flex-direction: column; align-items: stretch; perspective: calc(var(--u) * 200);
+  filter: drop-shadow(0 calc(var(--u) * 2) calc(var(--u) * 3) rgba(0,0,0,.6)); }
+#telefono.apre .tel { animation: tel-su .25s ease-out; }
+#telefono.apre .tel-sopra { animation: tel-apri .45s cubic-bezier(.2,1.3,.4,1); }
+#telefono.chiude .tel-sopra { animation: tel-chiudi .22s ease-in forwards; }
+@keyframes tel-su { from { transform: translateY(40%) scale(.8); opacity: 0; } }
+@keyframes tel-apri { from { transform: rotateX(-165deg); } to { transform: rotateX(0); } }
+@keyframes tel-chiudi { to { transform: rotateX(-165deg); } }
+
+.tel-sopra, .tel-sotto { background: linear-gradient(135deg, #b9c4dc 0%, #7d8db4 35%, #5a6a94 70%, #8a98bc 100%); border: calc(var(--u) * .5) solid #26304e; }
+.tel-sopra { height: calc(var(--u) * 50); border-radius: calc(var(--u) * 6) calc(var(--u) * 6) calc(var(--u) * 2) calc(var(--u) * 2); transform-origin: 50% 100%;
+  display: flex; flex-direction: column; align-items: center; padding: calc(var(--u) * 2) calc(var(--u) * 3) calc(var(--u) * 1.5); backface-visibility: hidden; }
+.tel-casse { display: flex; gap: calc(var(--u) * .8); margin-bottom: calc(var(--u) * 1.5); }
+.tel-casse i { width: calc(var(--u) * 4); height: calc(var(--u) * .6); border-radius: 9px; background: #26304e; }
+.tel-schermo { flex: 1; width: 100%; padding: calc(var(--u) * 1.2); border-radius: calc(var(--u) * 2); background: #1a2036; box-shadow: inset 0 0 0 calc(var(--u) * .4) #0c0f1c; display: flex; }
+.tel-lcd { flex: 1; min-height: 0; display: flex; flex-direction: column; border-radius: calc(var(--u) * .8); overflow: hidden;
+  background: linear-gradient(180deg, #c4e2a6, #9cc882); color: #17240e; font: bold calc(var(--u) * 2.4)/1.25 "Courier New", monospace;
+  box-shadow: inset 0 0 calc(var(--u) * 2) rgba(40,70,20,.45); background-image: linear-gradient(180deg, #c4e2a6, #9cc882), repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.04) 2px 3px); }
+.tel-marca { margin-top: calc(var(--u) * 1); font: calc(var(--u) * 1.9) "Rye", serif; letter-spacing: calc(var(--u) * .5); color: #26304e; opacity: .85; }
+.tel-cerniera { height: calc(var(--u) * 3); margin: calc(var(--u) * -.6) calc(var(--u) * 6); border-radius: calc(var(--u) * 1.5); position: relative; z-index: 2;
+  background: linear-gradient(180deg, #4a5578, #9aa6c6 45%, #3a4466); border: calc(var(--u) * .4) solid #1a2036; }
+.tel-sotto { border-radius: calc(var(--u) * 2) calc(var(--u) * 2) calc(var(--u) * 7) calc(var(--u) * 7); padding: calc(var(--u) * 2) calc(var(--u) * 3) calc(var(--u) * 2);
+  display: flex; flex-direction: column; gap: calc(var(--u) * 1.2); }
+.tel-sotto button { font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; color: #f0f2fa; touch-action: manipulation; }
+.tel-sotto button:active { filter: brightness(1.4); scale: .94; }
+.tel-soft { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: calc(var(--u) * 1.5); }
+.tel-soft .sk { height: calc(var(--u) * 5); border-radius: calc(var(--u) * 2.5); background: #2a3354; border: calc(var(--u) * .3) solid #141a30; font-size: calc(var(--u) * 2); }
+.tel-dpad { position: relative; width: calc(var(--u) * 14); height: calc(var(--u) * 14); border-radius: 50%; background: radial-gradient(circle, #3a4466 0 40%, #2a3354 41%); border: calc(var(--u) * .4) solid #141a30; }
+.tel-dpad .dp { position: absolute; background: none; border: 0; font-size: calc(var(--u) * 1.8); width: calc(var(--u) * 5); height: calc(var(--u) * 5); display: grid; place-items: center; padding: 0; }
+.tel-dpad .su { top: 0; left: 50%; transform: translateX(-50%); } .tel-dpad .giu { bottom: 0; left: 50%; transform: translateX(-50%); }
+.tel-dpad .sx { left: 0; top: 50%; transform: translateY(-50%); } .tel-dpad .dx { right: 0; top: 50%; transform: translateY(-50%); }
+.tel-dpad .ok { left: 50%; top: 50%; transform: translate(-50%, -50%); width: calc(var(--u) * 6); height: calc(var(--u) * 6); border-radius: 50%; background: #c0c8e0; color: #1a2036; font-size: calc(var(--u) * 1.8); }
+.tel-verdi { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 10); margin-top: calc(var(--u) * -4.5); padding: 0 calc(var(--u) * .5); pointer-events: none; }
+.tel-verdi button { pointer-events: auto; height: calc(var(--u) * 4); border-radius: calc(var(--u) * 2); border: calc(var(--u) * .3) solid #141a30; font-size: calc(var(--u) * 2); }
+.tel-verdi .verde { background: #2f9a46; } .tel-verdi .rosso { background: #b8342c; }
+.tel-tasti { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 1) calc(var(--u) * 1.6); }
+.tel-tasti button { height: calc(var(--u) * 4.6); border-radius: calc(var(--u) * 2.3); background: linear-gradient(180deg, #e4e8f4, #b4bcd4); color: #1a2036; border: calc(var(--u) * .3) solid #2a3354;
+  display: flex; align-items: baseline; justify-content: center; gap: calc(var(--u) * .6); padding: 0; }
+.tel-tasti b { font-size: calc(var(--u) * 2.2); } .tel-tasti small { font-size: calc(var(--u) * 1.2); opacity: .7; }
+.tel-micro { align-self: center; width: calc(var(--u) * 1); height: calc(var(--u) * 1); border-radius: 50%; background: #26304e; margin-top: calc(var(--u) * .3); }
+
+/* contenuto dello schermo */
+.lcd-top, .lcd-bot { display: flex; justify-content: space-between; padding: calc(var(--u) * .4) calc(var(--u) * 1); font-size: calc(var(--u) * 1.8); }
+.lcd-top { border-bottom: 2px solid rgba(23,36,14,.35); }
+.lcd-bot { border-top: 2px solid rgba(23,36,14,.35); background: rgba(23,36,14,.08); }
+.lcd-corpo { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: calc(var(--u) * .6) calc(var(--u) * 1); overflow: hidden; }
+.lcd-corpo.home { align-items: center; justify-content: center; text-align: center; gap: calc(var(--u) * .5); }
+.lcd-op { font-size: calc(var(--u) * 2); letter-spacing: calc(var(--u) * .3); opacity: .8; }
+.lcd-ora { font-size: calc(var(--u) * 6); line-height: 1; letter-spacing: calc(var(--u) * .2); }
+.lcd-ora.piccolo { font-size: calc(var(--u) * 3); }
+.lcd-data { font-size: calc(var(--u) * 2); }
+.lcd-avviso { font-size: calc(var(--u) * 2); background: #17240e; color: #c4e2a6; padding: 0 calc(var(--u) * .8); margin-top: calc(var(--u) * .4); animation: blink 1.2s infinite; }
+.lampeggia { animation: blink .8s infinite; }
+.lcd-titolo { text-align: center; background: #17240e; color: #c4e2a6; margin: 0 calc(var(--u) * -1) calc(var(--u) * .5); padding: calc(var(--u) * .2) 0; }
+.lcd-lista { flex: 1; overflow-y: auto; scrollbar-width: none; }
+.lcd-lista::-webkit-scrollbar { display: none; }
+.lcd-voce { display: flex; justify-content: space-between; gap: calc(var(--u) * .8); padding: calc(var(--u) * .35) calc(var(--u) * .6); cursor: pointer; white-space: nowrap; }
+.lcd-voce span { overflow: hidden; text-overflow: ellipsis; }
+.lcd-voce small { font-size: calc(var(--u) * 1.6); opacity: .75; }
+.lcd-voce.sel { background: #17240e; color: #c4e2a6; }
+.lcd-sms { flex: 1; overflow-y: auto; font-size: calc(var(--u) * 2.2); white-space: pre-wrap; scrollbar-width: none; }
+.lcd-vuoto { text-align: center; opacity: .7; margin-top: calc(var(--u) * 2); }
+
+/* telefono in orizzontale con poco spazio in altezza: la conchiglia si apre di lato */
+@media (orientation: landscape) and (max-height: 520px) {
+  #telefono { --u: min(1.75vh, 1.75dvh, 1vw, 6.2px); }
+  #telefono .tel { flex-direction: row; width: auto; height: calc(var(--u) * 52); }
+  .tel-sopra, .tel-sotto { width: calc(var(--u) * 48); height: auto; }
+  .tel-sopra { border-radius: calc(var(--u) * 6) calc(var(--u) * 2) calc(var(--u) * 2) calc(var(--u) * 6); transform-origin: 100% 50%; }
+  .tel-sotto { border-radius: calc(var(--u) * 2) calc(var(--u) * 7) calc(var(--u) * 7) calc(var(--u) * 2); justify-content: center; }
+  .tel-cerniera { width: calc(var(--u) * 3); height: auto; margin: calc(var(--u) * 6) calc(var(--u) * -.6); }
+  @keyframes tel-apri { from { transform: rotateY(165deg); } to { transform: rotateY(0); } }
+  @keyframes tel-chiudi { to { transform: rotateY(165deg); } }
+}
+/* in orizzontale sopra il pulsante E c'è la minimappa: il telefono va a sinistra del pulsante Q */
+@media (orientation: landscape) {
+  body.touch #hud > #btn-tel { right: calc(max(28px, env(safe-area-inset-right)) + 160px); bottom: calc(max(24px, env(safe-area-inset-bottom)) + 4px); }
+}

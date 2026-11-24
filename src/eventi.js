@@ -5,7 +5,7 @@
 //   nuovoGiorno     { day }                    dopo il risveglio
 //   ora             { ora }                    ogni ora di gioco piena
 //   azione          { tipo }                   zappa, semina, annaffia, raccogli, uovo, nutri
-//   raccolto        { crop }                   pianta raccolta (pomodoro, mais)
+//   raccolto        { crop, x, z }             pianta raccolta (pomodoro, mais)
 //   venduto         { tot }                    vendita alla cassa
 //   nemicoSconfitto { id, place }              uno per ogni nemico battuto
 //   combattimento   { esito, place, nemici }   fine scontro: 'win' | 'lose' | 'flee'
@@ -29,6 +29,9 @@
 //   avventore       { id, passo, fine }        avanza la storia di un avventore del bar
 //   mappaCatastale  {}                         il Geometra dà la mappa catastale (tane sulla mappa grande)
 //   rimorchio       {}                         Ermes presta il rimorchio
+//   carroAttrezzi   { mezzo, prezzo, debito }  Zeno riporta in azienda un mezzo bloccato, rotto o a secco (src/officina.js)
+//   mezzoRotto      { mezzo, tipo, x, z }      un mezzo si è appena rotto (vehicles.js); chi lo vede ride (src/derisione.js)
+//   derisione       { chi, mezzo, reputazione } i paesani ti hanno visto rompere un mezzo
 //   reBancone       {}                         Garonio batte Bruno: Re del bancone
 //   bandoBar        { fino }                   regola di Loredana: bar chiuso per Garonio fino al giorno "fino"
 //   briscola        { vinta, tuoi, suoi }      partita a briscola con Tarcisio
@@ -45,6 +48,15 @@
 //   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
 //   pescato         { esito }                  pesca al laghetto (src/lavoretti.js); legna e pesca mandano anche azione { tipo }
 //   sorpresa        { tipo, esito }            easter egg ed eventi casuali (src/sorprese.js)
+//   gatto           {}                         Garonio accarezza un gatto (src/vita.js)
+//   beccatoDormire  {}                         il Gigante becca Garonio che dorme in giro
+//   collezionabile  { id, collezione, completa }  trovato un tappo, santino o figurina (src/diario.js)
+//   trofeo          { id }                     preso un trofeo (src/diario.js)
+//   telefono        { tipo, chi }              telefonino (src/telefono.js): 'risposta' | 'rifiutata' | 'persa' | 'chiamata' | 'sms'
+//   annaffiato      { x, z }                   zolla annaffiata a mano
+//   sconfitta       { place }                  Garonio va a terra in uno scontro (il santino non l'ha salvato)
+//   comprato        { tipo, id, prezzo }       acquisto nel magazzino del Bubetto (src/negozio.js)
+//   affilatura      { arma, grado, fregatura } Zeno ha affilato (fregatura: null | 'sovrapprezzo' | 'meta')
 export class Eventi {
   constructor() { this._h = {}; }
   on(name, fn) { (this._h[name] ??= []).push(fn); return () => this.off(name, fn); }
