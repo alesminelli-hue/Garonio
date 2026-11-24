@@ -41,6 +41,9 @@ Il design completo è in [GDD.md](GDD.md).
 - **Gare di trattori**: sali sul trattore e vai alla **lavagna delle gare** sulla capezzagna, vicino al fienile. Sfida il Patata (posta 10 €), il cugino Ermes (25 €, serve rispetto 15) o Mister Frank (50 €, rispetto 35): conto alla rovescia, fino alla bandierina in fondo, si gira e si torna. Balle di fieno e fango sulla strada, sportellate dal rivale. Chi vince prende la posta e al bar lo sanno subito (rispetto su o giù). Una gara al giorno per rivale, dalle 7 alle 20.
 - **Scommesse del Consulente** (al suo tavolino al bar): la gara delle 18 tra Ermes e Frank, te stesso nella prossima gara di trattori, la tua prossima rissa (su di te o «contro», la combine, che Loredana non perdona) e la rissa della sera tra due avventori. La puntata massima sale col rango al bar; le vincite grosse alzano il rispetto.
 - Per provare dalla console: `garonio.imprevisti.prova('cane' | 'buca' | 'pozze' | 'cantiere' | 'impiccione')`.
+- **Diario e freccia**: nel menu (**J**) ogni lavoro ha il pulsante 📍. La freccia gialla a terra, il segnalino sopra la meta e la linea sulla minimappa portano lì (in automatico seguono la missione del Gigante).
+- **Collezionabili**: 8 tappi di birra, 8 santini e 8 figurine nascosti in giro. Luccicano solo da vicino; il Consulente, per 3€, dice dov'è il più vicino. Ogni collezione completa regala un portafortuna.
+- **Trofei**: scheda 🏆 nel menu, per esempio «Scansafatiche d'oro» dopo 50 notti di sonno. Alcuni sono segreti.
 - **Livelli e abilità**: a ogni livello (fino al 20) guadagni un punto abilità da spendere nel menu (**J**) in uno dei sette rami.
 - Il gioco si salva da solo nel browser.
 

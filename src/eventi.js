@@ -46,6 +46,10 @@
 //   randagio        { esito }                  il cane randagio: 'scacciato' | 'amico' | 'battuto'
 //   impiccione      { png, scelta }            un paesano attacca bottone: 'ascolta' | 'taglia' | 'telefono'
 //   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
+//   gatto           {}                         Garonio accarezza un gatto (src/vita.js)
+//   beccatoDormire  {}                         il Gigante becca Garonio che dorme in giro
+//   collezionabile  { id, collezione, completa }  trovato un tappo, santino o figurina (src/diario.js)
+//   trofeo          { id }                     preso un trofeo (src/diario.js)
 //   telefono        { tipo, chi }              telefonino (src/telefono.js): 'risposta' | 'rifiutata' | 'persa' | 'chiamata' | 'sms'
 //   annaffiato      { x, z }                   zolla annaffiata a mano
 //   sconfitta       { place }                  Garonio va a terra in uno scontro (il santino non l'ha salvato)
