@@ -26,6 +26,7 @@ import { ENEMIES } from './combat.js';
 import { ROADS, ROAD_GRAPH, surfaceAt, MAP_W, MAP_H, PLACES } from './map.js';
 import { IMPREVISTI as I, PARADISO, TRAFFICO } from './data/vita.js';
 import { pick, fill } from './racconto.js';
+import { fraseSulleRagazze } from './ragazze.js';
 
 const H = 60;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -432,7 +433,9 @@ export class Imprevisti {
     const g = this.game, s = this.s, C = I.impiccioni;
     if (g.ui.busy() || g.locked) return;
     const tranv = this.s.flags.paradiso?.tranvione;
-    const testo = tranv != null && s.day - tranv <= 2 ? pick(PARADISO.pettegolezzo) : pick(C.attacchi);
+    const proprie = p.def.frasi?.length && Math.random() < 0.6 ? pick(p.def.frasi) : null;   // ognuno le sue fissazioni
+    const testo = tranv != null && s.day - tranv <= 2 ? pick(PARADISO.pettegolezzo)
+      : (Math.random() < 0.35 && fraseSulleRagazze(s, p.def.sulleRagazze)) || proprie || pick(C.attacchi);
     const pag = (text, choices) => ({ who: p.id, name: p.def.nome, text, choices });
     const fine = scelta => g.emit('impiccione', { png: p.id, scelta });
     const parl = g.prog.grado?.('parlantina') || 0;

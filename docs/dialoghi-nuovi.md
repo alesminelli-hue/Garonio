@@ -1,6 +1,6 @@
 # Dialoghi nuovi di Grand Theft Tractor Goodville City
 
-Bozza da rivedere. **Niente di questo è ancora collegato al gioco.** Quando approvi (anche a pezzi), ogni blocco va copiato nel file di dati indicato tra parentesi, con lo stesso formato che c'è già.
+Approvata da Alessandro e **collegata al gioco**: ogni blocco sta nel file di dati indicato tra parentesi. Questo file resta come riferimento; per cambiare una battuta si modifica il file di dati.
 
 Come leggere le risposte del corteggiamento:
 

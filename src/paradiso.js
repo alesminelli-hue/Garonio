@@ -80,6 +80,7 @@ export class Paradiso {
     ]));
     I.aggancia('paradiso:divano', () => dice('commendatore', pick(T.commendatore)));
     I.aggancia('paradiso:moreno', () => dice('moreno', pick(T.moreno)));
+    I.aggancia('paradiso:svetlana', () => dice('svetlana', pick(T.svetlana)));
     I.aggancia('paradiso:geometra', () => {
       if (this.f.geometra === s.day) return dice('geometra', T.geometra.dopo);
       this.f.geometra = s.day; s.money += T.geometra.soldi; g.audio.sfx('coin');
@@ -153,7 +154,7 @@ export class Paradiso {
       ...D.catalogo.map(c => ({
         label: `💋 ${c.nome} · ${c.prezzo}€ (stress −${c.stress}, +${c.xp} XP)`,
         disabled: s.money < c.prezzo,
-        fn: () => [pag(`${c.nome}. ${c.desc}`, [
+        fn: () => [pag(`${c.nome}. ${c.desc}${c.battute?.length ? ` Dal divanetto: ${pick(c.battute)}` : ''}`, [
           { label: `${D.conferma} (${c.prezzo}€)`, fn: () => this._serata(c, pag) },
           { label: D.indietro, fn: () => [catalogo('Il catalogo, di nuovo. Le pagine si attaccano un po\'.')] },
         ])],

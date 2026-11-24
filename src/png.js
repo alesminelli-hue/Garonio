@@ -16,6 +16,7 @@
 import * as PIX from './pixel.js';
 import { PNG } from './data/png.js';
 import { pick, fill } from './racconto.js';
+import { fraseSulleRagazze } from './ragazze.js';
 
 const H = 60;
 
@@ -142,7 +143,8 @@ export class Personaggi {
         choices.push({ label: 'Chiacchiera', fn: () => {
           if (st.ultimaChiacchiera !== this.s.day) { st.ultimaChiacchiera = this.s.day; this.cambiaAmicizia(id, 1); }
           g.s.minutes += 10;
-          return [{ who: id, name: def.nome, text: fill(pick(def.chiacchiere), vars) }, menu()];
+          const sr = Math.random() < 0.35 ? fraseSulleRagazze(this.s, def.sulleRagazze) : null;   // a volte parlano della tua ragazza
+          return [{ who: id, name: def.nome, text: sr ?? fill(pick(def.chiacchiere), vars) }, menu()];
         } });
         choices.push({ label: 'Ciao', fn: null });
         return { who: id, name: def.nome, text: 'Altro?', choices };
