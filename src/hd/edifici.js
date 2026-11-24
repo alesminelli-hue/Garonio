@@ -561,7 +561,7 @@ export function pizzeria() {
   tettoCoppi(d, 0, 0, W, 27, '#b8432e');
   intonaco(d, mx, my, mw, hM, '#f0d8a8', 27, 1);
   ombraGronda(d, mx, my, mw);
-  insegna(d, mx + (mw >> 1), my + 3, 'DA GENNARO', '#2a7a3a');
+  insegna(d, mx + (mw >> 1), my + 3, 'BELLA NAPOLI', '#2a7a3a');
   tenda(d, mx + 4, my + 14, mw - 8, '#c8302a');
   // vetrina col forno acceso
   vetrina(d, mx + 8, my + 26, 34, 14, [[4, 4, 12, 9, '#6a3a22'], [7, 7, 6, 5, '#ff9a30'], [8, 8, 4, 3, '#ffe060'], [21, 6, 8, 2, '#f4f0e4'], [20, 8, 10, 1, '#d84a3a']]);
@@ -610,7 +610,7 @@ export function meccanico() {
 
 export const EDIFICI = [
   ['Casa di Garonio', () => casa()], ['Officina', officina], ['Bar', bar], ['Alimentari', alimentari],
-  ['Tabacchi', tabacchi], ['Municipio', municipio], ['Night Paradiso', paradiso], ['Bubetto (magazzino)', magazzino],
+  ['Tabacchi', tabacchi], ['Municipio', municipio], ['Night Welcome', paradiso], ['Bubetto (magazzino)', magazzino],
   ['Casa rosa', () => casa({ w: 6, h: 3.4, muro: '#e8a8a0', tetto: '#a83a2a', pers: '#6a4a2a', seed: 3, piani: 2 })],
   ['Casa azzurra', () => casa({ w: 6, muro: '#a8c8e0', tetto: '#8a3a2a', pers: '#f4f0e4', seed: 5 })],
   ['Cascina del Patata', () => cascina()], ['Cascina del Postino', () => cascina({ muro: '#f0d8b8', tetto: '#8a3a2a', w: 7 })],

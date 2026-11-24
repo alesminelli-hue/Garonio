@@ -6,7 +6,7 @@
 //  - Mister Mountain in ferie che pesca al laghetto la domenica mattina;
 //  - la Sagra del Cotechino in piazza ogni 7 giorni, con la banda, il liscio e le salamelle;
 //  - luci strane sopra il grano di notte, e il giorno dopo un cerchio nel grano.
-// Inoltre: segnalino del Night Paradiso sulla minimappa.
+// Inoltre: segnalino del Night Welcome sulla minimappa.
 //
 // API (game.sorprese):
 //   maiale               il maiale scappato { x, z } | null (il traffico gli si ferma davanti)
@@ -133,7 +133,7 @@ export class Sorprese {
   animate(dt) {
     this.t += dt;
     const g = this.game, f = this.f, h = this._ora(), s = this.s;
-    // segnalino del Paradiso sulla minimappa (la minimappa nasce dopo il gioco)
+    // segnalino del Welcome sulla minimappa (la minimappa nasce dopo il gioco)
     if (!this._mm) { const mm = window.__garonio?.minimap; if (mm) { mm.setMarker('paradiso', PARADISO.porta[0], PARADISO.porta[1] - 2, '#ff5fd0', '♥'); this._mm = true; } }
     const T = S.turista;
     this.turista.group.visible = f.turista === 'oggi' && h >= T.ore[0] && h < T.ore[1];

@@ -45,7 +45,7 @@
 //   buca            { mezzo, danno, x, z }     un mezzo prende una buca (src/imprevisti.js)
 //   randagio        { esito }                  il cane randagio: 'scacciato' | 'amico' | 'battuto'
 //   impiccione      { png, scelta }            un paesano attacca bottone: 'ascolta' | 'taglia' | 'telefono'
-//   paradiso        { id, prezzo, tranvione }  serata al Night Paradiso (src/paradiso.js)
+//   paradiso        { id, prezzo, tranvione }  serata al Night Welcome (src/paradiso.js)
 //   pescato         { esito }                  pesca al laghetto (src/lavoretti.js); legna e pesca mandano anche azione { tipo }
 //   sorpresa        { tipo, esito }            easter egg ed eventi casuali (src/sorprese.js)
 //   gatto           {}                         Garonio accarezza un gatto (src/vita.js)

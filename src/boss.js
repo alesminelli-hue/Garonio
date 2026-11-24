@@ -69,9 +69,10 @@ export class Boss {
     this._css();
     // ogni boss è una missione secondaria offerta da un personaggio
     for (const [id, b] of Object.entries(BOSS)) {
+      if (b.senzaMissione) continue;
       const req = { ...(b.requisiti || {}) };
       const tutti = req.tuttiIBoss; delete req.tuttiIBoss;
-      if (tutti) req.check = () => Object.keys(BOSS).every(k => k === id || this.stato(k) === 'vinto');
+      if (tutti) req.check = () => Object.keys(BOSS).every(k => k === id || BOSS[k].senzaMissione || this.stato(k) === 'vinto');
       g.quests.aggiungi(quest(id), {
         da: b.da, titolo: `${b.icona} ${b.titolo}`, offerta: b.offerta, accetta: b.accetta, rifiuta: 'Non ancora',
         obiettivo: { evento: 'bossSconfitto', filtro: { id, leggenda: false }, n: 1 },
@@ -114,7 +115,7 @@ export class Boss {
   }
 
   // ---------- Tane sulla mappa e negli edifici ----------
-  _visibile(id) { return this.stato(id) === 'attiva' || this._leggendaPronta(id); }
+  _visibile(id) { return !BOSS[id].senzaMissione && (this.stato(id) === 'attiva' || this._leggendaPronta(id)); }
 
   _segni() {
     const W = this.game.world, mm = window.__garonio?.minimap;
@@ -203,6 +204,7 @@ export class Boss {
     const enemies = [{ id: nemicoBoss(id), lv: L }, ...(b.seguaci || []).map(sid => ({ id: sid, lv: Math.max(1, L - 2), feroce: false }))];
     const luogo = b.tana.luogo || (b.tana.interno ? 'interno' : 'campo');
     const res = await g.combat.start({ enemies, place: luogo, intro: legg ? `${b.nemico.name} leggendario: ${T.leggendaIntro}` : b.intro, script: this._script(id, L, legg), canFlee: true });
+    if (b.senzaMissione) return res;
     if (res === 'win') await this._vittoria(id, legg);
     else if (res === 'lose') { this.s.stress = clamp(this.s.stress + 15, 0, 100); await g.ui.dialog([pagina({ testo: T.sconfitta })]); }
     else if (res === 'flee') await g.ui.dialog([pagina({ testo: T.fuga })]);
@@ -324,6 +326,58 @@ export class Boss {
     g.save?.();
   }
 
+  // ---------- Bella Napoli: mangia e scappa senza pagare ----------
+  debitoPizza() { return !!this.st.debitoPizza; }
+
+  async scappaDallaPizzeria() {
+    const g = this.game, b = BOSS.gennaro;
+    await g.ui.dialog(pagine(b.fuga));
+    if (g.interni?.attivo) await g.interni.esci();
+    g.png.cambiaAmicizia('gennaro', -5);
+    await new Promise(r => setTimeout(r, 900));
+    await this.inseguimento();
+  }
+
+  async inseguimento() {
+    const g = this.game, b = BOSS.gennaro, st = (this.st.boss.gennaro ??= {});
+    await g.ui.dialog(pagine(b.descr));
+    const res = await this.affronta('gennaro');
+    if (res === 'win') {
+      this.st.debitoPizza = false;
+      const prima = !st.vinto; st.vinto = true;
+      const bt = prima ? b.bottino : b.bottinoRipeti, cose = [];
+      for (const v of bt.vestiti || []) { g.prog.daiVestito(v, !g.prog.indossato(VESTITI[v].slot)); cose.push(VESTITI[v].nome); }
+      for (const a of bt.armi || []) { g.prog.daiArma(a); cose.push(ARMI[a].nome); }
+      for (const [o, n] of Object.entries(bt.oggetti || {})) { g.prog.dai(o, n); cose.push(this._nomeOgg(o, n)); }
+      g.audio.sfx('coin');
+      await g.ui.dialog([...pagine(prima ? b.vittoria : b.vittoriaRipeti), pagina({ testo: fill(T.bottino, { cose: cose.join(', ') }) })]);
+      g.emit('bossSconfitto', { id: 'gennaro', leggenda: false });
+    } else if (res === 'lose') {
+      this.st.debitoPizza = false;
+      const conto = Math.min(this.s.money, b.debito.prezzo);
+      this.s.money -= conto; this.s.stress = clamp(this.s.stress + 15, 0, 100);
+      g.paradiso?.cambiaReputazione?.(-3);
+      await g.ui.dialog([pagina({ testo: `${b.sconfitta} (−${conto}€)` })]);
+    } else {
+      this.st.debitoPizza = true;
+      await g.ui.dialog([pagina({ testo: b.scappato })]);
+    }
+    g.save?.();
+  }
+
+  // dialogo con Gennaro quando c'è un conto in sospeso
+  scelteDebito() {
+    const g = this.game, D = BOSS.gennaro.debito, s = this.s;
+    const dice = t => ({ who: 'gennaro', name: PNG.gennaro?.nome || 'Gennaro', text: fill(t, { prezzo: D.prezzo }) });
+    return [
+      { label: fill(D.paga, { prezzo: D.prezzo }), disabled: s.money < D.prezzo, fn: () => {
+        s.money -= D.prezzo; this.st.debitoPizza = false; g.audio.sfx('coin'); g.png.cambiaAmicizia('gennaro', 3);
+        return [dice(D.pagato)];
+      } },
+      { label: D.sfida, fn: () => { setTimeout(async () => { if (g.interni?.attivo) await g.interni.esci(); this.inseguimento(); }, 50); return [dice(D.saluto)]; } },
+    ];
+  }
+
   _nomeOgg(id, n = 1) { const o = OGGETTI[id]; return `${o?.icona || ''} ${o?.nome || id}${n > 1 ? ` ×${n}` : ''}`.trim(); }
 
   // ---------- Bottino dei nemici normali (lo chiama src/combat.js) ----------
@@ -388,11 +442,11 @@ export class Boss {
   _menuProva() {
     const g = this.game, menu = () => this._menuProva();
     const lista = () => [{ name: '🧪 Boss', text: 'Combatti subito un boss (alza Garonio al suo livello e lo cura).', choices: [
-      ...Object.entries(BOSS).map(([id, b]) => ({ label: `${b.icona} Lv ${b.lv} · ${b.nemico.name} (${b.zona}) · ${this.stato(id)}`, fn: () => { this._prepara(b.lv); setTimeout(() => this.affronta(id), 50); return null; } })),
+      ...Object.entries(BOSS).map(([id, b]) => ({ label: `${b.icona} Lv ${b.lv} · ${b.nemico.name} (${b.zona}) · ${this.stato(id)}`, fn: () => { this._prepara(b.lv); setTimeout(() => (b.senzaMissione ? this.inseguimento() : this.affronta(id)), 50); return null; } })),
       { label: '◀ Indietro', fn: () => [menu()] },
     ] }];
     const missioni = () => [{ name: '🧪 Missioni dei boss', text: 'Accetta la missione e porta Garonio alla tana (ora compresa).', choices: [
-      ...Object.entries(BOSS).map(([id, b]) => ({ label: `${b.icona} ${b.titolo}`, fn: () => {
+      ...Object.entries(BOSS).filter(([, b]) => !b.senzaMissione).map(([id, b]) => ({ label: `${b.icona} ${b.titolo}`, fn: () => {
         this._prepara(b.lv);
         if (!g.quests.stato(quest(id))) g.quests.accetta(quest(id));
         this.s.minutes = Math.floor(this.s.minutes / (24 * H)) * 24 * H + ((b.tana.ore?.[0] ?? 8) + 0.5) * H;

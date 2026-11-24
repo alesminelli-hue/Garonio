@@ -1,4 +1,4 @@
-// Night Paradiso (GDD 10, «Svago serale»): il locale del catalogo, accanto al paese, aperto dalle 20.
+// Night Welcome (GDD 10, «Svago serale»): il locale del catalogo, accanto al paese, aperto dalle 20.
 // Dentro si esplora come gli altri edifici (motore: src/interni.js): reception con Sandokan e il catalogo,
 // bancone di Lola, il Commendatore sul divanetto, pista da ballo, juke-box, il privé e qualche faccia nota.
 // Dal catalogo: più costa, più abbassa lo stress e più esperienza dà. Niente scene: una riga e via.
@@ -116,7 +116,7 @@ export class Paradiso {
     this.porta.material.opacity = this._aperto() ? nf * 0.5 : 0;
   }
 
-  // a mezzanotte il Paradiso chiude: Sandokan ti accompagna fuori
+  // a mezzanotte il Welcome chiude: Sandokan ti accompagna fuori
   update() {
     const I = this.game.interni;
     if (I?.attivo && I.edificio === 'paradiso' && !this._aperto() && !this._fuori) {
@@ -130,12 +130,12 @@ export class Paradiso {
     if (this.game.vehicles.driving) return null;
     const P = this.game.player.group.position;
     if (Math.hypot(P.x - D.porta[0], P.z - D.porta[1]) > 1.3) return null;
-    return { label: this._aperto() ? 'Entra al Night Paradiso' : 'Night Paradiso (apre alle 20)', fn: () => this.apri() };
+    return { label: this._aperto() ? 'Entra al Night Welcome' : 'Night Welcome (apre alle 20)', fn: () => this.apri() };
   }
 
   async apri() {
     const g = this.game;
-    if (!this._aperto()) return g.ui.dialog([{ name: 'Night Paradiso', text: pick(D.chiuso) }]);
+    if (!this._aperto()) return g.ui.dialog([{ name: 'Night Welcome', text: pick(D.chiuso) }]);
     if (g.interni?.defs?.paradiso) {
       await g.interni.entra('paradiso', { fuori: { x: D.porta[0], z: D.porta[1] + 0.8 } });
       g.ui.toast(pick(T.entrata));
@@ -179,8 +179,8 @@ export class Paradiso {
       g.ui.shake(); g.audio.sfx('bad');
       g.emit('paradiso', { id: c.id, prezzo: c.prezzo, tranvione: true });
       return [
-        { name: 'Night Paradiso', text: c.esito },
-        { name: 'Night Paradiso', text: `${pick(TR.testi)}\n\nPersi: ${c.prezzo + persi}€ · Rispetto al bar: 0 · Reputazione in paese −${TR.reputazione} · Stress +${TR.stress}` },
+        { name: 'Night Welcome', text: c.esito },
+        { name: 'Night Welcome', text: `${pick(TR.testi)}\n\nPersi: ${c.prezzo + persi}€ · Rispetto al bar: 0 · Reputazione in paese −${TR.reputazione} · Stress +${TR.stress}` },
       ];
     }
     s.stress = clamp(s.stress - c.stress, 0, 100);
@@ -189,8 +189,8 @@ export class Paradiso {
     g.audio.sfx('level');
     g.emit('paradiso', { id: c.id, prezzo: c.prezzo, tranvione: false });
     return [
-      { name: 'Night Paradiso', text: c.esito },
-      { name: 'Night Paradiso', text: `${pick(D.uscita)}\n\nStress −${c.stress} · +${c.xp} XP${c.vita ? ` · Vita +${c.vita}` : ''}` },
+      { name: 'Night Welcome', text: c.esito },
+      { name: 'Night Welcome', text: `${pick(D.uscita)}\n\nStress −${c.stress} · +${c.xp} XP${c.vita ? ` · Vita +${c.vita}` : ''}` },
     ];
   }
 }

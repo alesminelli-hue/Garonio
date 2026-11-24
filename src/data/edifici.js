@@ -182,6 +182,7 @@ export const TESTI_EDIFICI = {
   // ---------- pizzeria ----------
   pizzeria: {
     ordina: "Margherita al tavolo ({prezzo}€)",
+    scappa: "🏃 Mangia la margherita e scappa senza pagare (Gennaro è livello 30!)",
     mangiata: [
       "Una margherita fumante. Mozzarella che fila, basilico, Gennaro che canta. Per mezz'ora il mondo è perfetto. Vita +30, stress -10",
       "La pizza è buonissima. Gennaro ti guarda mangiare come un padre orgoglioso. Un padre diverso dal tuo. Vita +30, stress -10",
