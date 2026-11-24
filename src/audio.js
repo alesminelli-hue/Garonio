@@ -13,7 +13,8 @@ const MUSIC_DIR = 'assets/music/';
 //   base / notte   giornata in azienda / dopo le 20
 //   bar            dentro e vicino al bar
 //   rabbia         Garonio si arrabbia (stress alto, litigi al bar)
-//   guida          alla guida di Vespa, Punto o trattore
+//   guida          alla guida di Vespa, Punto o trattore: la RADIO, l'unico posto dove suonano le canzoni (in ordine sparso)
+//   disco:<file>   una canzone precisa scelta al juke-box del bar
 //   nemico         appare un nemico (Mister Mountain, nutrie che attaccano)
 //   combattimento  scontro a turni
 export const MUSIC_SCENES = ['intro', 'base', 'notte', 'bar', 'rabbia', 'guida', 'nemico', 'combattimento'];
@@ -42,6 +43,10 @@ export class Audio {
       const r = await fetch(MUSIC_DIR + 'playlist.json', { cache: 'no-cache' });
       if (r.ok) this.playlist = await r.json();
     } catch { /* nessuna playlist: va bene lo stesso */ }
+    // la radio parte ogni volta da un punto diverso della scaletta
+    const radio = this._list('guida');
+    for (let i = radio.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [radio[i], radio[j]] = [radio[j], radio[i]]; }
+    this.radio = radio;
   }
 
   // Va chiamato dopo un click/tasto (i browser bloccano l'audio prima).
@@ -69,7 +74,12 @@ export class Audio {
 
   _curve(v) { return v * v * 1.6; }   // il volume "a orecchio" non è lineare
 
-  attach(game) { this.fx.attach(game); }
+  attach(game) { this.game = game; this.fx.attach(game); }
+
+  // Titolo leggibile di una canzone (assets/music/playlist.json, voce "titoli")
+  titolo(file) { return this.playlist.titoli?.[file] || file.replace(/\.mp3$/, '').replace(/_/g, ' '); }
+  // Le canzoni della radio, per il juke-box
+  canzoni() { return this._list('guida'); }
 
   setMusicVolume(v) {
     this.musicVolume = Math.max(0, Math.min(1, v));
@@ -93,7 +103,7 @@ export class Audio {
     return this.enabled;
   }
 
-  // Cambia la musica in base alla scena: base, notte, bar, nutrie, mister_mountain
+  // Cambia la musica in base alla scena (vedi MUSIC_SCENES)
   setScene(scene) {
     scene = ALIASES[scene] || scene;
     if (scene === this.scene) return;
@@ -107,7 +117,12 @@ export class Audio {
     else this._startChiptune(scene);
   }
 
-  _list(scene) { return (this.playlist[scene] || []).filter(Boolean); }
+  _list(scene) {
+    if (scene?.startsWith('disco:')) return [scene.slice(6)];
+    if (scene === 'guida' && this.radio) return this.radio;
+    const l = this.playlist[scene];
+    return Array.isArray(l) ? l.filter(Boolean) : [];
+  }
 
   // Rotazione: ogni scena ricorda a che punto della sua lista era arrivata
   _next(scene) {
@@ -135,6 +150,7 @@ export class Audio {
     });
     el.volume = 0;
     el.play().catch(() => {});
+    if (this.scene === 'guida') this.game?.ui?.toast(`📻 Radio Bassa FM · «${this.titolo(file)}»`);
     this.el = el;
     this._ramp(el, this.musicVolume);
     el.addEventListener('error', () => { if (this.el === el) { this.el = null; this._startChiptune(this.scene); } });

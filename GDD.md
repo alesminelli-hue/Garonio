@@ -233,15 +233,14 @@ Le tracce originali stanno in `assets/music/`. La **mappa centrale** è `assets/
 
 | Scena (nel codice) | Traccia | Quando suona |
 |---|---|---|
-| `intro` | **Il Conte della Bassa** | Schermata del titolo e prologo |
-| `base` / `notte` | **A rotazione:** Sunset Truciolone, Palestra Delirio, Il Conte della Bassa, Boborriello Re della Notte (di sera parte Boborriello) | Gioco libero, giorno e sera: a fine traccia parte la successiva |
-| `bar` | **Pappa Garonio** | Al bar |
-| `rabbia` | **Canaglia (Rabbia Incontrollata)** | Garonio si arrabbia: stress oltre 85, litigi al bar |
-| `guida` | **Canaglia (Rabbia Incontrollata)** | Alla guida di Vespa, Punto o trattore |
-| `nemico` | **Mister Scarogna** | Appare un nemico: Mister Mountain, nutrie all'attacco |
-| `combattimento` | **Rabbia Incontrollata** | Scontro a turni |
+| `intro` | **Grand Theft Tractor** (`intro.mp3`) | Schermata del titolo e prologo |
+| `base` / `notte` / `bar` | **Morning in the Valleys** (`sottofondo.mp3`), alternato a Grand Theft Tractor | A piedi: giornata, sera e bar |
+| `guida` | **📻 Radio Bassa FM:** tutte le canzoni (Il Conte della Bassa, Canaglia, Sunset Truciolone, Pappa Garonio, Mister Scarogna, Palestra Delirio, Boborriello, Rabbia incontrollata) in ordine sparso, col titolo che compare in un avviso | Alla guida di Vespa, Punto o trattore |
+| `rabbia` / `nemico` / `combattimento` | musichetta 8‑bit (lista vuota) | Stress oltre 85, nemici, scontri |
 
-Per aggiungere una traccia basta mettere il file `.mp3` nella cartella e scriverne il nome nella lista della scena giusta (se ci sono più tracce, ne sceglie una a caso).
+**Le canzoni si sentono solo alla radio dei mezzi** (e al juke‑box del bar, che ha gli stessi dischi). A piedi il sottofondo e il tema del titolo si alternano: finita una traccia parte l'altra. I titoli delle canzoni stanno in `playlist.json` sotto `titoli`.
+
+Per aggiungere una traccia basta mettere il file `.mp3` nella cartella e scriverne il nome nella lista della scena giusta (se ci sono più tracce, suonano a rotazione).
 
 ## 12. Controlli
 
@@ -428,7 +427,7 @@ Di notte nei capannoni compaiono gruppi di ratti (vedi spawn, capitolo 18.4).
 | **Tavoli** | Ogni avventore ha il suo posto. Si va a parlarci: è da qui che partono i dialoghi e le risse (trama del bar). |
 | **Tavolo delle carte** | Briscola con Tarcisio: mini‑gioco per soldi e rispetto. |
 | **Biliardo** | Sfide a soldi; la stecca diventa un'arma nelle risse. |
-| **Juke‑box** | Si sceglie la musica di sottofondo fra le tracce del gioco (usa `playlist.json`). |
+| **Juke‑box** | Si sceglie una delle canzoni della radio (scena `guida` di `playlist.json`). |
 | **Bacheca degli annunci** | Lavoretti extra (missioni secondarie) e avvisi sulle bestie leggendarie. |
 | **Porta sul retro** | «Andiamo fuori a parlarne»: le risse grosse si fanno nella piazza. |
 
