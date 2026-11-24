@@ -128,6 +128,7 @@ export const LANDMARKS = [
   { name: 'Maiali', x: 134, z: 65 }, { name: 'Campo', x: 74, z: 17 }, { name: 'Orto', x: 65.5, z: 75 },
   { name: 'Pollaio', x: 81, z: 76.5 }, { name: 'Laghetto', x: 35, z: 83.5 },
   { name: 'Paradiso', x: 48, z: 63.5 },
+  { name: 'Mercato', x: 33, z: 62 }, { name: 'Gare', x: 61, z: 27.5 },
   { name: 'Patata', x: 101, z: 36.5 }, { name: 'Postino', x: 36.5, z: 36.5 }, { name: 'Frank', x: 144.5, z: 35.5 },
 ];
 
