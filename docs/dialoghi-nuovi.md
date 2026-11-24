@@ -13,7 +13,7 @@ Il tono è scritto in corsivo prima della battuta di Garonio, poi `→` e la rea
 ## Indice
 
 1. Le 4 nuove ragazze corteggiabili (da 4 a 8)
-2. Battute in più per Debora, Federica, Sabrina e Ilenia
+2. Battute in più per Blu Belga, Federica, Sabrina e Ilenia
 3. Tutte le altre donne del paese
 4. Tutti gli altri personaggi
 
@@ -27,14 +27,14 @@ Ho scelto quattro caratteri che non si sovrappongono a quelli che ci sono già. 
 
 | Ragazza | Età | Dove vive nel gioco | Le piace | La fa scappare |
 |---|---|---|---|---|
-| Debora (c'è già) | 32 | capezzagna, mattina | sicuro, sincero | spaccone, bisognoso, cafone |
+| Blu Belga (c'è già) | 32 | capezzagna, mattina | sicuro, sincero | spaccone, bisognoso, cafone |
 | Federica (c'è già) | 28 | capezzagna, sera | ironico, sincero | spaccone, bisognoso, cafone |
 | Sabrina (c'è già) | 35 | fontana e bar | romantico, sincero | spaccone, bisognoso, cafone |
 | Ilenia (c'è già) | 30 | bar e parcheggio del Night | ironico, sicuro | romantico, spaccone, bisognoso, cafone |
 | **Ludovica, la Contessina** | 31 | castello e fontana | **spaccone**, romantico | ironico, bisognoso, cafone |
 | **Noemi, l'infermiera** | 29 | studio medico e farmacia | **bisognoso**, sincero | sicuro, spaccone, cafone |
 | **Tamara «la Tigre»** | 38 | palestra e kebab | **cafone**, sincero | romantico, spaccone, bisognoso |
-| **Marta, l'organista** | 31 | chiesa e bar | ironico, romantico | spaccone, bisognoso, cafone |
+| **Balerion, l'organista** | 31 | chiesa e bar | ironico, romantico | spaccone, bisognoso, cafone |
 
 La novità: per la prima volta ci sono ragazze a cui piacciono i toni «sbagliati». La Contessina vuole un uomo ambizioso e premia lo spaccone, Noemi è una crocerossina e premia il bisognoso, Tamara odia le frasi da cioccolatino e premia il cafone. Per Tamara il «cafone» è sempre maleducazione da tavola (rutti, fame, schiettezza), mai frasi contro le donne: quelle restano sbagliate con tutte.
 
@@ -339,7 +339,7 @@ Usano gli edifici aggiunti di recente:
 
 ---
 
-## 🎹 Marta, l'organista (31)
+## 🎹 Balerion, l'organista (31)
 
 **chi:** Suona l'organo nella chiesa di San Garonio. Dal 2014 al 2016 era la bassista dei «Vespri dell'Apocalisse», punk di Lodi. Tatuaggi sotto le maniche, ironia nera, romantica in modo gotico: ama le cose tristi e belle.
 **dove:** Pomeriggio in chiesa all'organo (14–18), dopo cena al bar vicino al jukebox (18–20).
@@ -355,7 +355,7 @@ Usano gli edifici aggiunti di recente:
 - «Suor Carmela mi ha visto il tatuaggio. Le ho detto che è un santo. È Sid Vicious. Si è fatta il segno della croce.»
 - «La nebbia di stasera è perfetta. Sembra un video anni Ottanta girato a Casalpusterlengo.»
 
-**Prima volta:** In chiesa l'organo attacca un accordo cupissimo e si ferma di colpo. Dalla cantoria si sporge una ragazza con le unghie nere. «Ciao. Sono Marta, suono qui. Tu sei quello che dorme al terzo banco. Russi in re minore, lo sapevi?»
+**Prima volta:** In chiesa l'organo attacca un accordo cupissimo e si ferma di colpo. Dalla cantoria si sporge una ragazza con le unghie nere. «Ciao. Sono Balerion, suono qui. Tu sei quello che dorme al terzo banco. Russi in re minore, lo sapevi?»
 
 **Approccio**
 
@@ -408,7 +408,7 @@ Usano gli edifici aggiunti di recente:
 
 **D:** «Se scrivessi una canzone su di te, che titolo avrebbe?»
 - ✔ *ironico* — «"Ballata per un trattore e un cuore che non parte".» → «Questa te la rubo. Nei crediti ti metto come "il Vespa".»
-- ✔ *romantico* — «"Marta". Non serve altro.» → «...La canzone doveva essere su di te, Garonio. Ma va bene. Va bene così.»
+- ✔ *romantico* — «"Balerion". Non serve altro.» → «...La canzone doveva essere su di te, Garonio. Ma va bene. Va bene così.»
 - ✘ *spaccone* — «"Il più grande di tutti". Rap, ovviamente.» → «Un rap su un campanile del Seicento. Le campane si vergognano per te.»
 
 **D:** «Mi passi la coperta? Quassù fa freddo.»
@@ -421,11 +421,11 @@ Usano gli edifici aggiunti di recente:
 - **numero:** «Il mio numero. Non chiamare durante la messa delle undici: ho la suoneria dei Nirvana.»
 - **accetta:** «Va bene. Stasera c'è la luna giusta. Non chiedermi come lo so.»
 - **rifiuta:** «No. Mi servono più indizi. Per ora sei un mistero mediocre.»
-- **bacio:** In cima al campanile Marta ti bacia proprio mentre la campana batte le undici. Per poco non restate sordi tutti e due. «Bacio con accompagnamento musicale. Non capita a tutti.»
+- **bacio:** In cima al campanile Balerion ti bacia proprio mentre la campana batte le undici. Per poco non restate sordi tutti e due. «Bacio con accompagnamento musicale. Non capita a tutti.»
 - **sale:** «Abito sopra il negozio di dischi chiuso dal 2003. Ho un giradischi e una candela a forma di teschio. Sali?»
 - **letto (sfuma al nero):** Al buio parte un vinile dei Cure. Finisce e gira a vuoto per mezz'ora. Nessuno si alza a cambiarlo.
 - **reputazione:** «Mi piaci, sai? Ma Suor Carmela mi ha fatto la predica su di te. Tre ore, senza pause. Sistema la tua fama, io qui ci devo ancora suonare.»
-- **blocco:** Marta ti vede entrare in chiesa e attacca all'organo la Toccata e Fuga. Il messaggio è chiaro: fuga.
+- **blocco:** Balerion ti vede entrare in chiesa e attacca all'organo la Toccata e Fuga. Il messaggio è chiaro: fuga.
 
 **Conquistata**
 - «Ciao, Vespa. Stasera campanile o jukebox?»
@@ -439,7 +439,7 @@ Usano gli edifici aggiunti di recente:
 
 *(src/data/ragazze.js: si aggiungono in coda alle liste esistenti, non si tocca niente di quello che c'è)*
 
-## 🏋️‍♀️ Debora (sicuro ✔, sincero ✔)
+## 🏋️‍♀️ Blu Belga (sicuro ✔, sincero ✔)
 
 **Saluti in più**
 - «Garonio! Fatte le scale stamattina? No? Neanche quelle di casa? Ok.»
@@ -471,7 +471,7 @@ Usano gli edifici aggiunti di recente:
 **D:** «Gennaro mi ha portato la pizza senza mozzarella perché sa che sono a dieta. Gli dico qualcosa?»
 - ✔ *sicuro* — «Ci penso io: "Gennaro, stasera la signorina mangia come un camionista". E pago io.» → «Mi hai difesa da una pizza dietetica. Sei un eroe minore, ma un eroe.»
 - ✔ *sincero* — «Ti do metà della mia. È salsiccia e cipolla, ti faccio un favore.» → «Domani un'ora di tapis roulant. Ma stasera grazie.»
-- ✘ *cafone* — «GENNAROOO! PORTA ROBA!» → Gennaro smette di cantare. Tutta la pizzeria si gira. Debora si nasconde dietro al menu.
+- ✘ *cafone* — «GENNAROOO! PORTA ROBA!» → Gennaro smette di cantare. Tutta la pizzeria si gira. Blu Belga si nasconde dietro al menu.
 
 **D:** «Dimmi una cosa di cui hai paura. Una vera.»
 - ✔ *sincero* — «Di deludere mio padre. E delle oche. Più delle oche, a dire il vero.» → «Le oche fanno paura anche a me. Sul resto ci lavoriamo. Una ripetizione alla volta.»
@@ -716,7 +716,7 @@ Per ognuna: **saluti** (quando Garonio le parla), **chiacchiere** (quando chiacc
 - «Don Peppino dice le messe in quaranta minuti quando gioca il Milan. Il Signore capisce. Io meno.»
 - «Le candele costano cinquanta centesimi. Chi le accende senza pagare, il Signore lo vede. E poi lo vedo io in sagrestia.»
 - «La Pina si confessa ogni giorno. Una volta ha confessato i peccati della Sciura Ines. Per errore, dice.»
-- «Marta l'organista ha un tatuaggio. Dice che è un santo. Io non conosco santi con la cresta.»
+- «Balerion l'organista ha un tatuaggio. Dice che è un santo. Io non conosco santi con la cresta.»
 
 **Sulle ragazze**
 - «Ho saputo della {nome}. Prega per lei. Ne ha bisogno, se sta con te.»
@@ -1026,7 +1026,7 @@ Stesso schema: saluti, chiacchiere e (dove ha senso) una frase sulle ragazze. Pe
 - «Ho la chiave del campanile. Non per niente: ci vado a sentire la radiolina quando c'è la partita.»
 - «Le offerte sono calate. La gente dice che non ha soldi. Poi li vedo tutti al Night. Il Signore vede. E anch'io, dalla finestra.»
 - «In confessionale ho sentito cose che Mister Mountain si sogna. Una riguardava lui.»
-- «La Marta all'organo è un dono di Dio. Un po' rumoroso, ma un dono.»
+- «La Balerion all'organo è un dono di Dio. Un po' rumoroso, ma un dono.»
 - **Sulle ragazze:** «Ho saputo della {nome}. Se diventa una cosa seria, il matrimonio te lo faccio io. Sconto famiglia, ma niente Gigi D'Agostino in chiesa.»
 
 ## Il castello

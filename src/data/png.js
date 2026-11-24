@@ -283,7 +283,7 @@ export const PNG = {
       "Il campanile pende un po'. Il geometra Ballarin dice che è artistico.",
       "La messa delle undici dura quaranta minuti. Quella delle dieci, se gioca il Milan, venticinque.",
       "Le offerte sono calate. La gente dice che non ha soldi. Poi li vedo tutti al Night. Il Signore vede. E anch'io, dalla finestra.",
-      "La Marta all'organo è un dono di Dio. Un po' rumoroso, ma un dono.",
+      "La Balerion all'organo è un dono di Dio. Un po' rumoroso, ma un dono.",
     ],
     sulleRagazze: [
       "Ho saputo della {ragazza}. Se diventa una cosa seria, il matrimonio te lo faccio io. Sconto famiglia, ma niente Gigi D'Agostino in chiesa.",
@@ -311,7 +311,7 @@ export const PNG = {
       "Don Peppino dice le messe in quaranta minuti quando gioca il Milan. Il Signore capisce. Io meno.",
       "Le candele costano cinquanta centesimi. Chi le accende senza pagare, il Signore lo vede. E poi lo vedo io in sagrestia.",
       "La Pina si confessa ogni giorno. Una volta ha confessato i peccati della Sciura Ines. Per errore, dice.",
-      "Marta l'organista ha un tatuaggio. Dice che è un santo. Io non conosco santi con la cresta.",
+      "Balerion l'organista ha un tatuaggio. Dice che è un santo. Io non conosco santi con la cresta.",
     ],
     sulleRagazze: [
       "Ho saputo della {ragazza}. Prega per lei. Ne ha bisogno, se sta con te.",
@@ -452,7 +452,7 @@ export const PNG = {
       "La Tamara mi ha rotto il sacco da boxe nuovo. Il terzo. Le voglio bene come una figlia che ti rompe i sacchi.",
     ],
     chiacchiere: [
-      "La Debora fa la personal trainer qui. È più dura di me. E io ho fatto la naja a Merano.",
+      "La Blu Belga fa la personal trainer qui. È più dura di me. E io ho fatto la naja a Merano.",
       "Il Bruno «il Toro» si allena qui. Solleva centoventi chili. Poi va al bar e non solleva il portafoglio.",
       "Al militare mi chiamavano \"il Mulo\". Perché ero forte. E perché non capivo le domande.",
       "Uno! Due! Uno! Due! ...Garonio, siamo ancora all'uno. Sei fermo all'uno da dieci minuti.",
