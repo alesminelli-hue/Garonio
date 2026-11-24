@@ -85,6 +85,9 @@ USATI = {
     'cameriera2':        (1, 3, 9),   # la Concetta, cameriera della pizzeria
     'cameriere':         (2, 0, 6),   # Kemal del kebab
     'garzone_cuffie':    (2, 3, 1),   # Ivan, il garzone di Zeno
+    # incontri speciali (src/speciali.js)
+    'babbo_natale':      (1, 4, 8),   # Babbo Natale smemorato, nel bosco di notte
+    'zombie':            (1, 6, 5),   # il Mostro della Palude, al laghetto
 }
 ANIMALI = {'maiale', 'gallina', 'gatto', 'cane'}
 

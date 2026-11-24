@@ -438,4 +438,5 @@ function icona(id, emoji) {
 }
 const ICONE_SLOT = { testa: '🧢', corpo: '🦺', piedi: '🥾', portafortuna: '🍀' };
 const ICONE_ARMI = { zappa: '⛏️', rastrello: '🧹', badile: '🪏', forcone: '🔱', falce: '🌙', roncola: '🔪', motosega: '🪚', zappaFolgorata: '⚡', piedeDiPorco: '🪝', forchettone: '🍴', chiaveInglese: '🔧', arpione: '🔱', spadone: '⚔️', zappaDoro: '🏆', palaForno: '🍕',
-  vanga: '🪏', falcetto: '🌙', cesoie: '✂️', tridente: '🔱', scure: '🪓', correggiato: '🌾', bastoneZucchero: '🍭' };
+  vanga: '🪏', falcetto: '🌙', cesoie: '✂️', tridente: '🔱', scure: '🪓', correggiato: '🌾', bastoneZucchero: '🍭',
+  zappetta: '⛏️', pettinanebbia: '🧹', palaPolenta: '🥄', forcaVacche: '🔱', roncolaRovi: '🔪', mietinebbia: '🌙' };

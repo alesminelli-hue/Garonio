@@ -1,205 +1,414 @@
-// Sprite del bottino nascosto sugli alberi (src/alberi.js), dei regali di Babbo Natale e dei due incontri speciali
-// (src/speciali.js): icone 16x16 per il menu e per la roba che cade dall'albero, più Babbo Natale smemorato
-// (che segue Garonio) e il Mostro della Palude (scontro al laghetto). Pixel art generata dal codice.
+// Icone HD (32x32) del bottino nascosto sugli alberi (src/alberi.js) e dei premi degli incontri speciali
+// (src/speciali.js): attrezzi agricoli, vestiti da lavoro, frutta e cianfrusaglie. Stesso stile dei fogli
+// personaggi (kit di src/hd/kit.js): contorno scuro, luce da in alto a sinistra, ombre verso il viola.
+// Servono al menu J e alla roba che cade dall'albero. Babbo Natale e il Mostro della Palude usano invece gli
+// sprite del foglio personaggi (babbo_natale, zombie in src/data/sprite_personaggi.js).
 import * as PIX from './pixel.js';
+import { pen, ramp, outline, hash } from './hd/kit.js';
 
-const OUT = '#1a1420';
-function outline(c, color = OUT) {
-  const g = c.getContext('2d');
-  const { width: w, height: h } = c;
-  const d = g.getImageData(0, 0, w, h).data;
-  const a = (x, y) => (x < 0 || y < 0 || x >= w || y >= h) ? 0 : d[(y * w + x) * 4 + 3];
-  g.fillStyle = color;
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    if (a(x, y) > 0) continue;
-    if (a(x - 1, y) || a(x + 1, y) || a(x, y - 1) || a(x, y + 1)) g.fillRect(x, y, 1, 1);
-  }
-  return c;
+const LEGNO = ramp('#a8743e'), LEGNO_SC = ramp('#7a4e2a'), FERRO = ramp('#a8b0bc'), ORO = ramp('#e0b030');
+const S = 32;
+
+// manico di legno in diagonale, con venatura e luce
+function manico(d, x0, y0, x1, y1, R = LEGNO, w = 3) {
+  d.line(x0, y0, x1, y1, R[0], w);
+  d.line(x0, y0, x1, y1, R[2], w - 1);
+  d.line(x0, y0 - 1, x1, y1 - 1, R[3], 1);
+  const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0));
+  for (let i = 3; i < n; i += 5) d.P(R[1], x0 + (x1 - x0) * i / n + 1, y0 + (y1 - y0) * i / n);
 }
-function canvas(w = 16, h = 16) {
-  const [c, g] = PIX.makeCanvas(w, h);
-  const P = (col, x, y, ww = 1, hh = 1) => { g.fillStyle = col; g.fillRect(x, y, ww, hh); };
-  // linea di pixel (manici in diagonale)
-  const L = (col, x0, y0, x1, y1, t = 1) => {
-    const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0)) || 1;
-    for (let i = 0; i <= n; i++) P(col, Math.round(x0 + (x1 - x0) * i / n), Math.round(y0 + (y1 - y0) * i / n), t, t);
-  };
-  return [c, P, L, g];
+// lama o testa di metallo: poligono con bordo lucido e ombra
+function metallo(d, pts, R = FERRO, filo = null) {
+  d.poly(pts, R[1]);
+  const c = pts.reduce((a, p) => [a[0] + p[0] / pts.length, a[1] + p[1] / pts.length], [0, 0]);
+  d.poly(pts.map(([x, y]) => [c[0] + (x - c[0]) * 0.72 - 0.6, c[1] + (y - c[1]) * 0.72 - 0.6]), R[2]);
+  if (filo) d.line(...filo, R[4], 1);
 }
-const LEGNO = '#9a6a3a', LEGNO2 = '#6e4824', FERRO = '#b8c0c8', FERRO2 = '#7a8490', LUCE = '#eef4f8';
+function luccica(d, x, y) { d.P('#ffffff', x, y - 2, 1, 5); d.P('#ffffff', x - 2, y, 5, 1); d.P('#fff6c0', x, y); }
+// stoffa: riempie un poligono e aggiunge pieghe in ombra
+function stoffa(d, pts, R, pieghe = []) {
+  d.poly(pts, R[2]);
+  for (const [x0, y0, x1, y1] of pieghe) { d.line(x0, y0, x1, y1, R[1]); d.line(x0 - 1, y0, x1 - 1, y1, R[3]); }
+}
 
 // ---------- Attrezzi agricoli (armi) ----------
 const ARMI = {
+  zappetta() {
+    const d = pen(S, S);
+    manico(d, 4, 28, 20, 12);
+    metallo(d, [[17, 6], [27, 4], [28, 9], [22, 14], [18, 12]], FERRO, [18, 6, 27, 4]);
+    d.P(FERRO[0], 21, 13, 3, 2);
+    return outline(d.c);
+  },
   vanga() {
-    const [c, P, L] = canvas();
-    L(LEGNO, 3, 2, 10, 9, 2); P(LEGNO2, 1, 1, 5, 2); P(LEGNO2, 2, 0, 2, 4);          // manico con la maniglia a T
-    P(FERRO2, 10, 9, 5, 6); P(FERRO, 10, 9, 4, 5); P(LUCE, 11, 10, 1, 3);           // lama piatta
-    return outline(c);
+    const d = pen(S, S);
+    manico(d, 6, 6, 19, 19);
+    d.line(3, 7, 9, 3, LEGNO_SC[1], 3); d.line(3, 6, 9, 2, LEGNO_SC[3], 1);              // maniglia a T
+    metallo(d, [[17, 20], [22, 15], [29, 22], [28, 28], [23, 29]], FERRO, [22, 16, 28, 22]);
+    d.P(FERRO[0], 18, 21, 3, 1); d.P(LEGNO_SC[0], 19, 18, 3, 2);
+    return outline(d.c);
+  },
+  pettinanebbia() {
+    const d = pen(S, S);
+    manico(d, 3, 29, 19, 11);
+    d.line(14, 6, 27, 15, FERRO[1], 3); d.line(14, 5, 27, 14, FERRO[3], 1);              // traversa
+    for (let i = 0; i < 6; i++) { const x = 15 + i * 2.4, y = 7 + i * 1.6; d.line(x, y, x - 3, y + 5, FERRO[2], 1); d.P(FERRO[4], x - 3, y + 5); }
+    d.P('#dfe8f0', 25, 4, 4, 1); d.P('#dfe8f0', 22, 2, 5, 1);                              // ciuffi di nebbia
+    return outline(d.c);
   },
   falcetto() {
-    const [c, P, L] = canvas();
-    L(LEGNO, 2, 13, 6, 9, 2); P(LEGNO2, 2, 14, 2, 1);                                // impugnatura
-    L(FERRO, 7, 8, 9, 3); L(FERRO, 9, 3, 12, 1); L(FERRO, 12, 1, 14, 3); L(FERRO, 14, 3, 14, 6);
-    L(FERRO2, 8, 8, 10, 4); L(LUCE, 10, 2, 12, 2);                                   // mezzaluna
-    return outline(c);
+    const d = pen(S, S);
+    d.line(4, 28, 10, 22, LEGNO_SC[0], 4); d.line(4, 28, 10, 22, LEGNO_SC[2], 3); d.line(4, 27, 9, 22, LEGNO_SC[3], 1);
+    for (let a = 0; a <= 1; a += 0.04) {                                                  // mezzaluna d'acciaio
+      const t = Math.PI * (1.05 + a * 1.25), x = 18 + Math.cos(t) * 10, y = 14 + Math.sin(t) * 10;
+      d.P(FERRO[1], x, y, 3, 3); d.P(a < 0.6 ? FERRO[4] : FERRO[3], x, y, 1, 1);
+    }
+    d.line(10, 22, 12, 18, FERRO[1], 3);
+    d.P(ORO[3], 9, 22, 2, 2);                                                             // ghiera dorata
+    luccica(d, 26, 6);
+    return outline(d.c);
+  },
+  palaPolenta() {
+    const d = pen(S, S);
+    manico(d, 4, 28, 18, 14, LEGNO, 3);
+    d.ball(22, 9, 7, 6, LEGNO, { grain: 0.4, seed: 3 });                                  // paletta di legno
+    d.P(LEGNO[0], 20, 12, 5, 1);
+    d.P('#f0c840', 21, 7, 3, 2); d.P('#ffe070', 21, 7);                                   // polenta appiccicata
+    return outline(d.c);
   },
   cesoie() {
-    const [c, P, L] = canvas();
-    L(FERRO, 7, 8, 13, 2, 2); L(FERRO2, 8, 8, 14, 4, 1);                             // lame
-    L(FERRO, 8, 7, 14, 6, 2);
-    P('#c03028', 2, 9, 4, 3); P('#c03028', 5, 11, 3, 4); L('#c03028', 5, 9, 7, 8, 2); L('#c03028', 7, 11, 8, 9, 2); // manici rossi
-    P(LUCE, 12, 3); P('#3a3a3a', 8, 8);
-    return outline(c);
+    const d = pen(S, S);
+    metallo(d, [[14, 16], [27, 3], [29, 5], [17, 18]], FERRO, [15, 15, 27, 3]);
+    metallo(d, [[15, 18], [29, 12], [29, 15], [17, 20]], FERRO, [16, 18, 28, 12]);
+    const R = ramp('#c8302a');
+    d.line(5, 21, 14, 17, R[0], 4); d.line(5, 21, 14, 17, R[2], 3); d.line(5, 20, 13, 16, R[3], 1);
+    d.line(9, 28, 15, 19, R[0], 4); d.line(9, 28, 15, 19, R[2], 3); d.line(8, 27, 14, 19, R[3], 1);
+    d.ball(15, 18, 2, 2, ramp('#4a4a52'));                                                // perno
+    return outline(d.c);
+  },
+  forcaVacche() {
+    const d = pen(S, S);
+    manico(d, 3, 29, 17, 15, LEGNO_SC);
+    d.line(13, 13, 21, 21, FERRO[1], 2);
+    for (const [x, y] of [[13, 13], [17, 17], [21, 21]]) { d.line(x, y, x + 9, y - 9, FERRO[2], 2); d.P(FERRO[4], x + 9, y - 9); }
+    d.P('#e8d070', 24, 9, 3, 2); d.P('#d8b850', 27, 12, 2, 2);                            // fili di fieno
+    return outline(d.c);
   },
   tridente() {
-    const [c, P, L] = canvas();
-    L(LEGNO, 1, 15, 9, 7, 2);
-    L(FERRO2, 8, 5, 12, 9);                                                           // traversa
-    L(FERRO, 8, 5, 12, 1); L(FERRO, 10, 7, 14, 3); L(FERRO, 12, 9, 15, 6);           // tre punte
-    P(LUCE, 12, 1); P(LUCE, 14, 3);
-    return outline(c);
+    const d = pen(S, S);
+    manico(d, 3, 29, 16, 16);
+    d.line(12, 12, 20, 20, ORO[1], 3); d.line(12, 11, 20, 19, ORO[3], 1);                 // traversa dorata, da re
+    for (const [x, y] of [[12, 12], [16, 16], [20, 20]]) { d.line(x, y, x + 10, y - 10, FERRO[2], 2); d.P(FERRO[4], x + 10, y - 10, 2, 1); }
+    d.P(ORO[4], 15, 11, 2, 2); d.P('#c8302a', 17, 14);                                    // corona minuscola
+    return outline(d.c);
+  },
+  roncolaRovi() {
+    const d = pen(S, S);
+    d.line(4, 28, 11, 21, LEGNO_SC[0], 4); d.line(4, 28, 11, 21, LEGNO_SC[2], 3); d.line(4, 27, 10, 21, LEGNO_SC[3], 1);
+    metallo(d, [[11, 19], [22, 5], [27, 3], [28, 8], [24, 7], [16, 22], [13, 22]], FERRO, [12, 19, 23, 5]);
+    d.P(FERRO[1], 26, 7, 2, 3);                                                           // becco ricurvo
+    d.P('#4a8a3a', 24, 12, 3, 1); d.P('#6ab040', 26, 11); d.P('#c8302a', 27, 13);         // un rametto di rovo, con mora
+    return outline(d.c);
   },
   scure() {
-    const [c, P, L] = canvas();
-    L(LEGNO, 2, 14, 11, 5, 2); P(LEGNO2, 2, 14, 2, 2);
-    P(FERRO2, 9, 1, 4, 6); P(FERRO, 10, 1, 5, 4); P(FERRO, 13, 0, 2, 6); P(LUCE, 14, 1, 1, 4); // testa della scure
-    return outline(c);
+    const d = pen(S, S);
+    manico(d, 4, 29, 20, 11);
+    metallo(d, [[15, 6], [22, 5], [29, 2], [29, 15], [22, 12], [17, 12]], FERRO, [29, 3, 29, 14]);
+    d.P(FERRO[0], 17, 10, 4, 2);
+    luccica(d, 27, 6);
+    return outline(d.c);
   },
   correggiato() {
-    const [c, P, L] = canvas();
-    L(LEGNO, 1, 15, 7, 9, 2);                                                         // manico lungo
-    P('#5a3a1c', 7, 8, 2, 2);                                                         // cinghia di cuoio
-    L(LEGNO2, 9, 8, 14, 2, 2); P('#c8a060', 13, 2, 1, 1);                             // bastone che batte
-    return outline(c);
+    const d = pen(S, S);
+    manico(d, 3, 29, 13, 17);
+    d.line(13, 17, 16, 15, '#5a3a1c', 2);                                                 // snodo di cuoio
+    manico(d, 16, 14, 28, 3, LEGNO_SC, 4);
+    for (const [x, y] of [[24, 10], [27, 8], [22, 6]]) d.P('#f0d060', x, y, 2, 1);        // chicchi che saltano
+    return outline(d.c);
+  },
+  mietinebbia() {
+    const d = pen(S, S);
+    manico(d, 6, 30, 16, 4, LEGNO_SC, 3);
+    d.line(9, 20, 12, 22, LEGNO_SC[2], 2);                                                // impugnatura a metà
+    for (let a = 0; a <= 1; a += 0.03) {                                                  // lama lunghissima
+      const x = 16 - a * 14, y = 4 + Math.sin(a * Math.PI) * -1 + a * 6;
+      d.P(FERRO[1], x, y, 2, 3); d.P(FERRO[4], x, y, 2, 1);
+    }
+    d.P('#c8d8f0', 4, 14, 6, 1); d.P('#c8d8f0', 2, 17, 5, 1); d.P('#e8f0f8', 6, 16, 4, 1); // nebbia tagliata
+    luccica(d, 10, 5);
+    return outline(d.c);
   },
   bastoneZucchero() {
-    const [c, P, L] = canvas();
-    const s = (x, y, i) => P(i % 2 ? '#d02028' : '#fbf6f0', x, y, 2, 2);
-    const pts = [[3, 14], [4, 12], [5, 10], [6, 8], [7, 6], [8, 4], [9, 2], [11, 1], [13, 2], [14, 4], [13, 6]];
-    pts.forEach(([x, y], i) => s(x, y, i));
-    P('#fff', 10, 2); P('#ffe060', 15, 0);                                            // scintilla
-    return outline(c);
+    const d = pen(S, S);
+    const pts = [];
+    for (let i = 0; i <= 20; i++) pts.push([8 + i * 0.55, 30 - i * 1.15]);
+    for (let a = 0; a <= 1; a += 0.06) { const t = Math.PI * (1 + a * 1.15); pts.push([22 + Math.cos(t) * 5.5, 7 + Math.sin(t) * 5.5]); }
+    pts.forEach(([x, y], i) => { const r = (i >> 1) % 2; d.P(r ? '#d02028' : '#fbf6f0', x, y, 4, 4); d.P(r ? '#ff6060' : '#ffffff', x, y, 1, 1); });
+    luccica(d, 28, 4); luccica(d, 6, 10);
+    return outline(d.c);
   },
 };
 
 // ---------- Vestiti agricoli e regali ----------
 const VESTITI = {
   cappellone() {
-    const [c, P] = canvas();
-    P('#e8c860', 0, 9, 16, 3); P('#d8b04a', 1, 11, 14, 1);                            // tesa larga
-    P('#f0d878', 4, 4, 8, 6); P('#c83028', 4, 8, 8, 1);                               // cupola col nastro
-    P('#fff4b0', 5, 5, 2, 1); P('#c8a040', 2, 10, 1, 1); P('#c8a040', 12, 10, 1, 1);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#e8c460');
+    d.ell(16, 21, 15, 5, R[1]); d.ell(16, 20, 14, 4, R[2]);                               // tesa enorme
+    d.ball(16, 14, 8, 7, R, { grain: 0.5, seed: 4 });
+    d.P(ramp('#c83028')[2], 8, 17, 17, 2); d.P(ramp('#c83028')[3], 8, 17, 17, 1);         // nastro rosso
+    for (let x = 4; x < 29; x += 3) d.P(R[0], x, 21 + (x % 2), 1, 1);                     // intreccio della paglia
+    d.P('#f0f0e0', 22, 10, 1, 5); d.P('#3a7a2a', 23, 9, 2, 2);                            // una spiga infilata
+    return outline(d.c);
+  },
+  berrettoCorvi() {
+    const d = pen(S, S), R = ramp('#5a6a3a');
+    d.ball(16, 17, 10, 8, R, { grain: 0.3, seed: 6 });
+    d.P(R[0], 6, 20, 20, 3); d.P(R[3], 6, 20, 20, 1);
+    d.ell(9, 24, 6, 2, R[1]);                                                             // visiera
+    const N = ramp('#2a2430');                                                            // piuma nera di corvo
+    d.line(20, 12, 28, 3, N[2], 2); d.line(21, 12, 29, 4, N[4], 1);
+    d.P('#f0c030', 13, 14, 2, 2);                                                         // spilla
+    return outline(d.c);
+  },
+  elmoPentola() {
+    const d = pen(S, S), R = ramp('#b8c0c8');
+    d.cyl(7, 10, 18, 14, R);                                                              // pentola
+    d.ell(16, 10, 9, 3, R[3]); d.ell(16, 10, 7, 2, R[1]);
+    d.P(R[0], 7, 23, 18, 1);
+    d.P(ramp('#2a2a30')[2], 3, 15, 4, 3); d.P(ramp('#2a2a30')[2], 25, 15, 4, 3);          // manici neri
+    d.P('#3a3a44', 15, 4, 3, 4); d.P('#c8302a', 15, 3, 3, 2);                             // valvola
+    d.P('#e8f0f8', 19, 1, 2, 1); d.P('#e8f0f8', 21, 0, 2, 1);                             // fischio di vapore
+    return outline(d.c);
   },
   fazzolettoRosso() {
-    const [c, P] = canvas();
-    for (let y = 0; y < 9; y++) P('#c82828', 1 + y, 3 + y, 14 - 2 * y, 1);            // triangolo
-    P('#c82828', 0, 2, 16, 2);
-    for (const [x, y] of [[3, 3], [7, 4], [11, 3], [5, 6], [9, 6], [7, 8]]) P('#fbf0e0', x, y);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#c8282a');
+    d.poly([[2, 6], [30, 6], [16, 28]], R[2]);
+    d.poly([[2, 6], [30, 6], [29, 9], [3, 9]], R[1]);
+    d.line(6, 10, 16, 26, R[1]); d.line(26, 10, 16, 26, R[3]);
+    for (const [x, y] of [[8, 11], [14, 12], [20, 11], [24, 13], [11, 15], [17, 17], [21, 16], [15, 21]]) { d.P('#fbf0e0', x, y, 2, 2); d.P(R[0], x + 1, y + 1); }
+    d.line(2, 6, 0, 3, R[2], 2); d.line(30, 6, 31, 2, R[2], 2);                           // nodi
+    return outline(d.c);
   },
-  salopette() {
-    const [c, P] = canvas();
-    P('#3a5a9a', 3, 6, 10, 9); P('#2a4478', 7, 10, 2, 5);                             // pantalone e cavallo
-    P('#3a5a9a', 4, 1, 2, 6); P('#3a5a9a', 10, 1, 2, 6);                              // bretelle
-    P('#4a6cb0', 5, 5, 6, 4); P('#e8c050', 4, 6); P('#e8c050', 11, 6);                // pettorina e bottoni
-    P('#2a4478', 7, 6, 2, 2);                                                         // taschino
-    return outline(c);
+  ferroCavallo() {
+    const d = pen(S, S), R = ramp('#9a7a5a');
+    for (let a = 0; a <= 1; a += 0.02) {
+      const t = Math.PI * (0.85 - a * 1.7), x = 16 + Math.cos(t) * 10, y = 16 - Math.sin(t) * 11;
+      d.P(R[a < 0.4 ? 3 : a < 0.7 ? 2 : 1], x - 2, y - 2, 4, 4);
+    }
+    for (const a of [0.15, 0.32, 0.68, 0.85]) { const t = Math.PI * (0.85 - a * 1.7); d.P(R[0], 16 + Math.cos(t) * 10, 16 - Math.sin(t) * 11); }
+    d.P('#c8783a', 9, 20, 2, 2); d.P('#c8783a', 22, 9, 2, 1);                             // ruggine
+    luccica(d, 25, 22);
+    return outline(d.c);
+  },
+  cinturaSpago() {
+    const d = pen(S, S), R = ramp('#c8a870');
+    for (let a = 0; a < Math.PI * 2; a += 0.05) d.P(R[Math.sin(a * 6) > 0 ? 3 : 1], 16 + Math.cos(a) * 12, 17 + Math.sin(a) * 6, 3, 3);
+    d.box(12, 18, 9, 7, ramp('#8a8a90'));                                                 // fibbia
+    d.P('#3a3a44', 14, 20, 5, 3);
+    d.line(20, 22, 27, 29, R[2], 2); d.line(17, 24, 15, 30, R[1], 2);                     // spago che pende
+    return outline(d.c);
   },
   guantiLavoro() {
-    const [c, P] = canvas();
-    P('#e8b830', 3, 6, 9, 8); P('#c8981c', 3, 12, 9, 2);                              // palmo e polsino
-    P('#e8b830', 4, 2, 2, 5); P('#e8b830', 6, 1, 2, 6); P('#e8b830', 8, 2, 2, 5); P('#e8b830', 10, 4, 2, 4); // dita
-    P('#e8b830', 12, 7, 2, 3);                                                        // pollice
-    P('#fff0a0', 6, 2, 1, 3); P('#a87818', 4, 13, 7, 1);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#e8b830');
+    d.ball(15, 18, 8, 8, R);                                                              // palmo
+    for (const [x, h] of [[9, 9], [12, 11], [15, 12], [18, 10]]) { d.P(R[1], x, 18 - h, 3, h); d.P(R[3], x, 18 - h, 1, h - 2); d.ell(x + 1, 18 - h, 1.5, 1, R[2]); }
+    d.ball(23, 19, 3, 4, R);                                                              // pollice
+    d.P(ramp('#3a5a9a')[2], 8, 25, 15, 5); d.P(ramp('#3a5a9a')[3], 8, 25, 15, 1);          // polsino blu
+    d.P('#8a5a28', 12, 20, 2, 1); d.P('#8a5a28', 17, 22, 3, 1);                           // macchie di lavoro
+    return outline(d.c);
   },
-  stivaliGomma() {
-    const [c, P] = canvas();
-    P('#2e8a3a', 4, 1, 6, 11); P('#2e8a3a', 4, 10, 10, 4);                            // gambale e piede
-    P('#4ab050', 5, 2, 1, 8); P('#1e6a28', 4, 13, 10, 2);                             // luce e suola
-    P('#1e6a28', 4, 1, 6, 1);
-    return outline(c);
+  salopette() {
+    const d = pen(S, S), R = ramp('#3a5a9a');
+    stoffa(d, [[7, 12], [25, 12], [26, 30], [18, 30], [16, 22], [14, 30], [6, 30]], R, [[16, 22, 16, 29]]);
+    d.box(10, 7, 12, 8, R);                                                               // pettorina
+    d.P(R[1], 9, 1, 3, 8); d.P(R[1], 20, 1, 3, 8); d.P(R[3], 9, 1, 1, 8); d.P(R[3], 20, 1, 1, 8); // bretelle
+    d.P(ORO[3], 10, 7, 2, 2); d.P(ORO[3], 20, 7, 2, 2);
+    d.box(13, 9, 6, 4, ramp('#2e4a80'));                                                  // taschino
+    d.P('#c8302a', 15, 8, 1, 3);                                                          // matita del geometra
+    d.P(ramp('#b88a5a')[2], 22, 24, 3, 3);                                                // toppa
+    return outline(d.c);
   },
-  zoccoli() {
-    const [c, P] = canvas();
-    P('#e8c070', 1, 7, 13, 5); P('#f4d690', 3, 5, 7, 3); P('#c89848', 1, 11, 13, 2); // zoccolo di legno
-    P('#e8c070', 12, 6, 3, 4); P('#8a5a28', 4, 7, 5, 2);                              // punta e buco del piede
-    P('#c83028', 6, 9, 2, 1); P('#3a6ad0', 9, 9, 2, 1);                               // fiorellini dipinti
-    return outline(c);
+  grembiuleMungitura() {
+    const d = pen(S, S), R = ramp('#e8e4d8');
+    stoffa(d, [[10, 6], [22, 6], [27, 30], [5, 30]], R, [[12, 12, 10, 28], [20, 12, 22, 28]]);
+    d.line(10, 6, 4, 10, R[1], 2); d.line(22, 6, 28, 10, R[1], 2);                        // lacci
+    for (const [x, y] of [[9, 16], [19, 20], [14, 24], [22, 14]]) d.ball(x, y, 2.5, 2, ramp('#2a2a30'));  // macchie da mucca
+    d.box(12, 18, 8, 5, ramp('#c8b898'));
+    d.P('#f4f4ff', 15, 26, 2, 3); d.P('#ffffff', 15, 26);                                 // goccia di latte
+    return outline(d.c);
+  },
+  gileFustagno() {
+    const d = pen(S, S), R = ramp('#8a5a32');
+    stoffa(d, [[6, 4], [13, 4], [16, 14], [19, 4], [26, 4], [27, 29], [17, 29], [16, 20], [15, 29], [5, 29]], R, []);
+    for (let x = 7; x < 27; x += 2) d.line(x, 6, x, 28, R[1]);                            // coste del fustagno
+    d.P(R[3], 6, 4, 7, 1); d.P(R[3], 19, 4, 7, 1);
+    for (const y of [16, 20, 24]) { d.ball(14, y, 1.2, 1.2, ORO); d.ball(18, y, 1.2, 1.2, ORO); }
+    d.box(20, 17, 5, 4, ramp('#6a4228'));                                                 // taschino
+    d.P('#f0a0c0', 21, 15, 2, 2);                                                         // caramella del 1983
+    return outline(d.c);
   },
   giaccaVento() {
-    const [c, P] = canvas();
-    P('#e86a1a', 3, 3, 10, 11); P('#e86a1a', 0, 4, 3, 9); P('#e86a1a', 13, 4, 3, 9); // giacca e maniche
-    P('#c8500e', 7, 3, 2, 11); P('#f0f0f0', 8, 4, 1, 9);                              // zip
-    P('#2a5a2a', 5, 2, 6, 2);                                                         // colletto
-    P('#ffffff', 4, 8, 2, 1); P('#2a5a2a', 10, 7, 2, 2);                              // logo del consorzio
-    return outline(c);
+    const d = pen(S, S), R = ramp('#e86a1a');
+    stoffa(d, [[8, 5], [24, 5], [27, 8], [31, 26], [26, 27], [25, 30], [7, 30], [6, 27], [1, 26], [5, 8]], R, [[4, 14, 3, 24], [28, 14, 29, 24]]);
+    d.P(R[0], 15, 5, 2, 25); d.P('#e8ecf0', 16, 6, 1, 23);                                // zip
+    d.box(9, 2, 14, 4, ramp('#2a5a2a'));                                                  // colletto del consorzio
+    d.box(8, 20, 6, 5, R); d.box(18, 20, 6, 5, R);                                        // tasche
+    d.P('#ffffff', 19, 10, 4, 3); d.P('#3a8a3a', 20, 11, 2, 1);                           // stemma col trattorino
+    d.P('#f8f8a0', 7, 16, 18, 1);                                                         // banda catarifrangente
+    return outline(d.c);
+  },
+  stivaliGomma() {
+    const d = pen(S, S), R = ramp('#2e8a3a');
+    for (const ox of [0, 12]) {
+      d.cyl(4 + ox, 4, 8, 18, R);
+      d.ball(10 + ox, 25, 7, 4, R);
+      d.P(R[0], 3 + ox, 28, 14, 2);
+      d.P(R[4], 4 + ox, 4, 8, 1);
+      d.P('#5a3a1c', 6 + ox, 22, 3, 2);                                                   // fango
+    }
+    d.P('#80d0ff', 27, 30, 2, 1); d.P('#80d0ff', 1, 30, 1, 1);
+    return outline(d.c);
+  },
+  ciabatteStalla() {
+    const d = pen(S, S), R = ramp('#5a7ac0');
+    for (const [ox, oy] of [[0, 0], [12, 6]]) {
+      d.ell(10 + ox, 18 + oy, 9, 4, ramp('#e8e0d0')[1]);                                  // suola
+      d.ball(12 + ox, 16 + oy, 6, 4, R);
+      d.P(R[4], 9 + ox, 14 + oy, 4, 1);
+    }
+    for (const [x, y] of [[2, 10], [4, 8], [1, 13]]) d.P('#f0e070', x, y, 3, 1);          // scie supersoniche
+    d.P('#f0e070', 28, 4, 1, 4); d.P('#f0e070', 26, 6, 5, 1);
+    return outline(d.c);
+  },
+  zoccoli() {
+    const d = pen(S, S), R = ramp('#e8b860');
+    d.ball(16, 18, 13, 8, R, { grain: 0.35, seed: 9 });
+    d.ell(11, 15, 6, 3, R[0]);                                                            // buco del piede
+    d.ell(27, 17, 3, 4, R[3]);                                                            // punta all'insù
+    d.P(R[1], 3, 24, 26, 2);
+    for (const [x, y, c] of [[17, 18, '#d02830'], [21, 20, '#3a6ad0'], [24, 17, '#f0e050']]) { d.P(c, x, y, 2, 2); d.P('#3a8a3a', x + 2, y + 1); }
+    return outline(d.c);
   },
   cappelloNatale() {
-    const [c, P] = canvas();
-    P('#fbf6f0', 1, 11, 14, 3);                                                       // bordo di pelo
-    P('#d02028', 3, 6, 10, 5); P('#d02028', 6, 3, 6, 3); P('#d02028', 11, 2, 3, 2);  // cappello che cade di lato
-    P('#fbf6f0', 13, 2, 3, 3);                                                        // pon pon
-    P('#ff5a5a', 5, 7, 2, 1);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#d02028'), B = ramp('#f4f0ea');
+    d.poly([[5, 24], [27, 24], [24, 12], [20, 6], [28, 9], [22, 3], [12, 6]], R[2]);
+    d.line(12, 7, 7, 22, R[3], 2); d.line(22, 10, 25, 22, R[1], 2);
+    d.ball(16, 25, 13, 4, B, { grain: 0.5, seed: 2 });                                    // pelliccia
+    d.ball(28, 9, 3.5, 3.5, B);                                                           // pon pon
+    d.ball(28, 13, 1.5, 1.5, ORO);                                                        // campanellino
+    return outline(d.c);
   },
   maglioneRenne() {
-    const [c, P] = canvas();
-    P('#c02028', 3, 2, 10, 12); P('#c02028', 0, 3, 3, 10); P('#c02028', 13, 3, 3, 10);
-    P('#fbf6f0', 3, 4, 10, 1); P('#fbf6f0', 3, 12, 10, 1);                            // greche
-    P('#8a5a28', 5, 7, 3, 3); P('#8a5a28', 9, 7, 3, 3); P('#e01010', 6, 9); P('#e01010', 10, 9); // due renne col naso rosso
-    P('#5a3a1c', 5, 6); P('#5a3a1c', 7, 6); P('#5a3a1c', 9, 6); P('#5a3a1c', 11, 6);
-    P('#2a8a3a', 3, 2, 10, 1);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#c02028');
+    stoffa(d, [[8, 4], [24, 4], [30, 10], [31, 26], [26, 26], [25, 30], [7, 30], [6, 26], [1, 26], [2, 10]], R, [[4, 14, 3, 24], [28, 14, 29, 24]]);
+    for (const y of [8, 27]) for (let x = 5; x < 28; x += 4) { d.P('#f4f0ea', x, y, 2, 2); d.P('#2a8a3a', x + 2, y, 2, 2); }
+    for (const ox of [9, 19]) {                                                           // due renne
+      d.P('#8a5a28', ox, 15, 5, 4); d.P('#8a5a28', ox + 4, 12, 3, 4);
+      d.P('#5a3a1c', ox + 4, 9, 1, 3); d.P('#5a3a1c', ox + 6, 9, 1, 3);
+      d.P('#ff2020', ox + 7, 14, 2, 2); d.P('#5a3a1c', ox, 19, 1, 3); d.P('#5a3a1c', ox + 4, 19, 1, 3);
+    }
+    return outline(d.c);
   },
   mantelloAlghe() {
-    const [c, P] = canvas();
-    P('#3a6a2a', 3, 1, 10, 13); P('#2a5020', 1, 4, 2, 11); P('#2a5020', 13, 4, 2, 11);
-    for (let x = 2; x < 15; x += 2) P('#4a8a30', x, 13 + (x % 4 ? 1 : 0), 1, 2);     // frange che gocciolano
-    P('#6ab040', 5, 3, 1, 6); P('#6ab040', 9, 5, 1, 5); P('#80d0ff', 11, 10); P('#80d0ff', 4, 12);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#3e7a2a');
+    stoffa(d, [[9, 2], [23, 2], [29, 28], [3, 28]], R, [[12, 6, 8, 26], [16, 6, 16, 27], [20, 6, 24, 26]]);
+    for (let x = 3; x < 30; x += 2) d.P(R[x % 4 ? 1 : 3], x, 28, 1, 2 + (hash(x, 1) * 3 | 0));   // frange
+    d.P('#7ac040', 13, 10, 1, 6); d.P('#7ac040', 21, 14, 1, 5);
+    for (const [x, y] of [[7, 30], [18, 31], [26, 30], [11, 20]]) d.P('#80d0ff', x, y);   // gocce
+    d.P('#f0f0d0', 19, 8, 2, 1);                                                          // lisca di carpa
+    return outline(d.c);
   },
 };
 
 // ---------- Roba che cade dagli alberi ----------
 const OGGETTI = {
   mela() {
-    const [c, P] = canvas();
-    P('#d82828', 3, 5, 10, 9); P('#d82828', 4, 4, 8, 11); P('#ff6a5a', 5, 6, 2, 3);
-    P('#6e4824', 8, 1, 1, 4); P('#4ab050', 9, 2, 3, 2);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#d83028');
+    d.ball(16, 18, 10, 9, R);
+    d.ell(16, 10, 3, 1.5, R[0]);
+    d.P(ramp('#c87a3a')[2], 18, 17, 3, 2); d.P(ramp('#c87a3a')[1], 13, 22, 2, 2);         // ruggine della Rugginella
+    d.line(16, 9, 17, 4, LEGNO_SC[1], 2);
+    d.ball(21, 5, 4, 2, ramp('#4ab050'));
+    return outline(d.c);
   },
   noci() {
-    const [c, P] = canvas();
-    for (const [x, y] of [[2, 7], [8, 8], [5, 3]]) { P('#a8783e', x, y, 6, 6); P('#c8984e', x + 1, y + 1, 2, 2); P('#7a5228', x + 3, y, 1, 6); }
-    return outline(c);
+    const d = pen(S, S), R = ramp('#b88a4e');
+    for (const [x, y] of [[10, 20], [21, 21], [16, 11]]) {
+      d.ball(x, y, 6, 6, R, { grain: 0.6, seed: x });
+      d.line(x, y - 6, x, y + 6, R[0]);
+    }
+    d.P('#1a1420', 14, 11); d.P('#1a1420', 18, 11); d.P(R[0], 15, 14, 3, 1);            // la noce in cima ha la faccia del nonno
+    return outline(d.c);
+  },
+  fico() {
+    const d = pen(S, S), R = ramp('#7a3a7a');
+    d.ball(16, 20, 9, 9, R);
+    d.poly([[13, 12], [19, 12], [17, 6], [15, 6]], R[1]);
+    d.line(16, 6, 16, 3, LEGNO_SC[2], 2);
+    d.P('#f0a8a0', 20, 22, 4, 3); d.P('#e86a70', 21, 23, 2, 1);                           // spaccato dolce
+    d.P('#ffd060', 24, 18); d.P('#ffd060', 25, 20);                                       // goccia di miele
+    return outline(d.c);
+  },
+  castagna() {
+    const d = pen(S, S), R = ramp('#3e8a2a');
+    d.ball(16, 18, 11, 10, R);
+    for (let i = 0; i < 46; i++) {                                                         // riccio spinoso
+      const a = i * 2.4, r = 9 + (i % 3);
+      d.line(16 + Math.cos(a) * 6, 18 + Math.sin(a) * 6, 16 + Math.cos(a) * (r + 3), 18 + Math.sin(a) * (r + 3), R[i % 2 ? 3 : 1]);
+    }
+    d.ball(16, 16, 5, 4, ramp('#8a4a24'));                                                // castagna che sbuca
+    d.P('#1a1420', 14, 15); d.P('#1a1420', 18, 15); d.P('#1a1420', 15, 18, 3, 1);         // ...matta
+    return outline(d.c);
   },
   pigna() {
-    const [c, P] = canvas();
-    P('#8a5a2a', 4, 3, 8, 11); P('#8a5a2a', 5, 2, 6, 13);
-    for (let y = 3; y < 14; y += 2) for (let x = 5 + (y % 4 ? 1 : 0); x < 11; x += 2) P('#c08a4a', x, y);
-    P('#3a7a2a', 7, 0, 2, 2);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#9a6430');
+    d.ball(16, 17, 8, 12, R);
+    for (let y = 7; y < 28; y += 3) for (let x = 10 + (y % 2) * 2; x < 23; x += 4) { d.P(R[0], x, y + 1, 3, 1); d.P(R[4], x, y, 2, 1); }
+    d.ball(16, 4, 3, 2, ramp('#3a7a2a'));
+    luccica(d, 25, 8);
+    return outline(d.c);
   },
   nido() {
-    const [c, P] = canvas();
-    P('#8a6a3a', 1, 7, 14, 6); P('#6e4824', 2, 12, 12, 2); P('#3a2a1a', 3, 7, 10, 2);
-    for (let x = 1; x < 15; x += 3) P('#b8925a', x, 8 + (x % 2), 2, 1);
-    P('#b8925a', 0, 6, 2, 1); P('#b8925a', 14, 6, 2, 1);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#9a7442');
+    d.ell(16, 20, 14, 8, R[1]);
+    d.ell(16, 18, 10, 5, ramp('#4a3420')[2]);
+    for (let i = 0; i < 40; i++) { const a = i * 0.9, r = 11 + (i % 3); d.line(16 + Math.cos(a) * r, 20 + Math.sin(a) * 6, 16 + Math.cos(a + 0.6) * r, 20 + Math.sin(a + 0.6) * 6, R[i % 3 + 2]); }
+    d.P('#1a1420', 12, 17, 2, 1); d.P('#1a1420', 19, 17, 2, 1);                           // nido offeso: sopracciglia
+    return outline(d.c);
+  },
+  uovoGazza() {
+    const d = pen(S, S);
+    d.ball(16, 17, 8, 11, ramp('#c8e0e8'));
+    for (const [x, y] of [[13, 12], [19, 16], [14, 21], [18, 24], [11, 18]]) d.P('#6a7a5a', x, y, 2, 2);
+    d.ball(16, 16, 3, 3, ORO);                                                            // dentro luccica qualcosa
+    luccica(d, 24, 7); luccica(d, 8, 25);
+    return outline(d.c);
+  },
+  cartolina() {
+    const d = pen(S, S);
+    d.box(3, 7, 26, 19, ramp('#f0e8d0'));
+    d.P('#5ab0e8', 5, 9, 14, 8); d.P('#f0d080', 5, 15, 14, 3); d.ball(15, 11, 2, 2, ORO); // mare, spiaggia e sole
+    d.P('#e84a6a', 7, 13, 1, 3); d.P('#3a8a3a', 10, 13, 1, 3);                           // ombrelloni
+    d.box(21, 9, 6, 7, ramp('#c83030'));                                                  // francobollo
+    for (const y of [19, 21, 23]) d.P('#8a8a9a', 5, y, 20, 1);
+    d.P('#c83030', 20, 19, 6, 1);                                                         // «baci da Rimini»
+    return outline(d.c);
   },
   biscotti() {
-    const [c, P] = canvas();
-    P('#d8a050', 2, 4, 12, 10); P('#d8a050', 3, 3, 10, 12);
-    for (const [x, y] of [[5, 6], [9, 5], [7, 9], [11, 10], [4, 11]]) P('#5a3418', x, y, 2, 1);
-    P('#f0c870', 4, 4, 3, 1);
-    return outline(c);
+    const d = pen(S, S), R = ramp('#d8a050');
+    d.ball(12, 19, 9, 8, R); d.ball(21, 13, 8, 7, R);
+    d.poly([[21, 8], [24, 12], [21, 16], [18, 12]], '#f8f4f0');                           // stella glassata
+    for (const [x, y] of [[9, 17], [14, 21], [10, 22], [16, 16]]) d.P('#5a3418', x, y, 2, 1);
+    d.P('#d02028', 12, 18); d.P('#3a9a3a', 13, 18);
+    return outline(d.c);
   },
   carbone() {
-    const [c, P] = canvas();
-    P('#2a2a30', 2, 6, 12, 8); P('#2a2a30', 4, 4, 8, 11); P('#4a4a56', 5, 6, 3, 2); P('#4a4a56', 9, 9, 2, 2);
-    return outline(c, '#000');
+    const d = pen(S, S), R = ramp('#3a3a46');
+    d.ball(16, 19, 11, 9, R, { grain: 0.8, seed: 7 });
+    d.poly([[10, 14], [15, 11], [17, 16]], R[3]);
+    d.ell(16, 8, 5, 2, '#d02028'); d.P('#f0c030', 15, 6, 3, 2);                           // fiocco regalo
+    luccica(d, 23, 14);
+    return outline(d.c);
   },
 };
 
@@ -212,39 +421,7 @@ export function iconaUrl(id) {
   return (_url[id] ??= ICONE_LOOT[id]().toDataURL());
 }
 
-// ---------- Babbo Natale smemorato (cammina dietro a Garonio): 3 fotogrammi rivolti a destra ----------
-export function babbo(f = 0) {
-  const [c, P] = canvas(20, 28);
-  const passo = f === 1 ? 1 : f === 2 ? -1 : 0;
-  P('#d02028', 5, 3, 9, 3); P('#d02028', 12, 1, 4, 3); P('#fbf6f0', 15, 0, 3, 3);   // cappello col pon pon
-  P('#fbf6f0', 4, 5, 11, 2);                                                        // bordo di pelo
-  P('#f0c0a0', 6, 7, 8, 4); P('#1a1420', 11, 8); P('#f08080', 13, 9, 2, 1);         // faccia, occhio, naso rosso
-  P('#fbf6f0', 5, 10, 10, 6); P('#fbf6f0', 6, 16, 8, 2); P('#e8e0d8', 7, 17, 6, 1); // barbone bianco
-  P('#d02028', 4, 15, 12, 7); P('#d02028', 3, 16, 2, 5); P('#d02028', 15, 16, 2, 5); // giubba
-  P('#1a1420', 4, 19, 12, 2); P('#f0c040', 9, 19, 2, 2);                           // cintura con la fibbia
-  P('#fbf6f0', 4, 21, 12, 1); P('#f0c0a0', 15, 20, 2, 2); P('#f0c0a0', 3, 20, 2, 2); // orlo e mani
-  P('#d02028', 6, 22, 3, 3 + Math.max(0, -passo)); P('#d02028', 11, 22, 3, 3 + Math.max(0, passo)); // pantaloni
-  P('#1a1420', 5, 25 + Math.max(0, -passo) - 0, 4, 2 - Math.max(0, -passo)); P('#1a1420', 11, 25 + Math.max(0, passo), 4, 2 - Math.max(0, passo)); // stivali
-  return outline(c);
-}
-export const babboFrames = () => { const r = [0, 1, 2].map(babbo); return [...r, ...r.map(PIX.mirror)]; };
-
-// ---------- Il Mostro della Palude (lo «zombie verde» del laghetto): 2 fotogrammi rivolti a destra ----------
-export function mostroPalude(f = 0) {
-  const [c, P] = canvas(30, 40);
-  const pelle = '#5a9a3a', pelle2 = '#3e7a2a', pelle3 = '#2a5a1e';
-  const b = f;   // il fotogramma 1 si sporge in avanti
-  P(pelle2, 9 + b, 4, 12, 11); P(pelle, 10 + b, 5, 10, 8);                          // testone
-  P('#e8f040', 16 + b, 8, 3, 2); P('#e8f040', 11 + b, 8, 3, 2); P('#1a1420', 17 + b, 8); P('#1a1420', 12 + b, 9); // occhi gialli storti
-  P(pelle3, 11 + b, 12, 9, 2); P('#f0ead0', 12 + b, 12); P('#f0ead0', 15 + b, 12); P('#f0ead0', 18 + b, 12); // bocca coi dentacci
-  P('#2a4a1a', 8 + b, 3, 14, 2); P('#4a8a2a', 7 + b, 4, 2, 6); P('#4a8a2a', 21 + b, 4, 2, 8); // alghe sulla testa
-  P('#6a5a3a', 6, 15, 18, 13); P('#4e4228', 6, 15, 18, 2);                         // camicia a brandelli di fango
-  P(pelle, 9, 17, 3, 3); P(pelle2, 17, 20, 4, 3);                                    // pelle verde dagli strappi
-  P(pelle2, 2, 16, 4, 12); P(pelle, 2, 27, 4, 3);                                    // braccio dietro
-  P(pelle2, 24 + b, 15, 4, 6); P(pelle2, 25 + b * 2, 20, 4, 4); P(pelle, 26 + b * 2, 23, 3, 3); // braccio teso in avanti
-  P('#3a3a5a', 7, 28, 7, 9 - b); P('#3a3a5a', 16, 28, 7, 8 + b);                    // pantaloni zuppi
-  P(pelle3, 6, 37 - b, 8, 3); P(pelle3, 16, 36 + b, 8, 3);                           // piedoni palmati
-  for (const [x, y] of [[8, 28], [14, 30], [22, 27], [4, 30]]) P('#4a8a2a', x, y, 1, 3); // alghe che pendono
-  P('#80d0ff', 23 + b, 22); P('#80d0ff', 5, 31); P('#80d0ff', 19, 37);              // gocce
-  return outline(c);
-}
+// ---------- Babbo Natale smemorato: lo sprite del foglio personaggi ----------
+PIX.CHARACTERS.babbo_natale ??= { sprite: 'babbo_natale', w: 16, h: 24, skin: '#f0c0a0', hair: '#f4f4f4', hairStyle: 'flat', shirt: '#d02028', pants: '#d02028', boots: '#111' };
+export const babboFrames = () => PIX.characterFrames('babbo_natale');
+export const babboMisure = () => { const o = PIX.CHARACTERS.babbo_natale; return { w: o.w / 16 * 1.25, h: o.h / 16 * 1.25 }; };
