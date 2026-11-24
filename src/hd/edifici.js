@@ -133,6 +133,7 @@ function grondaia(d, x, y, h) { d.P('#8a8a90', x, y, 2, h); d.P('#b0b0b8', x, y,
 function base(wTiles, hMuro, hTetto, extraW = 0) {
   const W = wTiles * 16 + 6 + extraW, H = hTetto + hMuro;
   const d = pen(W, H + 1);
+  d.c.muro = { x: 3, y: hTetto, w: wTiles * 16, h: hMuro }; // la facciata, per le texture 3D del gioco
   return { d, W, H, mx: 3, my: hTetto, mw: wTiles * 16 };
 }
 
@@ -272,20 +273,20 @@ export function paradiso() {
   return outline(d.c);
 }
 
-export function capannoneMaiali() {
-  const hM = 42, { d, W, mx, my, mw } = base(12, hM, 22);
+export function capannoneMaiali({ w = 12, scritta = true } = {}) {
+  const hM = 42, { d, W, mx, my, mw } = base(w, hM, 22);
   tettoLamiera(d, 0, 0, W, 23, '#8a4a32');
   blocchi(d, mx, my, mw, hM, '#b0aca0');
   ombraGronda(d, mx, my, mw);
   for (let x = mx + 10; x < mx + mw - 20; x += 26) { d.P('#3a3a42', x, my + 8, 14, 5); d.P('#6a7a8a', x + 1, my + 9, 12, 3); } // finestrelle alte
   // portone scorrevole
-  const L = ramp('#8a4a32'), px = mx + 74, pw = 40;
+  const L = ramp('#8a4a32'), pw = 40, px = mx + mw - pw - 18;
   d.P('#2a2228', px, my + 16, pw, hM - 16);
   d.P(L[2], px + 12, my + 16, pw - 12, hM - 16);
   for (let i = px + 12; i < px + pw; i += 4) d.P(L[1], i, my + 16, 1, hM - 16);
   d.line(px + 12, my + 16, px + pw - 1, my + hM - 1, L[3]); d.line(px + 12, my + hM - 1, px + pw - 1, my + 16, L[3]);
   d.P('#5a5a62', px - 2, my + 14, pw + 6, 2);
-  insegna(d, mx + 40, my + 20, 'MAIALI', '#8a4a32');
+  if (scritta) insegna(d, mx + 40, my + 20, 'MAIALI', '#8a4a32');
   // fango sul fondo
   for (let i = 0; i < mw; i++) d.P(hash(i >> 2, 2, 7) < 0.5 ? '#6e5232' : '#7e6040', mx + i, my + hM - 3 - (hash(i >> 2, 3, 2) * 2 | 0), 1, 3);
   return outline(d.c);
@@ -392,3 +393,74 @@ export const EDIFICI = [
   ['Ranch Mister Frank', ranch], ['Fienile', fienile], ['Capannone dei maiali', capannoneMaiali],
   ['Gallinaio', gallinaio], ['Tettoia', tettoia],
 ];
+
+// ---------- Per il gioco (src/world.js): texture delle scatole 3D ----------
+const MAT = {
+  casa: ['intonaco', '#ecd49a', 'coppi'], officina: ['lamiera', '#8e959e', 'lamiera'], bar: ['intonaco', '#e8dcc0', 'coppi'],
+  maiali: ['blocchi', '#b0aca0', 'lamiera'], magazzino: ['lamiera', '#a8a49a', 'lamiera'], gallinaio: ['legno', '#b08050', 'lamiera'],
+  capannone2: ['blocchi', '#b0aca0', 'lamiera'], fienile: ['mattoni', '#b4583a', 'coppi'], alimentari: ['intonaco', '#e8c070', 'coppi'],
+  'casa-rosa': ['intonaco', '#e8a8a0', 'coppi'], 'casa-azzurra': ['intonaco', '#a8c8e0', 'coppi'], tabacchi: ['intonaco', '#f0e0b0', 'coppi'],
+  municipio: ['intonaco', '#e8dcc0', 'coppi'], paradiso: ['intonaco', '#6a3a7a', 'coppi'], tettoia: ['legno', '#8a5a32', 'lamiera'],
+  'cascina-patata': ['intonaco', '#e0c48a', 'coppi'], 'cascina-postino': ['intonaco', '#f0d8b8', 'coppi'], ranch: ['legno', '#9a6a3a', 'lamiera'],
+};
+const FACCIATA = {
+  casa: () => casa(), officina, bar, alimentari, tabacchi, municipio, paradiso, magazzino, fienile, gallinaio, tettoia, ranch,
+  maiali: () => capannoneMaiali(), capannone2: () => capannoneMaiali({ w: 10, scritta: false }),
+  'casa-rosa': () => casa({ w: 6, h: 3.4, muro: '#e8a8a0', tetto: '#a83a2a', pers: '#6a4a2a', seed: 3, piani: 2 }),
+  'casa-azzurra': () => casa({ w: 6, muro: '#a8c8e0', tetto: '#8a3a2a', pers: '#f4f0e4', seed: 5 }),
+  'cascina-patata': () => cascina(), 'cascina-postino': () => cascina({ muro: '#f0d8b8', tetto: '#8a3a2a', w: 7 }),
+};
+// edifici la cui facciata ha già l'insegna dipinta (il gioco non ci mette il cartello sopra)
+export const CON_INSEGNA = new Set(['officina', 'bar', 'alimentari', 'tabacchi', 'municipio', 'paradiso', 'magazzino', 'maiali']);
+
+function parete(tipo, col, w, h, finestre, seed) {
+  const d = pen(w, h);
+  if (tipo === 'intonaco') intonaco(d, 0, 0, w, h, col, seed, w > 40 ? 1 : 0);
+  else if (tipo === 'lamiera') lamiera(d, 0, 0, w, h, col);
+  else if (tipo === 'legno') legno(d, 0, 0, w, h, col);
+  else if (tipo === 'blocchi') blocchi(d, 0, 0, w, h, col);
+  else mattoni(d, 0, 0, w, h, col);
+  ombraGronda(d, 0, 0, w);
+  if (finestre && w >= 40) finestra(d, (w >> 1) - 5, Math.max(8, h - 28), { pers: tipo === 'intonaco' ? '#3e7a4a' : '#6a7078' });
+  else if (finestre) finestra(d, (w >> 1) - 4, Math.max(8, h - 24), { w: 8, h: 10 });
+  return d.c;
+}
+
+// Tegole ripetibili (una casella di tetto)
+function tettoTex(tipo, col) {
+  const R = ramp(col);
+  if (tipo === 'lamiera') {
+    const d = pen(16, 16);
+    for (let i = 0; i < 16; i++) d.P(R[[3, 2, 2, 1][i % 4]], i, 0, 1, 16);
+    d.P('#a85a2e', 6, 5, 1, 3); d.P('#a85a2e', 13, 11, 1, 2);
+    return d.c;
+  }
+  const d = pen(20, 18), CH = [3, 3, 2, 2, 1];
+  for (let i = 0; i < 20; i++) { d.P(R[CH[i % 5]], i, 0, 1, 18); if (i % 5 === 4) d.P(R[0], i, 0, 1, 18); }
+  for (let j = 5; j < 18; j += 6) for (let i = 0; i < 20; i++) {
+    if (i % 5 === 4) continue;
+    d.P(R[0], i, j); d.P(R[4 - (i % 5 > 1 ? 1 : 0)], i, (j + 1) % 18);
+  }
+  d.P('#5a7a3a', 7, 9, 2, 1);
+  return d.c;
+}
+
+export function texEdificio(b) {
+  const [tipo, col, tetto] = MAT[b.id] || [b.wall === 'metallo' ? 'lamiera' : b.wall === 'legno' ? 'legno' : 'intonaco', b.wall?.[0] === '#' ? b.wall : '#e8d8b0', b.wall === 'metallo' ? 'lamiera' : 'coppi'];
+  const W = Math.round(b.w * 16), H = Math.round(b.h * 16), D = Math.round(b.d * 16);
+  let front;
+  const f = FACCIATA[b.id];
+  if (f) {
+    const full = f(), m = full.muro;
+    const d = pen(m.w, m.h); d.g.drawImage(full, m.x, m.y, m.w, m.h, 0, 0, m.w, m.h);
+    front = d.c;
+  } else front = parete(tipo, col, W, H, b.windows, 7);
+  const finLato = tipo === 'intonaco' ? 1 : 0;
+  return {
+    front,
+    side: parete(tipo, col, D, H, finLato, 3),
+    back: parete(tipo, col, W, H, 0, 5),
+    roof: tettoTex(tetto, b.roof),
+    insegna: CON_INSEGNA.has(b.id),
+  };
+}

@@ -10,15 +10,15 @@ function ciuffo(W, R, x, y) {
   W(R[0], x + 1, y + 1); W(R[1], x + 1, y);
 }
 
-export function erba(v = 0) {
+export function erba(v = 0, seed = v, base = '#5ca63c') {
   return tile((d, W) => {
-    const R = ramp('#5ca63c');
+    const R = ramp(base);
     d.P(R[2], 0, 0, T, T);
     for (let y = 0; y < T; y++) for (let x = 0; x < T; x++) {
-      const n = hash(x >> 2, y >> 2, v + 3) * 0.6 + hash(x, y, v) * 0.4;
+      const n = hash(x >> 2, y >> 2, seed + 3) * 0.6 + hash(x, y, seed) * 0.4;
       if (n < 0.16) W(R[1], x, y); else if (n > 0.86) W(R[3], x, y);
     }
-    const r = rng(v * 13 + 5);
+    const r = rng(seed * 13 + 5);
     for (let i = 0; i < 6; i++) ciuffo(W, R, r() * T | 0, r() * T | 0);
     if (v === 1) { // fiorellini bianchi e gialli (margherite)
       for (let i = 0; i < 2; i++) {
@@ -32,15 +32,15 @@ export function erba(v = 0) {
   });
 }
 
-export function sterrato(v = 0) {
+export function sterrato(v = 0, seed = v) {
   return tile((d, W) => {
     const R = ramp('#b68c58');
     d.P(R[2], 0, 0, T, T);
     for (let y = 0; y < T; y++) for (let x = 0; x < T; x++) {
-      const n = hash(x, y, 40 + v);
+      const n = hash(x, y, 40 + seed);
       if (n < 0.12) W(R[1], x, y); else if (n > 0.9) W(R[3], x, y);
     }
-    const r = rng(77 + v);
+    const r = rng(77 + seed);
     for (let i = 0; i < 5; i++) { // sassi
       const x = r() * T | 0, y = r() * T | 0, S = ramp(r() < 0.5 ? '#a09888' : '#8c8478');
       W(S[3], x, y); W(S[2], x + 1, y); W(S[1], x, y + 1); W(S[1], x + 1, y + 1); W(R[0], x, y + 2); W(R[0], x + 1, y + 2);
@@ -51,12 +51,12 @@ export function sterrato(v = 0) {
   });
 }
 
-export function asfalto(riga = false, v = 0) {
+export function asfalto(riga = false, v = 0, seed = v) {
   return tile((d, W) => {
     const R = ramp('#5c6068');
     d.P(R[2], 0, 0, T, T);
     for (let y = 0; y < T; y++) for (let x = 0; x < T; x++) {
-      const n = hash(x, y, 90 + v);
+      const n = hash(x, y, 90 + seed);
       if (n < 0.07) W(R[1], x, y); else if (n > 0.985) W(R[4], x, y); else if (n > 0.93) W(R[3], x, y);
     }
     if (v === 1) { // crepa e toppa
@@ -187,14 +187,13 @@ export function grano(maturo = true) {
   });
 }
 
-export function fango() {
+export function fango(pozza = true) {
   return tile((d, W) => {
     const R = ramp('#6e5232');
     d.P(R[2], 0, 0, T, T);
     for (let y = 0; y < T; y++) for (let x = 0; x < T; x++) if (hash(x >> 1, y >> 1, 12) < 0.3) W(R[1], x, y);
     const Pz = ramp('#5c4630');
-    d.ell(9, 9, 4.5, 2.5, Pz[1]); d.ell(9, 9.5, 3, 1.5, Pz[0]);
-    d.P('#a8987c', 7, 8, 2, 1); d.P('#c8b89c', 7, 8);
+    if (pozza) { d.ell(9, 9, 4.5, 2.5, Pz[1]); d.ell(9, 9.5, 3, 1.5, Pz[0]); d.P('#a8987c', 7, 8, 2, 1); d.P('#c8b89c', 7, 8); }
     for (const [x, y] of [[2, 3], [4, 4], [12, 2]]) { W(R[0], x, y); W(R[0], x + 1, y); W(R[3], x, y - 1); } // impronte
   });
 }

@@ -1,9 +1,9 @@
 // Scena di prova: un pezzo di paese montato con i nuovi sprite, per vedere se stanno bene insieme.
-import { pen } from './kit.js';
-import * as TR from './terreno.js';
-import * as OG from './oggetti.js';
-import * as MZ from './mezzi.js';
-import * as ED from './edifici.js';
+import { pen } from '../../src/hd/kit.js';
+import * as TR from '../../src/hd/terreno.js';
+import * as OG from '../../src/hd/oggetti.js';
+import * as MZ from '../../src/hd/mezzi.js';
+import * as ED from '../../src/hd/edifici.js';
 
 const T = 16;
 function flipV(src) { const d = pen(src.width, src.height); d.g.translate(0, src.height); d.g.scale(1, -1); d.g.drawImage(src, 0, 0); return d.c; }

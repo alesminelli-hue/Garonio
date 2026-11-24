@@ -1,6 +1,8 @@
 // Pixel art generata via codice (segnaposto finché non avremo gli sprite veri).
 // Ogni funzione restituisce un <canvas> piccolo che poi diventa una texture "nearest".
 import * as THREE from 'three';
+import * as HDT from './hd/terreno.js';
+import * as HDO from './hd/oggetti.js';
 
 export const PX = 16; // pixel per unità di mondo (1 casella = 16 px)
 
@@ -189,84 +191,20 @@ export function egg() {
 
 // ---------- Piante ----------
 // stage: 1 germoglio, 2 crescita, 3 maturo
-export function crop(type, stage) {
-  const [c, g] = makeCanvas(14, 18);
-  const P = (col, x, y, w, h) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
-  const G = '#3f9a3a', D = '#2c6e2a';
-  if (stage === 1) { P(G, 6, 13, 2, 4); P(G, 4, 12, 2, 2); P(G, 8, 11, 2, 2); }
-  else if (type === 'mais') {
-    const h = stage === 2 ? 10 : 16;
-    P(D, 6, 17 - h, 2, h);
-    P(G, 3, 17 - h + 3, 3, 2); P(G, 8, 17 - h + 5, 3, 2); P(G, 2, 17 - h + 8, 4, 2); P(G, 8, 17 - h + 10, 4, 2);
-    if (stage === 3) { P('#f2c232', 8, 4, 3, 6); P('#d9a520', 10, 5, 1, 4); P('#c9b060', 6, 0, 2, 2); }
-  } else if (type === 'grano') { // spighe fitte: verdi in primavera, dorate d'estate
-    const ripe = stage === 3, h = ripe ? 13 : 10;
-    const stem = ripe ? '#c8a030' : G, ear = ripe ? '#f0d060' : '#7ac050', dk = ripe ? '#a07818' : D;
-    for (const [x, o] of [[1, 2], [3, 0], [5, 3], [7, 1], [9, 2], [11, 0]]) {
-      P(stem, x, 17 - h + o, 1, h - o); P(dk, x + 1, 17 - h + o + 3, 1, h - o - 3);
-      P(ear, x, 17 - h + o - 3, 2, 4);
-    }
-  } else { // pomodoro
-    const h = stage === 2 ? 8 : 11;
-    P(D, 6, 17 - h, 2, h);
-    P(G, 3, 17 - h + 1, 8, 3); P(G, 2, 17 - h + 5, 10, 3);
-    if (stage === 3) { P('#e03a2a', 2, 9, 3, 3); P('#e03a2a', 9, 8, 3, 3); P('#e03a2a', 6, 12, 3, 3); }
-  }
-  return outline(c);
-}
+// Colture HD (src/hd/oggetti.js): 16x24
+export function crop(type, stage) { return HDO.coltura(type, stage); }
 
 // ---------- Scenografia ----------
-export function tree(seed = 1) {
-  const R = rng(seed);
-  const [c, g] = makeCanvas(32, 44);
-  g.fillStyle = '#5a3a22'; g.fillRect(13, 28, 6, 15);
-  g.fillStyle = '#3e2816'; g.fillRect(17, 28, 2, 15);
-  const blob = (cx, cy, r, col) => {
-    g.fillStyle = col;
-    for (let y = -r; y <= r; y++) for (let x = -r; x <= r; x++) if (x * x + y * y <= r * r) g.fillRect(cx + x, cy + y, 1, 1);
-  };
-  blob(16, 18, 12, '#2f7a32');
-  blob(11, 15, 7, '#3f9440');
-  blob(20, 12, 7, '#3f9440');
-  blob(14, 9, 5, '#56ad4f');
-  for (let i = 0; i < 30; i++) { g.fillStyle = R() < 0.5 ? '#246428' : '#62b85a'; g.fillRect(6 + R() * 20 | 0, 6 + R() * 22 | 0, 1, 1); }
-  return outline(c);
-}
+export function tree(seed = 1) { return HDO.quercia(seed, seed % 5 === 3); } // 36x46
 
 // Pioppo: alto e stretto, tipico dei filari della Bassa.
-export function poplar(seed = 1) {
-  const R = rng(seed * 31 + 5);
-  const [c, g] = makeCanvas(16, 52);
-  g.fillStyle = '#5a3a22'; g.fillRect(7, 40, 3, 11);
-  for (let y = 2; y < 44; y++) {
-    const half = Math.round(Math.sin((y - 2) / 42 * Math.PI) * 6) + 1;
-    g.fillStyle = '#2f7036'; g.fillRect(8 - half, y, half * 2, 1);
-    g.fillStyle = '#4a9244'; g.fillRect(8 - half + 1, y, Math.max(1, half - 1), 1);
-  }
-  for (let i = 0; i < 26; i++) { g.fillStyle = R() < 0.5 ? '#245a2a' : '#6ab060'; g.fillRect(4 + R() * 8 | 0, 4 + R() * 38 | 0, 1, 2); }
-  return outline(c);
-}
+export function poplar(seed = 1) { return HDO.pioppo(seed); } // 20x58
 
 // Rotoballa di fieno vista di fronte.
-export function hayBale() {
-  const [c, g] = makeCanvas(20, 16);
-  g.fillStyle = '#c8a040'; g.fillRect(1, 2, 18, 13);
-  g.fillStyle = '#e0bc58'; g.fillRect(1, 2, 18, 3);
-  g.fillStyle = '#a88030'; for (let x = 3; x < 19; x += 4) g.fillRect(x, 5, 1, 10);
-  return outline(c);
-}
+export function hayBale() { return HDO.rotoballa(); } // 24x22
 
 // Cartello stradale su palo.
-export function signpost(text) {
-  const w = Math.max(28, text.length * 6 + 6);
-  const [c, g] = makeCanvas(w, 26);
-  g.fillStyle = '#5a3a22'; g.fillRect(w / 2 - 1, 10, 3, 16);
-  g.fillStyle = '#f4f0e0'; g.fillRect(0, 0, w, 11);
-  g.fillStyle = '#2a6a3a'; g.fillRect(1, 1, w - 2, 9);
-  g.fillStyle = '#ffffff'; g.font = 'bold 8px monospace'; g.textBaseline = 'middle'; g.textAlign = 'center';
-  g.fillText(text, w / 2, 5.5);
-  return c;
-}
+export function signpost(text) { return HDO.cartello(text); }
 
 // Lamiera ondulata per i silos (texture ripetibile).
 export function siloTexture() {
@@ -278,27 +216,11 @@ export function siloTexture() {
   return c;
 }
 
-export function bush() {
-  const [c, g] = makeCanvas(16, 10);
-  g.fillStyle = '#2f7a32'; g.fillRect(1, 3, 14, 7); g.fillRect(3, 1, 10, 2);
-  g.fillStyle = '#56ad4f'; g.fillRect(4, 2, 4, 2); g.fillRect(9, 4, 3, 2);
-  return outline(c);
-}
+export function bush(fiori = false) { return HDO.cespuglio(fiori); } // 22x15
 
-export function crate() {
-  const [c, g] = makeCanvas(16, 14);
-  g.fillStyle = '#9a6a3a'; g.fillRect(1, 1, 14, 12);
-  g.fillStyle = '#6e4826'; g.fillRect(1, 4, 14, 1); g.fillRect(1, 9, 14, 1); g.fillRect(4, 1, 1, 12); g.fillRect(11, 1, 1, 12);
-  g.fillStyle = '#f0d050'; g.fillRect(6, 6, 4, 2);
-  return outline(c);
-}
+export function crate() { return HDO.cassaVendita(); } // 26x22
 
-export function trough() {
-  const [c, g] = makeCanvas(16, 8);
-  g.fillStyle = '#7a5434'; g.fillRect(0, 2, 16, 5);
-  g.fillStyle = '#e0c060'; g.fillRect(1, 2, 14, 2);
-  return outline(c);
-}
+export function trough() { return HDO.mangiatoia(); } // 26x16
 
 export function bubble(text) {
   const [c, g] = makeCanvas(20, 12);
@@ -375,53 +297,74 @@ export function roofTexture(color) {
 }
 
 // ---------- Terreno ----------
+// colori di base delle caselle (servono ai bordi sfumati di blendTile): uguali alle caselle HD
 const GROUND = {
-  g: ['#5aa040', '#4f9438', '#66ad48'],   // erba
-  p: ['#c9a66b', '#b8955a', '#d6b47a'],   // strada sterrata
+  g: ['#5ca63c', '#4c9232', '#6cb44a'],   // erba
+  p: ['#b68c58', '#a27a4a', '#c49a64'],   // strada sterrata
   f: ['#86a84a', '#7a9c40', '#93b452'],   // campo incolto
   o: ['#86a84a', '#7a9c40', '#93b452'],   // orto incolto
-  c: ['#c8b070', '#b09858', '#d8c080'],   // paglia del pollaio
-  w: ['#3a78c0', '#3068aa', '#5a98d8'],   // acqua del canale
-  s: ['#7a6a3a', '#6a5a30', '#8a7a48'],   // recinto maiali (fango)
-  a: ['#5a5e66', '#50545c', '#666a72'],   // asfalto
-  q: ['#a89a88', '#968878', '#b8aa98'],   // piazza in ciottoli
-  b: ['#9a6a3a', '#7a5430', '#a8784a'],   // ponte di legno
-  y: ['#d8b850', '#c8a840', '#e4c868'],   // grano maturo
+  c: ['#a88458', '#987650', '#b89262'],   // paglia del pollaio
+  w: ['#3d80cc', '#336fb8', '#5a98d8'],   // acqua del canale
+  s: ['#6e5232', '#5e462a', '#7e6040'],   // recinto maiali (fango)
+  a: ['#5c6068', '#50545c', '#666a72'],   // asfalto
+  q: ['#a89880', '#968878', '#b4a690'],   // piazza in ciottoli
+  b: ['#a8743e', '#8a5e32', '#b07c46'],   // ponte di legno
+  y: ['#c8a040', '#b89034', '#e0bc58'],   // grano maturo
   r: ['#8a5e36', '#7a5030', '#966a40'],   // campo arato
 };
-export function paintTile(g, ch, x, y, seed, plot) {
-  const pal = GROUND[ch] || GROUND.g;
-  const R = rng(seed);
+
+// Caselle HD (src/hd/terreno.js), con qualche variante per non far vedere la ripetizione.
+let HD_TILES = null;
+function rot90(src) {
+  const [c, g] = makeCanvas(src.height, src.width);
+  g.translate(c.width, 0); g.rotate(Math.PI / 2); g.drawImage(src, 0, 0);
+  return c;
+}
+function flipV(src) {
+  const [c, g] = makeCanvas(src.width, src.height);
+  g.translate(0, c.height); g.scale(1, -1); g.drawImage(src, 0, 0);
+  return c;
+}
+function hdTiles() {
+  if (HD_TILES) return HD_TILES;
+  const erbe = [0, 11, 22, 33, 44, 55].map(s => HDT.erba(0, s));
+  HD_TILES = {
+    g: [...erbe, ...erbe, HDT.erba(1, 1), HDT.erba(2, 2)],
+    p: [0, 7, 14, 21].map(s => HDT.sterrato(0, s)),
+    f: [0, 9, 18].map(s => HDT.erba(0, s + 5, '#86a84a')),
+    o: [0, 9, 18].map(s => HDT.erba(0, s + 6, '#86a84a')),
+    c: [HDT.paglia()],
+    w: [HDT.acqua(0), HDT.acqua(1)],
+    s: [HDT.fango(false), HDT.fango(false), HDT.fango(true)],
+    a: [0, 3, 6, 9, 12, 15, 18].map(s => HDT.asfalto(false, 0, s)).concat([HDT.asfalto(false, 1, 1)]),
+    q: [HDT.piazza()],
+    b: [rot90(HDT.ponte())],
+    y: [HDT.grano(true)],
+    r: [HDT.arato()],
+  };
+  HD_TILES.rivaN = HDT.riva(0); HD_TILES.rivaS = flipV(HDT.riva(0));
+  HD_TILES.zolla = HDT.zolla(false); HD_TILES.zollaB = HDT.zolla(true);
+  return HD_TILES;
+}
+export function paintTile(g, ch, x, y, seed, plot, grid = null) {
   const X = x * PX, Y = y * PX;
-  g.fillStyle = pal[0]; g.fillRect(X, Y, PX, PX);
-  for (let i = 0; i < 10; i++) { g.fillStyle = pal[1 + (R() * 2 | 0)]; g.fillRect(X + (R() * PX | 0), Y + (R() * PX | 0), 1 + (R() * 2 | 0), 1); }
-  if (ch === 'w') { g.fillStyle = '#9ac8f0'; g.fillRect(X + (R() * 10 | 0), Y + 4 + (R() * 8 | 0), 4, 1); }
-  else if (ch === 'y') { // spighe a file
-    for (let r = 1; r < PX; r += 4) for (let i = 0; i < PX; i += 2) {
-      g.fillStyle = R() < 0.5 ? '#b89030' : '#f0d878'; g.fillRect(X + i, Y + r + (R() * 2 | 0), 1, 2);
-    }
-  } else if (ch === 'r') { // solchi
-    g.fillStyle = '#5e3c20'; for (let r = 2; r < PX; r += 4) g.fillRect(X, Y + r, PX, 1);
-    g.fillStyle = '#a87c50'; for (let r = 0; r < PX; r += 4) g.fillRect(X, Y + r, PX, 1);
-  } else if (ch === 'q') { // ciottoli
-    g.fillStyle = '#7a6e62'; for (let r = 0; r < PX; r += 4) g.fillRect(X, Y + r, PX, 1);
-    for (let r = 0; r < PX; r += 4) for (let i = ((r / 4) % 2) * 3; i < PX; i += 6) g.fillRect(X + i, Y + r, 1, 4);
-  } else if (ch === 'b') { // assi del ponte
-    g.fillStyle = '#5e3c20'; for (let i = 0; i < PX; i += 4) g.fillRect(X + i, Y, 1, PX);
-  } else if (ch === 'a') { // ghiaino dell'asfalto
-    for (let i = 0; i < 4; i++) { g.fillStyle = '#74787e'; g.fillRect(X + (R() * PX | 0), Y + (R() * PX | 0), 1, 1); }
+  const H = hdTiles(), set = H[ch] || H.g;
+  const R = rng(seed);
+  let img = set[(R() * set.length) | 0];
+  if (ch === 'w' && grid) { // riva: argine con le canne dove l'acqua tocca la terra
+    const wet = c => c === 'w' || c === 'b';
+    if (grid[y - 1] && !wet(grid[y - 1][x])) img = H.rivaN;
+    else if (grid[y + 1] && !wet(grid[y + 1][x])) img = H.rivaS;
   }
+  g.drawImage(img, X, Y);
   if (plot) {
-    // zolla lavorata
-    const wet = plot.water;
-    g.fillStyle = wet ? '#4a2e1a' : '#7a5232'; g.fillRect(X + 1, Y + 1, PX - 2, PX - 2);
-    g.fillStyle = wet ? '#3a2212' : '#64401f';
-    for (let r = 3; r < PX - 1; r += 4) g.fillRect(X + 2, Y + r, PX - 4, 1);
-    if (plot.stoppie) { // stoppie dopo il raccolto: vanno riarate
+    // zolla lavorata (la casella HD dell'orto, bagnata o asciutta)
+    g.drawImage(plot.water ? H.zollaB : H.zolla, 1, 1, PX - 2, PX - 2, X + 1, Y + 1, PX - 2, PX - 2);
+    if (plot.stoppie) {
       g.fillStyle = '#c8a850';
       for (let r = 2; r < PX - 1; r += 4) for (let i = 2 + (r % 3); i < PX - 2; i += 3) g.fillRect(X + i, Y + r - 1, 1, 2);
     }
-    if (plot.stage === 0 && plot.crop) { // semi
+    if (plot.stage === 0 && plot.crop) {
       g.fillStyle = '#e8d8a0';
       g.fillRect(X + 4, Y + 5, 1, 1); g.fillRect(X + 10, Y + 6, 1, 1); g.fillRect(X + 7, Y + 10, 1, 1); g.fillRect(X + 5, Y + 12, 1, 1);
     }

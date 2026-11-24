@@ -1,6 +1,8 @@
 // Il mondo: mappa, edifici, terreno e sprite.
 import * as THREE from 'three';
 import * as PIX from './pixel.js';
+import * as HDE from './hd/edifici.js';
+import * as HDO from './hd/oggetti.js';
 import { MAP_W, MAP_H, AREAS, BUILDINGS, ZONES, ROADS, PROPS, PLACES, CANAL, buildTileGrid, inZone } from './map.js';
 
 // I dati della mappa (luoghi, strade, zone) stanno in map.js.
@@ -100,7 +102,7 @@ export class World {
   }
 
   paint(x, z, plot) {
-    PIX.paintTile(this.groundCtx, this.grid[z][x], x, z, x * 131 + z * 977 + 7, plot);
+    PIX.paintTile(this.groundCtx, this.grid[z][x], x, z, x * 131 + z * 977 + 7, plot, this.grid);
     if (!plot) PIX.blendTile(this.groundCtx, this.grid, x, z);
     if (this.groundTex) this.groundTex.needsUpdate = true;
   }
@@ -146,10 +148,9 @@ export class World {
   }
 
   _makeBuilding(b) {
-    const front = PIX.toTexture(PIX.wallTexture(b.wall, b.w, b.h, !b.noDoor, b.windows));
-    const sideWin = b.id === 'casa' || (b.decor && b.wall[0] === '#') ? 1 : 0;
-    const side = PIX.toTexture(PIX.wallTexture(b.wall, b.d, b.h, false, sideWin));
-    const back = PIX.toTexture(PIX.wallTexture(b.wall, b.w, b.h, false, 0));
+    // facciate e tetti disegnati in src/hd/edifici.js
+    const hd = HDE.texEdificio(b);
+    const front = PIX.toTexture(hd.front), side = PIX.toTexture(hd.side), back = PIX.toTexture(hd.back);
     const M = t => new THREE.MeshLambertMaterial({ map: t });
     const box = new THREE.Mesh(new THREE.BoxGeometry(b.w, b.h, b.d), [M(side), M(side), M(back), M(back), M(front), M(back)]);
     box.position.set(b.x0 + b.w / 2, b.h / 2, b.z0 + b.d / 2);
@@ -160,13 +161,13 @@ export class World {
     shape.moveTo(-b.d / 2 - o, 0); shape.lineTo(b.d / 2 + o, 0); shape.lineTo(0, rh); shape.lineTo(-b.d / 2 - o, 0);
     const geo = new THREE.ExtrudeGeometry(shape, { depth: b.w + o * 2, bevelEnabled: false });
     geo.rotateY(Math.PI / 2);
-    const rt = PIX.toTexture(PIX.roofTexture(b.roof), true);
+    const rt = PIX.toTexture(hd.roof, true);
     rt.repeat.set(1, 1);
     const roof = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: rt }));
     roof.position.set(b.x0 - o, b.h, b.z0 + b.d / 2);
     this.scene.add(roof);
     // insegna
-    if (b.label) {
+    if (b.label && !hd.insegna) {
       const sc = PIX.sign(b.label);
       const s = this.sprite(sc, { anchorBottom: false, lit: true });
       s.position.set(b.x0 + b.w / 2, b.h - 0.5, b.z0 + b.d + 0.36);
@@ -221,7 +222,7 @@ export class World {
 
   _makeTrees() {
     const R = PIX.rng(42);
-    const texs = [1, 2, 3].map(s => PIX.toTexture(PIX.tree(s)));
+    const texs = [1, 2, 3, 4, 6, 8].map(s => PIX.toTexture(PIX.tree(s)));
     const pops = [1, 2].map(s => PIX.toTexture(PIX.poplar(s)));
     const clear = (x, z, m = 1) => {
       for (let dz = -m; dz <= m; dz++) for (let dx = -m; dx <= m; dx++) {
@@ -244,7 +245,7 @@ export class World {
       this._paintBlobShadow(s.position.x, s.position.z, w * 0.42, w * 0.22);
       this.solids.push({ x0: s.position.x - 0.3, z0: s.position.z - 0.2, x1: s.position.x + 0.3, z1: s.position.z + 0.2 });
     };
-    const oak = (x, z) => plant(x, z, texs[(R() * 3) | 0], 2, 2.75);
+    const oak = (x, z) => plant(x, z, texs[(R() * texs.length) | 0], 2.25, 2.875);
     // cornice di alberi sui bordi
     for (let x = 0; x < MAP_W; x += 2) { oak(x, 0); oak(x + 1, MAP_H - 1); oak(x, MAP_H - 2); }
     for (let z = 0; z < MAP_H; z += 2) { oak(0, z); oak(MAP_W - 1, z + 1); oak(1, z + 1); oak(MAP_W - 2, z); }
@@ -252,7 +253,7 @@ export class World {
     for (let i = 0; i < 260; i++) oak(R() * MAP_W, MAP_H - 2 - Math.pow(R(), 1.6) * 16);
     // filari di pioppi lungo la provinciale, la capezzagna e l'argine del canale
     const signs = PROPS.filter(p => p.kind === 'cartello');
-    const pop = (x, z) => { if (!signs.some(c => Math.abs(c.x - x - 0.5) < 3 && Math.abs(c.z - z - 0.5) < 2)) plant(x, z, pops[(R() * 2) | 0], 1, 3.25, 0.1); };
+    const pop = (x, z) => { if (!signs.some(c => Math.abs(c.x - x - 0.5) < 3 && Math.abs(c.z - z - 0.5) < 2)) plant(x, z, pops[(R() * 2) | 0], 1.25, 3.625, 0.1); };
     // (i pioppi del canale stanno a due caselle e mezza dall'acqua: fra argine e alberi deve passare un trattore che gira)
     for (let x = 4; x < MAP_W - 2; x += 3) { pop(x, 50); pop(x, 58); pop(x, 31); pop(x, 8); }
     // boschetti sparsi
@@ -260,12 +261,12 @@ export class World {
     for (const [gx, gz, r] of groves) for (let i = 0; i < r * 3; i++) oak(gx + (R() - 0.5) * r * 2, gz + (R() - 0.5) * r * 2);
     for (let i = 0; i < 70; i++) oak(2 + R() * (MAP_W - 4), 8 + R() * (MAP_H - 10));
     // cespugli
-    const bt = PIX.toTexture(PIX.bush());
+    const bts = [PIX.toTexture(PIX.bush()), PIX.toTexture(PIX.bush()), PIX.toTexture(PIX.bush(true))];
     for (let i = 0; i < 160; i++) {
       const x = 2 + (R() * (MAP_W - 4) | 0), z = 7 + (R() * (MAP_H - 9) | 0);
       if (this.grid[z][x] !== 'g' || !clear(x, z, 0) || used.has(x + ',' + z)) continue;
       used.add(x + ',' + z);
-      const s = this.sprite(bt, { w: 1, h: 0.62 });
+      const s = this.sprite(bts[i % 3], { w: 1.375, h: 0.9375 });
       s.position.set(x + 0.5, 0, z + 0.5); this.scene.add(s);
       this._paintBlobShadow(x + 0.5, z + 0.5, 0.45, 0.2);
     }
@@ -275,11 +276,11 @@ export class World {
   _makeProps() {
     this.props = {};
     const { cassa: cp, mangiatoia: mp } = PLACES;
-    const crate = this.sprite(PIX.toTexture(PIX.crate()), { w: 1, h: 0.875 });
+    const crate = this.sprite(PIX.toTexture(PIX.crate()), { w: 1.625, h: 1.375 });
     crate.position.set(cp.x, 0, cp.z); this.scene.add(crate);
     this.props.cassa = { x: cp.x, z: cp.z };
     this.solids.push({ x0: cp.x - 0.4, z0: cp.z - 0.3, x1: cp.x + 0.4, z1: cp.z + 0.2 });
-    const tr = this.sprite(PIX.toTexture(PIX.trough()), { w: 1, h: 0.5 });
+    const tr = this.sprite(PIX.toTexture(PIX.trough()), { w: 1.625, h: 1 });
     tr.position.set(mp.x, 0, mp.z); this.scene.add(tr);
     this.props.mangiatoia = { x: mp.x, z: mp.z };
 
@@ -287,7 +288,7 @@ export class World {
     const silo = PIX.toTexture(PIX.siloTexture(), true);
     for (const p of PROPS) {
       if (p.kind === 'balla') {
-        const s = this.sprite(bale, { w: 1.25, h: 1 });
+        const s = this.sprite(bale, { w: 1.5, h: 1.375 });
         s.position.set(p.x, 0, p.z); this.scene.add(s);
         this.solids.push({ x0: p.x - 0.55, z0: p.z - 0.3, x1: p.x + 0.55, z1: p.z + 0.2 });
       } else if (p.kind === 'silo') {
@@ -349,7 +350,7 @@ export class World {
     if (stage > 0) {
       const tk = plot.crop + stage;
       this.cropTex[tk] ??= PIX.toTexture(PIX.crop(plot.crop, stage));
-      const s = this.sprite(this.cropTex[tk], { w: 0.875, h: 1.125 });
+      const s = this.sprite(this.cropTex[tk], { w: 1, h: 1.5 });
       s.position.set(x + 0.5, 0, z + 0.55);
       s.userData = { stage, crop: plot.crop };
       this.scene.add(s);

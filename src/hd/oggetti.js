@@ -27,7 +27,9 @@ export function quercia(seed = 1, frutti = false) {
   const d = pen(36, 46);
   tronco(d, 15, 28, 6, 17);
   d.P('#4a2e1a', 17, 26, 2, 3);
-  chioma(d, [[18, 26, 13, 9], [9, 21, 8], [27, 20, 8], [18, 15, 10, 8], [11, 11, 6], [24, 10, 6], [18, 7, 6, 5]], '#3f8c36', seed);
+  const j = rng(seed * 7 + 3), J = v => v + Math.round((j() - 0.5) * 3);
+  const verdi = ['#3f8c36', '#3f8c36', '#4a9438', '#3a8240'];
+  chioma(d, [[18, 26, 13, 9], [J(9), J(21), 8], [J(27), J(20), 8], [18, J(15), 10, 8], [J(11), J(11), 6], [J(24), J(10), 6], [J(18), 7, 6, 5]].map(([x, y, rx, ry]) => [x, y, rx, ry]), verdi[seed % 4], seed);
   if (frutti) {
     const r = rng(seed + 9);
     for (let i = 0; i < 9; i++) {

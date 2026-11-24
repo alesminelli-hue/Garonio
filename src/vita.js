@@ -268,7 +268,7 @@ export class Vita {
 
   _nuovaAuto(tipo, col, dir, z, x) {
     const tex = this._tex(tipo, col), img = tex[0].image;
-    const w = img.width / PIX.PX, hh = img.height / PIX.PX;
+    const w = img.width / SV.AUTO_PX, hh = img.height / SV.AUTO_PX;
     const spr = this.W.sprite(tex[0], { w, h: hh });
     const group = new THREE.Group(); group.add(spr);
     const sh = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.9, 0.9).rotateX(-Math.PI / 2),

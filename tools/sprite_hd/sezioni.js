@@ -1,8 +1,8 @@
 // Impagina i fogli d'anteprima (sprite ingranditi + nome sotto).
-import { TERRENI } from './terreno.js';
-import { OGGETTI, PAESE, COLTURE } from './oggetti.js';
-import { MEZZI, ATTREZZI, TRAFFICO } from './mezzi.js';
-import { EDIFICI } from './edifici.js';
+import { TERRENI } from '../../src/hd/terreno.js';
+import { OGGETTI, PAESE, COLTURE } from '../../src/hd/oggetti.js';
+import { MEZZI, ATTREZZI, TRAFFICO } from '../../src/hd/mezzi.js';
+import { EDIFICI } from '../../src/hd/edifici.js';
 import { scena } from './scena.js';
 
 const BG = '#3b5182', BG2 = '#34497a';

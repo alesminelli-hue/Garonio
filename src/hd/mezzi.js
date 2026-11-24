@@ -243,6 +243,47 @@ export function turbina() { // atomizzatore: botte con ventola dietro
   return outline(d.c);
 }
 
+// ---------- Attrezzi visti da davanti/dietro (dietro al trattore che va verso la camera o si allontana) ----------
+export function aratroFronte() {
+  const d = pen(58, 24), R = ramp('#c03a2a'), A = ramp('#c8ccd4');
+  d.box(3, 3, 52, 5, R); d.P(FERRO[2], 25, 0, 8, 4);
+  for (const x of [9, 22, 35, 48]) {
+    d.P(R[1], x - 1, 8, 3, 8);
+    d.poly([[x - 5, 15], [x + 3, 15], [x + 4, 21], [x - 4, 22]], A[2]); d.P(A[4], x - 4, 16, 5, 1); d.P(A[0], x - 3, 21, 6, 1);
+  }
+  return outline(d.c);
+}
+export function seminatriceFronte() {
+  const d = pen(58, 30), G = ramp('#3e8a4a'), Y = ramp('#e8c030');
+  d.box(4, 3, 50, 13, G); d.box(3, 1, 52, 3, Y);
+  d.P('#f4ecd6', 19, 7, 20, 5); text(d, 'SEMI', 21, 7, G[0]);
+  d.P(FERRO[1], 2, 16, 54, 3);
+  for (let x = 7; x < 52; x += 6) d.ball(x, 23, 1.5, 4, CROMO);
+  d.P(GOMMA[1], 0, 18, 5, 11); d.P(GOMMA[1], 53, 18, 5, 11); d.P(GOMMA[2], 1, 18, 1, 11); d.P(GOMMA[2], 54, 18, 1, 11);
+  return outline(d.c);
+}
+export function falciatriceFronte() {
+  const d = pen(66, 22), O = ramp('#e07a2a');
+  d.box(3, 4, 60, 9, O); d.P(O[4], 4, 4, 58, 1);
+  for (let x = 10; x < 58; x += 12) d.P(O[0], x, 6, 4, 4);
+  d.P(FERRO[2], 29, 0, 8, 5);
+  d.P(CROMO[2], 1, 14, 64, 2); d.P(CROMO[4], 1, 14, 64, 1);
+  for (let x = 2; x < 64; x += 3) { d.P(CROMO[1], x, 16, 2, 2); d.P(CROMO[0], x, 18); }
+  return outline(d.c);
+}
+export function turbinaFronte() {
+  const d = pen(42, 42), W = ramp('#e8e4d8');
+  d.ball(21, 17, 15, 12, W);
+  d.P('#2f5e9a', 7, 19, 28, 2);
+  d.ball(21, 5, 4, 1.8, ramp('#e07a2a'));
+  d.ball(21, 20, 8, 8, ramp('#4a4a54'));
+  for (let y = 14; y < 27; y += 3) d.P('#2a2a30', 15, y, 13, 1);
+  for (const [x, y] of [[10, 12], [32, 12], [8, 22], [34, 22]]) d.P('#e07a2a', x, y, 2, 2);
+  d.P(FERRO[1], 6, 30, 30, 3);
+  for (const x of [3, 33]) { d.P(GOMMA[1], x, 29, 6, 12); d.P(GOMMA[2], x + 1, 29, 2, 12); }
+  return outline(d.c);
+}
+
 // ---------- Traffico del paese ----------
 export function apeLato(col = '#3e8a5a') {
   const d = pen(58, 44), B = ramp(col), L = ramp('#9a7448');

@@ -152,7 +152,7 @@ export class Cascine {
     for (const [vic, list] of Object.entries(BERSAGLI.alberi)) list.forEach(([x, z], i) => {
       const id = `${vic}:${i}`;
       const t = { id, vicino: vic, x: x + 0.5, z: z + 0.5, cut: false };
-      t.spr = add(this._texAlbero[i % 3], 2, 2.75, t.x, t.z);
+      t.spr = add(this._texAlbero[i % 3], 2.25, 2.875, t.x, t.z);
       t.ceppo = add(this._texCeppo, 0.9, 0.55, t.x, t.z + 0.05); t.ceppo.visible = false;
       this.alberi.push(t);
       this._mostraAlbero(t, !!f.alberi[id]);
