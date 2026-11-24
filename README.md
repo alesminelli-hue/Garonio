@@ -82,13 +82,12 @@ Le colonne sonore stanno in `assets/music/` e si collegano alle scene in `assets
 
 | Scena (nel codice) | Traccia | Quando suona |
 |---|---|---|
-| `intro` | **Il Conte della Bassa** | Schermata del titolo e prologo |
-| `base` / `notte` | **A rotazione:** Sunset Truciolone, Palestra Delirio, Il Conte della Bassa, Boborriello Re della Notte (di sera parte Boborriello) | Gioco libero, giorno e sera: a fine traccia parte la successiva |
-| `bar` | **Pappa Garonio** | Al bar |
-| `rabbia` | **Canaglia (Rabbia Incontrollata)** | Garonio si arrabbia: stress oltre 85, litigi al bar |
-| `guida` | **Canaglia (Rabbia Incontrollata)** | Alla guida di Vespa, Punto o trattore |
-| `nemico` | **Mister Scarogna** | Appare un nemico: Mister Mountain, nutrie all'attacco |
-| `combattimento` | **Rabbia Incontrollata** | Scontro a turni |
+| `intro` | **`intro.mp3`** (da fare con Suno) | Schermata del titolo e prologo |
+| `base` / `notte` / `bar` | **`sottofondo.mp3`** (da fare con Suno) | A piedi: giornata, sera e bar |
+| `guida` | **📻 Radio Bassa FM:** tutte le canzoni (Il Conte della Bassa, Canaglia, Sunset Truciolone, Pappa Garonio, Mister Scarogna, Palestra Delirio, Boborriello, Rabbia incontrollata) in ordine sparso, col titolo che compare in un avviso | Alla guida di Vespa, Punto o trattore |
+| `rabbia` / `nemico` / `combattimento` | musichetta 8‑bit (lista vuota) | Stress oltre 85, nemici, scontri |
+
+**Le canzoni si sentono solo alla radio dei mezzi** (e al juke‑box del bar, che ha gli stessi dischi). Per mettere l'intro e la musica di sottofondo basta copiare in `assets/music/` i brani fatti con Suno chiamandoli esattamente `intro.mp3` e `sottofondo.mp3`: finché mancano suona la musichetta 8‑bit. I titoli delle canzoni stanno in `playlist.json` sotto `titoli`.
 
 Nel codice si usa sempre e solo `audio.setScene('nome-scena')` (elenco in `src/audio.js`, `MUSIC_SCENES`).
 
