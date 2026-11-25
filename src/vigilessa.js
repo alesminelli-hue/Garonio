@@ -159,6 +159,7 @@ export class Vigilessa {
   }
 
   _bersaglioMunicipio() {
+    if (this.game.interni?.defs?.municipio) return null;   // ora le multe si pagano dentro, allo sportello 1 (src/dentro.js)
     const b = BUILDINGS.find(b => b.id === 'municipio'); if (!b) return null;
     const P = this.game.player.group.position;
     const x = b.x0 + b.w / 2, z = b.z0 + b.d + 0.5;

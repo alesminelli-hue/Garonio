@@ -18,6 +18,8 @@
 //  musica:    scena musicale (assets/music/playlist.json) mentre si è dentro.
 // =====================================================================
 
+import { INTERNI_NUOVI, PORTE_NUOVE, ENTRATE, CHIUSI } from './dentro.js';
+
 export const INTERNI = {
   casa: {
     nome: 'Casa', w: 40, d: 7, h: 3.2, pavimento: 'parquet', muro: 'carta', musica: 'base',
@@ -601,3 +603,9 @@ export const TESTI = {
   uscitaInterno: "Torna indietro",
 };
 
+
+// gli altri edifici esplorabili (src/dentro.js, GDD capitolo 29)
+Object.assign(INTERNI, INTERNI_NUOVI);
+Object.assign(PORTE, PORTE_NUOVE);
+Object.assign(TESTI.entrata, ENTRATE);
+Object.assign((TESTI.chiuso ??= {}), CHIUSI);

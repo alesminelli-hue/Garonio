@@ -899,3 +899,21 @@ A mezzanotte, se non l'hai portato, si perde di nuovo. Si rincontra dopo almeno 
 **28.2 Matrimonio e divorzio** (src/matrimonio.js, dati src/data/matrimonio.js). A una ragazza conquistata, con affinità almeno 70, si può chiedere di sposarsi (anello 1.500€). Le nozze sono il giorno dopo, in chiesa tra le 10 e le 13: si va all'altare e parte la cerimonia di Don Peppino, con la Mamma, il Gigante, il Patata, Loredana, Rodella, il Sergente, il Camper, Mister Frank, il Conte, Concetta, il Postino e Ivan sui banchi. Gli sposi si sbaciucchiano e basta. Se Garonio non si presenta, −30 di affinità e figuraccia in paese. Da sposato: stress −6 ogni mattina e a volte un pranzo al sacco. Per sposarne un'altra si divorzia all'**Anagrafe** del comune (8-13, il ragionier Cavilli): avvocato 2.500€, poi 60€ di alimenti al giorno per ogni ex (senza soldi, stress +10).
 
 **28.3 Notte libera.** La giornata non finisce più a mezzanotte e mezza: si gira tutta la notte finché la barra della stanchezza non è piena. Il giorno nuovo comincia alle 6: se Garonio non ha mai dormito, alle 6 crolla dove si trova. Le cose notturne (Parco, night, truffaldine, Notte delle Leggende, bestie di notte) restano aperte fino all'alba.
+
+## 29. Tutti gli edifici esplorabili
+
+**29.1 Gli interni nuovi** (src/dentro.js, dati src/data/dentro.js). Si entra (E sulla porta) anche negli edifici che prima erano solo di facciata, ognuno con orari, stanze arredate in HD-2D, frasi d'ingresso, mobili con cui interagire e un personaggio nuovo con dialoghi e una missione (il «!» sopra la testa):
+- **Municipio** (8-19): tre sportelli, cioè multe (sportello 1, sostituisce il pagamento davanti alla porta), Anagrafe del ragionier Cavilli (matrimoni e divorzi, 8-13) e Ufficio agricolo della dottoressa Brambati. Poi l'archivio e l'ufficio del **Sindaco Fumagalli**. Missioni: *La polenta della sagra* (5 pannocchie), *I topi dell'archivio* (4 ratti).
+- **Biblioteca comunale** (in municipio, insegna «BIBLIOTECA»): 21 libri in quattro scaffali, cioè le guide (come si gioca, le barre, i combattimenti, livelli e abilità, i soldi), la storia e i personaggi, i mestieri e gli edifici, e lo **scaffale proibito** con le «Leggende della Bassa»: indizi sulla cabina della corrente, il Mostro della Palude, Babbo Natale smemorato, gli alberi e le gazze, i codici trucco e le Notti delle Leggende. Ogni libro nuovo dà 3 di esperienza.
+- **Tabacchi** (7-20): la **Rosy** e il Gratta e Vinci «Il Bassaiolo» (5€, fino a 5 al giorno: 60% niente, 30% 10€, 9% 50€, 1% 500€). Missione: le gazze dei Gratta e Vinci.
+- **Alimentari** (7-20): la **Rina** vende panino, caffè, mela e pomodoro. Missione: 5 pomodori.
+- **Fienile**: ci vive il **Filosofo del fienile**; pisolino nel fieno (stanchezza −20, una volta al giorno). Missione: la Grande Domanda per Don Peppino.
+- **Salone Wanda** (la casa rosa, 9-19): taglio e piega 15€, stress −15, una volta al giorno. Missione: 3 piume di gazza.
+- **Casa della Sciura Ines** (la casa azzurra): il **Gaetano** davanti al quiz. Missione: una grappa di nascosto.
+- **Cascine dei vicini**: l'**Ornella** dal Patata (6 uova per il tortino), la **Mirella** dal Postino (una lettera per Frank), **Billy Bob** al ranch di Frank (6 nutrie, le corde del banjo), la **Zaira** dal Camper (3 legna di pioppo).
+- **Consorzio Rodella**: **Kevin**, il nipote del marketing (3 acquisti o ritiri al Consorzio).
+- **Casotto delle Guardie**: il **Capo Guardia Ottavio** (2 cartelli «VIETATO»).
+- **Stalla** del Gigante: il **Tonino mungitore** (5-10 e 16-20, apprendista mungitore: 5 faccende di stalla), mucche, asino e pecora dentro.
+- **Capannone del mangime**: il gatto e la cassa misteriosa (un ricambio al giorno).
+
+**29.2 Cascina dei Salici.** Chiusa a chiave finché non si compra. Nella **casa** ci sono il registro, i conti, il camino, il **baule di Garonio** (si mette e si riprende qualsiasi oggetto dello zaino) e il **letto**: la sera si dorme lì e la mattina ci si sveglia lì; di giorno, un pisolino. Porcilaia, stalla e pollaio hanno i loro animali dentro (uno in più per livello) e la scheda della struttura.

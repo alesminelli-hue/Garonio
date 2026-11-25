@@ -221,7 +221,8 @@ export class World {
     this.solids.push({ x0: b.x0, z0: b.z0, x1: b.x0 + b.w, z1: b.z0 + b.d, px: SPALLE });
     b.mats = [...box.material, roof.material];
     b.mats.forEach(m => { m.transparent = true; });
-    if (!b.decor) b.door = { x: b.x0 + b.w / 2, z: b.z0 + b.d + 0.5 };
+    // porta: true (o uno spostamento sulla x) = edificio di facciata in cui però si entra (src/dentro.js)
+    if (!b.decor || b.porta) b.door = { x: b.x0 + b.w / 2 + (typeof b.porta === 'number' ? b.porta : 0), z: b.z0 + b.d + 0.5 };
   }
 
   // Staccionate: pollaio e recinto dei maiali, con un cancello aperto sul lato nord.
