@@ -87,7 +87,7 @@ export class Sfx {
     const combat = !!g.combat?.active;
     const dentro = !!g.interni?.attivo;
     const L = this._listener();
-    const ora = (g.s.minutes / 60) % 24, giorno = ora >= 6 && ora < 20;
+    const ora = (g.s.minutes / 60), giorno = ora >= 6 && ora < 20;
     const meteo = g.stagioni?.st?.meteo || 'sereno';
     const stagione = g.stagioni?.info?.()?.chiave || '';
 

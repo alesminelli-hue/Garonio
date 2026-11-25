@@ -333,7 +333,7 @@ export class Interni {
     if (opts.ripristino && id === 'bar' && g.bar?.bandito?.()) { this.st.dentro = null; g.player.group.position.set(PLACES.spawn.x, 0, PLACES.spawn.z); return true; }
     if (!opts.ripristino) {
       if (def.orari) {
-        const h = (this.s.minutes / H) % 24;
+        const h = (this.s.minutes / H);
         if (h < def.orari[0] || h >= def.orari[1]) { await g.ui.dialog([{ name: def.nome, text: TESTI.chiuso[id] || 'È chiuso.' }]); return true; }
       }
       if (id === 'bar' && g.bar?.ingresso) { try { if ((await g.bar.ingresso()) === false) return true; } catch (e) { console.error(e); } }
@@ -1036,7 +1036,7 @@ export class Interni {
     const g = this.game;
     if (g.bar?.presenti) { try { return g.bar.presenti() || []; } catch (e) { console.error(e); } }
     // senza il lavoro "bar": ogni giorno qualcuno a caso, dalle 10 a mezzanotte
-    const h = (this.s.minutes / H) % 24;
+    const h = (this.s.minutes / H);
     if (h < 10) return [];
     const r = PIX.rng(this.s.day * 97 + 13);
     const ids = BAR.avventori.map(a => a.id).filter(id => id !== 'tarcisio').sort(() => r() - 0.5).slice(0, 2 + Math.floor(r() * 2));

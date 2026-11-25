@@ -244,7 +244,7 @@ export const IMPREVISTI = {
 // ---------- Night Welcome: il catalogo ----------
 // Solo testi ironici, niente scene: una riga e via. Tutte maggiorenni e consenzienti (e pagate).
 export const PARADISO = {
-  apertura: [20, 24],
+  apertura: [20, 28],
   porta: [48, 66.4],
   chiuso: ["Il Night Welcome apre alle 20:00. L'insegna al neon lampeggia lo stesso, per abitudine.", "Chiuso. Sulla porta un cartello: «Torno subito. Sandokan»."],
   giaFatto: "Sandokan, il buttafuori, ti ferma col mignolo: «Per stasera hai già dato, campione. Vai a dormire.»",

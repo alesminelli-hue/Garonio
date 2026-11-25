@@ -127,7 +127,7 @@ export class Maiali {
     await g.ui.dialog([this._pagina()]);
   }
 
-  _ora() { return (this.s.minutes / H) % 24; }
+  _ora() { return (this.s.minutes / H); }
 
   _fatica(kind) {
     const s = this.s, g = this.game;

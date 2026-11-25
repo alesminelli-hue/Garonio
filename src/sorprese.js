@@ -35,7 +35,7 @@ export class Sorprese {
   get s() { return this.game.s; }
   get W() { return this.game.world; }
   get f() { return this.s.flags.sorprese; }
-  _ora() { return (this.s.minutes / H) % 24; }
+  _ora() { return (this.s.minutes / H); }
   _P() { return this.game.player.group.position; }
   _vicino(x, z, r) { const P = this._P(); return Math.hypot(P.x - x, P.z - z) < r; }
 

@@ -81,7 +81,7 @@ export class Vita {
   }
 
   // ---------- Tempo ----------
-  ora() { return (this.s.minutes / H) % 24; }
+  ora() { return (this.s.minutes / H); }
   notte(h = this.ora()) {
     if (h >= 20.5 || h < 5.5) return 1;
     if (h >= 18.5) return (h - 18.5) / 2;

@@ -185,7 +185,7 @@ export class Diario {
     const nome = def.nome;
     const vis = this.game.interni?.attivo ? null : this.game.png?.dove(id);
     if (vis) return { x: vis.x, z: vis.z, nome };
-    const h = (this.s.minutes / H) % 24, posti = def.posti || [];
+    const h = (this.s.minutes / H), posti = def.posti || [];
     const p = posti.find(p => h >= p.ore[0] && h < p.ore[1]) || [...posti].sort((a, b) => ((a.ore[0] - h + 24) % 24) - ((b.ore[0] - h + 24) % 24))[0];
     if (!p) return null;
     if (p.interno) {

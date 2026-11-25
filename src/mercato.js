@@ -69,7 +69,7 @@ export class Mercato {
 
   // ---------- Calendario ----------
   giornoDiMercato(day = this.s.day) { return giornoSettimana(day) === M.giorno; }
-  _ora() { return (this.s.minutes / H) % 24; }
+  _ora() { return (this.s.minutes / H); }
   aperto() { const h = this._ora(); return this.giornoDiMercato() && h >= M.ore[0] && h < M.ore[1]; }
   _visibile() { const h = this._ora(); return this.giornoDiMercato() && h >= M.ore[0] - 1 && h < M.ore[1] + 1; }
 

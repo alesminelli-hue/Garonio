@@ -48,7 +48,7 @@ export class Personaggi {
 
   // posizione per l'ora attuale
   _posto(def) {
-    const h = (this.s.minutes / H) % 24;
+    const h = (this.s.minutes / H);
     return def.posti.find(p => h >= p.ore[0] && h < p.ore[1]) || null;
   }
 

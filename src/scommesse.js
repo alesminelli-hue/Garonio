@@ -46,7 +46,7 @@ export class Scommesse {
 
   _menu() {
     const s = this.s, T = S.testi, max = this.massimo();
-    const h = (s.minutes / H) % 24;
+    const h = (s.minutes / H);
     const scaduta = this.f.garaFinta === s.day || h >= S.oraGaraFinta;
     const choices = [
       { label: T.garaTitolo + (this._ha('garaFinta') ? ' ✔' : scaduta ? ' (chiusa)' : ''), disabled: this._ha('garaFinta') || scaduta, fn: () => [this._sceltaGaraFinta()] },

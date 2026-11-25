@@ -175,7 +175,7 @@ export class Officina {
     return g.ui.dialog([this._zeno(testo, choices)]);
   }
 
-  _zenoAperto() { const h = (this.s.minutes / 60) % 24; return h >= RIMORCHIO.ore[0] && h < RIMORCHIO.ore[1]; }
+  _zenoAperto() { const h = (this.s.minutes / 60); return h >= RIMORCHIO.ore[0] && h < RIMORCHIO.ore[1]; }
   prezzoRimorchio(v) { return RIMORCHIO.prezzo[kindOf(v.id)] * (this._zenoAperto() ? 1 : RIMORCHIO.notte); }
   etichettaRimorchio(v) {
     const p = this.prezzoRimorchio(v), debito = this.s.money < p;

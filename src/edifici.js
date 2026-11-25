@@ -45,7 +45,7 @@ export class EdificiPaese {
   _pg(id, text, choices) { return { who: id, name: PNG[id]?.nome || '', text, choices }; }
   _c() { const s = this.s; s.stress = clamp(s.stress, 0, 100); s.tired = clamp(s.tired, 0, 100); s.health = clamp(s.health, 0, s.maxHealth); }
   _paga(n) { const s = this.s; if (s.money < n) return false; s.money = Math.round((s.money - n) * 100) / 100; this.game.audio.sfx('coin'); return true; }
-  _c_ora() { return (this.s.minutes / H) % 24; }
+  _c_ora() { return (this.s.minutes / H); }
   _qui(id) { return !!this.game.png.dove(id); }
 
   // ---------- Mobili (tasto E) ----------

@@ -10,6 +10,7 @@ import { loadGaronio, loadPersonaggi } from './pixel.js';
 import { PLACES } from './map.js';
 import { Minimap } from './minimap.js';
 import { Pannelli } from './pannelli.js';
+import { campoTitolo } from './trucchi.js';
 
 const $ = id => document.getElementById(id);
 // Stile HD-2D: pixel art nitida (texture "nearest") ma resa alla risoluzione piena del telefono,
@@ -165,6 +166,7 @@ async function begin(cont) {
 $('title').addEventListener('pointerdown', () => { audio.unlock(); if (!started) audio.setScene('intro'); });
 // salvataggi multipli (src/salvataggi.js): Continua = l'ultimo salvato, Carica = scegli lo slot
 const titoloBox = $('title').querySelector('.box');
+campoTitolo(titoloBox);   // il campo «🔑 Codice» (src/trucchi.js)
 const pulsantiTitolo = () => [$('btn-new'), $('btn-continue'), $('btn-load')];
 function slotTitolo(modo) {
   const nascosti = pulsantiTitolo().map(b => [b, b.hidden]);
