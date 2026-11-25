@@ -19,6 +19,8 @@
 //  grazie / scusa   frasi quando la consegni / quando manca qualcosa
 // =====================================================================
 
+import { MISSIONI_DENTRO } from './dentro.js';
+
 export const SECONDARIE = {
   bubetto_nutrie: {
     da: 'bubetto', titolo: 'Code di nutria per il Bubetto',
@@ -248,3 +250,6 @@ export const SECONDARIE = {
     requisiti: { livello: 2 },
   },
 };
+
+// le missioni dei personaggi degli altri edifici (src/data/dentro.js)
+Object.assign(SECONDARIE, MISSIONI_DENTRO);

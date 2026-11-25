@@ -116,30 +116,30 @@ export const BUILDINGS = [
   { id: 'torre-sx', label: '', x0: 2.5, z0: 92, w: 3, d: 3, h: 6.5, wall: '#9a9484', roof: '#7a3a2a', windows: 0, decor: true, noDoor: true, tetto: 'cuspide' },
   { id: 'torre-dx', label: '', x0: 14.5, z0: 92, w: 3, d: 3, h: 6.5, wall: '#9a9484', roof: '#7a3a2a', windows: 0, decor: true, noDoor: true, tetto: 'cuspide' },
   // scenografia
-  { id: 'capannone2', label: '', x0: 142, z0: 62, w: 10, d: 6, h: 2.6, wall: 'metallo', roof: '#8a4a32', windows: 0, decor: true },
-  { id: 'fienile', label: 'FIENILE', x0: 51, z0: 19, w: 7, d: 5, h: 3.2, wall: 'legno', roof: '#7a4a26', windows: 0, decor: true },
-  { id: 'alimentari', label: 'ALIMENTARI', x0: 1, z0: 45, w: 7, d: 5, h: 2.8, wall: '#e8c070', roof: '#b8432e', windows: 1, decor: true },
-  { id: 'casa-rosa', label: '', x0: 30, z0: 44, w: 6, d: 6, h: 3.4, wall: '#e8a8a0', roof: '#a83a2a', windows: 2, decor: true },
-  { id: 'casa-azzurra', label: '', x0: 3, z0: 62, w: 6, d: 4, h: 2.8, wall: '#a8c8e0', roof: '#8a3a2a', windows: 2, decor: true },
-  { id: 'tabacchi', label: 'TABACCHI', x0: 13, z0: 62, w: 6, d: 4, h: 2.8, wall: '#f0e0b0', roof: '#b8432e', windows: 1, decor: true },
-  { id: 'municipio', label: 'MUNICIPIO', x0: 24.6, z0: 44.4, w: 5, d: 5, h: 3.2, wall: '#e8dcc0', roof: '#8a3a2a', windows: 1, decor: true }, // ufficio multe (src/vigilessa.js)
+  { id: 'capannone2', porta: true, label: '', x0: 142, z0: 62, w: 10, d: 6, h: 2.6, wall: 'metallo', roof: '#8a4a32', windows: 0, decor: true },
+  { id: 'fienile', porta: true, label: 'FIENILE', x0: 51, z0: 19, w: 7, d: 5, h: 3.2, wall: 'legno', roof: '#7a4a26', windows: 0, decor: true },
+  { id: 'alimentari', porta: true, label: 'ALIMENTARI', x0: 1, z0: 45, w: 7, d: 5, h: 2.8, wall: '#e8c070', roof: '#b8432e', windows: 1, decor: true },
+  { id: 'casa-rosa', porta: true, label: '', x0: 30, z0: 44, w: 6, d: 6, h: 3.4, wall: '#e8a8a0', roof: '#a83a2a', windows: 2, decor: true },
+  { id: 'casa-azzurra', porta: true, label: '', x0: 3, z0: 62, w: 6, d: 4, h: 2.8, wall: '#a8c8e0', roof: '#8a3a2a', windows: 2, decor: true },
+  { id: 'tabacchi', porta: true, label: 'TABACCHI', x0: 13, z0: 62, w: 6, d: 4, h: 2.8, wall: '#f0e0b0', roof: '#b8432e', windows: 1, decor: true },
+  { id: 'municipio', porta: true, label: 'MUNICIPIO', x0: 24.6, z0: 44.4, w: 5, d: 5, h: 3.2, wall: '#e8dcc0', roof: '#8a3a2a', windows: 1, decor: true }, // ufficio multe (src/vigilessa.js)
   { id: 'paradiso', label: 'NIGHT WELCOME', x0: 44, z0: 61, w: 8, d: 5, h: 3, wall: '#6a3a7a', roof: '#2a2030', windows: 1, decor: true }, // svago serale (src/paradiso.js)
   { id: 'tettoia', label: '', x0: 88, z0: 61, w: 5, d: 4, h: 2.2, wall: 'legno', roof: '#6a7078', windows: 0, decor: true, noDoor: true },
   // cascine dei vicini (GDD 19.5): la logica è in src/cascine.js, i dati in src/data/vicini.js
-  { id: 'cascina-patata', label: 'CASCINA DEL PATATA', x0: 97, z0: 34, w: 8, d: 5, h: 2.8, wall: '#e0c48a', roof: '#a8462e', windows: 2, decor: true },
-  { id: 'cascina-postino', label: 'CASCINA DEL POSTINO', x0: 33, z0: 34, w: 7, d: 5, h: 2.8, wall: '#f0d8b8', roof: '#8a3a2a', windows: 2, decor: true },
-  { id: 'ranch-frank', label: 'RANCH MISTER FRANK', x0: 140, z0: 33, w: 9, d: 5, h: 3, wall: 'legno', roof: '#7a2a22', windows: 2, decor: true },
+  { id: 'cascina-patata', porta: true, label: 'CASCINA DEL PATATA', x0: 97, z0: 34, w: 8, d: 5, h: 2.8, wall: '#e0c48a', roof: '#a8462e', windows: 2, decor: true },
+  { id: 'cascina-postino', porta: true, label: 'CASCINA DEL POSTINO', x0: 33, z0: 34, w: 7, d: 5, h: 2.8, wall: '#f0d8b8', roof: '#8a3a2a', windows: 2, decor: true },
+  { id: 'ranch-frank', porta: true, label: 'RANCH MISTER FRANK', x0: 140, z0: 33, w: 9, d: 5, h: 3, wall: 'legno', roof: '#7a2a22', windows: 2, decor: true },
   // Parco Oglio (src/parco.js) e stalla (src/stalla.js)
   // Cascina dei Salici (src/azienda.js): abbandonata finché Garonio non la compra in comune
-  { id: 'salici-casa', label: 'CASCINA DEI SALICI', x0: 76.5, z0: 30.4, w: 7, d: 4.4, h: 2.8, wall: '#e0d0a8', roof: '#9a4a32', windows: 2, decor: true },
-  { id: 'salici-porcilaia', label: 'PORCILAIA', x0: 84.5, z0: 30.4, w: 8, d: 4.2, h: 2.4, wall: 'metallo', roof: '#7a4a32', windows: 0, decor: true },
-  { id: 'salici-stalla', label: 'STALLA', x0: 88.4, z0: 38.6, w: 4.6, d: 3.6, h: 2.4, wall: 'legno', roof: '#6a5a3a', windows: 1, decor: true },
-  { id: 'salici-pollaio', label: 'POLLAIO', x0: 84.6, z0: 39.1, w: 3.2, d: 2.6, h: 2.0, wall: 'legno', roof: '#8a6a3a', windows: 0, decor: true },
+  { id: 'salici-casa', porta: -2, label: 'CASCINA DEI SALICI', x0: 76.5, z0: 30.4, w: 7, d: 4.4, h: 2.8, wall: '#e0d0a8', roof: '#9a4a32', windows: 2, decor: true },
+  { id: 'salici-porcilaia', porta: true, label: 'PORCILAIA', x0: 84.5, z0: 30.4, w: 8, d: 4.2, h: 2.4, wall: 'metallo', roof: '#7a4a32', windows: 0, decor: true },
+  { id: 'salici-stalla', porta: true, label: 'STALLA', x0: 88.4, z0: 38.6, w: 4.6, d: 3.6, h: 2.4, wall: 'legno', roof: '#6a5a3a', windows: 1, decor: true },
+  { id: 'salici-pollaio', porta: true, label: 'POLLAIO', x0: 84.6, z0: 39.1, w: 3.2, d: 2.6, h: 2.0, wall: 'legno', roof: '#8a6a3a', windows: 0, decor: true },
   // Consorzio agrario di Mister Rodella (src/consorzio.js): mangimi, sementi gratis, trattori
-  { id: 'consorzio', label: 'CONSORZIO RODELLA', x0: 97.5, z0: 42.6, w: 10, d: 5.2, h: 3.4, wall: 'metallo', roof: '#2a6a3a', windows: 1, decor: true },
-  { id: 'cascina-oglio', label: 'CASCINA DEL CAMPER', x0: 49, z0: 84, w: 8, d: 5, h: 2.8, wall: '#d8c08a', roof: '#8a4a2a', windows: 2, decor: true },
-  { id: 'casotto-guardie', label: 'GUARDIE DEL PARCO', x0: 108, z0: 85.4, w: 7, d: 4.4, h: 2.8, wall: 'legno', roof: '#3a5a2a', windows: 1, decor: true },
-  { id: 'stalla', label: 'STALLA', x0: 108, z0: 77, w: 7, d: 4.5, h: 3, wall: 'legno', roof: '#7a4a26', windows: 0, decor: true },
+  { id: 'consorzio', porta: -3, label: 'CONSORZIO RODELLA', x0: 97.5, z0: 42.6, w: 10, d: 5.2, h: 3.4, wall: 'metallo', roof: '#2a6a3a', windows: 1, decor: true },
+  { id: 'cascina-oglio', porta: -2.8, label: 'CASCINA DEL CAMPER', x0: 49, z0: 84, w: 8, d: 5, h: 2.8, wall: '#d8c08a', roof: '#8a4a2a', windows: 2, decor: true },
+  { id: 'casotto-guardie', porta: 2.6, label: 'GUARDIE DEL PARCO', x0: 108, z0: 85.4, w: 7, d: 4.4, h: 2.8, wall: 'legno', roof: '#3a5a2a', windows: 1, decor: true },
+  { id: 'stalla', porta: true, label: 'STALLA', x0: 108, z0: 77, w: 7, d: 4.5, h: 3, wall: 'legno', roof: '#7a4a26', windows: 0, decor: true },
 ];
 
 // ---------- Oggetti di scena ----------

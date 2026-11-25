@@ -13,6 +13,8 @@
 //  amicizia: [min, max, partenza]. Chiacchierare la prima volta nel giorno dà +1.
 // =====================================================================
 
+import { PNG_NUOVI } from './dentro.js';
+
 export const PNG = {
   mamma: {
     nome: 'La Mamma', ruolo: 'Gentile, l\'unica che difende Garonio.',
@@ -628,3 +630,6 @@ export const PNG = {
     chiacchiere: ["Ho un blocchetto per i verbali e uno per le poesie. A volte li confondo.", "Il Vecchio Camper? Brava persona. Da lontano."],
   },
 };
+
+// i personaggi che stanno dentro gli altri edifici (src/data/dentro.js)
+Object.assign(PNG, PNG_NUOVI);

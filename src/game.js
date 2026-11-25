@@ -26,6 +26,7 @@ import { Paese } from './paese.js';
 import { Endgame } from './endgame.js';
 import { Trucchi } from './trucchi.js';
 import { Matrimonio } from './matrimonio.js';
+import { Dentro } from './dentro.js';
 import { OGGETTI } from './data/armi.js';
 import { Menu } from './menu.js';
 import { Officina } from './officina.js';
@@ -235,6 +236,7 @@ export class Game {
     this.endgame = new Endgame(this); this.endgame.init();
     // matrimonio in chiesa e divorzio in comune (src/matrimonio.js); codici trucco (src/trucchi.js)
     this.matrimonio = new Matrimonio(this); this.matrimonio.init();
+    this.dentro = new Dentro(this); this.dentro.init();
     this.trucchi = new Trucchi(this); this.trucchi.init();
 
     if (!this.s.introDone) await this.intro();
