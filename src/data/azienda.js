@@ -68,13 +68,32 @@ export const STRUTTURE = {
       { prezzo: 36000, nome: 'Stalla robotizzata', prod: { latte: 320, formaggio: 16 }, costo: 150, desc: '320 litri e 16 forme, la mungitura la fa il robot' },
     ],
   },
+  // tre campi: si comprano uno per uno all'Ufficio agricolo (campo: true = d'inverno riposano, contano i trattori di Rodella)
   campi: {
-    nome: 'Campi', icona: '🌽', posto: { x: 75.9, z: 39.7 },
+    nome: 'Campo della casa', icona: '🌽', campo: 1, posto: { x: 75.9, z: 39.7 },
     livelli: [
-      { prezzo: 2500, nome: 'Cinque ettari dissodati', prod: { mais: 25, grano: 8 }, costo: 20, desc: '25 q di mais e 8 di grano (d\'inverno riposano)' },
-      { prezzo: 5500, nome: 'Campi con l\'irrigazione', prod: { mais: 50, grano: 18 }, costo: 40, desc: '50 q di mais e 18 di grano' },
-      { prezzo: 11000, nome: 'Campi col trattore nuovo', prod: { mais: 95, grano: 35 }, costo: 70, desc: '95 q di mais e 35 di grano' },
-      { prezzo: 22000, nome: 'Campi con la mietitrebbia', prod: { mais: 170, grano: 60 }, costo: 120, desc: '170 q di mais e 60 di grano, mietitrebbia nuova' },
+      { prezzo: 2500, nome: 'Cinque ettari dissodati', prod: { mais: 25, grano: 8 }, costo: 20, desc: '25 q di mais e 8 di grano (d\'inverno riposa)' },
+      { prezzo: 5500, nome: 'Campo con l\'irrigazione', prod: { mais: 50, grano: 18 }, costo: 40, desc: '50 q di mais e 18 di grano' },
+      { prezzo: 11000, nome: 'Campo col trattore nuovo', prod: { mais: 95, grano: 35 }, costo: 70, desc: '95 q di mais e 35 di grano' },
+      { prezzo: 22000, nome: 'Campo con la mietitrebbia', prod: { mais: 170, grano: 60 }, costo: 120, desc: '170 q di mais e 60 di grano, mietitrebbia nuova' },
+    ],
+  },
+  campo2: {
+    nome: 'Campo del fosso', icona: '🌾', campo: 2, posto: { x: 76.9, z: 25.6 },
+    livelli: [
+      { prezzo: 3500, nome: 'Campo del fosso, sei ettari', prod: { grano: 18, mais: 10 }, costo: 22, desc: '18 q di grano e 10 di mais. Il fosso è gratis, le nutrie anche' },
+      { prezzo: 7000, nome: 'Campo del fosso drenato', prod: { grano: 36, mais: 20 }, costo: 42, desc: '36 q di grano e 20 di mais' },
+      { prezzo: 13500, nome: 'Campo del fosso col pivot', prod: { grano: 65, mais: 38 }, costo: 72, desc: '65 q di grano e 38 di mais' },
+      { prezzo: 26000, nome: 'Campo del fosso da record', prod: { grano: 110, mais: 65 }, costo: 120, desc: '110 q di grano e 65 di mais' },
+    ],
+  },
+  campo3: {
+    nome: 'Campo del pioppo', icona: '🌽', campo: 3, posto: { x: 84.9, z: 47.4 },
+    livelli: [
+      { prezzo: 3000, nome: 'Campo del pioppo, quattro ettari', prod: { mais: 30, grano: 5 }, costo: 20, desc: '30 q di mais e 5 di grano' },
+      { prezzo: 6500, nome: 'Campo del pioppo concimato', prod: { mais: 60, grano: 12 }, costo: 40, desc: '60 q di mais e 12 di grano' },
+      { prezzo: 12500, nome: 'Campo del pioppo a goccia', prod: { mais: 110, grano: 22 }, costo: 68, desc: '110 q di mais e 22 di grano' },
+      { prezzo: 24000, nome: 'Campo del pioppo stellato', prod: { mais: 190, grano: 40 }, costo: 115, desc: '190 q di mais e 40 di grano: lo fotografano dall\'elicottero' },
     ],
   },
 };
@@ -140,7 +159,7 @@ export const TESTI_AZIENDA = {
     "Sì? Ah, il figlio del Gigante. Prego. Faccia in fretta, alle 13 ho la pausa caffè. Dalle 9.",
   ],
   primaStoria: "La Cascina dei Salici? È in vendita, certo. Ma lei non ha l'età. Cioè, l'età ce l'ha, ma non la faccia. Torni quando suo padre la considera un uomo.",
-  info: "La Cascina dei Salici: casa, porcilaia, stalla, pollaio e cinque ettari di campi. Abbandonata dal 2014. Prezzo: {prezzo}€. Le strutture vanno comprate a parte, una per una. Poi ci sono gli upgrade. Poi le tasse. Soprattutto le tasse.",
+  info: "La Cascina dei Salici: casa, porcilaia, stalla, pollaio e tre campi (si comprano uno per uno). Abbandonata dal 2014. Prezzo: {prezzo}€. Le strutture vanno comprate a parte, una per una. Poi ci sono gli upgrade. Poi le tasse. Soprattutto le tasse.",
   compra: "🏡 Compra la Cascina dei Salici ({prezzo}€)",
   pocoSoldi: "Le mancano {manca}€. La banca? La banca ride. Torni quando ha i soldi.",
   comprata: [

@@ -86,7 +86,9 @@ export const ZONES = [
   { tile: 'p', x0: 48, x1: 60, z0: 89, z1: 90, name: 'Aia del Vecchio Camper' },
   // la Cascina dei Salici: in vendita all'Ufficio agricolo dopo la storia (src/azienda.js)
   { tile: 'p', x0: 76, x1: 93, z0: 35, z1: 36.5, name: 'Aia della Cascina dei Salici' },
-  { tile: 'r', x0: 76.5, x1: 84, z0: 37.6, z1: 41.8, name: 'Campi della Cascina dei Salici' },
+  { tile: 'r', x0: 76.5, x1: 84, z0: 37.6, z1: 41.8, name: 'Campo della casa (Cascina dei Salici)' },
+  { tile: 'r', x0: 77.5, x1: 86.8, z0: 21.4, z1: 26.4, name: 'Campo del fosso (Cascina dei Salici)' },
+  { tile: 'r', x0: 85.5, x1: 94, z0: 45, z1: 49.8, name: 'Campo del pioppo (Cascina dei Salici)' },
   { tile: 'p', x0: 96, x1: 109, z0: 48, z1: 51, name: 'Piazzale del Consorzio Rodella' },
   { tile: 'p', x0: 99, x1: 117, z0: 76, z1: 84, name: 'Recinto della stalla', fence: true, gate: [104, 107] },
 ];

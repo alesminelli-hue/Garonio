@@ -235,12 +235,12 @@ export class Azienda {
     let t = this.st.garzone ? A.garzone.costo : 0;
     for (const [id, S] of Object.entries(STRUTTURE)) {
       const L = S.livelli[this.lv(id) - 1]; if (!L?.costo || this.st.guasti[id]) continue;
-      t += id === 'campi' && mod.campiCosto != null ? L.costo * mod.campiCosto : L.costo;
+      t += S.campo && mod.campiCosto != null ? L.costo * mod.campiCosto : L.costo;
     }
     return Math.round(t * (1 - (this.game.consorzio?.scontoSpese?.() || 0)));
   }
   // i trattori del Consorzio Rodella danno più raccolto ai campi
-  _extra(id) { return id === 'campi' ? 1 + (this.game.consorzio?.bonusCampi?.() || 0) : 1; }
+  _extra(id) { return STRUTTURE[id]?.campo ? 1 + (this.game.consorzio?.bonusCampi?.() || 0) : 1; }
   _prezzi() {
     const st = this.st, d = this.s.day;
     st.prezzi = { giorno: d, p: Object.fromEntries(Object.entries(PRODOTTI).map(([k, P]) => [k, P.prezzo * (0.75 + dado(d, k) * 0.5)])) };
@@ -372,8 +372,9 @@ export class Azienda {
       this._segno('insegna', this._t('insegna', insegnaAzienda), A.vendesi.x, A.vendesi.z, 1.75, 0.95);
       this._segno('registro', this._t('registro', registro), A.registro.x, A.registro.z, 0.6, 0.72);
       for (const [id, S] of Object.entries(STRUTTURE)) {
-        const lv = this.lv(id); if (!lv) continue;
-        const tex = this._t(`${id}:${lv}`, () => cartelloScritta([id === 'campi' ? NOMI_SEGNI[id] : `LIVELLO ${lv}`], { pallini: lv }));
+        const lv = this.lv(id); if (!lv && !S.campo) continue;
+        const scritta = S.campo ? (lv ? `CAMPO ${S.campo}` : 'IN VENDITA') : `LIVELLO ${lv}`;
+        const tex = this._t(`${id}:${lv}`, () => cartelloScritta(S.campo && !lv ? [`CAMPO ${S.campo}`, scritta] : [scritta], { pallini: lv }));
         this._segno(id, tex, S.posto.x, S.posto.z, 0.95, 0.62);
       }
     }
