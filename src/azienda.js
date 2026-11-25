@@ -373,7 +373,7 @@ export class Azienda {
       this._segno('registro', this._t('registro', registro), A.registro.x, A.registro.z, 0.6, 0.72);
       for (const [id, S] of Object.entries(STRUTTURE)) {
         const lv = this.lv(id); if (!lv) continue;
-        const tex = this._t(`${id}:${lv}`, () => cartelloScritta([NOMI_SEGNI[id]], { pallini: lv }));
+        const tex = this._t(`${id}:${lv}`, () => cartelloScritta([id === 'campi' ? NOMI_SEGNI[id] : `LIVELLO ${lv}`], { pallini: lv }));
         this._segno(id, tex, S.posto.x, S.posto.z, 0.95, 0.62);
       }
     }

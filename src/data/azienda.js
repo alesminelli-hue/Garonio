@@ -51,7 +51,7 @@ export const STRUTTURE = {
     ],
   },
   pollaio: {
-    nome: 'Pollaio', icona: '🐔', posto: { x: 84.7, z: 40.8 }, animale: { sprite: 'gallina', w: 0.6, area: [82.6, 41.1, 87.2, 41.9] },
+    nome: 'Pollaio', icona: '🐔', posto: { x: 86.2, z: 42.3 }, animale: { sprite: 'gallina', w: 0.6, area: [84.6, 42.4, 87.8, 43.6] },
     livelli: [
       { prezzo: 1500, nome: 'Pollaio con la rete nuova', prod: { uova: 60 }, costo: 10, desc: '60 uova al giorno' },
       { prezzo: 3200, nome: 'Pollaio grande', prod: { uova: 130 }, costo: 20, desc: '130 uova al giorno' },
@@ -60,7 +60,7 @@ export const STRUTTURE = {
     ],
   },
   stalla: {
-    nome: 'Stalla', icona: '🐄', posto: { x: 79.2, z: 41.2 }, animale: { sprite: 'mucca', w: 1.7, area: [76.8, 41.4, 81.4, 41.9] },
+    nome: 'Stalla', icona: '🐄', posto: { x: 90.7, z: 42.8 }, animale: { sprite: 'mucca', w: 1.7, area: [88.8, 43.0, 92.6, 43.8] },
     livelli: [
       { prezzo: 4500, nome: 'Stalla con tre mucche', prod: { latte: 90 }, costo: 25, desc: '90 litri di latte al giorno' },
       { prezzo: 9500, nome: 'Stalla con la mungitrice', prod: { latte: 140, formaggio: 4 }, costo: 50, desc: '140 litri e 4 forme di grana' },
@@ -69,7 +69,7 @@ export const STRUTTURE = {
     ],
   },
   campi: {
-    nome: 'Campi', icona: '🌽', posto: { x: 90.5, z: 39.5 },
+    nome: 'Campi', icona: '🌽', posto: { x: 75.9, z: 39.7 },
     livelli: [
       { prezzo: 2500, nome: 'Cinque ettari dissodati', prod: { mais: 25, grano: 8 }, costo: 20, desc: '25 q di mais e 8 di grano (d\'inverno riposano)' },
       { prezzo: 5500, nome: 'Campi con l\'irrigazione', prod: { mais: 50, grano: 18 }, costo: 40, desc: '50 q di mais e 18 di grano' },
