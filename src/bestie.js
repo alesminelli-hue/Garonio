@@ -179,7 +179,7 @@ export class Bestie {
     const r = tn.richiede;
     if (r?.vestitoBonus && !(g.prog.bonus(r.vestitoBonus) > 0)) return g.ui.dialog([pagina({ testo: r.manca })]);
     if (r?.arma && !r.arma.some(a => g.prog.haArma(a))) return g.ui.dialog([pagina({ testo: r.manca })]);
-    if (tn.notte && (this.s.minutes / H) % 24 < 20) return g.ui.dialog([pagina({ testo: tn.giorno })]);
+    if (tn.notte && (this.s.minutes / H) < 20) return g.ui.dialog([pagina({ testo: tn.giorno })]);
     let entra = true;
     if (this.s.level < b.min) {
       entra = false;

@@ -99,7 +99,7 @@ export class Ragazze {
   reputazione() { return this.s.flags.paradiso?.reputazione ?? 50; }
   affinita(id) { return this.game.png.amicizia(id); }
   appuntamento() { return this.f.app; }
-  _ora() { return (this.s.minutes / H) % 24; }
+  _ora() { return (this.s.minutes / H); }
   _st(id) { return this.f.r[id]; }
 
   _cambiaRp(d) {

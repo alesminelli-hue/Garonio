@@ -501,7 +501,7 @@ export class Cascine {
     if (!g.player) return;
     const busy = g.ui.busy() || g.locked || g.combat.active;
     this._t += dt;
-    const h = (this.s.minutes / H) % 24, notte = h >= 20 || h < 6;
+    const h = (this.s.minutes / H), notte = h >= 20 || h < 6;
     this._muoviGuardie(dt, h, busy);
     this._mark.visible = !this.attiva() && !!this._puoOffrire() || this.attiva()?.a.stato === 'pronta';
     this._mm();
@@ -711,7 +711,7 @@ export class Cascine {
     else if (esito === 'bugia') { g.png.cambiaAmicizia(vic, -3); this.f.creduto[vic] = s.day; g.ui.toast(`${nome} ci è cascato. Per ora. Stai più attento.`, 'good'); }
     else if (esito === 'scappa') { g.png.cambiaAmicizia(vic, -15); fallita = true; g.ui.toast(`Scappi a gambe levate. ${nome} urla il tuo nome a tutta la campagna.`, 'bad'); }
     else if (esito === 'rissa') {
-      const h = (s.minutes / H) % 24;
+      const h = (s.minutes / H);
       const nemici = V.nemici.filter(id => !(id.startsWith('garzone') && (h < V.garzone?.ore[0] || h >= V.garzone?.ore[1])));
       const res = await g.combat.start({ enemies: nemici, place: 'campo' });
       if (res === 'win') {

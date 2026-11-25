@@ -46,7 +46,7 @@ export class Endgame {
     st.gettoni ??= 0;
     return st;
   }
-  _ora() { return (this.s.minutes / 60) % 24; }
+  _ora() { return (this.s.minutes / 60); }
   _chiave() { return this.game.azienda?._chiaveStag?.() || `${this.game.bestie?.stagione?.() || 'primavera'}@1`; }
 
   init() {

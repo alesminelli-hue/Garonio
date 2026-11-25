@@ -35,7 +35,7 @@ export class Speciali {
     st.babbo ??= {};
     return st;
   }
-  _ora() { return (this.s.minutes / H) % 24; }
+  _ora() { return (this.s.minutes / H); }
 
   init() {
     const g = this.game;

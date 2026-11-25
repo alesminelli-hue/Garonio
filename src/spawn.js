@@ -36,7 +36,7 @@ export class Spawn {
     g.on('clacson', d => this._clacson(d));
   }
 
-  ora() { return (this.s.minutes / H) % 24; }
+  ora() { return (this.s.minutes / H); }
   _inOrario(q) { const [a, b] = ORARI[q] || ORARI.sempre, h = this.ora(); return h >= a && h < b; }
 
   // ---------- Scelta del gruppo ----------

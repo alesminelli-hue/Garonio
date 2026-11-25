@@ -46,7 +46,7 @@ export class Azienda {
     return st;
   }
   get magazzino() { return this.st.mag; }
-  _ora() { return (this.s.minutes / 60) % 24; }
+  _ora() { return (this.s.minutes / 60); }
   erede() { return !!this.st.erede; }
   comprata() { return this.st.comprata != null; }
   lv(id) { return id === 'casa' ? (this.comprata() ? (this.st.lv.casa || 1) : 0) : (this.st.lv[id] || 0); }

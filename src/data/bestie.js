@@ -270,7 +270,7 @@ export const ZONE = {
 
 // orari: [da, a) in ore di gioco (la giornata va dalle 6 a mezzanotte)
 export const ORARI = {
-  alba: [6, 9], giorno: [6, 19], sera: [17, 22], notte: [20, 24], sempre: [6, 24], seraNotte: [17, 24],
+  alba: [6, 9], giorno: [6, 19], sera: [17, 22], notte: [20, 30], sempre: [6, 30], seraNotte: [17, 30],
 };
 
 // gruppi: membri = elenco di id (il primo è il capogruppo), peso = probabilità relativa,

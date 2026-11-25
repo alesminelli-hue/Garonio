@@ -24,6 +24,8 @@ import { Azienda } from './azienda.js';
 import { Consorzio } from './consorzio.js';
 import { Paese } from './paese.js';
 import { Endgame } from './endgame.js';
+import { Trucchi } from './trucchi.js';
+import { Matrimonio } from './matrimonio.js';
 import { OGGETTI } from './data/armi.js';
 import { Menu } from './menu.js';
 import { Officina } from './officina.js';
@@ -231,6 +233,9 @@ export class Game {
     // il paese reagisce all'azienda; Concilio del Gambalone, Notte delle Leggende, taglie, marchi, record
     this.paese = new Paese(this); this.paese.init();
     this.endgame = new Endgame(this); this.endgame.init();
+    // matrimonio in chiesa e divorzio in comune (src/matrimonio.js); codici trucco (src/trucchi.js)
+    this.matrimonio = new Matrimonio(this); this.matrimonio.init();
+    this.trucchi = new Trucchi(this); this.trucchi.init();
 
     if (!this.s.introDone) await this.intro();
     else if (this.s.rifaiGiornata) { // giornata ricominciata da capo (vedi _rifaiGiornata)
@@ -386,7 +391,7 @@ export class Game {
 
     if (s.health <= 0) this._faint();
     else if (s.tired >= tiredMax) this._collapse();
-    else if (s.minutes >= 24 * H) { this.ui.toast('È mezzanotte: Garonio crolla dove si trova.', 'bad'); this.sleep(true); }
+    else if (s.minutes >= 30 * H) { this.ui.toast('Sono le sei del mattino e Garonio non ha mai dormito: crolla dove si trova.', 'bad'); this.sleep(true); }
   }
 
   _checkMission() {
@@ -934,6 +939,7 @@ export class Game {
     let k = 1, warm = 0;
     if (h < 7) k = 0.5 + (h - 6) * 0.5;
     else if (h > 18) { k = Math.max(0.2, 1 - (h - 18) / 2.5 * 0.8); warm = clamp(1 - Math.abs(h - 19) / 1.5, 0, 1); }
+    if (h > 29) k = Math.max(k, 0.2 + (h - 29) * 0.3);   // dopo mezzanotte si va avanti fino all'alba delle 6
     this.world.setDaylight(k, warm, h);
   }
 }

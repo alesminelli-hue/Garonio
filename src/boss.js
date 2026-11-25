@@ -170,7 +170,7 @@ export class Boss {
     return null;
   }
 
-  _ora() { return (this.s.minutes / H) % 24; }
+  _ora() { return (this.s.minutes / H); }
 
   async tana(id) {
     const g = this.game, b = BOSS[id], tn = b.tana, legg = this.stato(id) === 'vinto';

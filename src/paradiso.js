@@ -102,7 +102,7 @@ export class Paradiso {
   reputazione() { return this.f.reputazione; }
   // altri pezzi del gioco la fanno salire o scendere (es. src/derisione.js); restituisce il nuovo valore
   cambiaReputazione(d) { const f = this.f; f.reputazione = clamp((f.reputazione ?? 50) + d, 0, 100); return f.reputazione; }
-  _ora() { return (this.s.minutes / H) % 24; }
+  _ora() { return (this.s.minutes / H); }
   _aperto() { const h = this._ora(); return h >= D.apertura[0] && h < D.apertura[1]; }
 
   animate(dt) {

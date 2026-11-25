@@ -200,7 +200,7 @@ export class Bar {
   }
 
   // ---------- Chi c'è al bar ----------
-  _ora() { return (this.s.minutes / H) % 24; }
+  _ora() { return (this.s.minutes / H); }
   _presente(id) {
     const a = B.avventori[id], h = this._ora();
     return !!a && this.s.level >= a.liv && h >= a.ore[0] && h < a.ore[1] && (!a.serveRe || this.re());

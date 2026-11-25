@@ -78,7 +78,7 @@ export class Imprevisti {
 
   _piove() { return this.game.stagioni?.st?.meteo === 'pioggia'; }
   _giorno() { return this.game.stagioni?.st?.meteo; }
-  _ora() { return (this.s.minutes / H) % 24; }
+  _ora() { return (this.s.minutes / H); }
   _P() { return this.game.player.group.position; }
 
   // =====================================================================

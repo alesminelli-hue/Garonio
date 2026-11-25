@@ -65,7 +65,7 @@ export const CONCILIO = {
 // ---------- Notte delle Leggende ----------
 export const NOTTE = {
   ogni: 7,                 // ogni 7 giorni (giorno 7, 14, 21...)
-  ore: [21, 24],
+  ore: [21, 30],
   livello: 3,              // livelli in più dei mostri
   feroce: 0.6,             // probabilità che un mostro sia feroce
   maxGruppi: 5, ogniOre: 1,

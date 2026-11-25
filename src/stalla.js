@@ -22,7 +22,7 @@ export class Stalla {
   constructor(game) { this.game = game; this.animali = []; }
   get s() { return this.game.s; }
   get st() { const f = (this.s.flags ??= {}); const st = (f.stalla ??= {}); st.fatto ??= {}; return st; }
-  _ora() { return (this.s.minutes / 60) % 24; }
+  _ora() { return (this.s.minutes / 60); }
 
   init() {
     const g = this.game, W = g.world;

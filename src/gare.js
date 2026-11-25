@@ -90,7 +90,7 @@ export class Gare {
   }
 
   _ostacolo(id) {
-    const s = this.s, R = G.rivali[id], T = G.testi, h = (s.minutes / H) % 24;
+    const s = this.s, R = G.rivali[id], T = G.testi, h = (s.minutes / H);
     const rispetto = this.game.bar?.rispetto?.() ?? 0;
     if (h < G.ore[0] || h >= G.ore[1]) return T.chiusa;
     if (s.day < R.daGiorno) return fill(T.nonPronto, R);

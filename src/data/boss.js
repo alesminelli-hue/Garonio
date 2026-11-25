@@ -34,7 +34,7 @@ export const BOSS = {
     da: 'mamma', titolo: 'Il ladro della cantina', requisiti: { livello: 3 },
     offerta: "Tesoro, dalla cantina spariscono i salami. Non i ratti: quelli li conosco. Questo lascia le impronte grosse e si porta via il salame intero, con lo spago. Guardi dal buco nel muro?",
     accetta: 'Ci penso io, mamma', grazie: "Il salame della Cresima! Sei il mio eroe. Tieni, ti ho fatto i panini. Non dirlo a tuo padre.",
-    tana: { luogo: 'cantina', interno: 'casa', zona: 'cantina', nome: 'il buco nel muro della cantina', ore: [6, 24], mappa: { x: 65.5, z: 63.5 } },
+    tana: { luogo: 'cantina', interno: 'casa', zona: 'cantina', nome: 'il buco nel muro della cantina', ore: [6, 30], mappa: { x: 65.5, z: 63.5 } },
     descr: [
       { testo: "Dal buco nel muro arriva un odore di salame e di bestia. Poi due occhietti rossi. Poi un muso a strisce." },
       { testo: "Un tasso grosso come un cane da pastore esce dal buco trascinando un salame. Guarda Garonio come si guarda un ladro. Lui." },
@@ -146,7 +146,7 @@ export const BOSS = {
     da: 'mamma', titolo: 'Chi ruba le uova?', requisiti: { livello: 6, dopo: 'boss_tasso' },
     offerta: "Amore, le galline non fanno più uova. Cioè le fanno, ma la mattina non ci sono. Stanotte ho visto un'ombra d'argento uscire dal pollaio. Tuo padre dice che è un fantasma. Tuo padre ha paura dei fantasmi.",
     accetta: 'Faccio la guardia stanotte', grazie: "Le uova sono tornate! Le galline ti guardano con rispetto. Tieni, ti ho fatto una frittata da portare.",
-    tana: { luogo: 'notte', x: 81.9, z: 80.6, nome: 'il retro del pollaio', ore: [19, 24], fuori: "Le galline razzolano tranquille. La faina viene col buio (dalle 19)." },
+    tana: { luogo: 'notte', x: 81.9, z: 80.6, nome: 'il retro del pollaio', ore: [19, 30], fuori: "Le galline razzolano tranquille. La faina viene col buio (dalle 19)." },
     descr: [
       { testo: "Dietro il pollaio, alla luce della luna, una faina dal pelo d'argento lucida un uovo con la coda." },
       { testo: "Ha gli occhi rossi e la grazia di una ladra di gioielli. Accanto a lei, una montagna di gusci." },
@@ -202,7 +202,7 @@ export const BOSS = {
     da: 'bubetto', titolo: 'Il ladro del magazzino', requisiti: { livello: 8 },
     offerta: "Di notte qualcuno mi entra nel magazzino. Non forza niente: apre i lucchetti come fossero noccioline. Mi sparisce la roba buona e mi lascia un biglietto: «Grazie». Beccalo sul retro, dopo le otto.",
     accetta: 'Lo becco io', grazie: "Il Mago dei Lucchetti in fuga! Hai visto che faccia? Tieni, e quel piede di porco tienitelo, che a me fa paura.",
-    tana: { luogo: 'notte_paese', x: 45, z: 51.8, nome: 'il retro del magazzino', ore: [20, 24], fuori: "Il retro del magazzino è tranquillo. Il ladro lavora col buio (dalle 20)." },
+    tana: { luogo: 'notte_paese', x: 45, z: 51.8, nome: 'il retro del magazzino', ore: [20, 30], fuori: "Il retro del magazzino è tranquillo. Il ladro lavora col buio (dalle 20)." },
     descr: [
       { testo: "Sul retro del magazzino un tipo in felpa armeggia col lucchetto. Click. Aperto in due secondi." },
       { testo: "Si gira. Sorride. Ha un piede di porco e un mazzo di grimaldelli. «Serata fiacca, eh?»" },
@@ -256,7 +256,7 @@ export const BOSS = {
     da: 'gennaro', titolo: 'La recensione maledetta', requisiti: { livello: 10 },
     offerta: "Uè Garonio. Sta venendo il critico «Forchetta d'Oro». Una stella a tutti, e le pizzerie chiudono. Stasera viene da me. Se gli fai cambiare idea... con le maniere forti... io ti faccio la pizza gratis a vita. Quasi a vita.",
     accetta: 'Gli faccio cambiare idea', grazie: "Cinque stelle! CINQUE! Il quadro del Vesuvio ha pianto. Tieni, pizza per tutto l'inverno. E quella forchetta d'oro, appendila al muro. O usala.",
-    tana: { luogo: 'interno', interno: 'pizzeria', zona: 'vesuvio', nome: 'il tavolo sotto il Vesuvio', ore: [19, 24], mappa: { x: 33.5, z: 70 }, fuori: "Il critico arriva solo a cena (dalle 19)." },
+    tana: { luogo: 'interno', interno: 'pizzeria', zona: 'vesuvio', nome: 'il tavolo sotto il Vesuvio', ore: [19, 30], mappa: { x: 33.5, z: 70 }, fuori: "Il critico arriva solo a cena (dalle 19)." },
     descr: [
       { testo: "Sotto il quadro del Vesuvio, un signore con un tovagliolo al collo e una forchetta d'oro guarda la pizza come si guarda un insulto." },
       { testo: "«Bordo troppo alto. Mozzarella troppo... mozzarella. Una stella. Forse zero.»" },
@@ -283,7 +283,7 @@ export const BOSS = {
     da: 'consulente', titolo: 'Lo spaventapasseri che cammina', requisiti: { livello: 11 },
     offerta: "Te lo dico da professionista: lo spaventapasseri vicino al fienile di notte cammina. Tarcisio l'ha visto. Anche io, ma io ero sobrio, quindi è più grave. Spaventa i corvi, le nutrie e i contadini. Fallo smettere.",
     accetta: 'Di notte, al fienile', grazie: "L'hai fermato? Bravo. Ti offro... un consiglio. E dei soldi, va', che ho vinto una scommessa su di te.",
-    tana: { luogo: 'notte', x: 54.5, z: 25.4, nome: 'il fienile in mezzo ai campi', ore: [20, 24], fuori: "Di giorno è uno spaventapasseri qualunque, appeso al palo. Di notte (dalle 20) scende." },
+    tana: { luogo: 'notte', x: 54.5, z: 25.4, nome: 'il fienile in mezzo ai campi', ore: [20, 30], fuori: "Di giorno è uno spaventapasseri qualunque, appeso al palo. Di notte (dalle 20) scende." },
     descr: [
       { testo: "Davanti al fienile il palo dello spaventapasseri è vuoto. Uno scricchiolio. Lo spaventapasseri è dietro Garonio, col cappello di paglia e la falce." },
       { testo: "Ha due bottoni al posto degli occhi. I bottoni brillano." },
@@ -367,7 +367,7 @@ export const BOSS = {
     da: 'kemal', titolo: 'I teppisti del sabato sera', requisiti: { livello: 14 },
     offerta: "Amico mio. Ogni sera, dopo le dieci, arriva il Biondo coi suoi amici. Mangiano, non pagano, rompono le sedie. Io sono uomo di pace. Tu sei... uomo di zappa. Aiutami e mangi gratis per sempre.",
     accetta: 'Stasera ci sono', grazie: "Il Biondo non tornerà! Amico mio, per te kebab gratis. E questo giubbotto che ha lasciato: è brutto, ma è robusto.",
-    tana: { luogo: 'notte_paese', x: 19.6, z: 51.4, nome: 'davanti al kebab', ore: [22, 24], fuori: "Davanti al kebab c'è solo odore di cipolla. I teppisti arrivano tardi (dalle 22)." },
+    tana: { luogo: 'notte_paese', x: 19.6, z: 51.4, nome: 'davanti al kebab', ore: [22, 30], fuori: "Davanti al kebab c'è solo odore di cipolla. I teppisti arrivano tardi (dalle 22)." },
     descr: [
       { testo: "Davanti al kebab un ragazzo con la cresta bionda e un giubbotto con le borchie fa le impennate col motorino. I suoi amici ridono." },
       { testo: "«Ehi, contadino! Hai sbagliato piazza? Il trattore lo parcheggi là, coi vecchi.»" },
@@ -533,7 +533,7 @@ export const BOSS = {
     da: 'loredana', titolo: 'Il buttafuori del Welcome', requisiti: { livello: 24 },
     offerta: "Al Welcome c'è un buttafuori nuovo, Tonino. Non fa entrare nessuno del paese: dice che puzziamo di stalla. Ha buttato fuori il Consulente, Tarcisio e anche il sindaco. Hai la mia benedizione. Di barista.",
     accetta: 'Gli faccio vedere io la stalla', grazie: "Hanno riaperto le porte a tutti! Il sindaco ha ballato fino all'alba. Questo te lo sei guadagnato. E da stasera il primo giro lo offro io. Uno.",
-    tana: { luogo: 'notte_paese', x: 48, z: 67.4, nome: 'l\'ingresso del Night Welcome', ore: [21, 24], fuori: "Il Welcome è chiuso. Tonino arriva col buio (dalle 21)." },
+    tana: { luogo: 'notte_paese', x: 48, z: 67.4, nome: 'l\'ingresso del Night Welcome', ore: [21, 30], fuori: "Il Welcome è chiuso. Tonino arriva col buio (dalle 21)." },
     descr: [
       { testo: "Davanti al Welcome c'è un armadio a quattro ante con gli occhiali da sole. Di notte. Ha le braccia conserte e un auricolare." },
       { testo: "«Tu non entri. Hai il fango sugli stivali. E la faccia da fango.»" },
@@ -561,7 +561,7 @@ export const BOSS = {
     da: 'consulente', titolo: 'L\'ultimo affare di Mister Mountain', requisiti: { livello: 28, tuttiIBoss: true },
     offerta: "Te lo dico da professionista, e stavolta gratis: hai sistemato tutta la Bassa. Tutta. Ora c'è solo uno che comanda ancora: Mister Mountain. Stanotte, a mezzanotte meno qualcosa, davanti al bar. Ti aspetta. Dice che vuole «chiudere i conti». Io porterei la zappa buona.",
     accetta: 'Ci sarò', grazie: "Hai battuto Mister Mountain. Non so cosa dire. Io lo dico sempre, cosa dire. Ti offro il caffè. Per sempre. Sei il Padrone della Bassa, Garonio.",
-    tana: { luogo: 'notte_paese', x: 13.5, z: 51.2, nome: 'la piazza davanti al bar', ore: [22, 24], fuori: "La piazza è vuota. Mister Mountain arriva a tarda notte (dalle 22)." },
+    tana: { luogo: 'notte_paese', x: 13.5, z: 51.2, nome: 'la piazza davanti al bar', ore: [22, 30], fuori: "La piazza è vuota. Mister Mountain arriva a tarda notte (dalle 22)." },
     descr: [
       { testo: "La nebbia si apre. Una Mercedes nera si ferma davanti al bar. Scende Mister Mountain, col sigaro acceso e due scagnozzi." },
       { testo: "«Garonio. Ho sentito che sistemi le cose. Tasso, Siluro, Armatura... Tutti i miei clienti. Mi hai rovinato il fatturato.»" },
