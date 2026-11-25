@@ -86,7 +86,7 @@ export const ZONES = [
   { tile: 'p', x0: 48, x1: 60, z0: 89, z1: 90, name: 'Aia del Vecchio Camper' },
   // la Cascina dei Salici: in vendita all'Ufficio agricolo dopo la storia (src/azienda.js)
   { tile: 'p', x0: 76, x1: 93, z0: 35, z1: 36.5, name: 'Aia della Cascina dei Salici' },
-  { tile: 'r', x0: 88, x1: 93, z0: 37, z1: 42, name: 'Campi della Cascina dei Salici' },
+  { tile: 'r', x0: 76.5, x1: 84, z0: 37.6, z1: 41.8, name: 'Campi della Cascina dei Salici' },
   { tile: 'p', x0: 96, x1: 109, z0: 48, z1: 51, name: 'Piazzale del Consorzio Rodella' },
   { tile: 'p', x0: 99, x1: 117, z0: 76, z1: 84, name: 'Recinto della stalla', fence: true, gate: [104, 107] },
 ];
@@ -130,9 +130,9 @@ export const BUILDINGS = [
   // Parco Oglio (src/parco.js) e stalla (src/stalla.js)
   // Cascina dei Salici (src/azienda.js): abbandonata finché Garonio non la compra in comune
   { id: 'salici-casa', label: 'CASCINA DEI SALICI', x0: 76.5, z0: 30.4, w: 7, d: 4.4, h: 2.8, wall: '#e0d0a8', roof: '#9a4a32', windows: 2, decor: true },
-  { id: 'salici-porcilaia', label: '', x0: 84.5, z0: 30.4, w: 8, d: 4.2, h: 2.4, wall: 'metallo', roof: '#7a4a32', windows: 0, decor: true },
-  { id: 'salici-stalla', label: '', x0: 76.5, z0: 37.2, w: 5.4, d: 3.6, h: 2.4, wall: 'legno', roof: '#6a5a3a', windows: 1, decor: true },
-  { id: 'salici-pollaio', label: '', x0: 83, z0: 37.8, w: 3.4, d: 2.6, h: 1.8, wall: 'legno', roof: '#8a6a3a', windows: 0, decor: true },
+  { id: 'salici-porcilaia', label: 'PORCILAIA', x0: 84.5, z0: 30.4, w: 8, d: 4.2, h: 2.4, wall: 'metallo', roof: '#7a4a32', windows: 0, decor: true },
+  { id: 'salici-stalla', label: 'STALLA', x0: 88.4, z0: 38.6, w: 4.6, d: 3.6, h: 2.4, wall: 'legno', roof: '#6a5a3a', windows: 1, decor: true },
+  { id: 'salici-pollaio', label: 'POLLAIO', x0: 84.6, z0: 39.1, w: 3.2, d: 2.6, h: 2.0, wall: 'legno', roof: '#8a6a3a', windows: 0, decor: true },
   // Consorzio agrario di Mister Rodella (src/consorzio.js): mangimi, sementi gratis, trattori
   { id: 'consorzio', label: 'CONSORZIO RODELLA', x0: 97.5, z0: 42.6, w: 10, d: 5.2, h: 3.4, wall: 'metallo', roof: '#2a6a3a', windows: 1, decor: true },
   { id: 'cascina-oglio', label: 'CASCINA DEL CAMPER', x0: 49, z0: 84, w: 8, d: 5, h: 2.8, wall: '#d8c08a', roof: '#8a4a2a', windows: 2, decor: true },
