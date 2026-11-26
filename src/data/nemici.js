@@ -52,6 +52,13 @@ export const DIFFICOLTA = {
   feroce: 0.12,         // probabilità che un nemico nasca «Feroce» (+3 livelli, più bottino)...
   feroceEndgame: 0.22,  // ...che sale al livello massimo
   feroceLv: 3, feroceHp: 1.35, feroceAtk: 1.15,
+  // ai livelli alti l'attacco dei nemici cresce più in fretta della difesa e della Vita di Garonio:
+  // dal livello «calaDa» il danno si attenua fino a ×«calaMin» al livello «calaA» (a 30 un colpo toglie 1/6-1/4 di Vita, non metà)
+  calaDa: 12, calaA: 30, calaMin: 0.62,
+};
+export const calaAtk = L => {
+  const { calaDa: a, calaA: b, calaMin: m } = DIFFICOLTA;
+  return L <= a ? 1 : Math.max(m, 1 - (1 - m) * (L - a) / (b - a));
 };
 
 // curve di riferimento: quanto cresce un nemico "medio" a ogni livello (tarate sulla crescita di Garonio)
@@ -72,7 +79,7 @@ export function livelloNemico(id, level, { feroce = false } = {}) {
 export function scalaNemico(d, L, base, { feroce = false, difficolta = true } = {}) {
   const kH = refHp(L) / refHp(base), kA = refAtk(L) / refAtk(base), dl = L - base;
   const mH = (difficolta ? DIFFICOLTA.hp : 1) * (feroce ? DIFFICOLTA.feroceHp : 1);
-  const mA = (difficolta ? DIFFICOLTA.atk : 1) * (feroce ? DIFFICOLTA.feroceAtk : 1);
+  const mA = (difficolta ? DIFFICOLTA.atk * calaAtk(L) : 1) * (feroce ? DIFFICOLTA.feroceAtk : 1);
   const premio = Math.max(0.3, 1 + 0.18 * dl) * (feroce ? 1.6 : 1);
   return {
     hp: Math.max(4, Math.round(d.hp * kH * mH)),
