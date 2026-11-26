@@ -80,12 +80,13 @@ export class Secondarie {
   }
 
   attive() {
-    return Object.entries(this.st.attive).map(([id, a]) => {
+    // una missione salvata senza più definizione (rinominata o generata e non ricreata) si salta
+    return Object.entries(this.st.attive).filter(([id]) => this.defs[id]?.obiettivo).map(([id, a]) => {
       const def = this.defs[id];
       let progresso = a.progresso, n = this._n(def);
       if (def.obiettivo.consegna) progresso = Object.entries(def.obiettivo.consegna).reduce((t, [o, k]) => t + Math.min(k, this.s.inv[o] || 0), 0);
       return { id, def, progresso, n, stato: a.stato };
-    }).filter(x => x.def);
+    });
   }
 
   progresso(id, k = 1) {

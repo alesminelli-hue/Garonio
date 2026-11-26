@@ -127,7 +127,8 @@ export class Menu {
     ids.forEach((id, i) => {
       const d = this.schede[id];
       const b = h('button', 'mn-tab' + (id === this.tab ? ' on' : ''), null, [h('span', 'ic', d.icona), h('span', 'tx', d.nome)]);
-      const badge = this._badge(id); if (badge) b.appendChild(h('span', 'mn-badge', String(badge)));
+      let badge = 0; try { badge = this._badge(id); } catch (e) { console.error('menu badge', id, e); }
+      if (badge) b.appendChild(h('span', 'mn-badge', String(badge)));
       b.title = `${d.nome} (${i + 1})`;
       b.addEventListener('click', () => { this.game.audio.sfx('blip'); this.vai(id); });
       this.tabsEl.appendChild(b);
@@ -148,7 +149,10 @@ export class Menu {
     this.msgEl.textContent = this.msg; this.msgEl.hidden = !this.msg;
     const top = this.body.scrollTop;
     this.body.innerHTML = '';
-    for (const n of this.schede[this.tab].render() || []) if (n) this.body.appendChild(n);
+    let nodi;
+    try { nodi = this.schede[this.tab].render() || []; }
+    catch (e) { console.error('menu', this.tab, e); nodi = [h('div', 'mn-vuoto', `Questa scheda ha avuto un problema (${e.message}). Le altre funzionano.`)]; }
+    for (const n of nodi) if (n) this.body.appendChild(n);
     this.body.scrollTop = top;
     this.acts = [...this.body.querySelectorAll('.mn-act:not(.off)')];
     this.sel = Math.min(this.sel, Math.max(0, this.acts.length - 1));
