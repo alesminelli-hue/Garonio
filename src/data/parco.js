@@ -24,7 +24,7 @@ export const MOSTRI = {
     moves: [{ name: 'Torta in faccia', pow: 0.8, stress: 6, w: 2, line: 'Panna e fragole. Garonio non vede più niente.' }, { name: 'Clacson a pera', pow: 1.1, stress: 3, w: 3 }] },
   mummia:       { nome: 'Mummia del Conte', sprite: 'mummia', lv: [10, 26], min: 8, k: [1.25, 0.9], spd: 6,
     fuga: 'si srotola e scappa tirando le bende.',
-    moves: [{ name: 'Bendaggio stretto', pow: 1.0, stress: 3, w: 3, stordisce: true }, { name: 'Polvere dei secoli', pow: 0.5, stress: 7, w: 1 }] },
+    moves: [{ name: 'Abbraccio del Conte', pow: 1.0, stress: 3, w: 3 }, { name: 'Bendaggio stretto', pow: 0.8, stress: 3, w: 1, stordisce: true, line: 'Le bende stringono: Garonio salta il prossimo turno!' }, { name: 'Polvere dei secoli', pow: 0.5, stress: 7, w: 1 }] },
   strega:       { nome: 'Strega della Bassa', sprite: 'strega', lv: [12, 28], min: 9, k: [0.85, 1.15], spd: 12,
     fuga: 'parte sulla scopa e quasi si schianta su un pioppo.',
     moves: [{ name: 'Scopata in testa', pow: 1.2, stress: 3, w: 3 }, { name: 'Maledizione del raccolto', pow: 0.6, stress: 9, w: 1, veleno: [6, 3], line: 'Garonio sente che le sue patate stanno marcendo. Tutte. (Vita −6 per 3 turni)' }] },

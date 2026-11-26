@@ -237,13 +237,15 @@ export class Bestie {
     return {
       heroTurn: async c => {
         const h = c.hero;
-        if (h.stordito) { h.stordito = false; await c._say('Garonio è ancora stordito dalla carica... salta il turno!', 1200); return true; }
+        // stordito salta UN turno e poi non si può stordire di nuovo finché non ha agito (niente stordimenti a catena)
+        if (h.stordito) { h.stordito = false; h.nonStordibile = true; await c._say('Garonio è stordito... salta il turno!', 1200); return true; }
+        h.nonStordibile = false;
         return false;
       },
       enemyMove: async (c, e, mv, dmg) => {
         const h = c.hero, s = game.s;
         if (mv.veleno && dmg > 0) h.veleno = { d: mv.veleno[0], t: mv.veleno[1] };
-        if (mv.stordisce && dmg > 0 && !h.defending) h.stordito = true;
+        if (mv.stordisce && dmg > 0 && !h.defending && !h.nonStordibile) h.stordito = true;
         if (mv.rubaScappa) {
           const cose = Object.keys(s.inv).filter(k => s.inv[k] > 0);
           if (cose.length) {
