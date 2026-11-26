@@ -209,6 +209,8 @@ export const OGGETTI = {
   grappa:   { nome: 'Grappa',            icona: '🥃', effetto: { stress: -25, ubriaco: 3 }, combattimento: 'self', prezzo: 4 },
   trappola: { nome: 'Trappola per ratti', icona: '🪤', effetto: { stordisce: 1 }, combattimento: 'one', prezzo: 8 },
   benzina:  { nome: 'Tanica di benzina', icona: '⛽', prezzo: 12 },
+  // si compra da Fuel l'Havana (src/benzinaio.js): si versa nel trattore guidato o lì vicino
+  tanica:   { nome: 'Tanica di gasolio', icona: '🛢️', effetto: { gasolio: 50 }, prezzo: 15 },
   pomata:   { nome: 'Pomata del veterinario', icona: '🧴', effetto: { guarisce: 1, health: 5 }, combattimento: 'self', prezzo: 10 },
   pacco:    { nome: 'Pacco del Bubetto', icona: '📦', missione: true },
   paccoSegreto: { nome: 'Pacco «riservato»', icona: '🎁', missione: true },

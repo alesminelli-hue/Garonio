@@ -240,7 +240,7 @@ export class Vehicles {
     if (v.kind === 'trattore') html += this.game.attrezzi?.hud(v) || '';
     if (v.kind === 'trattore' && this.s.tired > 70) html += '<div class="warn">Sei stanco: occhio a non romperlo!</div>';
     if (this._nervi() > 0.3) html += `<div class="warn">Stress ${Math.round(this.s.stress)}: ${v.kind === 'trattore' ? 'il trattore' : 'il mezzo'} non ti ascolta</div>`;
-    if ((v.bloccatoT || 0) > BLOCCATO_SECONDI || this.aSecco(v)) html += `<div class="warn">${this.aSecco(v) ? 'A secco!' : 'Bloccato?'} E: chiama il rimorchio</div>`;
+    if ((v.bloccatoT || 0) > BLOCCATO_SECONDI || this.aSecco(v)) html += `<div class="warn">${this.aSecco(v) ? `A secco! E: ${v.kind === 'trattore' && this.s.inv.tanica ? 'tanica o ' : ''}rimorchio` : 'Bloccato? E: chiama il rimorchio'}</div>`;
     if (html !== this._hudHtml) { this.hud.innerHTML = html; this._hudHtml = html; }
   }
 
@@ -249,11 +249,15 @@ export class Vehicles {
   target() {
     if (this.driving) {
       const v = this.driving, scendi = `Scendi ${v.T.article === 'il' ? 'dal' : 'dalla'} ${v.T.label ?? v.T.name}`;
+      // sotto la pensilina di Fuel l'Havana: pieno al volo (src/benzinaio.js)
+      const pompa = this.game.benzinaio?.bersaglioGuida?.(v);
+      if (pompa) return pompa;
       // bloccato o a secco: scendi oppure chiama Zeno col rimorchio
       if (this.game.officina && ((v.bloccatoT || 0) > BLOCCATO_SECONDI || this.aSecco(v))) {
-        return { label: `📞 ${this.aSecco(v) ? 'A secco' : 'Bloccato'}: rimorchio o scendi`, fn: () => this.game.ui.dialog([{
+        return { label: `${this.aSecco(v) ? (v.kind === 'trattore' && this.s.inv.tanica ? '🛢️ A secco: tanica, rimorchio o scendi' : '📞 A secco: rimorchio o scendi') : '📞 Bloccato: rimorchio o scendi'}`, fn: () => this.game.ui.dialog([{
           name: v.T.icon + ' ' + (v.T.label ?? v.T.name), text: this.aSecco(v) ? 'Il motore tossisce e muore. Serbatoio vuoto.' : 'Le ruote girano a vuoto. Di qui non esce.',
           choices: [
+            ...(this.aSecco(v) ? this.game.attrezzi?.sceltaTanica?.(v) || [] : []),
             { label: this.game.officina.etichettaRimorchio(v), fn: () => this.game.officina.rimorchio(v) },
             { label: scendi, fn: () => { this.dismount(); } },
             { label: 'Riprovo ancora', fn: () => { v.bloccatoT = 0; } },
@@ -273,6 +277,7 @@ export class Vehicles {
     if (!best) return null;
     const v = best, name = v.T.label ?? v.T.name, sul = v.T.article === 'il' ? 'sul' : 'sulla';
     if (v.st.cond <= 0 && this.game.officina) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore rotto' : name + ' rotta'}: chiama Zeno (riparazione o rimorchio)`, fn: () => this.game.officina.chiama(v) };
+    if (this.aSecco(v) && v.kind === 'trattore' && this.game.prog?.ha('tanica')) return { label: `🛢️ Trattore a secco: versa una tanica (ne hai ${this.s.inv.tanica})`, fn: () => this.game.attrezzi.versaTanica(v) };
     if (this.aSecco(v) && this.game.officina && !this.game.officina.aCasa(v)) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore' : name} a secco: chiama il rimorchio`, fn: () => this.game.officina.chiama(v) };
     if (v.st.cond <= 0) return { label: v.kind === 'trattore' ? 'Trattore rotto: va riparato da Zeno' : `${name} rotta: va riparata da Zeno`, fn: () => this._brokenMsg(v) };
     if (v.kind === 'punto' && v.st.fuel <= 0) return { label: 'Punto a secco: fai il pieno da Zeno', fn: () => this._brokenMsg(v) };

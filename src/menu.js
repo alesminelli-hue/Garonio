@@ -267,6 +267,7 @@ export class Menu {
     if (e.danno) c.push(`💥${e.danno}`);
     if (e.stordisce) c.push('💫');
     if (e.guarisce) c.push('🩹');
+    if (e.gasolio) c.push(`🚜+${e.gasolio}%`);
     if (o.vendita) c.push(`💶${o.vendita}`);
     return h('div', 'mn-chips', null, c.map(t => h('span', 'chip', t)));
   }
@@ -279,11 +280,12 @@ export class Menu {
     const grid = h('div', 'mn-cassette');
     for (const [id, n] of items) {
       const o = OGGETTI[id], e = o.effetto || {};
-      const usabile = !!(e.health || e.tired || e.stress);
+      const usabile = !!(e.health || e.tired || e.stress || e.gasolio);
       const cell = h('div', 'mn-cassetta', null, [
         h('div', 'mn-icon', o.icona || '📦'), h('span', 'mn-qta', `×${n}`), h('small', 'mn-nome', o.nome), this._chipsEffetto(o),
         usabile ? this._azione('Usa', () => {
           const prima = { v: Math.round(s.health), st: Math.round(s.stress), f: Math.round(s.tired) };
+          if (e.gasolio) return this.prog.usa(id) ? `${o.icona} Glu glu glu: +${e.gasolio}% di gasolio nel trattore.` : '🛢️ Per versarla devi guidare un trattore o stargli accanto.';
           if (!this.prog.usa(id)) return 'Non si può usare adesso.';
           this.game.audio.sfx('eat');
           const d = [Math.round(s.health) - prima.v && `❤️ ${Math.round(s.health) - prima.v > 0 ? '+' : ''}${Math.round(s.health) - prima.v}`,

@@ -106,7 +106,7 @@ export class Attrezzi {
     const before = st.gasolio[id] ?? 100;
     st.gasolio[id] = clamp(before - dist * L.gasolioPerUnita, 0, 100);
     if (before > 0 && st.gasolio[id] <= 0) { this.game.ui.toast(B.seccoGasolio, 'bad'); this.game.audio.sfx('stall'); }
-    else if (before >= 15 && st.gasolio[id] < 15) this.game.ui.toast(B.riservaGasolio, 'bad');
+    else if (before >= 15 && st.gasolio[id] < 15) this.game.ui.toast(B.riservaGasolio + (this.s.inv.tanica ? ` Hai ${this.s.inv.tanica} tanich${this.s.inv.tanica > 1 ? 'e' : 'a'} nello zaino: menu rapido del trattore (R / 🔧) o menu J › Zaino.` : " Niente taniche nello zaino: Fuel l'Havana è sulla provinciale, a est del Consorzio."), 'bad');
     if (st.gasolio[id] <= 0) return;
     const a = this.su(id);
     if (!a) return;
@@ -358,6 +358,36 @@ export class Attrezzi {
     return TRATTORI.map(id => V.get(id)).filter(v => v && Math.hypot(v.st.x - R.x, v.st.z - R.z) < 10);
   }
 
+  // ---------- Taniche di gasolio (comprate da Fuel l'Havana, src/benzinaio.js) ----------
+  // il trattore guidato, o quello più vicino entro 3 caselle
+  trattoreVicino() {
+    const g = this.game, V = g.vehicles;
+    if (V?.driving) return V.driving.kind === 'trattore' ? V.driving : null;
+    const P = g.player.group.position;
+    let best = null, bd = 3;
+    for (const v of V?.list || []) if (v.kind === 'trattore') { const d = Math.hypot(v.st.x - P.x, v.st.z - P.z); if (d < bd) { bd = d; best = v; } }
+    return best;
+  }
+  // versa una tanica (+50%) nel trattore v (o in quello vicino): true se l'ha versata
+  versaTanica(v = this.trattoreVicino()) {
+    const g = this.game, s = this.s;
+    if (!v || v.kind !== 'trattore' || !g.prog.ha('tanica')) return false;
+    if (this.gasolio(v.id) >= 99) { g.ui.toast('Il serbatoio è già pieno: la tanica resta nello zaino.'); return false; }
+    g.prog.togliOggetto('tanica');
+    this.st.gasolio[v.id] = clamp(this.gasolio(v.id) + 50, 0, 100);
+    s.minutes += 3; v.bloccatoT = 0;
+    g.audio.sfx('blip');
+    g.ui.toast(`🛢️ Tanica versata: gasolio ${Math.round(this.gasolio(v.id))}% (taniche rimaste: ${s.inv.tanica || 0})`, 'good');
+    return true;
+  }
+  // scelta «versa una tanica» per i menu (a secco, menu rapido del trattore)
+  sceltaTanica(v) {
+    if (!v || v.kind !== 'trattore') return [];
+    const n = this.s.inv.tanica || 0;
+    if (!n) return [{ label: "🛢️ Niente taniche nello zaino (le vende Fuel l'Havana, sulla provinciale)", disabled: true, fn: null }];
+    return [{ label: `🛢️ Versa una tanica di gasolio (+50%, ne hai ${n})`, disabled: this.gasolio(v.id) >= 99, fn: () => { this.versaTanica(v); return null; } }];
+  }
+
   async apriRastrelliera() { await this.game.ui.dialog([this._paginaRastrelliera()]); }
 
   _paginaRastrelliera(msg) {
@@ -418,6 +448,7 @@ export class Attrezzi {
       };
     });
     if (this.su(idT)) choices.push({ label: 'Sgancia e lascia il trattore libero', fn: () => { this.st.su[idT] = null; s.minutes += 5; return fine('Attrezzo sganciato.'); } });
+    if (rapido) choices.push(...this.sceltaTanica(this.game.vehicles?.get(idT)));
     choices.push(rapido ? { label: 'Chiudi', fn: null } : { label: 'Indietro', fn: () => [this._paginaRastrelliera()] });
     const cur = this.su(idT);
     const text = rapido ? `Ora c'è: ${cur ? ATTREZZI[cur].icona + ' ' + ATTREZZI[cur].nome : 'niente'}. Cosa ci attacco? (10 minuti)` : 'Cosa ci attacco?';

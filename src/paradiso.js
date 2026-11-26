@@ -92,10 +92,7 @@ export class Paradiso {
       g.actT = 0.6; g.actName = 'attack'; g.audio.sfx('level');
       return g.ui.dialog([{ name: 'Pista da ballo', text: P.testo }]);
     });
-    I.aggancia('paradiso:jukebox', () => g.ui.dialog([{ name: 'Juke-box', text: T.jukebox.testo, choices: [
-      ...T.jukebox.dischi.map(titolo => ({ label: titolo, fn: () => { s.stress = clamp(s.stress - 3, 0, 100); g.audio.sfx('blip'); return [{ name: 'Juke-box', text: fill(T.jukebox.scelto, { titolo }) }]; } })),
-      { label: 'Lascia stare', fn: null },
-    ] }]));
+    I.aggancia('paradiso:jukebox', () => I.jukebox({ testo: T.jukebox.testo, dopo: () => { s.stress = clamp(s.stress - 3, 0, 100); } }));
     I.aggancia('paradiso:prive', () => g.ui.dialog([{ name: 'Privé', text: T.prive }]));
   }
 

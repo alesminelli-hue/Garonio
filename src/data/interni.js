@@ -46,6 +46,7 @@ export const INTERNI = {
       { tipo: 'tv', x: 9.6, z: 0.35, w: 1.4, d: 0.45, h: 1.0, y: 0.6, zona: 'tv', etichetta: 'Accendi la TV' },
       { tipo: 'divano', x: 9.1, z: 2.6, w: 2.6, d: 0.95, h: 0.9, zona: 'divano', etichetta: 'Divano: pisolino' },
       { tipo: 'tappeto', pavimento: true, x: 8.9, z: 1.2, w: 3, d: 1.2, colore: '#a83a2a' },
+      { tipo: 'jukebox', x: 11.85, z: 0.25, w: 1.0, d: 0.7, h: 1.7, zona: 'jukebox', etichetta: 'Juke-box di casa' },
       { tipo: 'libreria', x: 13.2, z: 0.2, w: 1.6, d: 0.5, h: 2.2 },
       { tipo: 'pianta', x: 16.2, z: 0.4, w: 0.5, d: 0.5, h: 1.2 },
       { tipo: 'zerbino', pavimento: true, x: 11.8, z: 6.25, w: 1.4, d: 0.6 },
@@ -145,6 +146,8 @@ export const INTERNI = {
       { tipo: 'biliardo', x: 16.4, z: 3.5, w: 3.4, d: 1.8, h: 0.85, zona: 'biliardo', etichetta: 'Biliardo' },
       { tipo: 'stecche', parete: true, x: 16.6, y: 0.4, w: 0.8, h: 1.6 },
       { tipo: 'jukebox', x: 20.6, z: 0.25, w: 1.0, d: 0.7, h: 1.7, zona: 'jukebox', etichetta: 'Juke-box' },
+      { tipo: 'slot', x: 20.95, z: 2.3, w: 0.8, d: 0.7, h: 1.75, zona: 'slot', etichetta: 'Slot machine', colore: '#c8302a', seme: 0 },
+      { tipo: 'slot', x: 20.95, z: 3.4, w: 0.8, d: 0.7, h: 1.75, zona: 'slot', etichetta: 'Slot machine', colore: '#2a5ab0', seme: 1 },
       { tipo: 'bacheca', parete: true, x: 13.6, y: 1.5, w: 1.0, h: 0.9, zona: 'annunci', etichetta: 'Bacheca degli annunci' },
       { tipo: 'porta', parete: true, x: 18.2, y: 0, w: 1.1, h: 2.1, zona: 'retro', etichetta: 'Porta sul retro' },
       { tipo: 'zerbino', pavimento: true, x: 5.8, z: 7.25, w: 1.4, d: 0.6, colore: '#2a5a3a' },
@@ -303,7 +306,7 @@ export const INTERNI = {
   },
 
   palestra: {
-    nome: 'Palestra', w: 18, d: 8, h: 3.4, pavimento: 'gomma', muro: 'palestra', musica: 'rabbia',
+    nome: 'Palestra', w: 18, d: 8, h: 3.4, pavimento: 'gomma', muro: 'palestra', musica: 'palestra',
     orari: [7, 23],
     entrata: { x: 7.5, z: 7.0 },
     uscita: { x: 7.5, z: 7.7 },
@@ -419,6 +422,25 @@ export const MAIALI_FINTI = [
 //  TESTI (tono ironico di provincia)
 // ---------------------------------------------------------------------
 export const TESTI = {
+  // slot machine del bar (src/interni.js, _slot): simboli, pesi dei rulli, moltiplicatori del tris
+  slot: {
+    nome: '🎰 Slot «La Bassa d\'Oro»',
+    simboli: ['🍒', '🍋', '🌽', '🔔', '🦫', '7️⃣'],
+    pesi: [6, 5, 4, 3, 4, 1],
+    tris: [5, 6, 8, 10, 0, 50],
+    nutria: 4,
+    intro: "Due slot machine lampeggiano nell'angolo. Sul vetro c'è un adesivo: «Il gioco è vietato ai minori e al Gigante».",
+    tabella: "TRE 7️⃣ = ×50 (jackpot)\nTRE 🔔 = ×10 · TRE 🌽 = ×8 · TRE 🍋 = ×6 · TRE 🍒 = ×5\nDUE 🍒 = ×2 · UNA 🍒 = puntata indietro\nTRE 🦫 = le nutrie si mangiano la puntata.",
+    noSoldi: "La slot ti guarda col suo occhio rosso. Niente soldi, niente giri.",
+    jackpot: "JACKPOT! Tre sette! La slot suona come una sagra. Il Tarcisio si sveglia e applaude.",
+    tre: "Tris! La macchinetta sputa monete come un trattore sputa fumo.",
+    due: "Due ciliegie: qualcosa torna indietro.",
+    una: "Una ciliegia: ti rende la puntata. La slot è magnanima, oggi.",
+    treNutrie: "Tre nutrie in fila. Ti sembra che ridano. Anche la slot ride.",
+    nutriaPersa: ["Una nutria sul rullo. Porta sfiga, lo sanno tutti.", "La nutria sul rullo ti fa l'occhiolino. Hai perso."],
+    perso: ["Niente. La slot fa «bloop» con aria soddisfatta.", "Rulli girati, soldi spariti. Il barista non alza neanche gli occhi.", "Quasi! ...No, neanche quasi."],
+  },
+  casaJukebox: "Il juke-box del soggiorno: il Gigante l'ha vinto a una sagra nel '94 e dice che non funziona. Funziona. Cosa metti?",
   entrata: {
     casa: ["Casa. Profumo di ragù e di rimproveri.", "Casa dolce casa. Il Gigante ha lasciato gli stivali in mezzo, come sempre."],
     officina: ["Il deposito: attrezzi, concime e la roba che il Gigante «prima o poi aggiusta».", "Odore di gasolio e di cose rimandate. Zeno ormai lavora in paese."],
@@ -533,7 +555,7 @@ export const TESTI = {
     tavoloVuoto: "Un tavolo libero. Ci sono tre cerchi di bicchiere e un tappo di birra.",
     carte: "Il mazzo di carte è consumato. Il due di coppe è segnato con la penna. Tutti lo sanno.",
     carteTarcisio: "Tarcisio mischia le carte: «Una briscola? Hic. Se perdi paghi da bere».",
-    jukebox: "Il juke-box si accende con un ronzio. Cosa mettiamo?",
+    jukebox: "Il juke-box si accende con un ronzio. Dentro ci sono tutte le canzoni della Bassa. Cosa mettiamo?",
     jukeboxScelto: "Il juke-box gracchia e parte: «{titolo}».",
     annunci: "Bacheca degli annunci. Fra un «VENDO TRATTORE (NON VA)» e un «CERCO GATTO (NON TORNARE)»:",
     annunciVuoti: "Nessun lavoretto in giro, per oggi. Solo un volantino del liscio del sabato.",

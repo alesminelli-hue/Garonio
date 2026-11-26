@@ -10,12 +10,12 @@
 //   aggancia('edificio:zona', async ctx => ...)
 //                               sostituisce l'azione di un mobile (tasto E). ctx = { game, edificio, zona, mobile,
 //                               box, reparto, tavolo, predefinito }: predefinito() esegue l'azione di serie.
-//                               Zone: casa:letto|armadio|poster|trofei|tv|divano|tavola|bacheca|calendario|conti|deposito|cantina
+//                               Zone: casa:letto|armadio|poster|trofei|tv|divano|jukebox|tavola|bacheca|calendario|conti|deposito|cantina
 //                                     officina (il deposito di casa):bancone|scaffale|sacchi|rastrelliera|armadietti
 //                                     meccanico (Zeno, in paese):bancone|ponte|mola|calendario|caffe
 //                                     chiesa, castello, farmacia, dottore, palestra, pizzeria, kebab: vedi src/edifici.js
 //                                     maiali:box|mangime|parto|infermeria|grata
-//                                     bar:bancone|consulente|tavolo|carte|biliardo|jukebox|annunci|retro
+//                                     bar:bancone|consulente|tavolo|carte|biliardo|jukebox|slot|annunci|retro
 //                                     magazzino:bancone|scaffali|usato|lavagna
 //   bersaglioExtra(fn)          fn({ edificio, lx, lz, vicino(zona, r) }) => { label, fn } | null: azioni in più vicino ai mobili
 //                               (es. la tana di un boss, src/boss.js); vince sull'azione del mobile.
@@ -405,6 +405,62 @@ export class Interni {
     return false;
   }
 
+  // Juke-box (bar, Night Welcome, casa): tutte le canzoni del gioco (assets/music/playlist.json, lista "canzoni").
+  // La scelta suona finché si resta nel locale; «Musica del locale» torna a quella di serie.
+  async jukebox({ nome = 'Juke-box', testo = TESTI.bar.jukebox, dopo } = {}) {
+    const g = this.game;
+    const metti = (f) => {
+      const k = 'disco:' + f, titolo = g.audio.titolo(f);
+      this._musica = k; g.audio.setScene(k); g.audio.sfx?.('blip');
+      dopo?.();
+      g.ui.toast(fill(TESTI.bar.jukeboxScelto, { titolo }));
+      return null;
+    };
+    const canzoni = g.audio.dischi();
+    const choices = canzoni.map(f => ({ label: `${this._musica === 'disco:' + f ? '▶ ' : '🎵 '}${g.audio.titolo(f)}`, fn: () => metti(f) }));
+    if (canzoni.length > 1) choices.unshift({ label: '🔀 Una a caso', fn: () => metti(canzoni.filter(f => 'disco:' + f !== this._musica)[Math.random() * (canzoni.length - (this._musica ? 1 : 0)) | 0] || canzoni[0]) });
+    if (this._musica) choices.push({ label: '⏹ Spegni (musica del locale)', fn: () => { this._musica = null; g.audio.setScene(this.musica()); return null; } });
+    choices.push({ label: 'Lascia stare', fn: null });
+    await g.ui.dialog([{ name: nome, text: testo, choices }]);
+  }
+
+  // Slot machine del bar: tre rulli, puntata da 1€ o 5€. Si vince poco e si perde spesso, come nella vita.
+  async _slot(msg) {
+    const g = this.game, s = this.s, S = TESTI.slot;
+    const gira = (puntata) => () => {
+      if (s.money < puntata) return [{ name: S.nome, text: S.noSoldi }];
+      s.money -= puntata; s.minutes += 5;
+      const pesca = () => { let r = Math.random() * S.pesi.reduce((a, b) => a + b, 0); for (let i = 0; i < S.simboli.length; i++) { r -= S.pesi[i]; if (r < 0) return i; } return 0; };
+      const rulli = [pesca(), pesca(), pesca()];
+      const riga = rulli.map(i => S.simboli[i]).join(' │ ');
+      const uguali = rulli[0] === rulli[1] && rulli[1] === rulli[2];
+      const ciliegie = rulli.filter(i => i === 0).length;
+      let molt = 0, frase;
+      if (uguali && rulli[0] === S.nutria) frase = S.treNutrie;
+      else if (uguali) { molt = S.tris[rulli[0]]; frase = rulli[0] === S.simboli.length - 1 ? S.jackpot : S.tre; }
+      else if (ciliegie === 2) { molt = 2; frase = S.due; }
+      else if (ciliegie === 1) { molt = 1; frase = S.una; }
+      else if (rulli.includes(S.nutria)) frase = pick(S.nutriaPersa);
+      else frase = pick(S.perso);
+      const vinto = puntata * molt;
+      if (vinto) { s.money += vinto; g.audio.sfx(molt >= 10 ? 'level' : 'coin'); }
+      else g.audio.sfx('blip');
+      s.stress = clamp(s.stress + (molt >= 2 ? -6 : molt ? -1 : 3), 0, 100);
+      if (molt >= 10) g.ui.toast(`🎰 ${frase} +${vinto}€`, 'good');
+      return [this._paginaSlot(`[ ${riga} ]\n${frase}${vinto ? ` +${vinto}€` : ` −${puntata}€`}`, gira)];
+    };
+    await g.ui.dialog([this._paginaSlot(msg || S.intro, gira)]);
+  }
+  _paginaSlot(text, gira) {
+    const s = this.s, S = TESTI.slot;
+    return { name: S.nome, text: `${text}\n💶 ${Math.floor(s.money)}€`, choices: [
+      { label: '🎰 Gioca 1€', disabled: s.money < 1, fn: gira(1) },
+      { label: '🎰 Gioca 5€', disabled: s.money < 5, fn: gira(5) },
+      { label: '📜 Tabella delle vincite', fn: () => [{ name: S.nome, text: S.tabella }, this._paginaSlot(S.intro, gira)] },
+      { label: 'Basta così', fn: null },
+    ] };
+  }
+
   musica() {
     if (this._musica) return this._musica;
     const def = this.defs[this.edificio];
@@ -714,6 +770,34 @@ export class Interni {
         });
         b.position.y = h / 2; o.add(b);
         c.jukebox = b.material[4];
+        break;
+      }
+      case 'slot': {
+        // slot machine HD: insegna luminosa, tre rulli, pulsanti, vassoio delle monete e la leva sul fianco
+        o = gruppo();
+        const col = m.colore || '#c8302a';
+        const b = blocco(w, h, d, {
+          colore: col,
+          fronte: (P, W, H2) => {
+            const R = ramp(col);
+            P(R[1], 0, 0, W, H2); P(R[2], 1, 0, W - 2, H2); P(R[3], 1, 0, 1, H2);
+            P('#f4c430', 1, 1, W - 2, 5); P('#fff2a0', 2, 2, W - 4, 3);                       // insegna «JACKPOT»
+            for (let x = 2; x < W - 2; x += 2) P(x % 4 ? '#ff5a5a' : '#5ab0ff', x, 1, 1, 1);
+            P('#1e1622', 1, 7, W - 2, 9); P('#f4f0e4', 2, 8, W - 4, 7);                       // vetro dei rulli
+            const rw = Math.max(2, Math.floor((W - 6) / 3));
+            const simboli = [['#d8302a', '#3a8a3a'], ['#e8c030', '#c88a20'], ['#7a3ab0', '#e8c030']];
+            for (let i = 0; i < 3; i++) { const x = 3 + i * (rw + 1), [a, c2] = simboli[(i + (m.seme || 0)) % 3]; P(a, x, 10, rw, 3); P(c2, x, 9, Math.max(1, rw - 1), 1); P('#2a2228', x + rw, 8, 1, 7); }
+            P('#ff3030', 2, 11, 1, 1); P('#ff3030', W - 3, 11, 1, 1);                         // linea di pagamento
+            P(R[0], 1, 17, W - 2, 4); for (let i = 0; i < 3; i++) P(['#40d040', '#f4c430', '#e84040'][i], 2 + i * 3, 18, 2, 2);   // pulsanti
+            P('#2a2228', 2, 22, W - 4, 1);
+            P('#b8bcc4', 2, H2 - 6, W - 4, 4); P('#e8ecf0', 2, H2 - 6, W - 4, 1); P('#f4c430', 4, H2 - 4, 2, 1); P('#f4c430', 7, H2 - 4, 1, 1); // vassoio con le monete
+          },
+          sopra: (P, W, H2) => { P(tono(col, 1.1), 0, 0, W, H2); P('#f4c430', 1, 1, W - 2, H2 - 2); },
+        });
+        b.position.y = h / 2; o.add(b);
+        const asta = blocco(0.06, 0.5, 0.06, { colore: '#c8ccd4' }); asta.position.set(w / 2 + 0.05, h * 0.62, 0); o.add(asta);
+        const pomo = blocco(0.14, 0.14, 0.14, { colore: '#e83030' }); pomo.position.set(w / 2 + 0.05, h * 0.62 + 0.3, 0); o.add(pomo);
+        (c.slot ??= []).push(b.material[4]);
         break;
       }
       case 'ponte': {
@@ -1119,6 +1203,7 @@ export class Interni {
     if (c.fuochi) for (const f of c.fuochi) f.color.setHSL(0.08 + Math.sin(t * 9) * 0.012, 1, 0.56 + Math.sin(t * 13 + 1) * 0.05);
     if (c.tv) c.tv.color.setHSL(0, 0, 0.85 + Math.sin(t * 7) * 0.08 + Math.sin(t * 2.3) * 0.07);
     if (c.jukebox) c.jukebox.color.setHSL((t * 0.2) % 1, this._musica ? 0.5 : 0.15, 0.85);
+    if (c.slot) c.slot.forEach((mt, i) => mt.color.setHSL(0.12, 0.5, 0.88 + Math.sin(t * 6 + i * 2) * 0.12));   // le slot lampeggiano
     for (const av of Object.values(c.avventori)) { if (!av.visibile) continue; const P = g.player.group.position, o = this.origini.bar; av.a.setFrame((P.x - o.x) > av.x ? 0 : 3); }
     for (const b of c.maiali) for (const p of b.attori) this._muoviMaiale(p, b.m, dt);
   }
@@ -1388,15 +1473,9 @@ export class Interni {
         else await this._dice(T.bar.carte, 'Tavolo delle carte');
       },
       'bar:biliardo': async () => { await this._biliardo(); },
-      'bar:jukebox': async () => {
-        // il juke-box ha i dischi della radio (assets/music/playlist.json, scena "guida")
-        const choices = g.audio.canzoni().map(f => {
-          const k = 'disco:' + f, titolo = g.audio.titolo(f);
-          return { label: `${this._musica === k ? '▶ ' : ''}${titolo}`, fn: () => { this._musica = k; g.audio.setScene(k); toast(fill(T.bar.jukeboxScelto, { titolo })); return null; } };
-        });
-        choices.push({ label: 'Lascia stare', fn: null });
-        await g.ui.dialog([{ name: 'Juke-box', text: T.bar.jukebox, choices }]);
-      },
+      'bar:jukebox': async () => { await this.jukebox(); },
+      'bar:slot': async () => { await this._slot(); },
+      'casa:jukebox': async () => { await this.jukebox({ testo: T.casaJukebox }); },
       'bar:annunci': async () => {
         const righe = [];
         for (const id of Object.keys(PNG)) {

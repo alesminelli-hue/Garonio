@@ -485,6 +485,8 @@ export async function loadPersonaggi() {
   } catch { /* senza atlante restano i segnaposto disegnati via codice */ }
 }
 export const haSprite = nome => !!SPR[nome];
+// sprite di un personaggio disegnato via codice (pixel art HD, es. src/hd/benzinaio.js): k = altezza relativa
+export function registraSprite(nome, c, k = 1) { SPR[nome] = { c, k }; }
 
 // fotogramma: lo sprite appoggiato in basso al centro; nel fotogramma 1 (passo) si alza di un pixel
 function spriteFrame(src, frame, W = src.width, H = src.height + 1) {

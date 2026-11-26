@@ -387,9 +387,7 @@ export const PARADISO_TESTI = {
   ],
   pista: { testo: "Garonio si lancia sulla pista. Mosse da trattorista: aratura, semina, falciatura. La sala è perplessa. Stress −6, +3 XP", stress: -6, stanchezza: 4, xp: 3 },
   jukebox: {
-    testo: "Il juke-box del Welcome ha solo tre dischi, ma sono quelli giusti.",
-    dischi: ["L'amour toujours (Gigi D'Agostino)", "Tu vuò fà l'americano", "Romagna mia (versione dance)"],
-    scelto: "Parte «{titolo}». Il Commendatore si sveglia e balla da seduto. Stress −3",
+    testo: "Il juke-box del Welcome luccica di viola. Dentro ci sono tutti i pezzi della Bassa. Ogni canzone che metti, stress −3: il Commendatore si sveglia e balla da seduto.",
   },
   prive: "La porta del privé. C'è scritto «SOLO CON PRENOTAZIONE». La prenotazione si fa da Sandokan, al catalogo.",
 };

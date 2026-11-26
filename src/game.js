@@ -22,6 +22,7 @@ import { Collezione } from './collezione.js';
 import { Banco } from './banco.js';
 import { Azienda } from './azienda.js';
 import { Consorzio } from './consorzio.js';
+import { Benzinaio } from './benzinaio.js';
 import { Paese } from './paese.js';
 import { Endgame } from './endgame.js';
 import { Trucchi } from './trucchi.js';
@@ -91,7 +92,8 @@ const randi = (a, b) => Math.floor(rand(a, b + 1));
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const fmtH = m => `${String(Math.floor(m / 60)).padStart(2, '0')}:00`;
 
-function newStats() { return { uova: 0, seminaCampo: 0, seminaOrto: 0, zappate: 0, galline: 0, nutrie: 0, annaffiate: 0, raccolti: 0, venduto: 0, persi: 0, mmNutrie: false }; }
+const NUTRIE_MAIS_GIORNO = 2;
+function newStats() { return { uova: 0, seminaCampo: 0, seminaOrto: 0, zappate: 0, galline: 0, nutrie: 0, annaffiate: 0, raccolti: 0, venduto: 0, persi: 0, mmNutrie: false, nutrieUscite: 0 }; }
 function fresh() {
   return {
     day: 1, minutes: 6 * H, health: 100, stress: 15, tired: 0, money: 20, xp: 0, level: 1,
@@ -135,6 +137,8 @@ export class Game {
     this.salvataggi = new Salvataggi(this); // slot multipli e salvataggio automatico (src/salvataggi.js)
     this.negozio = new Negozio(this);   // magazzino del Bubetto e affilatura (src/negozio.js)
     this.abilita = new Abilita(this);   // effetti dei rami di abilità e delle armi fuori dal combattimento
+    // le nutrie battute lungo i fossi contano per la missione «Scaccia N nutrie» (al mais ne arrivano solo 2 al giorno)
+    this.on('nemicoSconfitto', d => { if (!this._scontroMais && /^nutria/.test(d?.id || '') && this.s?.today) this.s.today.nutrie++; });
   }
 
   on(name, fn) { return this.ev.on(name, fn); }
@@ -231,6 +235,8 @@ export class Game {
     this.azienda = new Azienda(this); this.azienda.init();
     // il Consorzio Agrario di Mister Rodella: semi gratis per l'orto, mangimi, trattori (src/consorzio.js)
     this.consorzio = new Consorzio(this); this.consorzio.init();
+    // Fuel l'Havana, il benzinaio sulla provinciale: taniche di gasolio e pieni (src/benzinaio.js)
+    this.benzinaio = new Benzinaio(this); this.benzinaio.init();
     // il paese reagisce all'azienda; Concilio del Gambalone, Notte delle Leggende, taglie, marchi, record
     this.paese = new Paese(this); this.paese.init();
     this.endgame = new Endgame(this); this.endgame.init();
@@ -553,10 +559,11 @@ export class Game {
     const s = this.s, hour = s.minutes / H;
     const fieldPlants = this._plants('field');
     const wantNutrie = fieldPlants.length > 0 || s.mission?.id === 'nutrie';
-    const max = Math.min(5, 1 + Math.ceil(s.day / 2));
-    if (hour >= 7 && hour < 19.5 && s.minutes >= s.nextNutria && wantNutrie) {
-      if (this.nutrie.filter(n => n.state !== 'flee').length < max) this._spawnNutria();
-      let gap = Math.max(35, 110 - s.day * 10) * rand(0.7, 1.3);
+    // Al campo di mais arrivano al massimo NUTRIE_MAIS_GIORNO nutrie al giorno (le altre restano lungo i fossi, vedi src/spawn.js)
+    const uscite = s.today.nutrieUscite || 0;
+    if (hour >= 7 && hour < 19.5 && s.minutes >= s.nextNutria && wantNutrie && uscite < NUTRIE_MAIS_GIORNO) {
+      this._spawnNutria(); s.today.nutrieUscite = uscite + 1;
+      let gap = rand(200, 320);
       if (s.upgrades.rete) gap *= 2;
       if (this.prog.arma().id === 'badile') gap *= 1.3;   // il badile ha scavato le tane: meno nutrie
       s.nextNutria = s.minutes + gap;
@@ -582,7 +589,7 @@ export class Game {
           s.today.persi++; this.audio.sfx('bad');
           this.ui.toast(`Una nutria si è mangiata una pianta! (${s.today.persi} perse oggi)`, 'bad');
           if (s.today.persi >= 3 && !s.today.mmNutrie) { s.today.mmNutrie = true; this.mountain('nutrie', 25); }
-          this._retarget(n);
+          this._retarget(n);   // non se ne va da sola: mangia finché Garonio non la scaccia
         }
       } else if (n.state === 'wander') {
         n.t += dm;
@@ -627,7 +634,9 @@ export class Game {
     const enemies = group.map(() => 'nutria');
     if (puoComparire('nutria_gigante', this.s.level) && enemies.length < 3 && Math.random() < 0.2) enemies.push('nutria_gigante');
     this._wake(); this.idle = 0;
+    this._scontroMais = true;
     const res = await this.combat.start({ enemies, place: 'campo' });
+    this._scontroMais = false;
     if (res === 'win') {
       group.forEach(o => this._flee(o, true));
       this.ui.toast(`Campo difeso! Nutrie scacciate: ${group.length}`, 'good');

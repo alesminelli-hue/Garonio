@@ -90,6 +90,7 @@ export const ZONES = [
   { tile: 'r', x0: 77.5, x1: 86.8, z0: 21.4, z1: 26.4, name: 'Campo del fosso (Cascina dei Salici)' },
   { tile: 'r', x0: 85.5, x1: 94, z0: 45, z1: 49.8, name: 'Campo del pioppo (Cascina dei Salici)' },
   { tile: 'p', x0: 96, x1: 109, z0: 48, z1: 51, name: 'Piazzale del Consorzio Rodella' },
+  { tile: 'a', x0: 101, x1: 117, z0: 56, z1: 63, name: "Piazzale di Fuel l'Havana" },
   { tile: 'p', x0: 99, x1: 117, z0: 76, z1: 84, name: 'Recinto della stalla', fence: true, gate: [104, 107] },
 ];
 
@@ -139,6 +140,8 @@ export const BUILDINGS = [
   { id: 'consorzio', porta: -3, label: 'CONSORZIO RODELLA', x0: 97.5, z0: 42.6, w: 10, d: 5.2, h: 3.4, wall: 'metallo', roof: '#2a6a3a', windows: 1, decor: true },
   { id: 'cascina-oglio', porta: -2.8, label: 'CASCINA DEL CAMPER', x0: 49, z0: 84, w: 8, d: 5, h: 2.8, wall: '#d8c08a', roof: '#8a4a2a', windows: 2, decor: true },
   { id: 'casotto-guardie', porta: 2.6, label: 'GUARDIE DEL PARCO', x0: 108, z0: 85.4, w: 7, d: 4.4, h: 2.8, wall: 'legno', roof: '#3a5a2a', windows: 1, decor: true },
+  // Fuel l'Havana, il benzinaio sulla provinciale (src/benzinaio.js): chiosco con la cassa, la pensilina è uno sprite
+  { id: 'benzinaio', label: "FUEL L'HAVANA", x0: 111, z0: 57, w: 5, d: 3.4, h: 2.8, wall: '#f2dca8', roof: '#2aa8a0', windows: 1, decor: true, noDoor: true },
   { id: 'stalla', porta: true, label: 'STALLA', x0: 108, z0: 77, w: 7, d: 4.5, h: 3, wall: 'legno', roof: '#7a4a26', windows: 0, decor: true },
 ];
 
@@ -159,6 +162,7 @@ export const PROPS = [
   { kind: 'cartello', x: 19.2, z: 80, text: 'CASTELLO ↓' },
   { kind: 'cartello', x: 76.2, z: 86, text: 'PARCO OGLIO ↓' },
   { kind: 'cartello', x: 72.2, z: 73.4, text: 'STALLA →' },
+  { kind: 'cartello', x: 95.5, z: 57.4, text: 'GASOLIO →' },   // Fuel l'Havana (src/benzinaio.js)
 ];
 
 // ---------- Punti importanti ----------
@@ -195,6 +199,7 @@ export const LANDMARKS = [
   { name: 'Parco Oglio', x: 96, z: 104 }, { name: 'Vecchio Camper', x: 53, z: 86.5 }, { name: 'Guardie', x: 111.5, z: 87.5 }, { name: 'Stalla', x: 108, z: 80 },
   { name: 'Cascina dei Salici', x: 84, z: 34 },
   { name: 'Consorzio Rodella', x: 102.5, z: 49 },
+  { name: "Fuel l'Havana", x: 108.5, z: 60 },
 ];
 
 // ---------- Griglia del terreno ----------

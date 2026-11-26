@@ -126,7 +126,7 @@ export const MISSIONI = {
   },
 
   nutrie: {
-    testo: "Scaccia {n} nutrie dal campo",
+    testo: "Scaccia {n} nutrie (campo o fossi)",
     stat: 'nutrie', quantita: [2, 4], scadenza: 19, paga: 30, xp: 12, peso: 2,
     stressFallimento: 35,
     richieste: [

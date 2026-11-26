@@ -1,6 +1,6 @@
 {
   "_info": "MAPPA CENTRALE DELLE MUSICHE. Ogni scena punta a uno o più file di questa cartella. Il codice chiama audio.setScene('nome-scena'): per cambiare una musica si modifica solo questo file. Se una scena ha più tracce, suonano a rotazione nell'ordine scritto (a fine traccia parte la successiva). Lista vuota o file che non c'è = musichetta 8-bit di riserva.",
-  "_slot": "Le canzoni si sentono solo alla RADIO dei mezzi (scena 'guida', in ordine sparso) e al juke-box del bar. A piedi suona il sottofondo (sottofondo.mp3, «Morning in the Valleys»), alternato ogni tanto al tema del titolo «Grand Theft Tractor» (intro.mp3 e intro_2.mp3, a turno). Per un'altra versione dell'intro basta aggiungere il file e scriverlo nelle liste 'intro' e 'base'/'notte'/'bar'.",
+  "_slot": "Le canzoni (lista 'canzoni') suonano alla RADIO dei mezzi (scena 'guida', in ordine sparso), ai juke-box di bar, Night Welcome e casa (lista 'jukebox': le canzoni più il tema del titolo e il sottofondo), e di giorno a piedi: ogni 2-3 minuti di sottofondo ne parte una a caso (vedi src/audio.js, CANZONE_OGNI). Nella palestra «Bicipite d'Oro» si alternano Dr. Pippetta e Kpop Pip (scena 'palestra'). A piedi suona il sottofondo (sottofondo.mp3, «Morning in the Valleys»), alternato al tema del titolo «Grand Theft Tractor» (intro.mp3 e intro_2.mp3). Per aggiungere una canzone basta mettere il file in questa cartella, scriverlo nella lista 'canzoni' e dargli un titolo in 'titoli'.",
   "intro": [
     "intro.mp3",
     "intro_2.mp3"
@@ -23,9 +23,36 @@
     "sottofondo.mp3",
     "intro_2.mp3"
   ],
+  "palestra": [
+    "dr_pippetta_palestra.mp3",
+    "kpop_pip.mp3",
+    "dr_pippetta_gym_2.mp3",
+    "kpop_pip.mp3"
+  ],
   "rabbia": [],
   "nemico": [],
   "combattimento": [],
+  "canzoni": [
+    "il_conte_della_bassa.mp3",
+    "canaglia_rabbia_incontrollata.mp3",
+    "sunset_truciolone.mp3",
+    "pappa_garonio.mp3",
+    "mister_scarogna.mp3",
+    "palestra_delirio.mp3",
+    "boborriello_re_della_notte.mp3",
+    "rabbia_incontrollata.mp3",
+    "luca_iettatore.mp3",
+    "il_pollaio_del_canaglia.mp3",
+    "ehi_canaglia.mp3",
+    "el_rey_del_sofa.mp3",
+    "donald_garonio.mp3",
+    "mister_pannolino.mp3",
+    "truciolone_freeze.mp3",
+    "morte_nera_tour.mp3",
+    "dr_pippetta_palestra.mp3",
+    "dr_pippetta_gym_2.mp3",
+    "kpop_pip.mp3"
+  ],
   "guida": [
     "il_conte_della_bassa.mp3",
     "canaglia_rabbia_incontrollata.mp3",
@@ -34,7 +61,42 @@
     "mister_scarogna.mp3",
     "palestra_delirio.mp3",
     "boborriello_re_della_notte.mp3",
-    "rabbia_incontrollata.mp3"
+    "rabbia_incontrollata.mp3",
+    "luca_iettatore.mp3",
+    "il_pollaio_del_canaglia.mp3",
+    "ehi_canaglia.mp3",
+    "el_rey_del_sofa.mp3",
+    "donald_garonio.mp3",
+    "mister_pannolino.mp3",
+    "truciolone_freeze.mp3",
+    "morte_nera_tour.mp3",
+    "dr_pippetta_palestra.mp3",
+    "dr_pippetta_gym_2.mp3",
+    "kpop_pip.mp3"
+  ],
+  "jukebox": [
+    "intro.mp3",
+    "intro_2.mp3",
+    "sottofondo.mp3",
+    "il_conte_della_bassa.mp3",
+    "canaglia_rabbia_incontrollata.mp3",
+    "sunset_truciolone.mp3",
+    "pappa_garonio.mp3",
+    "mister_scarogna.mp3",
+    "palestra_delirio.mp3",
+    "boborriello_re_della_notte.mp3",
+    "rabbia_incontrollata.mp3",
+    "luca_iettatore.mp3",
+    "il_pollaio_del_canaglia.mp3",
+    "ehi_canaglia.mp3",
+    "el_rey_del_sofa.mp3",
+    "donald_garonio.mp3",
+    "mister_pannolino.mp3",
+    "truciolone_freeze.mp3",
+    "morte_nera_tour.mp3",
+    "dr_pippetta_palestra.mp3",
+    "dr_pippetta_gym_2.mp3",
+    "kpop_pip.mp3"
   ],
   "titoli": {
     "il_conte_della_bassa.mp3": "Il Conte della Bassa",
@@ -47,6 +109,17 @@
     "rabbia_incontrollata.mp3": "Rabbia incontrollata",
     "intro.mp3": "Grand Theft Tractor",
     "sottofondo.mp3": "Morning in the Valleys",
-    "intro_2.mp3": "Grand Theft Tractor (seconda versione)"
+    "intro_2.mp3": "Grand Theft Tractor (seconda versione)",
+    "luca_iettatore.mp3": "Luca iettatore",
+    "il_pollaio_del_canaglia.mp3": "Il pollaio del Canaglia",
+    "ehi_canaglia.mp3": "Ehi Canaglia",
+    "el_rey_del_sofa.mp3": "El rey del sofá",
+    "donald_garonio.mp3": "Donald Garonio",
+    "mister_pannolino.mp3": "Mister Pannolino, il boss di Goodville",
+    "truciolone_freeze.mp3": "Truciolone Freeze",
+    "morte_nera_tour.mp3": "Morte Nera Tour",
+    "dr_pippetta_palestra.mp3": "Dr. Pippetta, il matador della palestra",
+    "dr_pippetta_gym_2.mp3": "Dr. Pippetta, il matador della gym (2)",
+    "kpop_pip.mp3": "Kpop Pip"
   }
 }
