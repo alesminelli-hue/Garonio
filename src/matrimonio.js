@@ -1,7 +1,7 @@
 // Matrimonio in chiesa e divorzio in comune (GDD capitolo 28.2). Dati: src/data/matrimonio.js.
 //  - Nel dialogo di una ragazza già conquistata compare «💍 Chiedile di sposarti»: anello, e se l'affinità basta
 //    le nozze sono il giorno dopo tra le 10 e le 13 in chiesa. All'altare, «💒 Sposati»: in chiesa compaiono
-//    gli invitati (Gigante, Mamma, Patata, Loredana, Rodella, il Sergente...) e Don Peppino celebra.
+//    gli invitati (Gigante, Mamma, Potato, Loredana, Rodella, il Sergente...) e Don Peppino celebra.
 //  - Da sposato: ogni mattina meno stress, a volte il pranzo al sacco. Non ci si può sposare con un'altra.
 //  - Divorzio all'Anagrafe (targa sul fianco est del municipio, 8-13): avvocato e poi alimenti ogni giorno,
 //    per ogni ex. Poi si può sposare un'altra.

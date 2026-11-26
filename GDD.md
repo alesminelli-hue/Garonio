@@ -35,7 +35,7 @@ Un **survival gestionale con elementi da JRPG** in pixel art semi‑3D: guidi **
 | **Zeno il meccanico** | Scorbutico, gestisce l'officina. Ripara ed elabora i mezzi, ma spesso frega Garonio (capitolo 20). |
 | **Il Bubetto** | Ha un magazzino che vende di tutto: vestiti, armi, manuali. Dà missioni secondarie (capitolo 19.3). |
 | **La Vigilessa** | Gira in paese e sulle strade. Se vede Garonio urtare qualcosa coi mezzi gli fa la multa (capitolo 19.4). |
-| **I vicini** | Il Patata, il Postino e Mister Frank, ognuno con la sua cascina e le sue battute (capitolo 19.5). |
+| **I vicini** | Il Potato, il Postman e Mister Frank, ognuno con la sua cascina e le sue battute (capitolo 19.5). |
 | **Nutrie e altri animali** | Nemici dei campi: mangiano il raccolto. Più avanti: volpi per le galline, cinghiali, ladri di attrezzi. |
 
 ## 5. Le tre barre di Garonio
@@ -582,7 +582,7 @@ Scorbutico, borbotta sempre, si lamenta dei ricambi e dei clienti. È l'unico ch
 
 - **Missioni secondarie del Bubetto**: si prendono dalla lavagna del magazzino, una alla volta, e pagano in soldi, sconti o oggetti. Esempi da definire meglio più avanti:
   - **Caccia**: «Abbatti 10 piccioni sul silos» · «Porta 5 code di ratto».
-  - **Consegne**: «Porta questo pacco al Postino, ma senza che lo veda la moglie».
+  - **Consegne**: «Porta questo pacco al Postman, ma senza che lo veda la moglie».
   - **Raccolta**: «Trovami 3 pezzi di ferro vecchio nei fossi».
   - **Favori**: «Vai a ritirare i soldi che mi deve Mister Frank».
 - **Fiducia del Bubetto**: sale con le missioni fatte. Più è alta, più sconti e più roba nel reparto «usato».
@@ -613,8 +613,8 @@ Tre cascine nuove sulla mappa, accanto ai campi dei vicini che ci sono già. Ogn
 
 | Cascina | Dove (sulla mappa di oggi) | Il vicino | Carattere e battute | Cosa offre |
 |---|---|---|---|---|
-| **Cascina del Patata** | il campo arato in mezzo, tra il campo di mais e il ponte | **il Patata**, grosso, lento, buono | Parla solo di patate e di sua mamma. «Garonio, sai cosa ci vuole per essere felici? Una patata. Bollita. Basta.» · «Tuo papà mi ha chiesto in prestito la turbina. Nel 2009. La sto ancora aspettando.» | Patate (cibo che toglie fatica), scambio di sementi, presta attrezzi se ti è amico |
-| **Cascina del Postino** | il campo di grano a ovest, vicino alla Via del Mulino | **il Postino**, sa tutto di tutti, pettegolo come la Pina | Ti legge le lettere degli altri. «C'è una lettera per te. Ah no, era di tuo padre. Dice che sei pigro. L'ho letta per sbaglio. Tre volte.» · «Con la Pina? Ma chi l'ha detto? ...Chi l'ha detto?» | Consegne a pagamento, voci (come il Consulente ma meno affidabili), pacchi del Bubetto |
+| **Cascina del Potato** | il campo arato in mezzo, tra il campo di mais e il ponte | **il Potato**, grosso, lento, buono | Parla solo di patate e di sua mamma. «Garonio, sai cosa ci vuole per essere felici? Una patata. Bollita. Basta.» · «Tuo papà mi ha chiesto in prestito la turbina. Nel 2009. La sto ancora aspettando.» | Patate (cibo che toglie fatica), scambio di sementi, presta attrezzi se ti è amico |
+| **Cascina del Postman** | il campo di grano a ovest, vicino alla Via del Mulino | **il Postman**, sa tutto di tutti, pettegolo come la Pina | Ti legge le lettere degli altri. «C'è una lettera per te. Ah no, era di tuo padre. Dice che sei pigro. L'ho letta per sbaglio. Tre volte.» · «Con la Pina? Ma chi l'ha detto? ...Chi l'ha detto?» | Consegne a pagamento, voci (come il Consulente ma meno affidabili), pacchi del Bubetto |
 | **Ranch di Mister Frank** | il campo di grano a est, oltre la Strada dell'argine | **Mister Frank**, emiliano che si crede americano: cappello da cowboy, pick‑up, chiama il trattore «my horse» | «Hey boy! Qui siamo in Texas della Bassa!» · «Il mio pozzo è il più profondo della county. Non toccarlo, eh!» · «Tuo papà? Good man. Ladro, ma good man.» | Il pozzo più grande (bersaglio dell'acqua rubata), sfide di rodeo col trattore, compra il mais a prezzo alto |
 
 Ogni vicino ha un'**amicizia** (−50…+50). Sale facendo favori, comprando, scherzando bene. Scende quando ti becca nelle missioni truffaldine. Con amicizia alta: prezzi migliori, attrezzi in prestito, aiuto nei raccolti. Con amicizia bassa: ti chiude il cancello, chiama la Vigilessa, ti aspetta col forcone.
@@ -625,10 +625,10 @@ Ogni tanto, al posto della missione normale o in più, il Gigante abbassa la voc
 
 | Missione | Come si fa | Contro chi | Paga |
 |---|---|---|---|
-| **Ruba l'acqua** | Di notte porti il trattore con la **turbina** sul fosso o sul pozzo del vicino e la attacchi per irrigare il tuo campo. Serve restare lì un'ora di gioco senza farsi vedere. | Mister Frank (pozzo), il Patata (fosso) | 60‑90 € |
+| **Ruba l'acqua** | Di notte porti il trattore con la **turbina** sul fosso o sul pozzo del vicino e la attacchi per irrigare il tuo campo. Serve restare lì un'ora di gioco senza farsi vedere. | Mister Frank (pozzo), il Potato (fosso) | 60‑90 € |
 | **Abbatti gli alberi** | Abbatti gli alberi sul confine dei campi degli altri, così il campo del Gigante si allarga. Si fa con la **motosega del Gigante**, che te la presta solo per questa missione. Fa rumore: più alberi tagli, più alto il rischio. | tutti e tre | 40 € ad albero |
-| **Sposta il confine** | Di notte sposti i paletti del confine di qualche metro. | il Postino | 50 € |
-| **Prendi in prestito** | «Prendi» un attrezzo dalla cascina del vicino e portalo nella nostra tettoia. | il Patata | 70 € + l'attrezzo |
+| **Sposta il confine** | Di notte sposti i paletti del confine di qualche metro. | il Postman | 50 € |
+| **Prendi in prestito** | «Prendi» un attrezzo dalla cascina del vicino e portalo nella nostra tettoia. | il Potato | 70 € + l'attrezzo |
 
 **Come funziona il rischio**:
 - Ogni cascina ha il **vicino** e a volte un **cane** con un cono di vista e un raggio di udito. Il rumore del trattore e della motosega allarga il raggio.
@@ -755,7 +755,7 @@ Ordine consigliato: **0 fatto**, poi **A, B, C, D, F in parallelo**; **E** e **G
 
 **Più avanti (dopo questi lavori)**: ritratti dei personaggi in **PNG** disegnati a mano, da usare nei dialoghi al posto dei ritratti generati dal codice, e **dialoghi di vita quotidiana** («slice of life»): chiacchiere con la Mamma, il Gigante, Zeno, il Consulente, i vicini e gli avventori che non fanno parte delle missioni ma raccontano il paese e i personaggi.
 
-Sprite nuovi da fare: Mamma, Zeno, il Consulente, il Bubetto, la Vigilessa (a piedi e in macchinina), il Patata, il Postino, Mister Frank, Rocco il camionista; ratto, ratto di fogna, gazza, piccione, nutria corazzata, lupo giovane, lupo, cinghiale maschio, i tre re; armi in mano a Garonio; aratro, seminatrice, falciatrice e turbina agganciati ai trattori; tre cascine e il magazzino del Bubetto; gli interni.
+Sprite nuovi da fare: Mamma, Zeno, il Consulente, il Bubetto, la Vigilessa (a piedi e in macchinina), il Potato, il Postman, Mister Frank, Rocco il camionista; ratto, ratto di fogna, gazza, piccione, nutria corazzata, lupo giovane, lupo, cinghiale maschio, i tre re; armi in mano a Garonio; aratro, seminatrice, falciatrice e turbina agganciati ai trattori; tre cascine e il magazzino del Bubetto; gli interni.
 
 ## 22. Altre idee da valutare
 
@@ -788,9 +788,9 @@ I boss sono difficili apposta: a pari livello servono 8‑15 turni, le cure dell
 | 5 | Il Tasso dei salami | Casa (buco in cantina) | Mamma | Berretto di pelo di tasso |
 | 6 | Il Generale Piccione | Piazza (fontana) | Vigilessa | Medaglia del Generale (e una multa cancellata) |
 | 7 | Sor Ugo, il Malato Immaginario | Studio medico | Assunta | Ricettario (cure +30%) |
-| 8 | Brutus, il cane del Postino | Cascina del Postino | Postino | Collare di Brutus (sblocca il Fischio al cane) |
+| 8 | Brutus, il cane del Postman | Cascina del Postman | Postman | Collare di Brutus (sblocca il Fischio al cane) |
 | 9 | La Faina Argentata | Pollaio, di sera | Mamma | Stola d'argento |
-| 10 | La Dorifora Regina | Cascina del Patata | Patata | Corazza di dorifora |
+| 10 | La Dorifora Regina | Cascina del Potato | Potato | Corazza di dorifora |
 | 11 | Il Mago dei Lucchetti | Retro del magazzino, di notte | Bubetto | Piede di porco (arma) |
 | 12 | Il Dottor Placebo | Farmacia | Dottor Pastiglia | Valigetta dei campioni |
 | 13 | Forchetta d'Oro, il critico | Pizzeria, a cena | Gennaro | Forchettone d'oro (arma) |
@@ -854,7 +854,7 @@ A mezzanotte, se non l'hai portato, si perde di nuovo. Si rincontra dopo almeno 
 
 **26.1 Il Parco Oglio** (src/parco.js, dati src/data/parco.js). Tutta la parte bassa della mappa: bosco fitto, il fiume Oglio con due ponti, sentieri (viale dell'Oglio, sentiero ovest, sentiero del guado). A ovest la **Cascina del Camper**, al centro il **casotto delle Guardie del parco**.
 
-**26.2 Mostri della notte.** Dalle 20 a mezzanotte nel parco girano gruppi di mostri (zona `parco` di src/spawn.js), tutti dal foglio personaggi: Fantasma del mugnaio, Scheletro del bracconiere, Alieno dei cerchi nel mais, Pagliaccio della sagra, Mummia del Conte, Strega della Bassa, Mago Brontolone, Vampiro di Casalpusterlengo, Lupo mannaro del Po, Diavoletto del Forcone. Ognuno ha un intervallo di livelli (dal 3 al 36): possono essere più forti di Garonio. Bottino proprio (lenzuolo, osso fortunato, cristallo alieno, naso rosso, bende, pozione) e due pezzi rari: Mantello del Conte (vampiro) e Forconcino Infernale (diavoletto).
+**26.2 Mostri della notte.** Dalle 20 a mezzanotte nel parco girano gruppi di mostri (zona `parco` di src/spawn.js), tutti dal foglio personaggi: Fantasma del mugnaio, Scheletro del bracconiere, Alieno dei cerchi nel mais, Pagliaccio della sagra, Mummia del Conte, Strega della Bassa, Mago Brontolone, Vampiro di Saint James Borough, Lupo mannaro dell'Oglio, Diavoletto del Forcone. Ognuno ha un intervallo di livelli (dal 3 al 36): possono essere più forti di Garonio. Bottino proprio (lenzuolo, osso fortunato, cristallo alieno, naso rosso, bende, pozione) e due pezzi rari: Mantello del Conte (vampiro) e Forconcino Infernale (diavoletto).
 
 **26.3 Coppiette.** Certe sere (dalle 19) una coppia del paese si sbaciucchia nel bosco (cuoricino rosa sulla minimappa). «👀 Spia la coppietta»: se va bene, una Foto sfocata (si vende) e meno stress; se ti beccano (o passi troppo vicino) li combatti tutti e due: ciabattate, borsettate e «Lo dico a tua madre!».
 
@@ -876,15 +876,15 @@ A mezzanotte, se non l'hai portato, si perde di nuovo. Si rincontra dopo almeno 
 
 **27.2 Le missioni dell'erede** (src/azienda.js, dati src/data/azienda.js). Battuto Mister Mountain, il Gigante chiama Garonio «il suo erede» e nel suo dialogo compare «👑 Le missioni dell'erede», una dopo l'altra: *Le mani in pasta* (25 lavoretti), *Farsi un nome* (12 nemici), *Il consiglio del vecchio* (parlare col Vecchio Camper) e *La carta bollata* (andare all'Ufficio agricolo). Le truffaldine contro le cascine vicine restano sempre disponibili. Dopo l'acquisto della cascina il Gigante dà ogni giorno una **commessa** (N pezzi di un prodotto della cascina, pagati il 30-50% più del consorzio).
 
-**27.3 L'azienda agricola.** L'**Ufficio agricolo** (targa blu sul fianco del municipio, aperto 8-13, la dottoressa Brambati) vende la **Cascina dei Salici** (9.000€, a nord della strada, accanto al Patata) e poi le strutture, ciascuna su 4 livelli: casa (stress −4/−8/−12/−18 ogni mattina, Vita massima fino a +45), porcilaia (maiali), pollaio (uova), stalla (latte e forme di grana) e tre campi da comprare uno per uno (il Campo della casa davanti, il Campo del fosso a nord e il Campo del pioppo a sud-est: mais e grano, d'inverno riposano). Dal livello 1 al 4 le strutture costano da 1.500€ a 36.000€: in tutto circa 250.000€. Con la cascina arriva il titolo **«L'Imprenditore Agricolo»**. Ogni notte la cascina produce nel magazzino e paga mangime e gasolio (senza soldi produce la metà); ogni struttura ha il 6% di guastarsi e si ferma finché non si ripara (soldi o 2 pezzi di ricambio). Dal **registro** davanti alla casa si vende al consorzio, a prezzi che cambiano ogni giorno (±25%), e si assume il garzone (il cugino Ermes, 70€ al giorno: vende e ripara da solo, si tiene il 10%). Davanti alle strutture girano maiali, galline e mucche (uno per livello). Scheda 🏡 Azienda nel menu J.
+**27.3 L'azienda agricola.** L'**Ufficio agricolo** (targa blu sul fianco del municipio, aperto 8-13, la dottoressa Brambati) vende la **Cascina dei Salici** (9.000€, a nord della strada, accanto al Potato) e poi le strutture, ciascuna su 4 livelli: casa (stress −4/−8/−12/−18 ogni mattina, Vita massima fino a +45), porcilaia (maiali), pollaio (uova), stalla (latte e forme di grana) e tre campi da comprare uno per uno (il Campo della casa davanti, il Campo del fosso a nord e il Campo del pioppo a sud-est: mais e grano, d'inverno riposano). Dal livello 1 al 4 le strutture costano da 1.500€ a 36.000€: in tutto circa 250.000€. Con la cascina arriva il titolo **«L'Imprenditore Agricolo»**. Ogni notte la cascina produce nel magazzino e paga mangime e gasolio (senza soldi produce la metà); ogni struttura ha il 6% di guastarsi e si ferma finché non si ripara (soldi o 2 pezzi di ricambio). Dal **registro** davanti alla casa si vende al consorzio, a prezzi che cambiano ogni giorno (±25%), e si assume il garzone (il cugino Ermes, 70€ al giorno: vende e ripara da solo, si tiene il 10%). Davanti alle strutture girano maiali, galline e mucche (uno per livello). Scheda 🏡 Azienda nel menu J.
 
-**27.4 Il Consorzio Agrario di Mister Rodella** (src/consorzio.js, dati src/data/consorzio.js). Capannone verde in HD sulla strada, a est della cascina. Mister Rodella (sprite «commendatore») è un venditore nato: battute su suo nipote che fa il marketing, sulla moglie scappata con quello delle sementi, sul Patata che paga ancora il trattore del '98. Una volta al giorno **regala semi** per l'orto (zucchine, insalata, zucche, peperoni, fragole, secondo la stagione), vende **mangime** (5 sacchi per i maiali del Gigante, il **Mangime Gold** che alla mangiatoia fa fare 3 uova in più, e per l'azienda il **contratto settimanale**: spese −35% per 7 giorni) e, solo all'Imprenditore Agricolo, i **trattori**: il Rodellino blu (+20% ai campi della cascina) e il Testa Calda arancione (+35%), guidabili.
+**27.4 Il Consorzio Agrario di Mister Rodella** (src/consorzio.js, dati src/data/consorzio.js). Capannone verde in HD sulla strada, a est della cascina. Mister Rodella (sprite «commendatore») è un venditore nato: battute su suo nipote che fa il marketing, sulla moglie scappata con quello delle sementi, sul Potato che paga ancora il trattore del '98. Una volta al giorno **regala semi** per l'orto (zucchine, insalata, zucche, peperoni, fragole, secondo la stagione), vende **mangime** (5 sacchi per i maiali del Gigante, il **Mangime Gold** che alla mangiatoia fa fare 3 uova in più, e per l'azienda il **contratto settimanale**: spese −35% per 7 giorni) e, solo all'Imprenditore Agricolo, i **trattori**: il Rodellino blu (+20% ai campi della cascina) e il Testa Calda arancione (+35%), guidabili.
 
 **27.5 L'orto.** Nell'orto si semina la verdura delle bustine (quella scelta da Rodella o quella con più bustine), altrimenti i soliti pomodori; si annaffia, si raccoglie e si vende alla **cassa** con uova, pomodori e mais. Con la cascina, l'orto di casa torna al Gigante e quello di Garonio si sposta **dietro la stalla della Cascina dei Salici**.
 
-**27.6 Il paese reagisce** (src/paese.js, dati src/data/paese.js). Con l'azienda gli agricoltori (Patata, Postino, Frank, Camper, Rodella) salutano Garonio da collega; gli altri personaggi a volte commentano l'azienda (3-4 frasi a testa, buone o cattive secondo il carattere). Ludovica, Federica, Sabrina e Ilenia sono più facili: ogni risposta non sbagliata vale 4-6 punti di affinità in più.
+**27.6 Il paese reagisce** (src/paese.js, dati src/data/paese.js). Con l'azienda gli agricoltori (Potato, Postman, Frank, Camper, Rodella) salutano Garonio da collega; gli altri personaggi a volte commentano l'azienda (3-4 frasi a testa, buone o cattive secondo il carattere). Ludovica, Federica, Sabrina e Ilenia sono più facili: ogni risposta non sbagliata vale 4-6 punti di affinità in più.
 
-**27.7 Il Concilio del Gambalone** (src/endgame.js, dati src/data/endgame.js). A ogni cambio di stagione, in Pro Loco: classifica provvisoria tra Gigante, Patata, Postino, Mister Frank, Vecchio Camper e (con l'azienda) Garonio, nelle categorie maiali, uova, latte, mais, grano e guadagni (5/3/2/1 punti). Premio di stagione per Garonio: 1.500/800/400€. A fine inverno il Concilio finale somma l'anno ed elegge l'**Agricoltore dell'Anno** (10.000€ e il Gambalone d'Oro). Le cascine vicine crescono del 25% all'anno; ogni truffa riuscita a una di loro le toglie il 12% della stagione. La classifica provvisoria è nella scheda 📜 Record.
+**27.7 Il Concilio del Gambalone** (src/endgame.js, dati src/data/endgame.js). A ogni cambio di stagione, in Pro Loco: classifica provvisoria tra Gigante, Potato, Postman, Mister Frank, Vecchio Camper e (con l'azienda) Garonio, nelle categorie maiali, uova, latte, mais, grano e guadagni (5/3/2/1 punti). Premio di stagione per Garonio: 1.500/800/400€. A fine inverno il Concilio finale somma l'anno ed elegge l'**Agricoltore dell'Anno** (10.000€ e il Gambalone d'Oro). Le cascine vicine crescono del 25% all'anno; ogni truffa riuscita a una di loro le toglie il 12% della stagione. La classifica provvisoria è nella scheda 📜 Record.
 
 **27.8 La Notte delle Leggende.** Ogni 7 giorni, dalle 21: mostri +3 livelli e spesso feroci, più gruppi in giro, bottino doppio e un gettone 🪙 per scontro vinto. Lo schermo si tinge di rosso.
 
@@ -896,7 +896,7 @@ A mezzanotte, se non l'hai portato, si perde di nuovo. Si rincontra dopo almeno 
 
 **28.1 Codici trucco** (src/trucchi.js). Si scrivono nel campo «🔑 Codice» della schermata del titolo (valgono per la partita nuova che parte subito dopo) o nella scheda 🔑 Codici del menu J. Quelli fissi si applicano una volta: **EREDEDELGIGANTE** (salta all'endgame: livello 30, storia finita, 15.000€, missioni dell'erede pronte), **GRATTAEVINCI** (+100.000€), **PIENODIROBA** (zaino pieno di cibo, semi, ricambi e mangime), **TUTTOCOMPRATO** (Cascina dei Salici con tutte le strutture al massimo). Quelli a interruttore si accendono e, riscritti, si spengono: **FERROBATTUTO** (mezzi indistruttibili, pieno sempre fatto), **UNPUGNO** (nemici KO con un colpo), **MAMMAMIA** (vita infinita), **MAISTANCO** (stanchezza a zero), **ZENSUBITO** (stress a zero), **CRESCITUTTO** (orto e campi crescono subito), **NOVIGILESSA** (niente multe).
 
-**28.2 Matrimonio e divorzio** (src/matrimonio.js, dati src/data/matrimonio.js). A una ragazza conquistata, con affinità almeno 70, si può chiedere di sposarsi (anello 1.500€). Le nozze sono il giorno dopo, in chiesa tra le 10 e le 13: si va all'altare e parte la cerimonia di Don Peppino, con la Mamma, il Gigante, il Patata, Loredana, Rodella, il Sergente, il Camper, Mister Frank, il Conte, Concetta, il Postino e Ivan sui banchi. Gli sposi si sbaciucchiano e basta. Se Garonio non si presenta, −30 di affinità e figuraccia in paese. Da sposato: stress −6 ogni mattina e a volte un pranzo al sacco. Per sposarne un'altra si divorzia all'**Anagrafe** del comune (8-13, il ragionier Cavilli): avvocato 2.500€, poi 60€ di alimenti al giorno per ogni ex (senza soldi, stress +10).
+**28.2 Matrimonio e divorzio** (src/matrimonio.js, dati src/data/matrimonio.js). A una ragazza conquistata, con affinità almeno 70, si può chiedere di sposarsi (anello 1.500€). Le nozze sono il giorno dopo, in chiesa tra le 10 e le 13: si va all'altare e parte la cerimonia di Don Peppino, con la Mamma, il Gigante, il Potato, Loredana, Rodella, il Sergente, il Camper, Mister Frank, il Conte, Concetta, il Postman e Ivan sui banchi. Gli sposi si sbaciucchiano e basta. Se Garonio non si presenta, −30 di affinità e figuraccia in paese. Da sposato: stress −6 ogni mattina e a volte un pranzo al sacco. Per sposarne un'altra si divorzia all'**Anagrafe** del comune (8-13, il ragionier Cavilli): avvocato 2.500€, poi 60€ di alimenti al giorno per ogni ex (senza soldi, stress +10).
 
 **28.3 Notte libera.** La giornata non finisce più a mezzanotte e mezza: si gira tutta la notte finché la barra della stanchezza non è piena. Il giorno nuovo comincia alle 6: se Garonio non ha mai dormito, alle 6 crolla dove si trova. Le cose notturne (Parco, night, truffaldine, Notte delle Leggende, bestie di notte) restano aperte fino all'alba.
 
@@ -910,7 +910,7 @@ A mezzanotte, se non l'hai portato, si perde di nuovo. Si rincontra dopo almeno 
 - **Fienile**: ci vive il **Filosofo del fienile**; pisolino nel fieno (stanchezza −20, una volta al giorno). Missione: la Grande Domanda per Don Peppino.
 - **Salone Wanda** (la casa rosa, 9-19): taglio e piega 15€, stress −15, una volta al giorno. Missione: 3 piume di gazza.
 - **Casa della Sciura Ines** (la casa azzurra): il **Gaetano** davanti al quiz. Missione: una grappa di nascosto.
-- **Cascine dei vicini**: l'**Ornella** dal Patata (6 uova per il tortino), la **Mirella** dal Postino (una lettera per Frank), **Billy Bob** al ranch di Frank (6 nutrie, le corde del banjo), la **Zaira** dal Camper (3 legna di pioppo).
+- **Cascine dei vicini**: l'**Ornella** dal Potato (6 uova per il tortino), la **Mirella** dal Postman (una lettera per Frank), **Billy Bob** al ranch di Frank (6 nutrie, le corde del banjo), la **Zaira** dal Camper (3 legna di pioppo).
 - **Consorzio Rodella**: **Kevin**, il nipote del marketing (3 acquisti o ritiri al Consorzio).
 - **Casotto delle Guardie**: il **Capo Guardia Ottavio** (2 cartelli «VIETATO»).
 - **Stalla** del Gigante: il **Tonino mungitore** (5-10 e 16-20, apprendista mungitore: 5 faccende di stalla), mucche, asino e pecora dentro.

@@ -141,7 +141,7 @@ export const EREDE = {
     etichetta: '📜 Una commessa per il Gigante',
     testi: [
       "Mi servono {n} {nome}. Il consorzio te li paga una miseria; io ti do il {pct}% in più. Affare di famiglia.",
-      "Ho promesso {n} {nome} al cugino di Lodi. Tu li hai, io li pago. Più del consorzio. Non dirlo a tua madre.",
+      "Ho promesso {n} {nome} al cugino di Littlesound. Tu li hai, io li pago. Più del consorzio. Non dirlo a tua madre.",
     ],
     fatta: "Bravo. Così si fanno gli affari: tra parenti, in contanti, senza fattura. (Questo non l'hai sentito.)",
     niente: "Oggi niente commesse. Torna domani, imprenditore.",

@@ -1,4 +1,4 @@
-// Gare di trattori sulla capezzagna (GDD 18.2 e 22): sfide di guida vera contro il Patata,
+// Gare di trattori sulla capezzagna (GDD 18.2 e 22): sfide di guida vera contro il Potato,
 // il cugino Ermes e Mister Frank. Si arriva col trattore alla lavagna vicino al fienile, si sceglie
 // il rivale e la posta, conto alla rovescia, e via: si va fino alla bandierina in fondo, si gira e
 // si torna. Balle di fieno e fango sulla strada, sportellate dal rivale. Il vincitore prende la posta,

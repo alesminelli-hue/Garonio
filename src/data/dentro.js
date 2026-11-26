@@ -149,17 +149,17 @@ export const INTERNI_NUOVI = {
   },
 
   'cascina-patata': {
-    nome: 'Cascina del Patata', w: 13, d: 7, h: 3, pavimento: 'cotto', muro: 'carta', musica: 'base', orari: [6, 22],
+    nome: 'Cascina del Potato', w: 13, d: 7, h: 3, pavimento: 'cotto', muro: 'carta', musica: 'base', orari: [6, 22],
     ...porta(6.5, 7),
     stanze: [
-      { id: 'cucina', nome: 'Cucina del Patata', x0: 0, x1: 8 },
+      { id: 'cucina', nome: 'Cucina del Potato', x0: 0, x1: 8 },
       { id: 'dispensa', nome: 'Dispensa delle patate', x0: 8, x1: 13, muro: 'mattoni', pavimento: 'cemento', luce: 0.7 },
     ],
     finestre: [{ x: 1.0, y: 1.3, w: 1.2, h: 1.0 }],
     mobili: [
       { tipo: 'fornelli', x: 2.6, z: 0.2, w: 1.6, d: 0.7, h: 0.95, zona: 'pentola', etichetta: 'La pentola che bolle (patate)' },
       { tipo: 'lavello', x: 4.3, z: 0.2, w: 1.4, d: 0.7, h: 0.95 },
-      { tipo: 'tavolo', x: 2.6, z: 3.0, w: 2.2, d: 1.2, h: 0.8, colore: '#a87a4a', tovaglia: '#e8c050', zona: 'tavola', etichetta: 'Tavola del Patata' },
+      { tipo: 'tavolo', x: 2.6, z: 3.0, w: 2.2, d: 1.2, h: 0.8, colore: '#a87a4a', tovaglia: '#e8c050', zona: 'tavola', etichetta: 'Tavola del Potato' },
       { tipo: 'sedia', x: 2.2, z: 3.3, w: 0.4, d: 0.5, h: 0.95 }, { tipo: 'sedia', x: 4.9, z: 3.3, w: 0.4, d: 0.5, h: 0.95 },
       { tipo: 'quadro', parete: true, x: 6.0, y: 1.3, w: 1.4, h: 1.0, zona: 'quadro', etichetta: 'Il quadro della Patata d\'Oro 1998' },
       { tipo: 'sacchi', x: 8.4, z: 0.3, w: 2.2, d: 1.1, h: 1.1, zona: 'patate', etichetta: 'Sacchi di patate (con i nomi)' },
@@ -170,9 +170,9 @@ export const INTERNI_NUOVI = {
   },
 
   'cascina-postino': {
-    nome: 'Cascina del Postino', w: 12, d: 7, h: 3, pavimento: 'parquet', muro: 'carta2', musica: 'base', orari: [6, 22],
+    nome: 'Cascina del Postman', w: 12, d: 7, h: 3, pavimento: 'parquet', muro: 'carta2', musica: 'base', orari: [6, 22],
     ...porta(6, 7),
-    stanze: [{ id: 'casa', nome: 'Casa del Postino (e centro smistamento abusivo)', x0: 0, x1: 12 }],
+    stanze: [{ id: 'casa', nome: 'Casa del Postman (e centro smistamento abusivo)', x0: 0, x1: 12 }],
     finestre: [{ x: 9.6, y: 1.3, w: 1.2, h: 1.0 }],
     mobili: [
       { tipo: 'scaffale', x: 0.3, z: 0.2, w: 2.6, d: 0.5, h: 2.2, merce: 'oggetti', zona: 'casellario', etichetta: 'Casellario delle lettere' },
@@ -357,8 +357,8 @@ export const CHIAVE_NO = "🔒 È chiuso a chiave. Sulla porta: «Proprietà pri
 
 export const PORTE_NUOVE = {
   municipio: 'Entra in municipio', tabacchi: 'Entra dal tabaccaio', alimentari: 'Entra all\'alimentari', fienile: 'Entra nel fienile',
-  'casa-rosa': 'Entra dalla parrucchiera', 'casa-azzurra': 'Bussa dalla Sciura Ines', 'cascina-patata': 'Bussa dal Patata',
-  'cascina-postino': 'Bussa dal Postino', 'ranch-frank': 'Entra nel ranch', 'cascina-oglio': 'Bussa dal Camper',
+  'casa-rosa': 'Entra dalla parrucchiera', 'casa-azzurra': 'Bussa dalla Sciura Ines', 'cascina-patata': 'Bussa dal Potato',
+  'cascina-postino': 'Bussa dal Postman', 'ranch-frank': 'Entra nel ranch', 'cascina-oglio': 'Bussa dal Camper',
   consorzio: 'Entra nel Consorzio', 'casotto-guardie': 'Entra nel casotto', stalla: 'Entra nella stalla', capannone2: 'Entra nel capannone',
   'salici-casa': 'Entra in casa (Salici)', 'salici-porcilaia': 'Entra nella porcilaia', 'salici-stalla': 'Entra nella stalla', 'salici-pollaio': 'Entra nel pollaio',
 };
@@ -370,8 +370,8 @@ export const ENTRATE = {
   fienile: ["Il fienile. Polvere dorata, silenzio, e qualcuno che russa dentro un mucchio di fieno.", "Fieno ovunque. Anche nelle mutande, tra cinque minuti."],
   'casa-rosa': ["Salone Wanda. Lacca nell'aria: un fiammifero e salta il paese.", "Il casco della piega ronza. Sotto c'è una signora che sa tutto di tutti."],
   'casa-azzurra': ["La casa della Sciura Ines. Centrini su ogni superficie. Anche sul gatto, se ci fosse.", "Odore di naftalina e di caffè d'orzo. Il Gaetano non si gira: c'è il quiz."],
-  'cascina-patata': ["La cascina del Patata. Patate ovunque. Una ha gli occhiali da sole.", "In cucina bolle una pentola. Indovina cosa c'è dentro."],
-  'cascina-postino': ["Casa del Postino: lettere sul tavolo, lettere sulla sedia, lettere nel frigo.", "Qui finiscono le lettere che non arrivano. Cioè quasi tutte."],
+  'cascina-patata': ["La cascina del Potato. Patate ovunque. Una ha gli occhiali da sole.", "In cucina bolle una pentola. Indovina cosa c'è dentro."],
+  'cascina-postino': ["Casa del Postman: lettere sul tavolo, lettere sulla sedia, lettere nel frigo.", "Qui finiscono le lettere che non arrivano. Cioè quasi tutte."],
   'ranch-frank': ["Il ranch di Mister Frank. Il pavimento scricchiola in inglese.", "Yeehaw. Lo dice il cartello sulla porta. E il pappagallo, ma il pappagallo è finto."],
   'cascina-oglio': ["La cascina del Vecchio Camper. Profumo di legna, tisana e pesce.", "Il fiume si sente anche da qui. O è la pentola della Zaira."],
   consorzio: ["Il magazzino del Consorzio Rodella. Un altoparlante dice: «Oggi offerta sul mangime. Anche domani. Sempre.»", "Sacchi, sementi e un ragazzo con un tablet che ti sorride troppo."],
@@ -390,7 +390,7 @@ export const CHIUSI = {
   'casa-rosa': "Il Salone Wanda apre alle 9 e chiude alle 19. Dentro, la lacca riposa.",
   'casa-azzurra': "Dalla finestra: «A quest'ora? Sono le ore di Dio! Torni domani, giovanotto.»",
   'cascina-patata': "Dentro si sente russare. Due persone e, sembra, una patata.",
-  'cascina-postino': "Sulla porta: «Il Postino riposa. Le lettere no: sono già in ritardo.»",
+  'cascina-postino': "Sulla porta: «Il Postman riposa. Le lettere no: sono già in ritardo.»",
   'ranch-frank': "Dall'interno: «Go home, boy! It's late!» E un colpo di fucile in aria. Per sicurezza.",
   'cascina-oglio': "La Zaira, dalla finestra: «Il fiume dorme. Dormi anche tu.»",
   consorzio: "Il Consorzio apre alle 7 e chiude alle 19. Il cartello dice: «Per urgenze: Rodella». Non c'è il numero.",
@@ -481,7 +481,7 @@ export const PNG_NUOVI = {
       "Il Gigante sa che sto qui? Lo sa. Io so che lui sa. Lui sa che io so. È un equilibrio.",
     ],
     chiacchiere: [
-      "Ho studiato filosofia a Pavia. Poi ho capito che la risposta era: dormire nel fieno. Ho lasciato l'università.",
+      "Ho studiato filosofia a Goodthought. Poi ho capito che la risposta era: dormire nel fieno. Ho lasciato l'università.",
       "Diogene viveva in una botte. Io in un fienile. È un passo avanti: c'è più spazio.",
       "Le nutrie sono le uniche creature libere della Bassa. Non pagano l'IMU.",
       "Tu zappi per vivere, Garonio, o vivi per zappare? Non rispondere. Zappa.",
@@ -521,23 +521,23 @@ export const PNG_NUOVI = {
     ],
   },
   ornella: {
-    nome: 'L\'Ornella', ruolo: 'Moglie del Patata. Cucina le patate in 47 modi e ne inventa uno ogni domenica.',
+    nome: 'L\'Ornella', ruolo: 'Moglie del Potato. Cucina le patate in 47 modi e ne inventa uno ogni domenica.',
     posti: [{ ore: [6, 22], interno: 'cascina-patata', x: 3.4, z: 1.1 }],
     aspetto: { sprite: 'contadina_cesto', w: 16, h: 23, skin: '#e8b48a', hair: '#5a3a2a', hairStyle: 'bun', shirt: '#c8a040', pants: '#5a4a3a', boots: '#3a2a1a', belly: true, eyes: 'normal' },
     amicizia: [0, 100, 30],
     saluti: [
       "Garonio! Hai fame? Ho fatto le patate. Lesse, fritte, al forno, ripiene di patate.",
-      "Il mio Patata è nei campi. Parla con le piante. Loro gli rispondono meglio di me.",
+      "Il mio Potato è nei campi. Parla con le piante. Loro gli rispondono meglio di me.",
       "Entra, entra, ma pulisci gli stivali. Qui si mangia per terra. No, scherzo. Quasi.",
     ],
     chiacchiere: [
       "Abbiamo dato un nome a ogni patata. Quest'anno siamo arrivati a Zaccaria Secondo.",
-      "Il tuo papà e il mio Patata litigano da quarant'anni per un metro di fosso. È la loro amicizia.",
-      "Una volta abbiamo mangiato la pasta. Il Patata ha pianto. Non lo rifaremo.",
+      "Il tuo papà e il mio Potato litigano da quarant'anni per un metro di fosso. È la loro amicizia.",
+      "Una volta abbiamo mangiato la pasta. Il Potato ha pianto. Non lo rifaremo.",
     ],
   },
   mirella: {
-    nome: 'La Mirella', ruolo: 'Moglie del Postino. Smista la posta del paese sul tavolo di cucina.',
+    nome: 'La Mirella', ruolo: 'Moglie del Postman. Smista la posta del paese sul tavolo di cucina.',
     posti: [{ ore: [7, 21], interno: 'cascina-postino', x: 4.6, z: 2.8 }],
     aspetto: { sprite: 'sciura', w: 16, h: 22, skin: '#f0c8a8', hair: '#8a5a3a', hairStyle: 'bun', shirt: '#4a6ab8', pants: '#3a3a4a', boots: '#2a1a1a', eyes: 'normal' },
     amicizia: [0, 100, 25],
@@ -777,8 +777,8 @@ export const AZIONI_DENTRO = {
   'casa-azzurra:foto': { t: ["1961: la Ines sorride e il Gaetano anche. È l'ultima volta documentata che il Gaetano sorride."] },
   'casa-azzurra:centrino': { t: ["Il centrino è perfetto. Lo sposti di un centimetro. Da qualche parte in paese, la Ines sente un brivido."] },
   'cascina-patata:pentola': { t: ["Patate che bollono. L'Ornella: «Quelle sono Gino e Pina. Le mangiamo stasera. Le salutiamo.»"] },
-  'cascina-patata:tavola': { t: ["Sulla tovaglia c'è ricamato «Dio benedica la patata». E sotto, più piccolo: «e il Patata»."] },
-  'cascina-patata:quadro': { t: ["Il Patata nel 1998 con la Patata d'Oro: due chili e tre. Lui sorride. La patata, sembra, anche."] },
+  'cascina-patata:tavola': { t: ["Sulla tovaglia c'è ricamato «Dio benedica la patata». E sotto, più piccolo: «e il Potato»."] },
+  'cascina-patata:quadro': { t: ["Il Potato nel 1998 con la Patata d'Oro: due chili e tre. Lui sorride. La patata, sembra, anche."] },
   'cascina-patata:patate': { t: ["Ogni sacco ha un cartellino: «Famiglia Rossi», «Famiglia Verdi», «Ugo (da solo)».", "Prendi una patata. L'Ornella: «Quella è Ernesto. Trattalo bene.»"], oggetti: { patata: 1 }, unaAlGiorno: true, giaFatto: "«Una patata al giorno, Garonio. Siamo generosi, non pazzi.»" },
   'cascina-postino:casellario': { t: ["Lettere per tutto il paese. Una è per te: «Cartolina da Rimini». Il timbro è del 2019.", "Una busta con scritto «URGENTE». Data: 2016. È ancora qui. Era urgente."] },
   'cascina-postino:timbri': { t: ["Un timbro con scritto «RESPINTO». La Mirella lo usa per le bollette del suo uomo."] },
@@ -794,10 +794,10 @@ export const AZIONI_DENTRO = {
   'cascina-oglio:tisane': { t: ["La Zaira ti versa una tisana: menta, sambuco e «un segreto». Stress −10.", "La tisana sa di fiume. La Zaira dice che è il bello."], effetto: { stress: -10 }, unaAlGiorno: true, giaFatto: "«Una tisana al giorno, Garonio. Con due inizi a vedere i pesci che parlano.»" },
   'cascina-oglio:canne': { t: ["Le canne da pesca del Camper. Una ha cinquant'anni e un nome: «La Vedova»."] },
   'consorzio:sacchi': { t: ["«Mangime Super Maiale. Con vitamine, minerali e un buono sconto per il prossimo sacco.»", "Un sacco dice «NUOVA FORMULA». Sotto, scritto piccolo: «stessa di prima»."] },
-  'consorzio:cassa': { t: ["Alla cassa un cartello: «Si accettano contanti, assegni e promesse (solo dal Patata)».", "Un registratore di cassa del 1978. Fa «DLIN» così forte che le galline fuori depongono per lo spavento."] },
+  'consorzio:cassa': { t: ["Alla cassa un cartello: «Si accettano contanti, assegni e promesse (solo dal Potato)».", "Un registratore di cassa del 1978. Fa «DLIN» così forte che le galline fuori depongono per lo spavento."] },
   'consorzio:semi': { t: ["Bustine di semi: zucchine, insalata, peperoni. Su una c'è scritto «Pomodoro Rodella F1: il pomodoro che si vende da solo».", "Per i semi gratis devi parlare con Mister Rodella, fuori. Kevin dice: «Fuori c'è l'esperienza cliente»."] },
   'consorzio:catalogo': { t: ["Catalogo trattori: il Rodellino blu e il Testa Calda arancione. A pagina 3 c'è una foto di Rodella che abbraccia un trattore.", "Un volantino di Kevin: «Trattore + mangime + un selfie con lo zio: pacchetto Premium»."] },
-  'consorzio:organigramma': { t: ["Presidente: Rodella. Vice: Rodella. Marketing: Rodella (Kevin). Magazzino: Rodella (cugino). Clienti: Patata."] },
+  'consorzio:organigramma': { t: ["Presidente: Rodella. Vice: Rodella. Marketing: Rodella (Kevin). Magazzino: Rodella (cugino). Clienti: Potato."] },
   'casotto-guardie:verbali': { t: ["Verbale n. 1: «Anatra in sosta vietata». Verbale n. 2: «La stessa anatra, recidiva».", "Un verbale contro «ignoto, probabilmente il Vecchio Camper». È del 1983."] },
   'casotto-guardie:mappa': { t: ["La mappa del Parco Oglio. Una zona ha scritto «QUI NON SI VA». Sotto, a matita: «ci sono andato. sconsiglio»."] },
   'casotto-guardie:binocoli': { t: ["Guardi dal binocolo: vedi un airone, un pescatore abusivo e il Vecchio Camper che ti saluta. Ti ha visto prima lui."] },
@@ -914,7 +914,7 @@ export const BIBLIOTECA = {
     { titolo: '📜 Chi è chi in paese', pagine: [
       "Don Peppino e Suor Carmela (chiesa). Il Conte e Ambrogio (castello). Il Dottor Pastiglia (farmacia), il Dottor Mutua e l'Assunta (ambulatorio). Il Sergente (palestra). Gennaro e Concetta (pizzeria). Kemal (kebab). Zeno e Ivan (officina). Il Bubetto (magazzino). Loredana e il Consulente (bar).",
       "In municipio: il Sindaco Fumagalli, il ragionier Cavilli e, ogni tanto, la Vigilessa. Al tabacchi la Rosy, all'alimentari la Rina, dalla parrucchiera la Wanda. Nel fienile, il Filosofo. Non dite al Gigante che lo sapete.",
-      "Nelle cascine: il Patata e l'Ornella, il Postino e la Mirella, Mister Frank e il nipote Billy Bob, il Vecchio Camper e la sorella Zaira. Al Consorzio Mister Rodella e il nipote Kevin. Nella stalla il Tonino. Al casotto il Capo Guardia Ottavio.",
+      "Nelle cascine: il Potato e l'Ornella, il Postman e la Mirella, Mister Frank e il nipote Billy Bob, il Vecchio Camper e la sorella Zaira. Al Consorzio Mister Rodella e il nipote Kevin. Nella stalla il Tonino. Al casotto il Capo Guardia Ottavio.",
     ] },
     { titolo: '📜 Le ragazze della Bassa (e come non fare figuracce)', pagine: [
       "Con le ragazze si parla, si sceglie la risposta giusta e si sale di affinità. Le risposte sbagliate fanno male. Più delle nutrie.",
@@ -940,7 +940,7 @@ export const BIBLIOTECA = {
       "Ogni posto ha i suoi orari: di notte i negozi sono chiusi, le case dei vicini anche (e se insisti, Frank spara in aria). Dentro c'è sempre qualcuno con una missione. Cerca il punto esclamativo.",
     ] },
     { titolo: '⚖️ Multe, Vigilessa e burocrazia', pagine: [
-      "La Vigilessa fa il giro della piazza come un orologio svizzero. Di Codogno. Le multe si pagano a lei o allo sportello 1 del municipio. Se non le paghi, arriva il sequestro.",
+      "La Vigilessa fa il giro della piazza come un orologio svizzero. Di Newbarley. Le multe si pagano a lei o allo sportello 1 del municipio. Se non le paghi, arriva il sequestro.",
       "All'Anagrafe (sportello 2, dalle 8 alle 13) il ragionier Cavilli fa matrimoni e divorzi. All'Ufficio agricolo (sportello 3) si comprano la cascina e le strutture.",
     ] },
   ],

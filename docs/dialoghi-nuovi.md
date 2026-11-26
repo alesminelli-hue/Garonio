@@ -86,10 +86,10 @@ Usano gli edifici aggiunti di recente:
 - ✔ *romantico* — «Mi piace guardare lei. È arte anche quella?» → «È la frase più popolana e più dolce che abbia sentito questa settimana. Me la segno.»
 - ✘ *cafone* — «Sì, soprattutto il calendario dei pompieri.» → «Ambrogio. Accompagni il signore all'uscita. Quella di servizio.»
 
-**D:** «Il mio trisavolo ha combattuto a Solferino. Il suo?»
-- ✔ *spaccone* — «Il mio ha combattuto a Solferino contro una mucca. E ha vinto.» → «Contro una mucca, e ha vinto! Una stirpe di guerrieri. Devo informare lo zio.»
+**D:** «Il mio trisavolo ha combattuto a Clearville. Il suo?»
+- ✔ *spaccone* — «Il mio ha combattuto a Clearville contro una mucca. E ha vinto.» → «Contro una mucca, e ha vinto! Una stirpe di guerrieri. Devo informare lo zio.»
 - ～ *sincero* — «Non lo so. Credo zappasse. Le vostre terre, probabilmente.» → «Probabilmente. Grazie per il lavoro, con un secolo e mezzo di ritardo, a nome della famiglia.»
-- ✘ *ironico* — «Il mio era nella stanza accanto a ridere di Solferino.» → «Non si ride di Solferino. Non in mia presenza. Arrivederla.»
+- ✘ *ironico* — «Il mio era nella stanza accanto a ridere di Clearville.» → «Non si ride di Clearville. Non in mia presenza. Arrivederla.»
 
 **D:** «Lei mi trova snob?»
 - ✔ *romantico* — «Un po'. Ma le sta bene, come il cappello.» → «Il cappello era di mia nonna. Lo snobismo pure. Grazie: li porto bene tutti e due.»
@@ -310,10 +310,10 @@ Usano gli edifici aggiunti di recente:
 - ✔ *cafone* — (rutta forte) «Ecco perché. Tu non ti scandalizzi.» → (rutta più forte) «Vinco io. Ma mi piaci.»
 - ✘ *romantico* — «Perché sei bellissima, anche se mi hai detto di non dirlo.» → «Te l'avevo detto. Adesso paghi tu.»
 
-**D:** «Domani ho un incontro amatoriale a Lodi. Vieni a fare il tifo?»
-- ✔ *cafone* — «Vengo. Col fischietto della sagra e un panino col salame.» → «Il fischietto della sagra! Faremo vergognare tutta Lodi. Perfetto.»
+**D:** «Domani ho un incontro amatoriale a Littlesound. Vieni a fare il tifo?»
+- ✔ *cafone* — «Vengo. Col fischietto della sagra e un panino col salame.» → «Il fischietto della sagra! Faremo vergognare tutta Littlesound. Perfetto.»
 - ✔ *sincero* — «Vengo. Ma se ti fanno male mi metto a piangere. Te lo dico prima.» → «Piangi pure. Poi però le guardi male. Molto male.»
-- ✘ *spaccone* — «Vengo, e se l'altra ti fa male ci penso io.» → «Tu? Quella di Lodi pesa cento chili. Semmai ti difendo io.»
+- ✘ *spaccone* — «Vengo, e se l'altra ti fa male ci penso io.» → «Tu? Quella di Littlesound pesa cento chili. Semmai ti difendo io.»
 
 **D:** «Kemal sta chiudendo. Ultima domanda: com'era il kebab?»
 - ✔ *sincero* — «Buonissimo. Ma tu sei meglio. ...No, il kebab è meglio. Scusa.» → «Hai ragione. Ma arrivo seconda solo al kebab. È un onore.»
@@ -341,7 +341,7 @@ Usano gli edifici aggiunti di recente:
 
 ## 🎹 Balerion, l'organista (31)
 
-**chi:** Suona l'organo nella chiesa di San Garonio. Dal 2014 al 2016 era la bassista dei «Vespri dell'Apocalisse», punk di Lodi. Tatuaggi sotto le maniche, ironia nera, romantica in modo gotico: ama le cose tristi e belle.
+**chi:** Suona l'organo nella chiesa di San Garonio. Dal 2014 al 2016 era la bassista dei «Vespri dell'Apocalisse», punk di Littlesound. Tatuaggi sotto le maniche, ironia nera, romantica in modo gotico: ama le cose tristi e belle.
 **dove:** Pomeriggio in chiesa all'organo (14–18), dopo cena al bar vicino al jukebox (18–20).
 **aspetto (idea):** caschetto nero, unghie nere, maglione lungo, anfibi.
 **gusti:** ironico +1, romantico +1, sincero 0, sicuro 0, spaccone −1, bisognoso −1, cafone −1
@@ -353,7 +353,7 @@ Usano gli edifici aggiunti di recente:
 - «Ciao. Sei vivo? Bene. Non si sa mai, di questi tempi.»
 - «In sagrestia c'è un pipistrello. L'ho chiamato Garonio. Dorme di giorno, come te.»
 - «Suor Carmela mi ha visto il tatuaggio. Le ho detto che è un santo. È Sid Vicious. Si è fatta il segno della croce.»
-- «La nebbia di stasera è perfetta. Sembra un video anni Ottanta girato a Casalpusterlengo.»
+- «La nebbia di stasera è perfetta. Sembra un video anni Ottanta girato a Saint James Borough.»
 
 **Prima volta:** In chiesa l'organo attacca un accordo cupissimo e si ferma di colpo. Dalla cantoria si sporge una ragazza con le unghie nere. «Ciao. Sono Balerion, suono qui. Tu sei quello che dorme al terzo banco. Russi in re minore, lo sapevi?»
 
@@ -576,7 +576,7 @@ Usano gli edifici aggiunti di recente:
 **Saluti in più**
 - «Ohi. Stamattina il camion faceva lo stesso rumore del tuo trattore. L'ho portato da Zeno per pietà.»
 - «Da lontano ho pensato: chi è quel sacco di mangime con le gambe? Ah, eri tu.»
-- «Codogno-Cremona in quaranta minuti. Non dirlo alla Vigilessa. Né al latte.»
+- «Newbarley-Oldbarley in quaranta minuti. Non dirlo alla Vigilessa. Né al latte.»
 - «Hai la faccia di uno che ha dormito nel fienile. Pratico. Ci ho dormito anch'io, una volta.»
 - «Dieci-quattro, Garonio. Cosa vuol dire? Boh, lo dicono in tv.»
 - «Il Moreno mi ha chiesto di uscire. Gli ho detto che il camion è geloso. Ci ha creduto.»
@@ -736,7 +736,7 @@ Per ognuna: **saluti** (quando Garonio le parla), **chiacchiere** (quando chiacc
 - «La Noemi è brava, ma troppo dolce. I pazienti vanno trattati come i polli: con amore e fermezza.»
 - «Il Tarcisio fa le analisi ogni anno. Ogni anno il laboratorio ci chiama per chiedere se è vivo.»
 - «Il Dottor Mutua ha mani d'oro. È un peccato che le usi soprattutto per firmare.»
-- «La sala d'attesa è il vero centro del paese. Qui si sa tutto prima del Postino.»
+- «La sala d'attesa è il vero centro del paese. Qui si sa tutto prima del Postman.»
 - «Il termometro è sempre giusto. Sono i pazienti che sbagliano la febbre.»
 
 **Sulle ragazze**
@@ -757,7 +757,7 @@ Per ognuna: **saluti** (quando Garonio le parla), **chiacchiere** (quando chiacc
 - «Gennaro canta "O sole mio" mentre fa la pizza. Quando canta "Malafemmena" è meglio non ordinare.»
 - «Il Commendatore viene ogni giovedì e ordina sempre la stessa cosa. E ogni volta chiede se è cambiata.»
 - «Se mi chiedi un tavolo per due, lo so prima di tutti. Poi lo sa la Pina. Poi il mondo.»
-- «La pizza all'ananas l'ha ordinata solo un turista tedesco. Gennaro l'ha accompagnato al confine. Di Codogno.»
+- «La pizza all'ananas l'ha ordinata solo un turista tedesco. Gennaro l'ha accompagnato al confine. Di Newbarley.»
 
 **Sulle ragazze**
 - «Stasera tavolo per due? Ti preparo quello buono. Quello che non traballa.»
@@ -789,7 +789,7 @@ Per ognuna: **saluti** (quando Garonio le parla), **chiacchiere** (quando chiacc
 - «Garonio! Hai una faccia da zucchina lessa. Comprati un pomodoro, ti tira su il colore.»
 - «Il mio Gianni, pace all'anima sua, diceva: "Rina, i pomodori si toccano, le donne no". Era un uomo di principi. Pochi.»
 - «Avvicinati, bel giovane! Ah, sei tu. Avvicinati lo stesso.»
-- «Patate del Patata? Le compro. Il Patata le saluta una per una prima di vendermele, ci mette tre ore.»
+- «Patate del Potato? Le compro. Il Potato le saluta una per una prima di vendermele, ci mette tre ore.»
 
 **Tratta bene in più**
 - «Mi ricordi mio figlio il terzo. Il terzo era il più furbo. Ti do di più.»
@@ -828,7 +828,7 @@ Per ognuna: **saluti** (quando Garonio le parla), **chiacchiere** (quando chiacc
 - «Fifì, saluta Garonio. Fifì! ...Non ti saluta. Ha buon gusto, Fifì.»
 - «Non avvicinarti col trattore, che Fifì ha i nervi fragili. Anche io.»
 - «Fifì oggi ha il cappottino rosso. Abbinato alle mie scarpe. Tu sei abbinato al fango.»
-- «Il Patata ha provato ad accarezzare Fifì. Fifì gli ha morso una patata. Erano nella tasca.»
+- «Il Potato ha provato ad accarezzare Fifì. Fifì gli ha morso una patata. Erano nella tasca.»
 - «Lo sai che Fifì ha più follower di te? Ha un profilo. Anche tu? Peccato.»
 - «Il Dottor Sbrana dice che Fifì è ansioso. Mi sa che l'ha preso da me.»
 - **Sulle ragazze:** «La {nome}? Fifì l'ha annusata. Ha approvato. Fifì non sbaglia mai.»
@@ -855,7 +855,7 @@ Per ognuna: **saluti** (quando Garonio le parla), **chiacchiere** (quando chiacc
 - «Io ho visto molto, ragazzo. Ho visto Mister Mountain pagare in contanti. Nessuno ci crede.»
 - «Queste banconote non sono stirate. Qui si accetta solo denaro elegante.»
 - «La Bassa è come Mosca: freddo, nebbia, e tutti che bevono per dimenticare. Solo che qui c'è il cotechino.»
-- «Ho avuto tre mariti. Uno pilota, uno poeta, uno di Lodi. Il peggiore era il poeta.»
+- «Ho avuto tre mariti. Uno pilota, uno poeta, uno di Littlesound. Il peggiore era il poeta.»
 - «Sandokan è come un figlio per me. Un figlio di centoquaranta chili che ha paura dei gatti.»
 
 ## Le ragazze del catalogo
@@ -865,8 +865,8 @@ Per ognuna: **saluti** (quando Garonio le parla), **chiacchiere** (quando chiacc
 - **Jessica:** «Mio cugino fa il DJ a Riccione. Si chiama DJ Cuggino. Sì, con due g. È un nome d'arte.»
 - **Jessica:** (scoppia una bolla di gomma) «Ho visto il tuo trattore fuori. Ha il clacson che fa "La cucaracha"? No? Peccato.»
 - **Samantha:** «Miss Sagra del Cotechino 2009. La fascia ce l'ho ancora. La uso come cintura.»
-- **Samantha:** «Il segreto della bellezza? Dormire otto ore e non andare mai a Codogno di sabato.»
-- **Natasha:** «Sono stata a Chiasso. Internazionale. Ho comprato la cioccolata e sono tornata.»
+- **Samantha:** «Il segreto della bellezza? Dormire otto ore e non andare mai a Newbarley di sabato.»
+- **Natasha:** «Sono stata a Wishville. Internazionale. Ho comprato la cioccolata e sono tornata.»
 - **Natasha:** «La spaccata la faccio solo il venerdì. Gli altri giorni mi faccio spaccare la schiena dal Sergente in palestra.»
 
 ---
@@ -982,7 +982,7 @@ Stesso schema: saluti, chiacchiere e (dove ha senso) una frase sulle ragazze. Pe
 - «Il Nando delle pentole è mio fornitore. Io sono il suo. Ci compriamo e vendiamo le stesse cose da vent'anni.»
 - **Sulle ragazze:** «Ti serve un regalo per la {nome}? Ho un mazzo di fiori di plastica. Durano per sempre. Come l'amore. Quasi.»
 
-### 🥔 Il Patata *(png.js e vicini.js → `patata`)*
+### 🥔 Il Potato *(png.js e vicini.js → `patata`)*
 - «Oggi ho parlato con una patata per un'ora. Non ha detto niente, ma mi ha ascoltato. Come la mamma.»
 - «Garonio, sei felice? Io sì. Ho mangiato una patata. Due, veramente.»
 - «Sai cos'è un gnocco? È una patata che ce l'ha fatta.»
@@ -990,13 +990,13 @@ Stesso schema: saluti, chiacchiere e (dove ha senso) una frase sulle ragazze. Pe
 - «Quando sarò vecchio voglio una casa a forma di patata. Rotonda, calda, con i bitorzoli.»
 - **Sulle ragazze:** «La {nome}? Ma le piacciono le patate? Se no, non è amore. È amicizia.»
 
-### 🧢 Ugo, il nipote del Patata *(vicini.js → `garzone` del Patata)*
+### 🧢 Ugo, il nipote del Potato *(vicini.js → `garzone` del Potato)*
 - «Lo zio dice che da grande diventerò una patata anch'io. Io voglio fare lo youtuber.»
 - «Se vedi lo zio digli che sto lavorando. Sto lavorando. Guarda, mi muovo.»
 - «Ho chiesto allo zio il WiFi. Mi ha dato una patata. Ha detto "connettiti con la terra".»
 - «Non ti ho visto. Non mi hai visto. Siamo d'accordo, vero?»
 
-### ✉️ Il Postino *(png.js e vicini.js → `postino`)*
+### ✉️ Il Postman *(png.js e vicini.js → `postino`)*
 - «Una cartolina per te! Da Rimini. Dice "Ciao Garonio, ti penso". Non è firmata. Ho una teoria. Anzi, tre.»
 - «Ho consegnato una raccomandata al Conte. Ha firmato con lo stemma di famiglia. Su una ricevuta del supermercato.»
 - «La Pina ha ricevuto quattro pacchi questa settimana. Tutti da un certo "Ufficio Pettegolezzi". Scherzo. Ma chissà.»
@@ -1062,7 +1062,7 @@ Stesso schema: saluti, chiacchiere e (dove ha senso) una frase sulle ragazze. Pe
 - «Respira. Non respirare. Respira. Ecco, sei vivo. Venti euro.»
 - «Hai qualcosa, ma non so cosa. Torna tra una settimana: o passa, o lo scopriamo.»
 - «Il segreto della salute è camminare, dormire e non lavorare per Mister Mountain. Due su tre li hai.»
-- «Ho studiato a Pavia. Sei anni. Per sentirmi dire dal Tarcisio "secondo me è il fegato". Ha ragione, ma comunque.»
+- «Ho studiato a Goodthought. Sei anni. Per sentirmi dire dal Tarcisio "secondo me è il fegato". Ha ragione, ma comunque.»
 - «Il certificato? Ti do quello che posso: "il paziente è stanco". L'ultima volta tuo padre l'ha usato per accendere il camino.»
 - **Sulle ragazze:** «Esci con la mia infermiera? Bene. Se la fai piangere, la visita costa il triplo.»
 
@@ -1119,7 +1119,7 @@ Stesso schema: saluti, chiacchiere e (dove ha senso) una frase sulle ragazze. Pe
 
 ### 🧑‍⚕️ Il Dottor Sbrana, veterinario
 - «I tuoi maiali stanno bene. Uno ha chiesto di te. Scherzo, ma mi ha guardato in un certo modo.»
-- «Ho fatto un parto gemellare alle tre di notte. Una vacca. Poi il Patata mi ha chiesto di visitare una patata.»
+- «Ho fatto un parto gemellare alle tre di notte. Una vacca. Poi il Potato mi ha chiesto di visitare una patata.»
 - «Il Dottor Mutua e io abbiamo lo stesso stetoscopio. I miei pazienti però non si lamentano.»
 - «Il barboncino dell'Ornella ha l'ansia. Anche l'Ornella. Ho dato una pastiglia a tutti e due.»
 - **Sulle ragazze:** «Se la {nome} ha un cane, fatti dare il mio biglietto da visita. Così ci guadagno anch'io.»

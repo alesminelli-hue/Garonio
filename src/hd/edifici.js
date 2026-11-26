@@ -655,7 +655,7 @@ export const EDIFICI = [
   ['Tabacchi', tabacchi], ['Municipio', municipio], ['Night Welcome', paradiso], ['Bubetto (magazzino)', magazzino],
   ['Casa rosa', () => casa({ w: 6, h: 3.4, muro: '#e8a8a0', tetto: '#a83a2a', pers: '#6a4a2a', seed: 3, piani: 2 })],
   ['Casa azzurra', () => casa({ w: 6, muro: '#a8c8e0', tetto: '#8a3a2a', pers: '#f4f0e4', seed: 5 })],
-  ['Cascina del Patata', () => cascina()], ['Cascina del Postino', () => cascina({ muro: '#f0d8b8', tetto: '#8a3a2a', w: 7 })],
+  ['Cascina del Potato', () => cascina()], ['Cascina del Postman', () => cascina({ muro: '#f0d8b8', tetto: '#8a3a2a', w: 7 })],
   ['Ranch Mister Frank', ranch], ['Fienile', fienile], ['Capannone dei maiali', capannoneMaiali],
   ['Gallinaio', gallinaio], ['Tettoia', tettoia],
   ['Chiesa', chiesa], ['Campanile', campanile], ['Castello', () => castello()], ['Torre', torre], ['Farmacia', farmacia],

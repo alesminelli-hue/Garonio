@@ -38,7 +38,7 @@ export const MERCATO = {
   notizie: [
     { su: 'pomodoro', testo: "Grandinata in Romagna: i pomodori sono spariti dai banchi. La Rina li paga a peso d'oro." },
     { su: 'uova', testo: "Arriva Pasqua (dice Ottavio, che non guarda il calendario dal '92): le uova vanno a ruba." },
-    { su: 'mais', testo: "Il mangimificio di Cremona ha finito il mais. Il Sor Bortolo ha l'acquolina." },
+    { su: 'mais', testo: "Il mangimificio di Oldbarley ha finito il mais. Il Sor Bortolo ha l'acquolina." },
     { su: 'salame', testo: "C'è la sagra del salame a Zibello e Gilberto ha venduto tutto. Ne cerca disperatamente." },
     { su: 'patata', testo: "Una trasmissione in TV ha detto che la patata allunga la vita. Tutto il paese vuole patate." },
     { giu: 'pomodoro', testo: "Sono arrivati i pomodori spagnoli a camion. La Rina piange e abbassa i prezzi." },
@@ -59,7 +59,7 @@ export const MERCATO = {
         "Garonio! Hai una faccia da zucchina lessa. Comprati un pomodoro, ti tira su il colore.",
         "Il mio Gianni, pace all'anima sua, diceva: \"Rina, i pomodori si toccano, le donne no\". Era un uomo di principi. Pochi.",
         "Avvicinati, bel giovane! Ah, sei tu. Avvicinati lo stesso.",
-        "Patate del Patata? Le compro. Il Patata le saluta una per una prima di vendermele, ci mette tre ore.",
+        "Patate del Potato? Le compro. Il Potato le saluta una per una prima di vendermele, ci mette tre ore.",
       ],
       trattaBene: ["Va bene, va bene! Per te faccio uno strappo. Ma non dirlo alla Pina.", "Mi hai fatto commuovere. Ecco, prendi, prima che ci ripensi.", "Mi ricordi mio figlio il terzo. Il terzo era il più furbo. Ti do di più.", "Hai trattato come un uomo. Un uomo piccolo, ma un uomo."],
       trattaMale: ["Trattare? Con me? Ho tirato su sei figli trattando. Il prezzo adesso scende, così impari.", "Tesoro, io trattavo coi tedeschi nel '44. Tu non sei nessuno. Prezzo più basso.", "Tesoro, ho venduto pomodori sotto i bombardamenti. Tu sei una nuvoletta.", "Così tratti una vedova? Il prezzo scende. Anche la mia stima."],
@@ -175,12 +175,12 @@ export const GARE = {
 
   rivali: {
     patata: {
-      nome: 'Il Patata', colore: 'arancio', velocita: 5.0, posta: 10, rispetto: 2, daGiorno: 1, rispettoMinimo: 0,
-      sfida: "Il Patata arriva col suo trattore arancione, una patata bollita sul cruscotto. «Una gara? Va bene, ma piano, che si rovescia la patata.»",
-      partenza: "Il Patata accarezza il volante. «Vai, Carolina.» Il trattore si chiama Carolina.",
-      battute: ["«Piano, Carolina, piano!»", "Il Patata si ferma a raccogliere una patata caduta.", "«Ciao Garonio! Bella giornata, eh?» Saluta, invece di guidare."],
-      vinta: "Arrivi primo. Il Patata ti stringe la mano e ti regala una patata. «Te la sei meritata. È la più bella che ho.»",
-      persa: "Il Patata arriva prima di te. Lui stesso è sorpreso. «Carolina! Siamo campioni!» Ora lo sa tutto il paese.",
+      nome: 'Il Potato', colore: 'arancio', velocita: 5.0, posta: 10, rispetto: 2, daGiorno: 1, rispettoMinimo: 0,
+      sfida: "Il Potato arriva col suo trattore arancione, una patata bollita sul cruscotto. «Una gara? Va bene, ma piano, che si rovescia la patata.»",
+      partenza: "Il Potato accarezza il volante. «Vai, Carolina.» Il trattore si chiama Carolina.",
+      battute: ["«Piano, Carolina, piano!»", "Il Potato si ferma a raccogliere una patata caduta.", "«Ciao Garonio! Bella giornata, eh?» Saluta, invece di guidare."],
+      vinta: "Arrivi primo. Il Potato ti stringe la mano e ti regala una patata. «Te la sei meritata. È la più bella che ho.»",
+      persa: "Il Potato arriva prima di te. Lui stesso è sorpreso. «Carolina! Siamo campioni!» Ora lo sa tutto il paese.",
       premio: { patata: 1 },
     },
     ermes: {

@@ -52,7 +52,7 @@ export function faina(f = 0) {
   return outline(c);
 }
 
-// ---------- Cascina del Patata: la Dorifora regina ----------
+// ---------- Cascina del Potato: la Dorifora regina ----------
 export function dorifora(f = 0, piccola = false) {
   const k = piccola ? 0.5 : 1;
   const W = Math.round(30 * k) + 2, H = Math.round(20 * k) + 2;
@@ -138,7 +138,7 @@ export function calabrone(f = 0, regina = true) {
 }
 export const calabronePiccolo = f => calabrone(f, false);
 
-// ---------- Cascina del Postino: Brutus ----------
+// ---------- Cascina del Postman: Brutus ----------
 export function brutus(f = 0) {
   const fatto = PIX.animale?.('cane', f, 30, 22, { tinta: '#3a2c22' });
   if (fatto) {   // il cane disegnato dell'atlante, scuro, con un collare borchiato

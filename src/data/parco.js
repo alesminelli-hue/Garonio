@@ -31,10 +31,10 @@ export const MOSTRI = {
   mago:         { nome: 'Mago Brontolone', sprite: 'mago', lv: [14, 30], min: 11, k: [0.9, 1.2], spd: 9,
     fuga: 'sparisce in una nuvola di fumo viola e tosse.',
     moves: [{ name: 'Palla di fuoco fatua', pow: 1.3, stress: 3, w: 3 }, { name: 'Incantesimo del sonno', pow: 0.4, stress: 5, w: 1, stordisce: true, line: 'Garonio sbadiglia. È una magia o è lunedì?' }] },
-  vampiro:      { nome: 'Vampiro di Casalpusterlengo', sprite: 'vampiro', lv: [16, 32], min: 13, k: [1.0, 1.2], spd: 13,
+  vampiro:      { nome: 'Vampiro di Saint James Borough', sprite: 'vampiro', lv: [16, 32], min: 13, k: [1.0, 1.2], spd: 13,
     fuga: 'diventa un pipistrello e sbatte contro un ramo.',
     moves: [{ name: 'Morso al collo', pow: 1.3, stress: 4, w: 3, cura: 0.3, line: 'Il Vampiro succhia e sorride: «Sangue di contadino, annata 2026. Corposo.»' }, { name: 'Sguardo ipnotico', pow: 0, stress: 11, w: 1 }] },
-  lupo_mannaro: { nome: 'Lupo mannaro del Po', sprite: 'lupo_mannaro', lv: [18, 34], min: 15, k: [1.3, 1.15], spd: 12,
+  lupo_mannaro: { nome: 'Lupo mannaro dell\'Oglio', sprite: 'lupo_mannaro', lv: [18, 34], min: 15, k: [1.3, 1.15], spd: 12,
     fuga: 'ulula alla luna e corre via a quattro zampe.',
     moves: [{ name: 'Artigliata', pow: 1.3, stress: 3, w: 3 }, { name: 'Ululato', pow: 0, stress: 10, w: 1 }] },
   diavolo:      { nome: 'Diavoletto del Forcone', sprite: 'diavolo', lv: [22, 36], min: 18, k: [1.1, 1.3], spd: 11,
@@ -52,10 +52,10 @@ export const BOTTINO_MOSTRI = {
 // ---------- Coppiette nel bosco: la sera, dietro i cespugli. Spiarle è da maleducati ----------
 // a, b = sprite del foglio personaggi; nomi = come si chiamano in paese
 export const COPPIE = [
-  { a: 'uomo_zaino', b: 'sciura', nomi: ['il Postino', 'la Sciura Ines'], battuta: "Il Postino le recita le cartoline degli altri come fossero poesie. Lei sospira." },
+  { a: 'uomo_zaino', b: 'sciura', nomi: ['il Postman', 'la Sciura Ines'], battuta: "Il Postman le recita le cartoline degli altri come fossero poesie. Lei sospira." },
   { a: 'geometra', b: 'cameriera_vassoio', nomi: ['il Geometra Ballarin', 'Lola del Welcome'], battuta: "Il Geometra le misura la distanza dal cuore col metro laser. «Tre metri e venti, amore.»" },
   { a: 'canottiera', b: 'bionda_rosa', nomi: ['Bruno «il Toro»', 'la Giusy'], battuta: "Bruno le regala un mazzo di fiori strappati dall'aiuola del municipio. Con la terra attaccata." },
-  { a: 'commendatore', b: 'bionda_bianco', nomi: ['il Commendatore', 'Sabrina'], battuta: "Il Commendatore le promette una villa a Portofino. Ha un monolocale a Codogno." },
+  { a: 'commendatore', b: 'bionda_bianco', nomi: ['il Commendatore', 'Sabrina'], battuta: "Il Commendatore le promette una villa a Portofino. Ha un monolocale a Newbarley." },
   { a: 'felpa_cappellino', b: 'mora_occhiali', nomi: ['il cugino Ermes', 'Ilenia'], battuta: "Ermes le dedica una canzone di Gigi D'Agostino col telefono. Lei balla. Lui piange." },
   { a: 'ubriaco_birra', b: 'nonna', nomi: ['Tarcisio', 'la Pina'], battuta: "Tarcisio e la Pina, settant'anni in due... no, in due ne fanno centocinquanta. Si sbaciucchiano come ragazzini." },
   { a: 'barbuto', b: 'mora_rosso', nomi: ['Rocco il camionista', 'Federica'], battuta: "Rocco le fa sentire il clacson del camion registrato sul telefono. È il loro modo di dirsi «ti amo»." },

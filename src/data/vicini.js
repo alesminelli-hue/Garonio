@@ -14,13 +14,13 @@ const N = -Math.PI / 2;
 
 export const VICINI = {
   patata: {
-    nome: 'Il Patata', cascina: 'cascina-patata',
+    nome: 'Il Potato', cascina: 'cascina-patata',
     terreno: { x0: 84, x1: 118, z0: 8, z1: 45 },
     porta: { x: 101, z: 39.6 },
     vista: [8, 38], udito: 2.5, sguardo: N, giro: 70,
     cane: { id: 'bollito', nome: 'Bollito', x: 95.5, z: 40.8, vista: [5, 40], udito: 3, sguardo: N, dorme: 0.55,
       aspetto: { pelo: '#c89a5a', scuro: '#8a6234', taglia: 1 } },
-    garzone: { id: 'ugo', nome: 'Ugo, il nipote del Patata', ore: [7, 19], giro: [[92, 27], [112, 27]], vista: [6, 35], udito: 2,
+    garzone: { id: 'ugo', nome: 'Ugo, il nipote del Potato', ore: [7, 19], giro: [[92, 27], [112, 27]], vista: [6, 35], udito: 2,
       aspetto: { sprite: 'cappellino_rosso', w: 15, h: 22, skin: '#f0c098', hair: '#c8a050', hairStyle: 'messy', shirt: '#e07a3a', pants: '#4a5a8a', boots: '#3a2a1a', eyes: 'sleepy' } },
     battute: [
       "Garonio! Guarda questa patata. Non è bellissima? Ha la faccia di mia mamma.",
@@ -48,7 +48,7 @@ export const VICINI = {
     nemici: ['vicino_patata', 'garzone_ugo', 'cane_bollito'],
   },
   postino: {
-    nome: 'Il Postino', cascina: 'cascina-postino',
+    nome: 'Il Postman', cascina: 'cascina-postino',
     terreno: { x0: 22, x1: 51, z0: 8, z1: 45 },
     porta: { x: 36.5, z: 39.6 },
     vista: [9, 40], udito: 3.5, sguardo: N, giro: 80,
@@ -106,7 +106,7 @@ export const VICINI = {
     nonCreduto: ["Boy, sono emiliano, mica stupido. Cioè, americano. Ma non stupido."],
     sconfitto: ["Ok, ok! You win, cowboy! Ma questa la racconto al saloon. Cioè, al bar.", "Damn... Kevin, prendi il cavallo. Cioè, il trattore. Ce ne andiamo a letto."],
     pace: ["Un regalo? That's the spirit, boy! Tuo papà non me ne ha mai fatti. Sei meglio di lui. Di poco."],
-    vendita: ["Thank you, boy! Pannocchie da rodeo, queste!", "Le pago di più perché sono generoso. E perché le rivendo a mio cugino a Cremona."],
+    vendita: ["Thank you, boy! Pannocchie da rodeo, queste!", "Le pago di più perché sono generoso. E perché le rivendo a mio cugino a Oldbarley."],
     nemici: ['vicino_frank', 'garzone_kevin', 'cane_sceriffo'],
   },
 };
@@ -117,7 +117,7 @@ export const BERSAGLI = {
   // dove si attacca la turbina per rubare l'acqua
   acqua: {
     frank: { x: 131.5, z: 38, nome: 'il pozzo di Mister Frank' },
-    patata: { x: 115, z: 22, nome: 'il fosso del Patata' },
+    patata: { x: 115, z: 22, nome: 'il fosso del Potato' },
   },
   alberi: {
     patata: [[87, 12], [87, 16], [87, 20], [87, 24]],
@@ -125,10 +125,10 @@ export const BERSAGLI = {
     frank: [[152, 12], [152, 16], [152, 20], [152, 24]],
   },
   ricrescita: 5,
-  // paletti del confine tra il grano del Postino e il fienile del Gigante: si spostano di "sposta" verso ovest
+  // paletti del confine tra il grano del Postman e il fienile del Gigante: si spostano di "sposta" verso ovest
   paletti: { vicino: 'postino', x: 49, z: [12, 16, 20, 24], sposta: -2.5 },
   // l'attrezzo da "prendere in prestito" e dove va portato
-  prestito: { vicino: 'patata', x: 106.4, z: 37.6, nome: 'l\'erpice del Patata', oggetto: 'erpice_patata',
+  prestito: { vicino: 'patata', x: 106.4, z: 37.6, nome: 'l\'erpice del Potato', oggetto: 'erpice_patata',
     tettoia: { x: 90.5, z: 65.8 } },
   // il pozzo di Frank: oggetto di scena (solido)
   pozzo: { x: 131.5, z: 37 },
@@ -151,7 +151,7 @@ export const MULTA_TRUFFA = 50;
 // Oggetti di missione (si aggiungono a OGGETTI di src/data/armi.js all'avvio)
 export const OGGETTI_TRUFFA = {
   motosega_gigante: { nome: 'Motosega del Gigante', icona: '🪚', missione: true },
-  erpice_patata: { nome: 'Erpice del Patata', icona: '🔱', missione: true },
+  erpice_patata: { nome: 'Erpice del Potato', icona: '🔱', missione: true },
 };
 
 // Cosa vendono o fanno i vicini fuori dalle truffe
@@ -161,16 +161,16 @@ export const COMMERCI = {
   frank: { mais: 14 },
 };
 
-// Le voci del Postino: metà sono vere (e aiutano le truffe), metà inventate.
+// Le voci del Postman: metà sono vere (e aiutano le truffe), metà inventate.
 // effetto: assente = quella notte il vicino non c'è; caneDorme = quella notte il cane dorme come un sasso.
 export const VOCI = [
-  { testo: "Stanotte Mister Frank va al ballo country a Busseto. Col cappello buono. Il ranch resta vuoto, a parte il cane.", effetto: { assente: 'frank' } },
-  { testo: "Il cane del Patata stanotte dorme come un sasso: gli hanno dato le patate col burro.", effetto: { caneDorme: 'patata' } },
+  { testo: "Stanotte Mister Frank va al ballo country a Wishville. Col cappello buono. Il ranch resta vuoto, a parte il cane.", effetto: { assente: 'frank' } },
+  { testo: "Il cane del Potato stanotte dorme come un sasso: gli hanno dato le patate col burro.", effetto: { caneDorme: 'patata' } },
   { testo: "Io stanotte vado a letto presto. Te lo dico perché... così. Non venire a guardare i paletti, eh.", effetto: { assente: 'postino' } },
   { testo: "Mister Frank ha venduto il pozzo agli americani. Veri. Del Texas. Lo so da fonte certa: me l'ha detto lui." },
   { testo: "Zeno fischietta da tre giorni. Vuol dire che ha comprato pezzi usati. O che è innamorato. Peggio." },
   { testo: "La Vigilessa ha multato un piccione. Il piccione ha fatto ricorso." },
-  { testo: "Il Patata parla con le patate. Le patate rispondono? Non mi sbilancio." },
+  { testo: "Il Potato parla con le patate. Le patate rispondono? Non mi sbilancio." },
 ];
 
 // Frasi del Gigante per le truffe (abbassa la voce)
@@ -240,13 +240,13 @@ export const CANE_CAREZZE = [
 // Nemici della rissa nelle cascine (si aggiungono a ENEMIES di src/combat.js all'avvio).
 // png / garzone / cane = da dove prendere lo sprite.
 export const NEMICI_CASCINE = {
-  vicino_patata: { png: 'patata', stat: { name: 'Il Patata', hp: 50, atk: 8, def: 4, spd: 2, xp: 20, money: 0, size: 8.4,
+  vicino_patata: { png: 'patata', stat: { name: 'Il Potato', hp: 50, atk: 8, def: 4, spd: 2, xp: 20, money: 0, size: 8.4,
     moves: [
       { name: 'Pancia rotolante', pow: 1.4, stress: 2, w: 2 },
       { name: 'Lancio di patata', pow: 1, stress: 1, w: 3, line: 'Una patata vola dritta in fronte a Garonio.' },
       { name: 'Racconto di sua mamma', pow: 0, stress: 7, w: 1, line: '«Mia mamma diceva sempre...» (dura venti minuti)' },
     ] } },
-  vicino_postino: { png: 'postino', stat: { name: 'Il Postino', hp: 30, atk: 7, def: 2, spd: 9, xp: 16, money: 3, size: 8,
+  vicino_postino: { png: 'postino', stat: { name: 'Il Postman', hp: 30, atk: 7, def: 2, spd: 9, xp: 16, money: 3, size: 8,
     moves: [
       { name: 'Raccomandata in faccia', pow: 1.1, stress: 1, w: 3 },
       { name: 'Pettegolezzo cattivo', pow: 0, stress: 9, w: 2, line: '«Lo sai cosa dicono di te al bar? Tutto vero, eh.»' },

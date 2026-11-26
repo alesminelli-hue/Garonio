@@ -45,7 +45,7 @@ export const TESTI_NOZZE = {
     { chi: null, testo: "Chiesa di San Garonio, ore undici. Fiori di campo, il tappeto rosso un po' spelacchiato e mezzo paese sui banchi. Il campanile suona da solo: è Ivan che si è appeso alla corda." },
     { chi: 'mamma', testo: "(soffiandosi il naso in un fazzoletto grande come una tovaglia) «Il mio bambino... il mio bambino si sposa... Ho portato le lasagne. Sono in macchina. Sei teglie.»" },
     { chi: 'gigante', testo: "(in giacca, per la prima volta dal 1987) «Garonio. Stai dritto. E se dice di no, il trattore te lo riprendo.»" },
-    { chi: 'donPeppino', testo: "«Carissimi, siamo qui riuniti... Patata, smetti di mangiare i confetti, sono per dopo... siamo qui riuniti per unire Garonio e {nome} nel santo vincolo del matrimonio.»" },
+    { chi: 'donPeppino', testo: "«Carissimi, siamo qui riuniti... Potato, smetti di mangiare i confetti, sono per dopo... siamo qui riuniti per unire Garonio e {nome} nel santo vincolo del matrimonio.»" },
     { chi: 'rodella', testo: "(sottovoce, dal terzo banco) «Garonio! Psst! Il regalo di nozze è il trattore arancione. A rate. Sessanta rate. Ne parliamo dopo.»" },
     { chi: 'donPeppino', testo: "«Se qualcuno ha qualcosa in contrario, parli ora o taccia per sempre.»" },
     { chi: 'sergente', testo: "«IO HO QUALCOSA IN CONTRARIO: QUELLA PANCIA! VENTI FLESSIONI PRIMA DEL SÌ!»" },
@@ -59,7 +59,7 @@ export const TESTI_NOZZE = {
   fine: [
     { chi: 'sposa', testo: "«Sì, lo voglio. E lo voglio anche quando russa. Più o meno.»" },
     { chi: 'donPeppino', testo: "«Per il potere conferitomi dalla Chiesa, dal Comune e dalla Pro Loco, vi dichiaro marito e moglie. Puoi baciare la sposa. Con decenza, siamo in chiesa.»" },
-    { chi: null, testo: "Garonio e {nome} si sbaciucchiano. Il Patata piange. Mister Frank spara un colpo in aria dalla contentezza, fuori, per fortuna. Loredana lancia il riso. È riso per risotto, ma va bene lo stesso." },
+    { chi: null, testo: "Garonio e {nome} si sbaciucchiano. Il Potato piange. Mister Frank spara un colpo in aria dalla contentezza, fuori, per fortuna. Loredana lancia il riso. È riso per risotto, ma va bene lo stesso." },
     { chi: 'gigante', testo: "(stringendoti la mano fino a farti male) «Bravo. Adesso sei un uomo. Domani alle sei nei campi, come sempre.»" },
   ],
   sposati: "💍 Sposato con {nome}! Stress {stress} · +{xp} XP. Ogni mattina, da oggi, un po' meno stress.",
