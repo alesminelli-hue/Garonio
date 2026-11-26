@@ -142,6 +142,7 @@ export class Progressione {
   // usa un consumabile fuori dal combattimento (dal menu zaino)
   usa(id) {
     const o = OGGETTI[id], s = this.s;
+    if (o?.effetto?.gasolio) return !!this.game.attrezzi?.versaTanica();   // tanica di gasolio: nel trattore
     if (!o?.effetto || !this.togliOggetto(id)) return false;
     const e = o.effetto, cure = 1 + this.bonus('cure');
     if (e.health) s.health = Math.min(s.maxHealth, s.health + Math.round(e.health * cure));

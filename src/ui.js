@@ -56,18 +56,68 @@ export class UI {
     if (text) { p.textContent = text; p.hidden = false; } else p.hidden = true;
   }
 
+  // Avvisi: restano a schermo finché il giocatore non li chiude (tocco sull'avviso o ✕), così da telefono
+  // non se ne perde nessuno. Solo i «float» piccoli (+1 uovo, attrezzo alzato...) spariscono da soli.
   toast(text, kind = '') {
     try { this.onToast?.(text, kind); } catch {} // il diario degli avvisi (menu di Garonio) li tiene da parte
     const box = $('toasts');
-    const tutti = box.querySelectorAll(':scope > .toast'), last = tutti[tutti.length - 1];
-    if (last && last.textContent === text && !last.classList.contains('out')) return;
-    for (let i = 0; i <= tutti.length - 4; i++) tutti[i].remove();
+    const tutti = [...box.querySelectorAll(':scope > .toast:not(.out)')];
+    if (kind === 'small') {
+      const last = tutti[tutti.length - 1];
+      if (last && last.dataset.testo === text) return;
+      const t = document.createElement('div');
+      t.className = 'toast small'; t.textContent = text; t.dataset.testo = text;
+      box.appendChild(t);
+      setTimeout(() => t.classList.add('out'), 2600);
+      setTimeout(() => { t.remove(); this._tuttiAvvisi(); }, 3200);
+      return;
+    }
+    // lo stesso avviso ancora aperto (anche se cambiano solo i numeri, es. «3 perse oggi»): niente doppione,
+    // si aggiorna il testo e sale il contatore
+    const chiave = text.replace(/[\d.,]+/g, '#');
+    const uguale = tutti.find(t => t.dataset.chiave === chiave && t.classList.contains('fisso'));
+    if (uguale) {
+      const n = (+uguale.dataset.n || 1) + 1; uguale.dataset.n = n;
+      uguale.dataset.testo = text; uguale.querySelector('.toast-t').textContent = text;
+      uguale.querySelector('.toast-n').textContent = `×${n}`;
+      box.appendChild(uguale); uguale.classList.remove('nuovo'); void uguale.offsetWidth; uguale.classList.add('nuovo');
+      return;
+    }
+    // al massimo 12 aperti: i più vecchi restano comunque nel diario degli avvisi (menu J)
+    const fissi = tutti.filter(t => t.classList.contains('fisso'));
+    for (let i = 0; i <= fissi.length - 12; i++) fissi[i].remove();
     const t = document.createElement('div');
-    t.className = 'toast ' + kind;
-    t.textContent = text;
-    $('toasts').appendChild(t);
-    setTimeout(() => t.classList.add('out'), 2600);
-    setTimeout(() => t.remove(), 3200);
+    t.className = 'toast fisso nuovo ' + kind; t.dataset.testo = text; t.dataset.chiave = chiave;
+    const testo = document.createElement('span'); testo.className = 'toast-t'; testo.textContent = text;
+    const n = document.createElement('b'); n.className = 'toast-n';
+    const x = document.createElement('button'); x.className = 'toast-x'; x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Chiudi avviso');
+    t.append(testo, n, x);
+    const chiudi = e => {
+      e.preventDefault(); e.stopPropagation();
+      if (document.body.classList.contains('sposta')) return;   // si sta spostando il pannello degli avvisi
+      t.classList.add('out'); setTimeout(() => { t.remove(); this._tuttiAvvisi(); }, 300);
+    };
+    t.addEventListener('pointerdown', chiudi);
+    box.appendChild(t);
+    this._tuttiAvvisi();
+  }
+
+  // con due o più avvisi aperti compare «Chiudi tutti»
+  _tuttiAvvisi() {
+    const box = $('toasts');
+    const n = box.querySelectorAll(':scope > .toast.fisso:not(.out)').length;
+    let b = box.querySelector(':scope > .toast-tutti');
+    if (n < 2) { b?.remove(); return; }
+    if (!b) {
+      b = document.createElement('button'); b.type = 'button'; b.className = 'toast-tutti';
+      b.addEventListener('pointerdown', e => {
+        e.preventDefault(); e.stopPropagation();
+        if (document.body.classList.contains('sposta')) return;
+        box.querySelectorAll(':scope > .toast.fisso').forEach(t => t.remove()); b.remove();
+      });
+    }
+    b.textContent = `✕ Chiudi tutti (${n})`;
+    box.prepend(b);
   }
 
   float(text) { this.toast(text, 'small'); }

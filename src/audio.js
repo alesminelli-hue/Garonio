@@ -14,13 +14,16 @@ const MUSIC_DIR = 'assets/music/';
 //   bar            dentro e vicino al bar
 //   rabbia         Garonio si arrabbia (stress alto, litigi al bar)
 //   guida          alla guida di Vespa, Punto o trattore: la RADIO, l'unico posto dove suonano le canzoni (in ordine sparso)
-//   disco:<file>   una canzone precisa scelta al juke-box del bar
+//   palestra       palestra «Bicipite d'Oro»: Dr. Pippetta e Kpop Pip a turno
+//   disco:<file>   una canzone precisa scelta a un juke-box (bar, Night Welcome, casa)
+// Di giorno a piedi (scena base), ogni 2-3 minuti di sottofondo parte una canzone a caso della lista 'canzoni'.
 //   nemico         appare un nemico (Mister Mountain, nutrie che attaccano)
 //   combattimento  scontro a turni
-export const MUSIC_SCENES = ['intro', 'base', 'notte', 'bar', 'rabbia', 'guida', 'nemico', 'combattimento'];
+export const MUSIC_SCENES = ['intro', 'base', 'notte', 'bar', 'palestra', 'rabbia', 'guida', 'nemico', 'combattimento'];
 // Nomi vecchi o alternativi che finiscono sulla stessa scena
 const ALIASES = { mister_mountain: 'nemico', nutrie: 'nemico', battaglia: 'combattimento', combat: 'combattimento', fight: 'combattimento', driving: 'guida', titolo: 'intro' };
 const FADE_MS = 900;
+const CANZONE_OGNI = [120, 180];   // secondi di sottofondo (di giorno) prima che parta una canzone a caso
 
 export class Audio {
   constructor() {
@@ -47,6 +50,24 @@ export class Audio {
     const radio = this._list('guida');
     for (let i = radio.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [radio[i], radio[j]] = [radio[j], radio[i]]; }
     this.radio = radio;
+    this._prossimaCanzone();
+    setInterval(() => this._canzoneACaso(), 1000);
+  }
+
+  // ---- Canzone a caso durante la giornata ----
+  _prossimaCanzone() { this.canzoneTra = CANZONE_OGNI[0] + Math.random() * (CANZONE_OGNI[1] - CANZONE_OGNI[0]); }
+  _canzoneACaso() {
+    if (!this.enabled || document.hidden) return;
+    // conta solo il tempo passato col sottofondo di giorno (non in auto, al bar, di notte o negli scontri)
+    if (this.scene !== 'base' || !this.el || this.el.dataset.canzone || this.el.paused) return;
+    if ((this.canzoneTra -= 1) > 0) return;
+    const tutte = this.canzoni().filter(f => f !== this._ultimaCanzone);
+    if (!tutte.length) return;
+    const f = tutte[Math.random() * tutte.length | 0];
+    this._ultimaCanzone = f;
+    this._fadeOut();
+    this._playFile(f, { canzone: true });
+    this.game?.ui?.toast(`🎵 Parte «${this.titolo(f)}»`, 'small');
   }
 
   // Va chiamato dopo un click/tasto (i browser bloccano l'audio prima).
@@ -78,8 +99,10 @@ export class Audio {
 
   // Titolo leggibile di una canzone (assets/music/playlist.json, voce "titoli")
   titolo(file) { return this.playlist.titoli?.[file] || file.replace(/\.mp3$/, '').replace(/_/g, ' '); }
-  // Le canzoni della radio, per il juke-box
-  canzoni() { return this._list('guida'); }
+  // Tutte le canzoni del gioco (juke-box, radio, canzone a caso di giorno), nell'ordine di playlist.json
+  canzoni() { const l = this.playlist.canzoni || this.playlist.guida; return Array.isArray(l) ? l.filter(Boolean) : []; }
+  // I dischi dei juke-box: le canzoni più il tema del titolo e il sottofondo (lista "jukebox")
+  dischi() { const l = this.playlist.jukebox; return Array.isArray(l) ? l.filter(Boolean) : this.canzoni(); }
 
   setMusicVolume(v) {
     this.musicVolume = Math.max(0, Math.min(1, v));
@@ -133,15 +156,17 @@ export class Audio {
     return list[i % list.length];
   }
 
-  _playFile(file) {
+  _playFile(file, { canzone = false } = {}) {
     this._stopChiptune();
     const el = new window.Audio(MUSIC_DIR + file);
     el.dataset.file = file;
-    el.loop = this._list(this.scene).length <= 1;
+    if (canzone) el.dataset.canzone = '1';   // la canzone a caso: a fine brano si torna al sottofondo
+    el.loop = !canzone && this._list(this.scene).length <= 1;
     // a fine traccia parte la successiva della scena attuale
     el.addEventListener('ended', () => {
       if (this.el !== el || !this.enabled) return;
       this.el = null;
+      if (canzone) this._prossimaCanzone();
       const list = this._list(this.scene);
       if (!list.length) return;
       let f = this._next(this.scene);

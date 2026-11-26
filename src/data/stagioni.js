@@ -203,7 +203,7 @@ export const LAVORO_CAMPI = {
 // Battute di lavoro (a caso)
 export const BATTUTE_LAVORO = {
   senzaAttrezzo: "Il trattore senza attrezzo è solo un modo rumoroso di andare a spasso.",
-  seccoGasolio: "Il trattore tossisce e si ferma: gasolio finito! Cisterna sotto la tettoia, accanto al deposito.",
+  seccoGasolio: "Il trattore tossisce e si ferma: gasolio finito! Premi E: versa una tanica (le vende Fuel l'Havana, sulla provinciale) o chiama il rimorchio. Il pieno si fa anche alla cisterna sotto la tettoia.",
   riservaGasolio: "Spia del gasolio accesa. Il trattore ha sete.",
   niente: "Niente semente! Il Bubetto in paese ne vende, oppure ordinala alla tettoia.",
   cassonePieno: "Cassone pieno! Portalo al fienile, vicino al campo del grano.",

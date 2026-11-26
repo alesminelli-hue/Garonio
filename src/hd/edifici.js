@@ -1,6 +1,7 @@
 // Edifici visti di fronte con il tetto in prospettiva (vista 3/4 come la camera del gioco).
 // Scala: 16 px = 1 casella, larghezze uguali a quelle di src/map.js (BUILDINGS).
 import { pen, ramp, tone, rng, hash, outline, text, textWidth, INK } from './kit.js';
+import { facciata as fuelHavana } from './benzinaio.js';
 
 // ---------- Materiali ----------
 function intonaco(d, x, y, w, h, col, seed = 1, scrostato = 1) {
@@ -659,7 +660,7 @@ export const EDIFICI = [
   ['Ranch Mister Frank', ranch], ['Fienile', fienile], ['Capannone dei maiali', capannoneMaiali],
   ['Gallinaio', gallinaio], ['Tettoia', tettoia],
   ['Chiesa', chiesa], ['Campanile', campanile], ['Castello', () => castello()], ['Torre', torre], ['Farmacia', farmacia],
-  ['Studio medico', ambulatorio], ['Palestra', palestra], ['Pizzeria', pizzeria], ['Kebab', kebab], ['Meccanico (Zeno)', meccanico], ['Consorzio Rodella', consorzio],
+  ['Studio medico', ambulatorio], ['Palestra', palestra], ['Pizzeria', pizzeria], ['Kebab', kebab], ['Meccanico (Zeno)', meccanico], ['Consorzio Rodella', consorzio], ["Fuel l'Havana", fuelHavana],
 ];
 
 // ---------- Per il gioco (src/world.js): texture delle scatole 3D ----------
@@ -674,6 +675,7 @@ const MAT = {
   'torre-sx': ['pietre', '#9a9484', 'lamiera'], 'torre-dx': ['pietre', '#9a9484', 'lamiera'], farmacia: ['intonaco', '#ece6d6', 'coppi'],
   dottore: ['intonaco', '#e4ecf0', 'coppi'], palestra: ['blocchi', '#d0ccc0', 'lamiera'], pizzeria: ['intonaco', '#f0d8a8', 'coppi'],
   kebab: ['intonaco', '#f4e4b8', 'lamiera'], meccanico: ['lamiera', '#b4bac2', 'lamiera'], consorzio: ['lamiera', '#c8ccc0', 'lamiera'],
+  benzinaio: ['intonaco', '#f2dca8', 'lamiera'],
 };
 const FACCIATA = {
   casa: () => casa(), officina, bar, alimentari, tabacchi, municipio, paradiso, magazzino, fienile, gallinaio, tettoia, ranch,
@@ -681,11 +683,11 @@ const FACCIATA = {
   'casa-rosa': () => casa({ w: 6, h: 3.4, muro: '#e8a8a0', tetto: '#a83a2a', pers: '#6a4a2a', seed: 3, piani: 2 }),
   'casa-azzurra': () => casa({ w: 6, muro: '#a8c8e0', tetto: '#8a3a2a', pers: '#f4f0e4', seed: 5 }),
   'cascina-patata': () => cascina(), 'cascina-postino': () => cascina({ muro: '#f0d8b8', tetto: '#8a3a2a', w: 7 }),
-  chiesa, campanile, castello: () => castello(), 'torre-sx': torre, 'torre-dx': torre, farmacia, dottore: ambulatorio, palestra, pizzeria, kebab, meccanico, consorzio,
+  chiesa, campanile, castello: () => castello(), 'torre-sx': torre, 'torre-dx': torre, farmacia, dottore: ambulatorio, palestra, pizzeria, kebab, meccanico, consorzio, benzinaio: fuelHavana,
 };
 // edifici la cui facciata ha già l'insegna dipinta (il gioco non ci mette il cartello sopra)
 export const CON_INSEGNA = new Set(['officina', 'bar', 'alimentari', 'tabacchi', 'municipio', 'paradiso', 'magazzino', 'maiali',
-  'chiesa', 'campanile', 'castello', 'torre-sx', 'torre-dx', 'farmacia', 'dottore', 'palestra', 'pizzeria', 'kebab', 'meccanico', 'consorzio']);
+  'chiesa', 'campanile', 'castello', 'torre-sx', 'torre-dx', 'farmacia', 'dottore', 'palestra', 'pizzeria', 'kebab', 'meccanico', 'consorzio', 'benzinaio']);
 
 function parete(tipo, col, w, h, finestre, seed) {
   const d = pen(w, h);
