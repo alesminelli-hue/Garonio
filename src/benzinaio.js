@@ -1,13 +1,13 @@
 // Fuel l'Havana: il benzinaio sulla provinciale, a est del Consorzio (mappa: src/map.js, edificio «benzinaio»).
 // Pensilina turchese con le colonnine (sprite HD, src/hd/benzinaio.js), chiosco con la cassa e Pepe il benzinaio
-// (PNG «pepe», sprite HD disegnato via codice), aperto dalle 6 alle 22.
+// (PNG «pepe», sprite del foglio personaggi ricolorato), aperto dalle 6 alle 22.
 //  - Da Pepe: taniche di gasolio da tenere nello zaino (ognuna mette 50% nel serbatoio di un trattore),
 //    taniche di benzina (per la motosega), il pieno ai mezzi parcheggiati sul piazzale.
 //  - Arrivando col trattore o con la Punto sotto la pensilina: E = pieno al volo.
+//  - Missione: Er Sifone, il ladro di gasolio (boss «sifone», src/data/boss.js). Battuto lui, prezzo d'amico (−30%).
 // Le taniche si versano dal menu J › Zaino («Usa», vicino al trattore o guidandolo), dal menu rapido del
 // trattore (R / 🔧) e quando il trattore resta a secco (E).
 // Stato: nessuno (i soldi in s.money, le taniche in s.inv.tanica).
-import * as PIX from './pixel.js';
 import * as HDB from './hd/benzinaio.js';
 import { PNG } from './data/png.js';
 import { pick } from './racconto.js';
@@ -20,6 +20,7 @@ export const FUEL = {
   pienoTrattore: 14,                   // € il pieno di gasolio a un trattore
   pienoPunto: 12,                      // € il pieno di benzina alla Punto
   minuti: 10,
+  scontoAmico: 0.3,                    // −30% su pieni e taniche dopo aver battuto Er Sifone
   testi: {
     chiuso: "La pensilina è spenta. Sul vetro del chiosco: «Pepe sta dormendo. Torna alle 6. Hasta mañana.»",
     pieno: ["Pepe infila la pistola nel serbatoio fischiettando un mambo. «Listo, amigo. Il trattore ringrazia.»",
@@ -31,12 +32,11 @@ export const FUEL = {
   },
 };
 
-// Pepe il benzinaio: sprite HD registrato a mano (non è nell'atlante dei personaggi)
-PIX.registraSprite('pepe', HDB.pepe(0), 1.02);
 PNG.pepe ??= {
   nome: "Pepe di Fuel l'Havana", ruolo: "Il benzinaio sulla provinciale: taniche di gasolio, benzina e il pieno ai mezzi.",
   posti: [{ ore: FUEL.orari, x: 109.6, z: 61.0 }],
-  aspetto: { sprite: 'pepe', w: 17, h: 24, skin: '#d89a6a', hair: '#3a2418', shirt: '#2aa8a0', pants: '#c8b48a', boots: '#f4f0e4', mustache: '#3a2418' },
+  // sprite del foglio personaggi (il meccanico col cappellino), ricolorato nel turchese di Fuel l'Havana
+  aspetto: { sprite: 'meccanico', ricolora: { gradi: -40 }, w: 17, h: 24, skin: '#d89a6a', hair: '#3a2418', shirt: '#2aa8a0', pants: '#2a6a6a', boots: '#1a1a1a', mustache: '#3a2418' },
   amicizia: [-30, 50, 5],
   saluti: [
     "¡Hola, amigo! Benvenuto a Fuel l'Havana. Gasolio caraibico, prezzi della Bassa.",
@@ -75,7 +75,10 @@ export class Benzinaio {
     return (this.game.vehicles?.list || []).filter(v => Math.hypot(v.st.x - P.x, v.st.z - (P.z + 1)) < 4.5 &&
       ((v.kind === 'trattore' && (A?.gasolio(v.id) ?? 100) < 95) || (v.kind === 'punto' && v.st.fuel < 95)));
   }
-  _prezzo(v) { return v.kind === 'trattore' ? FUEL.pienoTrattore : FUEL.pienoPunto; }
+  // battuto Er Sifone (boss «sifone», src/data/boss.js), Pepe fa il prezzo d'amico
+  amico() { return this.game.boss?.stato?.('sifone') === 'vinto'; }
+  _sconto(p) { return this.amico() ? Math.round(p * (1 - FUEL.scontoAmico)) : p; }
+  _prezzo(v) { return this._sconto(v.kind === 'trattore' ? FUEL.pienoTrattore : FUEL.pienoPunto); }
   _riempi(v) {
     if (v.kind === 'trattore') this.game.attrezzi.st.gasolio[v.id] = 100;
     else v.st.fuel = 100;
@@ -110,10 +113,11 @@ export class Benzinaio {
       s.money -= prezzo * k; g.prog.dai(id, k); g.audio.sfx('coin');
       return dice(`${pick(F.testi.tanica)} (−${prezzo * k}€)`);
     };
+    const T = this._sconto(F.tanica), Bz = this._sconto(F.benzina), am = this.amico() ? ' · prezzo d\'amico' : '';
     const out = [
-      { label: `🛢️ Tanica di gasolio (${F.tanica}€) · ne hai ${n}`, disabled: s.money < F.tanica, fn: compra('tanica', 1, F.tanica) },
-      { label: `🛢️ Tre taniche di gasolio (${F.tanica * 3}€)`, disabled: s.money < F.tanica * 3, fn: compra('tanica', 3, F.tanica) },
-      { label: `⛽ Tanica di benzina per la motosega (${F.benzina}€)`, disabled: s.money < F.benzina, fn: compra('benzina', 1, F.benzina) },
+      { label: `🛢️ Tanica di gasolio (${T}€${am}) · ne hai ${n}`, disabled: s.money < T, fn: compra('tanica', 1, T) },
+      { label: `🛢️ Tre taniche di gasolio (${T * 3}€)`, disabled: s.money < T * 3, fn: compra('tanica', 3, T) },
+      { label: `⛽ Tanica di benzina, per la Punto o la motosega (${Bz}€) · ne hai ${s.inv.benzina || 0}`, disabled: s.money < Bz, fn: compra('benzina', 1, Bz) },
     ];
     const mezzi = this._mezziQui();
     if (mezzi.length) {

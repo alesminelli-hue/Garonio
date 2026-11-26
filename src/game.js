@@ -599,6 +599,16 @@ export class Game {
       n.a.group.position.set(n.x, 0, n.z);
       n.a.setFrame(n.dir + (Math.floor(n.anim / 3) % 2));
     }
+    this._segniNutrie();
+  }
+
+  // le nutrie che mangiano il mais compaiono sulla minimappa come puntini rossi
+  _segniNutrie() {
+    const mm = window.__garonio?.minimap; if (!mm) return;
+    const vive = this.nutrie.filter(n => n.state !== 'flee');
+    const n = Math.max(vive.length, this._nSegniNutrie || 0);
+    for (let i = 0; i < n; i++) { const v = vive[i]; mm.setMarker('nutriaMais' + i, v ? v.x : null, v?.z, '#ff3030', v ? '!' : null); }
+    this._nSegniNutrie = vive.length;
   }
 
   _spawnNutria() {

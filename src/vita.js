@@ -19,6 +19,7 @@
 //   schizza(x, z, r)           true se un'auto è passata veloce entro r da (x, z) in questo fotogramma
 // Eventi: ascolta 'urto' (tamponamento di un'auto del traffico).
 import * as THREE from 'three';
+import { gira, guarda } from './sguardo.js';
 import * as PIX from './pixel.js';
 import * as SV from './sprite_vita.js';
 import { MAP_W } from './map.js';
@@ -188,17 +189,20 @@ export class Vita {
     const st = Math.min(d, sp * dt), a0 = Math.atan2(dz, dx);
     const dentro = this.W.blocked(o.x, o.z, 0.18);
     // ostacolo davanti: prova ad aggirarlo, tenendo il lato scelto finché non si libera
-    for (const k of [0, 0.6, 1.2, 1.8, 2.4]) for (const sgn of (o.lato ? [o.lato, -o.lato] : [1, -1])) {
+    // mentre aggira un ostacolo insiste per un attimo sul lato scelto: niente zig-zag (e niente sfarfallio)
+    o.aggira = Math.max(0, (o.aggira || 0) - dt);
+    const passi = o.aggira > 0 && o.lato ? [0.6, 0, 1.2, 1.8, 2.4] : [0, 0.6, 1.2, 1.8, 2.4];
+    for (const k of passi) for (const sgn of (o.lato ? [o.lato, -o.lato] : [1, -1])) {
       const off = k * sgn;
       const nx = o.x + Math.cos(a0 + off) * st, nz = o.z + Math.sin(a0 + off) * st;
       if (dentro || !this.W.blocked(nx, nz, 0.18)) {
         o.x = nx; o.z = nz;
-        if (k === 0) { o.stuck = 0; o.lato = 0; } else { o.lato = sgn; o.stuck = (o.stuck || 0) + dt * 0.25; }
-        const c = Math.cos(a0 + off); if (Math.abs(c) > 0.2) o.dir = c >= 0 ? 1 : -1;
+        if (k === 0) { o.stuck = 0; if (!o.aggira) o.lato = 0; } else { o.lato = sgn; o.aggira = 0.35; o.stuck = (o.stuck || 0) + dt * 0.25; }
+        const c = Math.cos(a0 + off); if (Math.abs(c) > 0.3) gira(o, c >= 0 ? 1 : -1, dt);
         if (o.stuck > 4) { o.stuck = 0; o.lato = 0; o.bloccato = true; }
         return false;
       }
-      if (k === 0) break;
+      if (k === 0) break;   // dritto: un tentativo solo (il lato non conta)
     }
     o.stuck = (o.stuck || 0) + dt;
     if (o.stuck > 1.5) { o.stuck = 0; o.lato = 0; o.bloccato = true; }   // non passa: meglio rinunciare che entrare nei muri
@@ -231,8 +235,8 @@ export class Vita {
         else {
           // fermo: guarda Garonio se è vicino, altrimenti chiacchiera con chi gli sta accanto
           const vic = this.paesani.find(o => o !== p && o.visibile && Math.hypot(o.x - p.x, o.z - p.z) < 1.8);
-          if (Math.hypot(P.x - p.x, P.z - p.z) < 4) p.dir = P.x > p.x ? 1 : -1;
-          else if (vic) p.dir = vic.x > p.x ? 1 : -1;
+          if (Math.hypot(P.x - p.x, P.z - p.z) < 4) guarda(p, P.x, dt);
+          else if (vic) guarda(p, vic.x, dt);
         }
       }
       // fumetto: quando Garonio passa vicino o due paesani chiacchierano

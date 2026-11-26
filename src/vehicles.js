@@ -258,6 +258,7 @@ export class Vehicles {
           name: v.T.icon + ' ' + (v.T.label ?? v.T.name), text: this.aSecco(v) ? 'Il motore tossisce e muore. Serbatoio vuoto.' : 'Le ruote girano a vuoto. Di qui non esce.',
           choices: [
             ...(this.aSecco(v) ? this.game.attrezzi?.sceltaTanica?.(v) || [] : []),
+            ...(this.aSecco(v) && v.kind === 'punto' && this.game.prog?.ha('benzina') ? [{ label: `⛽ Versa una tanica di benzina (+50%, ne hai ${this.s.inv.benzina})`, fn: () => { this.versaBenzina(v); return null; } }] : []),
             { label: this.game.officina.etichettaRimorchio(v), fn: () => this.game.officina.rimorchio(v) },
             { label: scendi, fn: () => { this.dismount(); } },
             { label: 'Riprovo ancora', fn: () => { v.bloccatoT = 0; } },
@@ -277,6 +278,7 @@ export class Vehicles {
     if (!best) return null;
     const v = best, name = v.T.label ?? v.T.name, sul = v.T.article === 'il' ? 'sul' : 'sulla';
     if (v.st.cond <= 0 && this.game.officina) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore rotto' : name + ' rotta'}: chiama Zeno (riparazione o rimorchio)`, fn: () => this.game.officina.chiama(v) };
+    if (v.kind === 'punto' && v.st.fuel <= 0 && this.game.prog?.ha('benzina')) return { label: `⛽ Punto a secco: versa una tanica di benzina (ne hai ${this.s.inv.benzina})`, fn: () => this.versaBenzina(v) };
     if (this.aSecco(v) && v.kind === 'trattore' && this.game.prog?.ha('tanica')) return { label: `🛢️ Trattore a secco: versa una tanica (ne hai ${this.s.inv.tanica})`, fn: () => this.game.attrezzi.versaTanica(v) };
     if (this.aSecco(v) && this.game.officina && !this.game.officina.aCasa(v)) return { label: `📞 ${v.kind === 'trattore' ? 'Trattore' : name} a secco: chiama il rimorchio`, fn: () => this.game.officina.chiama(v) };
     if (v.st.cond <= 0) return { label: v.kind === 'trattore' ? 'Trattore rotto: va riparato da Zeno' : `${name} rotta: va riparata da Zeno`, fn: () => this._brokenMsg(v) };
@@ -285,9 +287,29 @@ export class Vehicles {
     return { label: `Sali ${sul} ${name}`, fn: () => this.tryMount(v) };
   }
 
+  // tanica di benzina nella Punto (+50%): le vende Pepe a Fuel l'Havana e il Bubetto. true se l'ha versata
+  versaBenzina(v) {
+    const g = this.game;
+    if (v?.kind !== 'punto' || !g.prog?.ha('benzina')) return false;
+    if (v.st.fuel >= 99) { this.ui.toast('Il serbatoio della Punto è già pieno.'); return false; }
+    g.prog.togliOggetto('benzina');
+    v.st.fuel = clamp(v.st.fuel + 50, 0, 100); v.fuelWarned = false;
+    this.s.minutes += 3; this.audio.sfx('blip');
+    this.ui.toast(`⛽ Tanica nella Punto: benzina ${Math.round(v.st.fuel)}% (taniche di benzina rimaste: ${this.s.inv.benzina || 0})`, 'good');
+    return true;
+  }
+  // il mezzo più vicino (o quello guidato) di un certo tipo, entro 3 caselle
+  vicino(kind) {
+    if (this.driving) return this.driving.kind === kind ? this.driving : null;
+    const P = this.game.player.group.position;
+    let best = null, bd = 3;
+    for (const v of this.list) if (v.kind === kind) { const d = Math.hypot(v.st.x - P.x, v.st.z - P.z); if (d < bd) { bd = d; best = v; } }
+    return best;
+  }
+
   _brokenMsg(v) {
     this.audio.sfx('bad');
-    if (v.kind === 'punto' && v.st.fuel <= 0 && v.st.cond > 0) this.ui.toast('Il serbatoio è vuoto. In officina puoi comprare una tanica.', 'bad');
+    if (v.kind === 'punto' && v.st.fuel <= 0 && v.st.cond > 0) this.ui.toast("Il serbatoio è vuoto. Una tanica di benzina (Fuel l'Havana o il Bubetto) e riparti, oppure il pieno da Zeno.", 'bad');
     else this.ui.toast(`${v.T.name}: il motore non dà segni di vita. Serve l'officina.`, 'bad');
   }
 
@@ -430,7 +452,7 @@ export class Vehicles {
     // consumi e guasti
     if (v.kind === 'punto') {
       st.fuel = clamp(st.fuel - dist * T.fuelPerUnit * M.benzina, 0, 100);
-      if (st.fuel <= 0) { this.ui.toast('La Punto tossisce e si ferma: benzina finita! Una tanica costa 10€ da Zeno.', 'bad'); this.audio.sfx('stall'); this.dismount(true); return; }
+      if (st.fuel <= 0) { this.ui.toast(this.s.inv.benzina ? `La Punto tossisce e si ferma: benzina finita! Hai ${this.s.inv.benzina} tanich${this.s.inv.benzina > 1 ? 'e' : 'a'} di benzina: premi E accanto alla Punto.` : "La Punto tossisce e si ferma: benzina finita! Una tanica di benzina costa 12€ da Fuel l'Havana, sulla provinciale.", 'bad'); this.audio.sfx('stall'); this.dismount(true); return; }
       if (st.fuel < 15 && !v.fuelWarned) { v.fuelWarned = true; this.ui.toast('Spia della riserva accesa!', 'bad'); }
       if (st.fuel >= 15) v.fuelWarned = false;
     }
