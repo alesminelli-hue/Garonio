@@ -116,6 +116,13 @@ export class Cascine {
     const f = s.flags.cascine;
     f.alberi ??= {}; f.paletti ??= []; f.erpice ??= 'patata'; f.calmi ??= {}; f.creduto ??= {};
     f.voci ??= {}; f.prossimaDopo ??= 0; f.conta ??= 0; f.pompa ??= 0; f.bollita ??= 0;
+    // le repliche delle truffe («base@n») si registrano solo quando il Gigante le offre: ricaricando la partita
+    // quella in corso (o già finita) va registrata di nuovo, se no resta una missione senza definizione
+    const Q = this.game.quests, st = s.quests || {};
+    for (const id of [...Object.keys(st.attive || {}), ...(st.fatte || []), ...(st.fallite || [])]) {
+      const base = id.split('@')[0];
+      if (id.includes('@') && !Q.defs[id] && Q.defs[base]) Q.aggiungi(id, { ...Q.defs[base], requisiti: {}, ripetuta: true });
+    }
     for (const v of Object.keys(VICINI)) this.sospetto[v] = 0;
 
     Object.assign(OGGETTI, OGGETTI_TRUFFA);
