@@ -14,6 +14,7 @@
 // Nei dati: def.vel = velocità sul giro (1.4 di serie, chi fa jogging va più svelto);
 //           un posto con fermo: true ferma il giro (es. la ragazza che aspetta all'appuntamento).
 import * as PIX from './pixel.js';
+import { gira, guarda } from './sguardo.js';
 import { PNG } from './data/png.js';
 import { pick, fill } from './racconto.js';
 import { fraseSulleRagazze } from './ragazze.js';
@@ -81,11 +82,11 @@ export class Personaggi {
         else {
           const st = Math.min(d, (n.def.vel || 1.4) * dt);   // vel: chi fa jogging va più svelto
           n.x += dx / d * st; n.z += dz / d * st; moving = true;
-          if (Math.abs(dx) > 0.05) n.dir = dx > 0 ? 1 : -1;
+          if (Math.abs(dx) > 0.3 * d) gira(n, dx > 0 ? 1 : -1, dt);   // in verticale tiene il verso che ha
         }
       } else {
         const P = this.game.player?.group.position;
-        if (P) n.dir = P.x > n.x ? 1 : -1;  // guarda Garonio
+        if (P && Math.hypot(P.x - n.x, P.z - n.z) < 8) guarda(n, P.x, dt || 1);  // guarda Garonio (senza girarsi a ogni passo)
       }
       n.walkT += dt * 6 * Math.max(1, (n.def.vel || 1.4) / 1.4);
       n.a.group.position.set(n.x, 0, n.z);

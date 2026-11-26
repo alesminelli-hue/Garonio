@@ -18,6 +18,7 @@
 // Eventi mandati (vedi src/eventi.js): truffa { tipo, vicino } · alberoAbbattuto { vicino } · palettoSpostato { vicino }
 //   truffaScoperta { vicino, missione, esito }. La multa la fa la Vigilessa (game.vigilessa.multa('truffa')).
 import * as THREE from 'three';
+import { gira, guarda } from './sguardo.js';
 import * as PIX from './pixel.js';
 import { ENEMIES } from './combat.js';
 import { OGGETTI } from './data/armi.js';
@@ -579,8 +580,8 @@ export class Cascine {
           const [tx, tz] = gu.def.giro[gu.giroI];
           const dx = tx - gu.x, dz = tz - gu.z, d = Math.hypot(dx, dz);
           if (d < 0.1) gu.giroI = (gu.giroI + 1) % gu.def.giro.length;
-          else { const st = Math.min(d, 1.1 * dt); gu.x += dx / d * st; gu.z += dz / d * st; moving = true; gu.dir = dx > 0 ? 1 : -1; gu.base = Math.atan2(dz, dx); }
-        } else gu.dir = P.x > gu.x ? 1 : -1;
+          else { const st = Math.min(d, 1.1 * dt); gu.x += dx / d * st; gu.z += dz / d * st; moving = true; if (Math.abs(dx) > 0.3 * d) gira(gu, dx > 0 ? 1 : -1, dt); gu.base = Math.atan2(dz, dx); }
+        } else guarda(gu, P.x, dt);
         gu.walkT += dt * 6;
         gu.actor.group.position.set(gu.x, 0, gu.z);
         gu.actor.setFrame((gu.dir > 0 ? 0 : 3) + (moving ? 1 + (Math.floor(gu.walkT) % 2) : 0));
@@ -593,8 +594,12 @@ export class Cascine {
       gu.attivo = true;
       if (gu.dorme) gu.actor.setFrame(gu.dir > 0 ? 2 : 5);
       else {
-        if ((gu.allerta || 0) > 0.3) gu.dir = P.x > gu.x ? 1 : -1;
-        else if (Math.floor(this._t / 3 + gu.fase) % 4 === 0) gu.dir = -gu.dir;
+        if ((gu.allerta || 0) > 0.3) guarda(gu, P.x, dt);
+        else {
+          // ogni tanto il cane si gira dall'altra parte: una volta sola, non a ogni fotogramma
+          const turno = Math.floor(this._t / 3 + gu.fase);
+          if (turno !== gu._turno) { if (gu._turno !== undefined && turno % 4 === 0) gu.dir = -gu.dir; gu._turno = turno; }
+        }
         gu.walkT += dt * 3;
         gu.actor.setFrame((gu.dir > 0 ? 0 : 3) + (Math.floor(gu.walkT) % 2));
       }

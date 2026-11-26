@@ -143,6 +143,7 @@ export class Progressione {
   usa(id) {
     const o = OGGETTI[id], s = this.s;
     if (o?.effetto?.gasolio) return !!this.game.attrezzi?.versaTanica();   // tanica di gasolio: nel trattore
+    if (o?.effetto?.benzina) return !!this.game.vehicles?.versaBenzina(this.game.vehicles.vicino('punto'));   // tanica di benzina: nella Punto
     if (!o?.effetto || !this.togliOggetto(id)) return false;
     const e = o.effetto, cure = 1 + this.bonus('cure');
     if (e.health) s.health = Math.min(s.maxHealth, s.health + Math.round(e.health * cure));

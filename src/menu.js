@@ -268,6 +268,7 @@ export class Menu {
     if (e.stordisce) c.push('💫');
     if (e.guarisce) c.push('🩹');
     if (e.gasolio) c.push(`🚜+${e.gasolio}%`);
+    if (e.benzina) c.push(`🚗+${e.benzina}%`);
     if (o.vendita) c.push(`💶${o.vendita}`);
     return h('div', 'mn-chips', null, c.map(t => h('span', 'chip', t)));
   }
@@ -280,11 +281,12 @@ export class Menu {
     const grid = h('div', 'mn-cassette');
     for (const [id, n] of items) {
       const o = OGGETTI[id], e = o.effetto || {};
-      const usabile = !!(e.health || e.tired || e.stress || e.gasolio);
+      const usabile = !!(e.health || e.tired || e.stress || e.gasolio || e.benzina);
       const cell = h('div', 'mn-cassetta', null, [
         h('div', 'mn-icon', o.icona || '📦'), h('span', 'mn-qta', `×${n}`), h('small', 'mn-nome', o.nome), this._chipsEffetto(o),
         usabile ? this._azione('Usa', () => {
           const prima = { v: Math.round(s.health), st: Math.round(s.stress), f: Math.round(s.tired) };
+          if (e.benzina) return this.prog.usa(id) ? `${o.icona} Glu glu glu: +${e.benzina}% di benzina nella Punto.` : '⛽ Per versarla devi guidare la Punto o starle accanto (serve anche alla motosega).';
           if (e.gasolio) return this.prog.usa(id) ? `${o.icona} Glu glu glu: +${e.gasolio}% di gasolio nel trattore.` : '🛢️ Per versarla devi guidare un trattore o stargli accanto.';
           if (!this.prog.usa(id)) return 'Non si può usare adesso.';
           this.game.audio.sfx('eat');
@@ -424,6 +426,9 @@ export class Menu {
     out.push(this._cartello('Pannelli'));
     out.push(this._azione('✥ Sposta i pannelli', () => { this.chiudi(); setTimeout(() => g.pannelli?.sposta(true), 50); return ''; }));
     out.push(this._azione('↺ Rimetti a posto', () => { g.pannelli?.ripristina(); return '↺ Fatto.'; }));
+    out.push(this._cartello('Avvisi'));
+    const MODI = [['importanti', '📌 Fissi solo gli importanti'], ['tutti', '📌 Tutti fissi finché non li chiudi'], ['tempo', '⏱️ Tutti spariscono da soli']];
+    for (const [m, lab] of MODI) out.push(this._azione(`${g.ui.modoAvvisi === m ? '● ' : '○ '}${lab}`, () => { g.ui.setModoAvvisi(m); return lab.replace(/^\S+ /, '') + ': fatto.'; }));
     out.push(this._cartello('Audio'));
     out.push(this._azione(g.audio.enabled ? '🔊 Audio acceso (tocca per spegnere)' : '🔇 Audio spento (tocca per accendere)', () => { document.getElementById('btn-music')?.click(); return g.audio.enabled ? '🔊' : '🔇'; }));
     out.push(this._volume('🎵', 'Musica', () => g.audio.musicVolume, v => g.audio.setMusicVolume(v), null));

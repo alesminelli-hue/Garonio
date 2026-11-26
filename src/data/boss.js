@@ -361,6 +361,34 @@ export const BOSS = {
     vittoria: [{ testo: "Ottavio si arrende e se ne va col camion. Sotto il ponte resta una chiave inglese da 32, pesante come un rimorso." }],
   },
 
+  // ---------- FUEL L'HAVANA (il benzinaio sulla provinciale, di notte) ----------
+  sifone: {
+    nome: 'Er Sifone', lv: 10, zona: "Fuel l'Havana", icona: '⛽',
+    da: 'pepe', titolo: 'Il ladro di gasolio', requisiti: { livello: 7 },
+    offerta: "Amigo, ho un problema. Ogni notte qualcuno mi succhia il gasolio dalle cisterne con un tubo di gomma. La mattina trovo le impronte di un furgone e... code di ratto. Lo chiamano Er Sifone. Vieni dopo le dieci di sera e fallo smettere. Ti pago, e da quel giorno il pieno te lo faccio a prezzo d'amico.",
+    accetta: 'Stanotte lo becco', grazie: "¡Increíble! Le mie cisterne sono salve. Tieni i soldi e qualche tanica. E da oggi il pieno per te costa meno: prezzo d'amico, ma non dirlo a Zeno.",
+    tana: { luogo: 'notte', x: 106.5, z: 61.6, nome: "sotto la pensilina di Fuel l'Havana", ore: [22, 30], fuori: "Sotto la pensilina c'è solo puzza di gasolio. Er Sifone arriva quando Pepe chiude (dalle 22)." },
+    descr: [
+      { testo: "Sotto la pensilina spenta c'è un furgone arrugginito coi fari spenti. Un tubo di gomma va dalla cisterna di Pepe al serbatoio del furgone. Glu glu glu." },
+      { testo: "Accanto al tubo, un tizio con la tuta unta e i baffi da tricheco succhia l'ultimo sorso. Intorno, tre ratti con le taniche in spalla." },
+      { chi: 'garonio', testo: "Il gasolio di Pepe si paga. Anche io lo pago. A volte." },
+    ],
+    intro: "Er Sifone sputa una boccata di gasolio e agita il tubo come una frusta!",
+    nemico: {
+      name: 'Er Sifone', size: 8.6, sprite: U('ubriaco_birra', { ricolora: { gradi: 120 } }), mul: { hp: 1.05, atk: 1.0, def: 0.95, spd: 1.1 }, fuga: 'salta sul furgone e scappa a fari spenti, lasciando le taniche.',
+      moves: [
+        { name: 'Frustata col tubo', pow: 1.15, stress: 2, w: 3 },
+        { name: 'Sputo di gasolio', pow: 0.9, stress: 4, w: 2, veleno: [3, 2] },
+        { name: 'Accendino minaccioso', pow: 0, stress: 9, w: 1, line: '«Un passo e accendo!» Non accende. Ma ci hai creduto.' },
+      ],
+    },
+    seguaci: ['ratto', 'ratto'],
+    mecc: { rinforzi: { ids: ['ratto'], ogni: 3, max: 2, testo: 'Dal furgone saltano fuori altri ratti con le taniche!' }, ruba: 4 },
+    bottino: { oggetti: { tanica: 3, codaRatto: 2 } },
+    premio: { soldi: 120, xp: 170, amicizia: { pepe: 15 }, oggetti: { tanica: 2 } },
+    vittoria: [{ testo: "Er Sifone scappa col furgone a fari spenti. Sotto la pensilina restano tre taniche piene e un tubo di gomma che sa di sconfitta." }, { chi: 'pepe', testo: "Domani mattina passa da me, amigo. Ho una cosa per te. Prezzo d'amico." }],
+  },
+
   // ---------- KEBAB (la piazza di notte) ----------
   teppisti: {
     nome: 'Il Biondo e i teppisti', lv: 17, zona: 'Kebab in piazza', icona: '🛹',

@@ -2,6 +2,7 @@
 import { portrait } from './pixel.js';
 
 const $ = id => document.getElementById(id);
+const MODO_KEY = 'garonio-avvisi';
 
 export class UI {
   constructor(audio) {
@@ -9,6 +10,18 @@ export class UI {
     this.queue = null;      // dialogo in corso
     this.typing = null;
     this.modal = null;      // finestra a tutto schermo aperta (es. il menu di Garonio): ha un metodo key(code)
+    // avvisi: 'importanti' (fissi solo quelli importanti, gli altri spariscono da soli) | 'tutti' (tutti fissi) | 'tempo'
+    try { this.modoAvvisi = localStorage.getItem(MODO_KEY) || 'importanti'; } catch { this.modoAvvisi = 'importanti'; }
+  }
+
+  setModoAvvisi(m) { this.modoAvvisi = m; try { localStorage.setItem(MODO_KEY, m); } catch { } }
+
+  // un avviso è importante se avverte di un guaio (rosso) o riguarda il Gigante, le missioni, il telefono, i mezzi a secco
+  _importante(text, kind) {
+    if (kind === 'importante') return true;
+    if (/^Stress [+−-]\d+$/.test(text)) return false;
+    if (kind === 'bad') return true;
+    return /SMS|[Cc]hiamata|[Mm]issione|Gigante|PAPÀ|Mister Mountain|❗|a secco|tanica/.test(text);
   }
 
   busy() { return !!this.queue || !!this.modal; }
@@ -88,6 +101,12 @@ export class UI {
     for (let i = 0; i <= fissi.length - 12; i++) fissi[i].remove();
     const t = document.createElement('div');
     t.className = 'toast fisso nuovo ' + kind; t.dataset.testo = text; t.dataset.chiave = chiave;
+    // gli avvisi non importanti (o tutti, in modalità «a tempo») spariscono da soli dopo qualche secondo
+    const fisso = this.modoAvvisi === 'tutti' || (this.modoAvvisi === 'importanti' && this._importante(text, kind));
+    if (!fisso) {
+      t.classList.add('tempo');
+      setTimeout(() => { if (!t.isConnected) return; t.classList.add('out'); setTimeout(() => { t.remove(); this._tuttiAvvisi(); }, 500); }, 5000);
+    }
     const testo = document.createElement('span'); testo.className = 'toast-t'; testo.textContent = text;
     const n = document.createElement('b'); n.className = 'toast-n';
     const x = document.createElement('button'); x.className = 'toast-x'; x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Chiudi avviso');

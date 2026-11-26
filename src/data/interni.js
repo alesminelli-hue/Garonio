@@ -145,9 +145,10 @@ export const INTERNI = {
       { tipo: 'tavolino', x: 14.2, z: 1.3, w: 1.2, d: 0.9, h: 0.75, colore: '#2a6a3a', zona: 'carte', etichetta: 'Tavolo delle carte' },
       { tipo: 'biliardo', x: 16.4, z: 3.5, w: 3.4, d: 1.8, h: 0.85, zona: 'biliardo', etichetta: 'Biliardo' },
       { tipo: 'stecche', parete: true, x: 16.6, y: 0.4, w: 0.8, h: 1.6 },
-      { tipo: 'jukebox', x: 20.6, z: 0.25, w: 1.0, d: 0.7, h: 1.7, zona: 'jukebox', etichetta: 'Juke-box' },
-      { tipo: 'slot', x: 20.95, z: 2.3, w: 0.8, d: 0.7, h: 1.75, zona: 'slot', etichetta: 'Slot machine', colore: '#c8302a', seme: 0 },
-      { tipo: 'slot', x: 20.95, z: 3.4, w: 0.8, d: 0.7, h: 1.75, zona: 'slot', etichetta: 'Slot machine', colore: '#2a5ab0', seme: 1 },
+      // in fondo alla saletta, contro il muro: le due slot affiancate e il juke-box
+      { tipo: 'slot', x: 19.4, z: 0.25, w: 0.74, d: 0.65, h: 1.75, zona: 'slot', etichetta: 'Slot machine', colore: '#c8302a', seme: 0 },
+      { tipo: 'slot', x: 20.17, z: 0.25, w: 0.74, d: 0.65, h: 1.75, zona: 'slot', etichetta: 'Slot machine', colore: '#2a5ab0', seme: 1 },
+      { tipo: 'jukebox', x: 20.95, z: 0.25, w: 0.95, d: 0.7, h: 1.7, zona: 'jukebox', etichetta: 'Juke-box' },
       { tipo: 'bacheca', parete: true, x: 13.6, y: 1.5, w: 1.0, h: 0.9, zona: 'annunci', etichetta: 'Bacheca degli annunci' },
       { tipo: 'porta', parete: true, x: 18.2, y: 0, w: 1.1, h: 2.1, zona: 'retro', etichetta: 'Porta sul retro' },
       { tipo: 'zerbino', pavimento: true, x: 5.8, z: 7.25, w: 1.4, d: 0.6, colore: '#2a5a3a' },

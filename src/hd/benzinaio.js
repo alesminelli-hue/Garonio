@@ -1,48 +1,10 @@
 // Fuel l'Havana, il benzinaio sulla provinciale (src/benzinaio.js): pixel art HD disegnata via codice,
 // stesso stile degli altri fogli (contorno scuro, luce da in alto a sinistra, ombre verso il viola).
-//   pepe(frame)        Pepe il benzinaio: panama, baffoni, camicia caraibica, sigaro e pistola del gasolio (34x48)
 //   distributore()     pensilina turchese con le due colonnine (gasolio verde, benzina rossa) e l'insegna (96x72)
 //   facciata()         il chiosco con la cassa (facciata per le texture 3D, 5 caselle di larghezza)
 import { pen, ramp, outline, text, textWidth } from './kit.js';
 
-const PELLE = '#d89a6a', TURCHESE = '#2aa8a0', ROSA = '#ff6a8a', GIALLO = '#f4c430';
-
-// ---------- Pepe il benzinaio (34x48) ----------
-export function pepe(f = 0) {
-  const d = pen(34, 48);
-  const S = ramp(PELLE), C = ramp('#f4f0e0'), T = ramp(TURCHESE), K = ramp('#c8b48a'), H = ramp('#ecd9a0');
-  const passo = f % 2;
-  // scarpe bicolori e pantaloni color sabbia
-  d.box(10, 44 - passo, 6, 3, ramp('#f4f0e4')); d.P('#6a3a22', 10, 45 - passo, 3, 2);
-  d.box(18, 44, 6, 3, ramp('#f4f0e4')); d.P('#6a3a22', 21, 45, 3, 2);
-  d.box(11, 32, 5, 13 - passo, K); d.box(18, 32, 5, 12, K);
-  d.P(K[1], 16, 32, 2, 9);
-  d.P('#5a3a22', 10, 31, 14, 2); d.P(GIALLO, 16, 31, 2, 2);                 // cintura con la fibbia
-  // camicia caraibica turchese, con i fiori rosa
-  d.ball(17, 25, 9, 8, T);
-  d.P(T[2], 9, 22, 17, 10); d.P(T[3], 9, 22, 2, 10); d.P(T[1], 24, 22, 2, 10);
-  for (const [x, y] of [[11, 24], [20, 23], [14, 28], [22, 28], [17, 21]]) { d.P(ROSA, x, y, 2, 2); d.P('#ffd0dc', x, y); d.P('#3a8a3a', x + 2, y + 1); }
-  d.P(C[3], 15, 18, 5, 3); d.P(C[2], 16, 21, 3, 2);                         // colletto aperto
-  d.P(S[2], 16, 19, 3, 3);                                                   // collo
-  d.P('#f4f0e4', 20, 25, 4, 3); text(d, 'FH', 20, 25, '#c8302a');            // toppa Fuel l'Havana
-  // braccio sinistro lungo il fianco, braccio destro con la pistola del gasolio
-  d.box(6, 21, 4, 9, T); d.ball(8, 31, 2, 2, S);
-  d.box(25, 21, 4, 7, T); d.ball(27, 29, 2, 2, S);
-  d.P('#2a7a3a', 26, 30, 6, 3); d.P('#3e9a4e', 26, 30, 6, 1); d.P('#1e1a22', 31, 33, 2, 2);   // pistola verde
-  d.line(26, 32, 22, 40, '#2a2a30', 1); d.line(22, 40, 26, 46, '#2a2a30', 1);                 // tubo
-  // testa: faccia abbronzata, baffoni, occhiali da sole, sigaro
-  d.ball(17, 12, 6, 7, S);
-  d.P(S[1], 12, 15, 2, 3); d.P(S[1], 21, 15, 2, 3);
-  d.P('#1e1622', 13, 10, 4, 2); d.P('#1e1622', 18, 10, 4, 2); d.P('#1e1622', 17, 10, 1, 1);    // occhiali scuri
-  d.P('#7ad0e8', 13, 10, 1, 1); d.P('#7ad0e8', 18, 10, 1, 1);
-  d.P(S[3], 16, 12, 2, 2);                                                   // naso
-  d.P('#3a2418', 12, 14, 11, 2); d.P('#3a2418', 11, 15, 2, 2); d.P('#3a2418', 22, 15, 2, 2);   // baffoni
-  d.P('#8a4a22', 20, 16, 6, 2); d.P('#6a3418', 20, 17, 6, 1); d.P('#ff7a30', 26, 16, 1, 2); d.P('#c8c0b8', 26, 13, 1, 2); d.P('#e8e0d8', 27, 11, 1, 2); // sigaro col fumo
-  // cappello panama con la fascia nera
-  d.ell(17, 6, 10, 2.2, H[1]); d.ell(17, 5, 10, 2, H[2]); d.P(H[3], 9, 4, 8, 1);
-  d.ball(17, 3, 6, 3, H); d.P('#2a2228', 11, 4, 13, 2); d.P(ROSA, 21, 4, 2, 2);
-  return outline(d.c);
-}
+const TURCHESE = '#2aa8a0', ROSA = '#ff6a8a', GIALLO = '#f4c430';
 
 // ---------- Pensilina con le colonnine (96x72) ----------
 export function distributore() {

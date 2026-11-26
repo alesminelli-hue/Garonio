@@ -25,6 +25,7 @@
 // I PNG con un posto `interno: 'bar'` (src/data/png.js) compaiono solo dentro, alle coordinate locali del posto.
 // Eventi: entrato { edificio }, uscito { edificio }, traccia { bestia, luogo }.
 import * as THREE from 'three';
+import { guarda } from './sguardo.js';
 import * as PIX from './pixel.js';
 import { ramp, tone as hdTono, hash as hdHash } from './hd/kit.js';
 import * as HDO from './hd/oggetti.js';
@@ -795,8 +796,9 @@ export class Interni {
           sopra: (P, W, H2) => { P(tono(col, 1.1), 0, 0, W, H2); P('#f4c430', 1, 1, W - 2, H2 - 2); },
         });
         b.position.y = h / 2; o.add(b);
-        const asta = blocco(0.06, 0.5, 0.06, { colore: '#c8ccd4' }); asta.position.set(w / 2 + 0.05, h * 0.62, 0); o.add(asta);
-        const pomo = blocco(0.14, 0.14, 0.14, { colore: '#e83030' }); pomo.position.set(w / 2 + 0.05, h * 0.62 + 0.3, 0); o.add(pomo);
+        // la leva sul davanti, a destra (le slot stanno affiancate: di lato non c'è posto)
+        const asta = blocco(0.05, 0.45, 0.05, { colore: '#c8ccd4' }); asta.position.set(w / 2 - 0.07, h * 0.6, d / 2 + 0.05); o.add(asta);
+        const pomo = blocco(0.12, 0.12, 0.12, { colore: '#e83030' }); pomo.position.set(w / 2 - 0.07, h * 0.6 + 0.27, d / 2 + 0.05); o.add(pomo);
         (c.slot ??= []).push(b.material[4]);
         break;
       }
@@ -1204,7 +1206,7 @@ export class Interni {
     if (c.tv) c.tv.color.setHSL(0, 0, 0.85 + Math.sin(t * 7) * 0.08 + Math.sin(t * 2.3) * 0.07);
     if (c.jukebox) c.jukebox.color.setHSL((t * 0.2) % 1, this._musica ? 0.5 : 0.15, 0.85);
     if (c.slot) c.slot.forEach((mt, i) => mt.color.setHSL(0.12, 0.5, 0.88 + Math.sin(t * 6 + i * 2) * 0.12));   // le slot lampeggiano
-    for (const av of Object.values(c.avventori)) { if (!av.visibile) continue; const P = g.player.group.position, o = this.origini.bar; av.a.setFrame((P.x - o.x) > av.x ? 0 : 3); }
+    for (const av of Object.values(c.avventori)) { if (!av.visibile) continue; const P = g.player.group.position, o = this.origini.bar; av.dir ??= 1; guarda(av, P.x - o.x, dt); av.a.setFrame(av.dir > 0 ? 0 : 3); }
     for (const b of c.maiali) for (const p of b.attori) this._muoviMaiale(p, b.m, dt);
   }
 

@@ -146,7 +146,8 @@ export class Attrezzi {
     if (v.kind !== 'trattore') return '';
     const bar = (lab, val, cls) => `<div class="vbar ${cls}"><label>${lab}</label><div class="track"><div class="fill" style="width:${clamp(val, 0, 100)}%"></div></div></div>`;
     const gas = this.gasolio(v.id);
-    let html = bar('Gas.', gas, gas < 15 ? 'low' : 'fuel');
+    const tan = this.s.inv.tanica || 0;   // taniche di gasolio nello zaino, accanto alla barra
+    let html = bar('Gas.', gas, gas < 15 ? 'low' : 'fuel').replace('</div></div></div>', `</div></div><span class="tan${tan ? '' : ' zero'}">🛢️${tan}</span></div>`);
     const a = this.su(v.id);
     if (!a) return html + '<div class="warn att">Nessun attrezzo: premi R (o 🔧) per agganciarne uno</div>';
     const st = this.st, stato = Math.round(st.stato[a] ?? 100);
