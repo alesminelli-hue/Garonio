@@ -112,7 +112,7 @@ export const VIGILESSA = {
   frasi: {
     urto: ["Il paracarro era lì da prima di te.", "Garonio. Di nuovo. Patente e libretto. Anche della zappa."],
     casco: ["Senza casco? La testa ce l'hai, almeno per ora.", "Il casco non è un accessorio di moda. Neanche su di te."],
-    corsa: ["Questa è una piazza, non Monza.", "Ti ho visto. Ti ha visto anche la Pina. Ora lo sa tutto il paese."],
+    corsa: ["Questa è una piazza, non Wishville.", "Ti ho visto. Ti ha visto anche la Pina. Ora lo sa tutto il paese."],
     attrezzo: ["L'aratro si alza prima della provinciale. Lo sa anche il trattore."],
     truffa: ["Cosa ci fai nel campo del vicino? No, non rispondere. Scrivo e basta."],
     cabina: ["Una cabina elettrica. Con la macchina. Non ho parole. Ho solo il blocchetto."],

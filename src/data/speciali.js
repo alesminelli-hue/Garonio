@@ -54,7 +54,7 @@ export const BABBO = {
     "«Perché tutti mi guardano e dicono \"ho ho ho\"? È un saluto di qui?»",
     "«Ho freddo ai piedi. Di solito ho una slitta riscaldata. Credo.»",
   ],
-  perso: "🎅 Mezzanotte: il nonnino si è perso di nuovo. Lo hanno visto salire su un trattore e partire verso Lodi.",
+  perso: "🎅 Mezzanotte: il nonnino si è perso di nuovo. Lo hanno visto salire su un trattore e partire verso Littlesound.",
   // al Welcome, dal catalogo di Sandokan
   welcome: {
     voce: '🎅 Una ragazza per il nonnino (paghi tu)',
@@ -84,7 +84,7 @@ export const BABBO = {
     },
     svetlana: {
       scena: [
-        "Madame Svetlana si avvicina, lo guarda negli occhi e gli molla una sberla che si sente fino a Codogno.",
+        "Madame Svetlana si avvicina, lo guarda negli occhi e gli molla una sberla che si sente fino a Newbarley.",
         "«NIKOLAI! Trent'anni che non vieni a trovarmi! E ogni Natale, nella mia calza, CARBONE!»",
         "Il vecchio sbatte le palpebre. La barba si gonfia. Le campanelle suonano da sole. «Svetlana...? IO... IO SONO BABBO NATALE! HO HO HO!» Sandokan si commuove e si soffia il naso nella tenda.",
         "Prima di volare via dal tetto del Welcome, Babbo Natale ti mette in mano il suo bastone: «Per te, Garonio. Quest'anno sei nella lista dei buoni. Più o meno.»",

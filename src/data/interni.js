@@ -437,7 +437,7 @@ export const TESTI = {
   chiuso: {
     chiesa: "Il portone è chiuso. Un biglietto: «Messa alle 7. Chi arriva dopo le 21 si confessa domani». Firmato Don Peppino.",
     castello: "Il portone è sbarrato. Una targa d'ottone: «Visite dalle 9 alle 21. I nobili non ricevono a quest'ora, e neanche Ambrogio».",
-    farmacia: "Saracinesca giù. Sulla porta: «Farmacia di turno: Codogno. Auguri». Apre dalle 8 alle 20.",
+    farmacia: "Saracinesca giù. Sulla porta: «Farmacia di turno: Newbarley. Auguri». Apre dalle 8 alle 20.",
     dottore: "Studio chiuso. Sul citofono: «Il dottore riceve dalle 8 alle 19. Per le urgenze, il veterinario». Ottimismo di paese.",
     palestra: "La palestra è chiusa. Sulla vetrina: «Apriamo alle 7. Anche i muscoli dormono». Firmato il Sergente.",
     pizzeria: "Forno spento. Un cartello a forma di pizza: «Aperti dalle 11 a mezzanotte. Gennaro dorme, non bussate».",

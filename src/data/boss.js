@@ -113,13 +113,13 @@ export const BOSS = {
     vittoria: [{ testo: "Sor Ugo si alza di scatto: «Mi è passato tutto! Che miracolo!». Se ne va lasciando sulla sedia un ricettario di rimedi della nonna." }],
   },
 
-  // ---------- CASCINA DEL POSTINO ----------
+  // ---------- CASCINA DEL POSTMAN ----------
   brutus: {
-    nome: 'Brutus, il cane del Postino', lv: 8, zona: 'Cascina del Postino', icona: '🐕',
-    da: 'postino', titolo: 'Il cane che morde il Postino', requisiti: { livello: 5 },
+    nome: 'Brutus, il cane del Postman', lv: 8, zona: 'Cascina del Postman', icona: '🐕',
+    da: 'postino', titolo: 'Il cane che morde il Postman', requisiti: { livello: 5 },
     offerta: "Sai qual è l'ironia? Io porto la posta a tutti e il mio cane morde me. Brutus si è preso il cortile e non mi fa entrare in casa. Dormo nel furgone da una settimana. Ammansiscilo.",
     accetta: 'Ci provo', grazie: "Brutus scodinzola! A me! Tieni, e se ti segue, tienilo pure: con te è più buono.",
-    tana: { luogo: 'campo', x: 36.5, z: 41.6, nome: 'il cortile della cascina del Postino', ore: [6, 22], fuori: "Brutus dorme nella cuccia. Anche i cani cattivi dormono. Torna di giorno (6-22)." },
+    tana: { luogo: 'campo', x: 36.5, z: 41.6, nome: 'il cortile della cascina del Postman', ore: [6, 22], fuori: "Brutus dorme nella cuccia. Anche i cani cattivi dormono. Torna di giorno (6-22)." },
     descr: [
       { testo: "Nel cortile c'è un cane nero grosso come un vitello, con un collare borchiato. Sta masticando una cassetta della posta." },
       { testo: "Ringhia. Il ringhio fa vibrare i vetri della cascina." },
@@ -168,17 +168,17 @@ export const BOSS = {
     vittoria: [{ testo: "La Faina scappa nel fosso. Nella rete del pollaio resta la sua stola d'argento e, sotto la paglia, tutte le uova rubate. Le galline applaudono, a modo loro." }],
   },
 
-  // ---------- CASCINA DEL PATATA ----------
+  // ---------- CASCINA DEL POTATO ----------
   dorifora: {
-    nome: 'La Dorifora Regina', lv: 10, zona: 'Cascina del Patata', icona: '🪲',
+    nome: 'La Dorifora Regina', lv: 10, zona: 'Cascina del Potato', icona: '🪲',
     da: 'patata', titolo: 'La regina delle patate', requisiti: { livello: 7 },
     offerta: "Garonio... le mie patate... le mangiano. Un insetto a strisce. Grosso. Con la corona. Si chiama dorifora. Lo so perché me l'ha detto lei. Non è vero, ma sembrava. Aiutami. Ti pago in patate. E in euro.",
     accetta: 'Salviamo le patate', grazie: "Le mie patate sono salve! Gino, Pino, Lino e Ugo ti ringraziano. Anche io. Tieni.",
-    tana: { luogo: 'campo', x: 101.5, z: 31.2, nome: 'il campo di patate del Patata', ore: [6, 20], fuori: "Le dorifore di notte dormono sotto le foglie. Torna di giorno (6-20)." },
+    tana: { luogo: 'campo', x: 101.5, z: 31.2, nome: 'il campo di patate del Potato', ore: [6, 20], fuori: "Le dorifore di notte dormono sotto le foglie. Torna di giorno (6-20)." },
     descr: [
       { testo: "In mezzo al campo di patate c'è uno scarabeo a strisce gialle e nere grande come una carriola. Ha una coroncina." },
       { testo: "Intorno a lei, cento larve arancioni masticano foglie con un rumore di patatine." },
-      { chi: 'garonio', testo: "Maestà, il Patata la sfratta." },
+      { chi: 'garonio', testo: "Maestà, il Potato la sfratta." },
     ],
     intro: "La Dorifora Regina batte le elitre: le larve si girano tutte insieme verso Garonio.",
     nemico: {
@@ -193,7 +193,7 @@ export const BOSS = {
     mecc: { rinforzi: { ids: ['larva'], ogni: 2, max: 3, testo: 'Dalla terra spuntano altre larve!' } },
     bottino: { vestiti: ['corazzaDorifora'], oggetti: { patata: 6 } },
     premio: { soldi: 80, xp: 130, oggetti: { patata: 8 }, amicizia: { patata: 15 } },
-    vittoria: [{ testo: "La Dorifora Regina vola via perdendo il guscio. È una corazza a strisce, leggera e durissima. Il Patata la guarda e piange di gioia (o di cipolla, non si sa)." }],
+    vittoria: [{ testo: "La Dorifora Regina vola via perdendo il guscio. È una corazza a strisce, leggera e durissima. Il Potato la guarda e piange di gioia (o di cipolla, non si sa)." }],
   },
 
   // ---------- MAGAZZINO DEL BUBETTO ----------
@@ -237,7 +237,7 @@ export const BOSS = {
     ],
     intro: "Il Dottor Placebo apre la valigetta: «Lasci che le mostri il catalogo!»",
     nemico: {
-      name: 'Il Dottor Placebo', size: 8.6, sprite: U('completo_cravatta'), mul: { hp: 1.0, atk: 0.9 }, fuga: 'chiude la valigetta e scappa a un appuntamento a Cremona.',
+      name: 'Il Dottor Placebo', size: 8.6, sprite: U('completo_cravatta'), mul: { hp: 1.0, atk: 0.9 }, fuga: 'chiude la valigetta e scappa a un appuntamento a Oldbarley.',
       moves: [
         { name: 'Valigettata', pow: 1.2, stress: 2, w: 3 },
         { name: 'Campione omaggio', pow: 0.6, stress: 3, w: 2, veleno: [6, 3], line: 'Una pastiglia «omaggio» finisce in bocca a Garonio. Brutta idea. (Vita −6 per 3 turni)' },
@@ -271,7 +271,7 @@ export const BOSS = {
         { name: 'Lancio di olio piccante', pow: 1.3, stress: 3, w: 1 },
       ],
     },
-    mecc: { carica: { ogni: 3, mossa: { name: 'STRONCATURA', pow: 2.2, stress: 10, line: 'Una stroncatura che si sente fino a Parma!' }, testo: 'Forchetta d\'Oro prende fiato e affila la penna: sta per stroncare tutto! (Difenditi!)' } },
+    mecc: { carica: { ogni: 3, mossa: { name: 'STRONCATURA', pow: 2.2, stress: 10, line: 'Una stroncatura che si sente fino a Wishville!' }, testo: 'Forchetta d\'Oro prende fiato e affila la penna: sta per stroncare tutto! (Difenditi!)' } },
     bottino: { armi: ['forchettone'], oggetti: { pizza: 4 } },
     premio: { soldi: 120, xp: 190, oggetti: { pizza: 6 }, amicizia: { gennaro: 15 } },
     vittoria: [{ testo: "Forchetta d'Oro si accascia, assaggia per sbaglio la margherita e scoppia a piangere: «È... perfetta». Lascia sul tavolo la sua forchetta d'oro. Pesa come un forcone." }],
@@ -320,7 +320,7 @@ export const BOSS = {
     ],
     intro: "Il Pipistrellone stride: un nugolo di pipistrelli piccoli si stacca dal soffitto!",
     nemico: {
-      name: 'Il Pipistrellone', size: 6, sprite: { fn: 'pipistrello' }, mul: { hp: 0.9, atk: 1.05, spd: 1.7 }, fuga: 'esce dalla finestra del campanile e va a vivere a Cremona.',
+      name: 'Il Pipistrellone', size: 6, sprite: { fn: 'pipistrello' }, mul: { hp: 0.9, atk: 1.05, spd: 1.7 }, fuga: 'esce dalla finestra del campanile e va a vivere a Oldbarley.',
       moves: [
         { name: 'Picchiata', pow: 1.3, stress: 2, w: 3 },
         { name: 'Morso vampiresco', pow: 1.0, stress: 3, w: 2, veleno: [5, 3], line: 'Un morso sul collo! (Vita −5 per 3 turni)' },
@@ -393,7 +393,7 @@ export const BOSS = {
   toro: {
     nome: 'Il Toro «Dollaro»', lv: 18, zona: 'Ranch di Mister Frank', icona: '🐂',
     da: 'frank', titolo: 'Il toro del rodeo', requisiti: { livello: 15 },
-    offerta: "Boy! Ho comprato un toro da rodeo. Si chiama Dollaro. È arrivato dal Texas. Cioè da Mantova. Ha sfondato il recinto, mi ha mangiato il cappello e ora il ranch è suo. Domalo! Come un vero cowboy!",
+    offerta: "Boy! Ho comprato un toro da rodeo. Si chiama Dollaro. È arrivato dal Texas. Cioè da Wishville. Ha sfondato il recinto, mi ha mangiato il cappello e ora il ranch è suo. Domalo! Come un vero cowboy!",
     accetta: 'Yee-haw', grazie: "You did it, boy! Dollaro è tornato nel recinto. Tieni i dollari. Cioè, gli euro. Same thing. E quelle corna sono un regalo: le aveva perse lui.",
     tana: { luogo: 'campo', x: 144.5, z: 42.2, nome: 'il recinto del ranch', ore: [6, 21], fuori: "Dollaro dorme in piedi in mezzo al cortile. Meglio non svegliarlo di notte. Torna di giorno (6-21)." },
     descr: [
@@ -507,7 +507,7 @@ export const BOSS = {
     tana: { luogo: 'castello', interno: 'castello', zona: 'armatura', nome: 'l\'armatura del Trisavolo', ore: [9, 21], mappa: { x: 10, z: 94.5 } },
     descr: [
       { testo: "L'armatura scricchiola. Si stacca dal piedistallo. Dalla visiera escono due lucine azzurre e un odore di naftalina." },
-      { testo: "«Chi osa sfidare il Conte Ottone della Bassa, eroe di Solferino?» La voce rimbomba come dentro una pentola." },
+      { testo: "«Chi osa sfidare il Conte Ottone della Bassa, eroe di Clearville?» La voce rimbomba come dentro una pentola." },
       { chi: 'garonio', testo: "Garonio, figlio del Gigante, eroe di... niente. Ma ho la zappa." },
     ],
     intro: "L'Armatura sguaina uno spadone più alto di Garonio. Le altre armature si muovono!",
@@ -517,7 +517,7 @@ export const BOSS = {
       moves: [
         { name: 'Fendente', pow: 1.3, stress: 2, w: 3 },
         { name: 'Colpo di scudo', pow: 1.0, stress: 3, w: 2, stordisce: true, line: 'CLANG! Garonio vede le stelle.' },
-        { name: 'Discorso di Solferino', pow: 0, stress: 10, w: 1, line: '«Nel 1859, la nebbia era fitta come oggi...»' },
+        { name: 'Discorso di Clearville', pow: 0, stress: 10, w: 1, line: '«Nel 1859, la nebbia era fitta come oggi...»' },
       ],
     },
     seguaci: ['armaturaVuota'],

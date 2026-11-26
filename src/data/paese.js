@@ -25,7 +25,7 @@ export const AGRICOLTORI = {
   ],
   frank: [
     "Howdy, partner! Adesso siamo due ranch nella Bassa. Tu e io. Come in Texas. Ma con la nebbia.",
-    "Rispetto, cowboy. Un uomo con la sua terra è un uomo libero. Anche se la terra è a Casalpusterlengo.",
+    "Rispetto, cowboy. Un uomo con la sua terra è un uomo libero. Anche se la terra è a Saint James Borough.",
     "Partner, quando vuoi facciamo affari. Io ti do il pozzo, tu mi dai i maiali. Stretta di mano da uomini.",
   ],
   camper: [

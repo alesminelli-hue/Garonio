@@ -1,5 +1,5 @@
 // Le chicche dell'endgame (GDD capitolo 27.6-27.9). Dati: src/data/endgame.js.
-//  - Concilio del Gambalone: a ogni cambio di stagione la classifica provvisoria (Gigante, Patata, Postino,
+//  - Concilio del Gambalone: a ogni cambio di stagione la classifica provvisoria (Gigante, Potato, Postman,
 //    Frank, Camper e, se ha l'azienda, Garonio) per categoria: maiali, uova, latte, mais, grano, guadagni.
 //    Punti 5/3/2/1. A fine inverno il Concilio finale somma l'anno: Agricoltore dell'Anno (+Gambalone d'Oro).
 //    Le truffe riuscite alle cascine vicine (src/cascine.js, evento «truffa») abbassano i loro numeri.

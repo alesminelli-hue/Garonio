@@ -267,7 +267,7 @@ export class Maiali {
     if (premiati.length) { g.stagioni?.conta('maialiPremiati', premiati.length); g.audio.sfx('coin'); }
     g._xp(10 + premiati.length * 10);
     g.emit('maiale', { evento: 'fiera', premiati: premiati.map(p => p.nome) });
-    const commento = premiati.length >= 2 ? 'Due coccarde! Il Gigante finge di non commuoversi.' : premiati.length ? 'Una coccarda. Il Gigante dice «meglio di niente» con la faccia di «niente».' : 'Niente coccarde. Il maiale del Patata ha vinto tutto. Il Patata non smette di sorridere.';
+    const commento = premiati.length >= 2 ? 'Due coccarde! Il Gigante finge di non commuoversi.' : premiati.length ? 'Una coccarda. Il Gigante dice «meglio di niente» con la faccia di «niente».' : 'Niente coccarde. Il maiale del Potato ha vinto tutto. Il Potato non smette di sorridere.';
     return this._pagina(`Fiera di paese! I giudici annusano, pesano, guardano le orecchie.\n${righe}\n${commento}${premiati.length ? ` +${premiati.length * M.premioFiera}€` : ''}`);
   }
 

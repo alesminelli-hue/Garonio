@@ -73,9 +73,9 @@ export const ZONES = [
   { tile: 'p', x0: 119, x1: 156, z0: 68, z1: 71, name: 'Cortile dei capannoni' },
   { tile: 's', x0: 128, x1: 152, z0: 73, z1: 83, name: 'Recinto dei maiali', fence: true, gate: [138, 141] },
   { tile: 'w', x0: 28, x1: 42, z0: 78, z1: 89, name: 'Laghetto', shape: 'ellipse', solid: true },
-  { tile: 'w', x0: 114, x1: 116, z0: 10, z1: 27, name: 'Fosso del Patata', solid: true },   // cascine (src/cascine.js)
-  { tile: 'p', x0: 93, x1: 109, z0: 39, z1: 42, name: 'Aia del Patata' },
-  { tile: 'p', x0: 29, x1: 44, z0: 39, z1: 42, name: 'Aia del Postino' },
+  { tile: 'w', x0: 114, x1: 116, z0: 10, z1: 27, name: 'Fosso del Potato', solid: true },   // cascine (src/cascine.js)
+  { tile: 'p', x0: 93, x1: 109, z0: 39, z1: 42, name: 'Aia del Potato' },
+  { tile: 'p', x0: 29, x1: 44, z0: 39, z1: 42, name: 'Aia del Postman' },
   { tile: 'p', x0: 134, x1: 152, z0: 38, z1: 42, name: 'Cortile del ranch' },
   { tile: 'q', x0: 3, x1: 13, z0: 74, z1: 75, name: 'Sagrato della chiesa' },
   { tile: 'q', x0: 3, x1: 18, z0: 98, z1: 101, name: 'Cortile del castello' },
@@ -126,8 +126,8 @@ export const BUILDINGS = [
   { id: 'paradiso', label: 'NIGHT WELCOME', x0: 44, z0: 61, w: 8, d: 5, h: 3, wall: '#6a3a7a', roof: '#2a2030', windows: 1, decor: true }, // svago serale (src/paradiso.js)
   { id: 'tettoia', label: '', x0: 88, z0: 61, w: 5, d: 4, h: 2.2, wall: 'legno', roof: '#6a7078', windows: 0, decor: true, noDoor: true },
   // cascine dei vicini (GDD 19.5): la logica è in src/cascine.js, i dati in src/data/vicini.js
-  { id: 'cascina-patata', porta: true, label: 'CASCINA DEL PATATA', x0: 97, z0: 34, w: 8, d: 5, h: 2.8, wall: '#e0c48a', roof: '#a8462e', windows: 2, decor: true },
-  { id: 'cascina-postino', porta: true, label: 'CASCINA DEL POSTINO', x0: 33, z0: 34, w: 7, d: 5, h: 2.8, wall: '#f0d8b8', roof: '#8a3a2a', windows: 2, decor: true },
+  { id: 'cascina-patata', porta: true, label: 'CASCINA DEL POTATO', x0: 97, z0: 34, w: 8, d: 5, h: 2.8, wall: '#e0c48a', roof: '#a8462e', windows: 2, decor: true },
+  { id: 'cascina-postino', porta: true, label: 'CASCINA DEL POSTMAN', x0: 33, z0: 34, w: 7, d: 5, h: 2.8, wall: '#f0d8b8', roof: '#8a3a2a', windows: 2, decor: true },
   { id: 'ranch-frank', porta: true, label: 'RANCH MISTER FRANK', x0: 140, z0: 33, w: 9, d: 5, h: 3, wall: 'legno', roof: '#7a2a22', windows: 2, decor: true },
   // Parco Oglio (src/parco.js) e stalla (src/stalla.js)
   // Cascina dei Salici (src/azienda.js): abbandonata finché Garonio non la compra in comune
@@ -189,7 +189,7 @@ export const LANDMARKS = [
   { name: 'Pollaio', x: 81, z: 76.5 }, { name: 'Laghetto', x: 35, z: 83.5 },
   { name: 'Welcome', x: 48, z: 63.5 },
   { name: 'Mercato', x: 33, z: 62 }, { name: 'Gare', x: 61, z: 27.5 },
-  { name: 'Patata', x: 101, z: 36.5 }, { name: 'Postino', x: 36.5, z: 36.5 }, { name: 'Frank', x: 144.5, z: 35.5 },
+  { name: 'Potato', x: 101, z: 36.5 }, { name: 'Postman', x: 36.5, z: 36.5 }, { name: 'Frank', x: 144.5, z: 35.5 },
   { name: 'Chiesa', x: 6.5, z: 71 }, { name: 'Farmacia', x: 16.5, z: 72 }, { name: 'Dottore', x: 26, z: 70 }, { name: 'Bella Napoli', x: 33.5, z: 70 },
   { name: 'Kebab', x: 19.6, z: 47.5 }, { name: 'Zeno', x: 56, z: 47.4 }, { name: 'Palestra', x: 64.5, z: 47.5 }, { name: 'Castello', x: 10, z: 94.5 },
   { name: 'Parco Oglio', x: 96, z: 104 }, { name: 'Vecchio Camper', x: 53, z: 86.5 }, { name: 'Guardie', x: 111.5, z: 87.5 }, { name: 'Stalla', x: 108, z: 80 },

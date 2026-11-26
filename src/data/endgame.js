@@ -18,8 +18,8 @@ export const CONCILIO = {
   // chi gareggia. prod = produzione media al giorno per categoria (cresce un po' ogni anno)
   cascine: {
     gigante: { nome: 'Il Gigante', icona: '🧔', prod: { maiale: 2.4, uova: 140, latte: 0, mais: 45, grano: 16, guadagni: 1400 } },
-    patata:  { nome: 'Il Patata', icona: '🥔', prod: { maiale: 0.8, uova: 60, latte: 40, mais: 60, grano: 22, guadagni: 900 } },
-    postino: { nome: 'Il Postino', icona: '✉️', prod: { maiale: 1.0, uova: 210, latte: 30, mais: 25, grano: 12, guadagni: 850 } },
+    patata:  { nome: 'Il Potato', icona: '🥔', prod: { maiale: 0.8, uova: 60, latte: 40, mais: 60, grano: 22, guadagni: 900 } },
+    postino: { nome: 'Il Postman', icona: '✉️', prod: { maiale: 1.0, uova: 210, latte: 30, mais: 25, grano: 12, guadagni: 850 } },
     frank:   { nome: 'Mister Frank', icona: '🤠', prod: { maiale: 3.0, uova: 40, latte: 120, mais: 20, grano: 8, guadagni: 1300 } },
     camper:  { nome: 'Il Vecchio Camper', icona: '🧓', prod: { maiale: 1.4, uova: 90, latte: 150, mais: 35, grano: 26, guadagni: 1000 } },
   },
@@ -43,7 +43,7 @@ export const CONCILIO = {
   ],
   noGara: "Garonio guarda dal fondo della sala. «Lei non ha un'azienda, giovanotto: non è in gara. Si accomodi tra il pubblico. Senza fischiare.»",
   vince: [
-    "«...e primo in classifica: l'Azienda Agricola Garonio!» Applausi. Il Patata piange. Il Gigante applaude con due dita.",
+    "«...e primo in classifica: l'Azienda Agricola Garonio!» Applausi. Il Potato piange. Il Gigante applaude con due dita.",
     "«Primo, con distacco: Garonio!» Mister Frank grida «Yeehaw!» anche se ha perso. Lo fa sempre.",
   ],
   giganteVince: [

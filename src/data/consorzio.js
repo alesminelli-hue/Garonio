@@ -49,7 +49,7 @@ export const RODELLA = {
     "Lo sai che il mio primo trattore l'ho venduto a me stesso? Affare d'oro. Mi sono fatto anche lo sconto.",
     "Mia moglie dice che parlo solo di mangimi. Non è vero: parlo anche di sementi. E di concimi. E di lei, che è andata via con quello delle sementi Pioneer.",
     "Il marketing del consorzio lo fa mio nipote. Ha diciannove anni e ha scritto «CONZORZIO» sul furgone. È un genio incompreso.",
-    "Il tuo amico Patata ha comprato un trattore da me nel '98. Lo sta ancora pagando. A rate. Da dodicimila lire.",
+    "Il tuo amico Potato ha comprato un trattore da me nel '98. Lo sta ancora pagando. A rate. Da dodicimila lire.",
     "Il segreto di un buon pomodoro? Musica classica. Il segreto di una buona zucchina? Non dirle mai che è una zucchina. Si offende.",
     "Ho venduto un aratro anche al prete. Non so cosa ci faccia. Non chiedo. Il cliente ha sempre ragione.",
   ],
@@ -57,7 +57,7 @@ export const RODELLA = {
   semi: [
     { rodella: "Tieni, giovanotto: semi gratis. Gratis! Senti come suona bene? Gra-tis. Io lo dico solo una volta al giorno, poi mi fa male la bocca.", garonio: "Ma perché me li regala?", fine: "Perché poi le zucchine crescono, tu vieni qui a comprare il concime, il concime costa, e io mi compro una Mercedes. Si chiama strategia." },
     { rodella: "Le bustine di oggi. Quelle con la foto della verdura bella. Quella che ti viene a te sarà più brutta, ma è normale: la foto è di mio cugino che fa il fotografo.", garonio: "E se non crescono?", fine: "Allora hai sbagliato tu. I semi Rodella crescono anche sul cemento. Non provarci, eh. Ma crescono." },
-    { rodella: "Semi gratis per il mio cliente preferito! Non dirlo al Patata, lui crede di essere il mio cliente preferito.", garonio: "Lo dice a tutti, vero?", fine: "Lo dico a tutti quelli che hanno un portafoglio. Tu ce l'hai? Bravo. Allora sei il mio preferito." },
+    { rodella: "Semi gratis per il mio cliente preferito! Non dirlo al Potato, lui crede di essere il mio cliente preferito.", garonio: "Lo dice a tutti, vero?", fine: "Lo dico a tutti quelli che hanno un portafoglio. Tu ce l'hai? Bravo. Allora sei il mio preferito." },
     { rodella: "Ecco qui. Ah, quelle con l'etichetta storta le ha fatte mio nipote. Se ti nascono carote invece delle zucchine, è colpa sua.", garonio: "Va bene, grazie.", fine: "Grazie a te! E ricordati: zappa, semina, annaffia, raccogli, vendi alla cassa. Poi vieni qui e spendi tutto. È il cerchio della vita." },
   ],
   semiGiaDati: [

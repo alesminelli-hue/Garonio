@@ -41,7 +41,7 @@ export const TESTI_EDIFICI = {
       { label: "Ho guardato le ragazze del paese", dice: "«Guardare non è peccato. Lo diventa se poi vai al Night. Ci vai al Night? ...Dieci Ave Maria.»" },
     ],
     peccatoMulte: { label: "Ho delle multe non pagate", dice: "«Dai a Cesare quel che è di Cesare, e alla Vigilessa quel che è della Vigilessa. Prima che te lo prenda lei.»" },
-    peccatoTruffe: { label: "Ho fatto dei lavoretti «speciali» per mio padre", dice: "«...Questo resta tra noi e il Signore. E il Signore, ti avverto, parla con il Patata.»" },
+    peccatoTruffe: { label: "Ho fatto dei lavoretti «speciali» per mio padre", dice: "«...Questo resta tra noi e il Signore. E il Signore, ti avverto, parla con il Potato.»" },
     assolto: "Ti senti leggero come una balla di fieno vuota. Stress -12",
     cero: "Accendi un cero. La fiammella tremola. Un euro per un desiderio: più economico della fontana. Stress -4",
     ceroGia: "Hai già acceso il tuo cero oggi. Il Signore ti ha sentito. Anche la cassetta, a dire il vero.",
@@ -80,7 +80,7 @@ export const TESTI_EDIFICI = {
       "Un'armatura del Cinquecento. Dentro, dicono, c'è ancora il cavaliere. Ambrogio dice che è una diceria. Ambrogio non ci passa davanti di notte.",
       "L'armatura ha un'ammaccatura sul petto a forma di forcone. Antenati del Gigante?",
     ],
-    arazzo: "Un arazzo: la battaglia di Codogno del 1525. A guardar bene, metà dei soldati sono contadini che scappano coi maiali.",
+    arazzo: "Un arazzo: la battaglia di Newbarley del 1525. A guardar bene, metà dei soldati sono contadini che scappano coi maiali.",
     cassapanca: "Apri la cassapanca: coperte di lana, naftalina e... cinque monete antiche! Le prendi. Il Conte non le conterà, spera. +5€",
     cassapancaVuota: "La cassapanca. Coperte, naftalina e il buco dove c'erano le monete.",
     camino: "Ti scaldi davanti al camino. Il fuoco scoppietta. Per un momento ti senti un conte anche tu. Stanchezza -3, stress -3",
@@ -106,7 +106,7 @@ export const TESTI_EDIFICI = {
     raccontiDice: [
       "«Nel 1859 il mio trisavolo ospitò Garibaldi. Garibaldi non pagò il conto. Da allora odiamo i rossi. E le camicie.»",
       "«Una volta il castello aveva un fossato pieno d'acqua. Ora è pieno di nutrie. Anche loro pagano l'affitto: zero.»",
-      "«Mio padre giocò a carte il bosco a nord con il nonno del Patata. Perse. Le patate del Patata, in un certo senso, sono mie.»",
+      "«Mio padre giocò a carte il bosco a nord con il nonno del Potato. Perse. Le patate del Potato, in un certo senso, sono mie.»",
     ],
   },
   ambrogio: {
@@ -195,7 +195,7 @@ export const TESTI_EDIFICI = {
     tavolo: "Un tavolo con la tovaglia a quadretti. Le briciole raccontano la storia della serata di qualcun altro.",
     pettegolezzi: "Pettegolezzi",
     voci: [
-      "«La Sabrina stasera era qui con un tipo di Lodi. Lei ha pagato. Pensa te.»",
+      "«La Sabrina stasera era qui con un tipo di Littlesound. Lei ha pagato. Pensa te.»",
       "«La Federica ordina sempre la diavola. Dice che le piacciono le cose piccanti. E i ragazzi sinceri, ha detto pure.»",
       "«La Blu Belga mangia solo la pizza senza mozzarella. Tutto il resto lo brucia in palestra.»",
       "«L'Ilenia prende la quattro formaggi e ne lascia tre. Gioca a biliardo meglio di come mangia.»",

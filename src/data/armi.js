@@ -133,8 +133,8 @@ export const VESTITI = {
   thermos:         { nome: 'Thermos di caffè',         slot: 'portafortuna', bonus: { faticaInizioScontro: 10 }, desc: 'fatica −10 a inizio scontro' },
   telefonoConsulente: { nome: 'Numero del Consulente', slot: 'portafortuna', bonus: { consigliAlTelefono: 1 }, desc: 'le dritte arrivano per SMS sul telefonino' },
   // angolo dell'usato del Bubetto: roba che "arriva" dalle cascine vicine (GDD 19.3)
-  cappelloPaglia:  { nome: 'Cappello di paglia del Patata', slot: 'testa', bonus: { def: 1, stress: 0.05 }, desc: 'difesa +1, stress −5%. Profuma di patata' },
-  stivaliPostino:  { nome: 'Stivali del Postino',      slot: 'piedi', bonus: { velocita: 0.15, def: 1 }, desc: 'cammini +15%, difesa +1. Il Postino li cerca ancora' },
+  cappelloPaglia:  { nome: 'Cappello di paglia del Potato', slot: 'testa', bonus: { def: 1, stress: 0.05 }, desc: 'difesa +1, stress −5%. Profuma di patata' },
+  stivaliPostino:  { nome: 'Stivali del Postman',      slot: 'piedi', bonus: { velocita: 0.15, def: 1 }, desc: 'cammini +15%, difesa +1. Il Postman li cerca ancora' },
   giubbottoFrank:  { nome: 'Giubbotto texano di Frank', slot: 'corpo', bonus: { def: 3, vendite: 0.05 }, desc: 'difesa +3, vendite +5%. Yee-haw' },
   cornetto:        { nome: 'Cornetto rosso',           slot: 'portafortuna', bonus: { critico: 0.05 }, desc: 'critico +5%. Toccare ferro non basta' },
   // leggendari: solo dalla cabina della corrente (GDD 20.5)
@@ -178,13 +178,13 @@ export const VESTITI = {
   giaccaVento:     { nome: 'Giaccone Antinebbia del Consorzio', slot: 'corpo', bonus: { def: 9, freddo: 1 }, albero: true, desc: 'difesa +9, niente fatica extra col freddo' },
   stivaliGomma:    { nome: 'Stivaloni Squish-Squash',  slot: 'piedi', bonus: { def: 3, velocita: 0.12 }, albero: true, desc: 'difesa +3, cammini +12%' },
   ciabatteStalla:  { nome: 'Ciabatte da Stalla Supersoniche', slot: 'piedi', bonus: { velocita: 0.2, def: 1 }, albero: true, desc: 'cammini +20%, difesa +1. Nessuno sa come' },
-  zoccoli:         { nome: 'Zoccoli Ciocca-Ciocca',    slot: 'piedi', bonus: { velocita: 0.28 }, albero: true, desc: 'cammini +28%. Si sentono arrivare da Lodi' },
+  zoccoli:         { nome: 'Zoccoli Ciocca-Ciocca',    slot: 'piedi', bonus: { velocita: 0.28 }, albero: true, desc: 'cammini +28%. Si sentono arrivare da Littlesound' },
   // Babbo Natale smemorato e Mostro della Palude (src/speciali.js)
   cappelloNatale:  { nome: 'Berretto Tintinnante di Babbo Natale', slot: 'testa', bonus: { def: 5, stress: 0.15 }, trofeo: true, desc: 'difesa +5, stress −15%. Il pon pon fa «din»' },
   maglioneRenne:   { nome: 'Maglione Rudolph Edizione Limitata',    slot: 'corpo', bonus: { def: 12, stress: 0.1 }, trofeo: true, desc: 'difesa +12, stress −10%. Fatto a mano dalla signora Claus' },
   mantelloAlghe:   { nome: 'Mantello Melmoso della Palude', slot: 'corpo', bonus: { def: 16, cure: 0.1 }, trofeo: true, desc: 'difesa +16, cure +10%. Gocciola sempre' },
   // Parco Oglio (src/parco.js): mostri, Vecchio Camper e Boss MM
-  mantelloVampiro: { nome: 'Mantello del Conte di Casalpusterlengo', slot: 'corpo', bonus: { def: 14, critico: 0.05 }, trofeo: true, desc: 'difesa +14, critico +5%. Fodera rosso sangue (di pomodoro)' },
+  mantelloVampiro: { nome: 'Mantello del Conte di Saint James Borough', slot: 'corpo', bonus: { def: 14, critico: 0.05 }, trofeo: true, desc: 'difesa +14, critico +5%. Fodera rosso sangue (di pomodoro)' },
   cappelloBossMM:  { nome: 'Il Cappello di Boss MM', slot: 'testa', bonus: { def: 9, stress: 0.12, guardie: 1 }, trofeo: true, desc: 'difesa +9, stress −12%. Le guardie del parco ti vedono la metà' },
   // Banco del Gigante (src/banco.js): roba costruita in officina
   distintivo:      { nome: 'Distintivo dello Sceriffo della Bassa', slot: 'portafortuna', bonus: { atk: 4, critico: 0.05 }, desc: 'attacco +4, critico +5%. Di latta, ma luccica' },
@@ -203,7 +203,7 @@ export const OGGETTI = {
   uova:     { nome: 'Uovo',              icona: '🥚', effetto: { danno: 12 }, combattimento: 'one', vendita: 3 },
   pomodoro: { nome: 'Pomodoro',          icona: '🍅', effetto: { health: 18 }, combattimento: 'self', vendita: 6 },
   mais:     { nome: 'Pannocchia',        icona: '🌽', effetto: { tired: -15 }, combattimento: 'self', vendita: 10 },
-  patata:   { nome: 'Patata del Patata', icona: '🥔', effetto: { tired: -10, health: 5 }, combattimento: 'self' },
+  patata:   { nome: 'Patata del Potato', icona: '🥔', effetto: { tired: -10, health: 5 }, combattimento: 'self' },
   caffe:    { nome: 'Caffè',             icona: '☕', effetto: { tired: -20 }, combattimento: 'self', prezzo: 2 },
   panino:   { nome: 'Panino col salame', icona: '🥪', effetto: { health: 35 }, combattimento: 'self', prezzo: 5 },
   grappa:   { nome: 'Grappa',            icona: '🥃', effetto: { stress: -25, ubriaco: 3 }, combattimento: 'self', prezzo: 4 },

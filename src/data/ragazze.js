@@ -16,7 +16,7 @@
 export const RAGAZZE = {
   debora: {
     nome: 'Blu Belga', eta: 32, icona: '🏋️‍♀️',
-    chi: 'Personal trainer alla palestra «Bicipite d\'Oro» di Codogno. Corre sulla capezzagna la mattina presto.',
+    chi: 'Personal trainer alla palestra «Bicipite d\'Oro» di Newbarley. Corre sulla capezzagna la mattina presto.',
     dove: 'Fa jogging sulla capezzagna dalle 7 alle 10:30.',
     jogging: true,
     posti: [{ ore: [7, 10.5], x: 27, z: 29.4 }],
@@ -351,7 +351,7 @@ export const RAGAZZE = {
       "«Il latte non si consegna da solo e io non ho tempo. Parla in fretta e fammi ridere.»",
       "«Ohi. Stamattina il camion faceva lo stesso rumore del tuo trattore. L'ho portato da Zeno per pietà.»",
       "«Da lontano ho pensato: chi è quel sacco di mangime con le gambe? Ah, eri tu.»",
-      "«Codogno-Cremona in quaranta minuti. Non dirlo alla Vigilessa. Né al latte.»",
+      "«Newbarley-Oldbarley in quaranta minuti. Non dirlo alla Vigilessa. Né al latte.»",
       "«Hai la faccia di uno che ha dormito nel fienile. Pratico. Ci ho dormito anch'io, una volta.»",
       "«Dieci-quattro, Garonio. Cosa vuol dire? Boh, lo dicono in tv.»",
       "«Il Moreno mi ha chiesto di uscire. Gli ho detto che il camion è geloso. Ci ha creduto.»",
@@ -410,7 +410,7 @@ export const RAGAZZE = {
         { t: "«Niente. Pensavo che bastassi io.»", tono: 'spaccone', r: "«Ah. Un regalo un po' piccolo, allora.»" },
         { t: "«Me stesso, puntuale e lavato. Per me è un evento.»", tono: 'sincero', r: "«È vero, profumi di sapone. Il Gigante sarà sconvolto.»" },
       ] },
-      { d: "«Domani porto il latte fino a Cremona. Vieni con me in cabina?»", a: [
+      { d: "«Domani porto il latte fino a Oldbarley. Vieni con me in cabina?»", a: [
         { t: "«Ci sto. Ma si ferma all'autogrill, che ho fame.»", tono: 'sicuro', r: "«All'autogrill ci fermiamo sempre. Panino col salame e caffè doppio. Hai capito come funziona.»" },
         { t: "«Ti prego sì, non lasciarmi solo in questa fattoria...»", tono: 'bisognoso', r: "«Eh, Garonio. Il latte non lo porto in due per pietà.»" },
         { t: "«Solo se mi lasci suonare il clacson sotto casa del Gigante.»", tono: 'ironico', r: "«Alle quattro e mezza. Tre colpi lunghi. È deciso.»" },
@@ -436,7 +436,7 @@ export const RAGAZZE = {
     reputazione: "«Mi stai simpatico, eh. Ma tutti i camionisti della zona parlano di te. E non bene. Rimettiti in sesto, poi ne riparliamo.»",
     blocco: "Ilenia passa col camion del latte e suona il clacson. Non per salutarti.",
     conquistata: [
-      "«Ohi, Trattore Minore! Vieni a Cremona con me?»",
+      "«Ohi, Trattore Minore! Vieni a Oldbarley con me?»",
       "«Il mio passeggero preferito. Allacciati la cintura.»",
       "«Ho attaccato la tua foto sul cruscotto, vicino a San Cristoforo. Lui mi protegge, tu mi fai ridere.»",
       "«Stamattina ho suonato tre colpi lunghi sotto casa tua. Il Gigante ha risposto con quattro.»",
@@ -478,10 +478,10 @@ export const RAGAZZE = {
         { t: "«Mi piace guardare lei. È arte anche quella?»", tono: 'romantico', r: "«È la frase più popolana e più dolce che abbia sentito questa settimana. Me la segno.»" },
         { t: "«Sì, soprattutto il calendario dei pompieri.»", tono: 'cafone', r: "«Ambrogio. Accompagni il signore all'uscita. Quella di servizio.»" },
       ] },
-      { d: "«Il mio trisavolo ha combattuto a Solferino. Il suo?»", a: [
-        { t: "«Il mio ha combattuto a Solferino contro una mucca. E ha vinto.»", tono: 'spaccone', r: "«Contro una mucca, e ha vinto! Una stirpe di guerrieri. Devo informare lo zio.»" },
+      { d: "«Il mio trisavolo ha combattuto a Clearville. Il suo?»", a: [
+        { t: "«Il mio ha combattuto a Clearville contro una mucca. E ha vinto.»", tono: 'spaccone', r: "«Contro una mucca, e ha vinto! Una stirpe di guerrieri. Devo informare lo zio.»" },
         { t: "«Non lo so. Credo zappasse. Le vostre terre, probabilmente.»", tono: 'sincero', r: "«Probabilmente. Grazie per il lavoro, con un secolo e mezzo di ritardo, a nome della famiglia.»" },
-        { t: "«Il mio era nella stanza accanto a ridere di Solferino.»", tono: 'ironico', r: "«Non si ride di Solferino. Non in mia presenza. Arrivederla.»" },
+        { t: "«Il mio era nella stanza accanto a ridere di Clearville.»", tono: 'ironico', r: "«Non si ride di Clearville. Non in mia presenza. Arrivederla.»" },
       ] },
       { d: "«Lei mi trova snob?»", a: [
         { t: "«Un po'. Ma le sta bene, come il cappello.»", tono: 'romantico', r: "«Il cappello era di mia nonna. Lo snobismo pure. Grazie: li porto bene tutti e due.»" },
@@ -696,10 +696,10 @@ export const RAGAZZE = {
         { t: "(rutta forte) «Ecco perché. Tu non ti scandalizzi.»", tono: 'cafone', r: "(rutta più forte) «Vinco io. Ma mi piaci.»" },
         { t: "«Perché sei bellissima, anche se mi hai detto di non dirlo.»", tono: 'romantico', r: "«Te l'avevo detto. Adesso paghi tu.»" },
       ] },
-      { d: "«Domani ho un incontro amatoriale a Lodi. Vieni a fare il tifo?»", a: [
-        { t: "«Vengo. Col fischietto della sagra e un panino col salame.»", tono: 'cafone', r: "«Il fischietto della sagra! Faremo vergognare tutta Lodi. Perfetto.»" },
+      { d: "«Domani ho un incontro amatoriale a Littlesound. Vieni a fare il tifo?»", a: [
+        { t: "«Vengo. Col fischietto della sagra e un panino col salame.»", tono: 'cafone', r: "«Il fischietto della sagra! Faremo vergognare tutta Littlesound. Perfetto.»" },
         { t: "«Vengo. Ma se ti fanno male mi metto a piangere. Te lo dico prima.»", tono: 'sincero', r: "«Piangi pure. Poi però le guardi male. Molto male.»" },
-        { t: "«Vengo, e se l'altra ti fa male ci penso io.»", tono: 'spaccone', r: "«Tu? Quella di Lodi pesa cento chili. Semmai ti difendo io.»" },
+        { t: "«Vengo, e se l'altra ti fa male ci penso io.»", tono: 'spaccone', r: "«Tu? Quella di Littlesound pesa cento chili. Semmai ti difendo io.»" },
       ] },
       { d: "«Kemal sta chiudendo. Ultima domanda: com'era il kebab?»", a: [
         { t: "«Buonissimo. Ma tu sei meglio. ...No, il kebab è meglio. Scusa.»", tono: 'sincero', r: "«Hai ragione. Ma arrivo seconda solo al kebab. È un onore.»" },
@@ -726,7 +726,7 @@ export const RAGAZZE = {
 
   marta: {
     nome: 'Balerion', eta: 31, icona: '🎹',
-    chi: "Suona l'organo nella chiesa di San Garonio. Dal 2014 al 2016 era la bassista dei «Vespri dell'Apocalisse», punk di Lodi. Tatuaggi sotto le maniche, ironia nera, romantica in modo gotico: ama le cose tristi e belle.",
+    chi: "Suona l'organo nella chiesa di San Garonio. Dal 2014 al 2016 era la bassista dei «Vespri dell'Apocalisse», punk di Littlesound. Tatuaggi sotto le maniche, ironia nera, romantica in modo gotico: ama le cose tristi e belle.",
     dove: "Il pomeriggio in chiesa all'organo (14-18), poi al bar vicino al juke-box (18-20).",
     posti: [{ ore: [14, 18], interno: 'chiesa', x: 11.6, z: 1.5 }, { ore: [18, 20], interno: 'bar', x: 20.0, z: 1.4 }],
     aspetto: { sprite: 'mora_occhiali', ricolora: { capelli: '#141418' }, w: 15, h: 23, skin: '#f4d8c8', hair: '#141418', hairStyle: 'long', shirt: '#1a1a1a', pants: '#1a1a1a', boots: '#1a1a1a', eyes: 'normal' },
@@ -738,7 +738,7 @@ export const RAGAZZE = {
       "«Ciao. Sei vivo? Bene. Non si sa mai, di questi tempi.»",
       "«In sagrestia c'è un pipistrello. L'ho chiamato Garonio. Dorme di giorno, come te.»",
       "«Suor Carmela mi ha visto il tatuaggio. Le ho detto che è un santo. È Sid Vicious. Si è fatta il segno della croce.»",
-      "«La nebbia di stasera è perfetta. Sembra un video anni Ottanta girato a Casalpusterlengo.»",
+      "«La nebbia di stasera è perfetta. Sembra un video anni Ottanta girato a Saint James Borough.»",
     ],
     primaVolta: "In chiesa l'organo attacca un accordo cupissimo e si ferma di colpo. Dalla cantoria si sporge una ragazza con le unghie nere. «Ciao. Sono Balerion, suono qui. Tu sei quello che dorme al terzo banco. Russi in re minore, lo sapevi?»",
     approccio: [

@@ -68,7 +68,7 @@ export const PNG = {
     chiacchiere: [
       "Mai fidarsi di un meccanico che fischietta. Zeno fischietta sempre.",
       "Mio cugino ha preso in pieno la cabina della corrente e ha trovato... no, lascia stare.",
-      "La Vigilessa fa il giro della piazza come un orologio svizzero. Svizzero di Codogno.",
+      "La Vigilessa fa il giro della piazza come un orologio svizzero. Svizzero di Newbarley.",
       "Ho un'intuizione. Me ne vengono tre al giorno. Una volta all'anno una funziona.",
       "Garonio, diversifica. Non mettere tutte le nutrie nello stesso fosso.",
       "Il segreto è il networking. Io parlo con tutti. Nessuno mi risponde, ma io parlo.",
@@ -196,7 +196,7 @@ export const PNG = {
     ],
   },
   patata: {
-    nome: 'Il Patata', ruolo: 'Vicino grosso, lento e buono. Parla solo di patate.',
+    nome: 'Il Potato', ruolo: 'Vicino grosso, lento e buono. Parla solo di patate.',
     posti: [{ ore: [6, 17], x: 101.5, z: 27.6 }, { ore: [17, 20], x: 101.5, z: 40.4 }],   // di giorno sul bordo del campo, la sera davanti alla cascina (src/data/vicini.js)
     aspetto: { sprite: 'contadino_patate', w: 19, h: 25, skin: '#e8b090', hair: '#8a6a3a', hairStyle: 'bald', hat: '#c8a050', shirt: '#7a8a4a', overalls: '#6a5a3a', pants: '#6a5a3a', boots: '#3a2a1a', belly: true, eyes: 'sleepy' },
     amicizia: [-50, 50, 10],
@@ -219,7 +219,7 @@ export const PNG = {
     ],
   },
   postino: {
-    nome: 'Il Postino', ruolo: 'Sa tutto di tutti, legge le lettere degli altri.',
+    nome: 'Il Postman', ruolo: 'Sa tutto di tutti, legge le lettere degli altri.',
     posti: [{ ore: [6, 20], x: 36.5, z: 27.6 }],
     giro: [[30, 27.6], [47, 27.6]],   // passeggia sul bordo del suo grano (e tiene d'occhio i paletti)
     aspetto: { sprite: 'uomo_zaino', w: 16, h: 24, skin: '#f0c098', hair: '#3a2a1a', hairStyle: 'flat', hat: '#2a4a8a', shirt: '#6a8ac8', pants: '#2a3a6a', boots: '#1a1a1a', mustache: '#3a2a1a', eyes: 'normal' },
@@ -334,7 +334,7 @@ export const PNG = {
       "Il mio antenato faceva giustizia sulle sue terre. Io faccio la raccolta differenziata. I tempi cambiano.",
     ],
     chiacchiere: [
-      "Il mio trisavolo ha combattuto a Solferino. Dalla parte sbagliata, ma con eleganza.",
+      "Il mio trisavolo ha combattuto a Clearville. Dalla parte sbagliata, ma con eleganza.",
       "Il castello ha quarantadue stanze. Ne riscaldo una. Le altre le riscalda la mia dignità.",
       "Ho venduto gli affreschi per rifare il tetto. Ora piove sugli affreschi del vicino.",
       "Ho un albero genealogico di sei secoli. Ho anche un albero vero in giardino. È morto. Ma rimane nobile.",
@@ -405,7 +405,7 @@ export const PNG = {
       "Il certificato per non lavorare? A te? Tuo padre mi aspetta sotto casa col forcone.",
       "Il veterinario e io abbiamo studiato insieme. Lui ha scelto le mucche perché non si lamentano.",
       "Hai qualcosa, ma non so cosa. Torna tra una settimana: o passa, o lo scopriamo.",
-      "Ho studiato a Pavia. Sei anni. Per sentirmi dire dal Tarcisio \"secondo me è il fegato\". Ha ragione, ma comunque.",
+      "Ho studiato a Goodthought. Sei anni. Per sentirmi dire dal Tarcisio \"secondo me è il fegato\". Ha ragione, ma comunque.",
     ],
     sulleRagazze: [
       { solo: ['noemi'], t: "Esci con la mia infermiera? Bene. Se la fai piangere, la visita costa il triplo." },
@@ -432,7 +432,7 @@ export const PNG = {
       "La Noemi è brava, ma troppo dolce. I pazienti vanno trattati come i polli: con amore e fermezza.",
       "Il Tarcisio fa le analisi ogni anno. Ogni anno il laboratorio ci chiama per chiedere se è vivo.",
       "Il Dottor Mutua ha mani d'oro. È un peccato che le usi soprattutto per firmare.",
-      "La sala d'attesa è il vero centro del paese. Qui si sa tutto prima del Postino.",
+      "La sala d'attesa è il vero centro del paese. Qui si sa tutto prima del Postman.",
       "Il termometro è sempre giusto. Sono i pazienti che sbagliano la febbre.",
     ],
     sulleRagazze: [
@@ -506,7 +506,7 @@ export const PNG = {
       "Gennaro canta \"O sole mio\" mentre fa la pizza. Quando canta \"Malafemmena\" è meglio non ordinare.",
       "Il Commendatore viene ogni giovedì e ordina sempre la stessa cosa. E ogni volta chiede se è cambiata.",
       "Se mi chiedi un tavolo per due, lo so prima di tutti. Poi lo sa la Pina. Poi il mondo.",
-      "La pizza all'ananas l'ha ordinata solo un turista tedesco. Gennaro l'ha accompagnato al confine. Di Codogno.",
+      "La pizza all'ananas l'ha ordinata solo un turista tedesco. Gennaro l'ha accompagnato al confine. Di Newbarley.",
     ],
     sulleRagazze: [
       "Stasera tavolo per due? Ti preparo quello buono. Quello che non traballa.",
@@ -589,7 +589,7 @@ export const PNG = {
       "Lo sai che il mio primo trattore l'ho venduto a me stesso? Affare d'oro. Mi sono fatto anche lo sconto.",
       "Mia moglie dice che parlo solo di mangimi. Non è vero: parlo anche di sementi. E di lei, che è scappata con quello delle sementi della concorrenza.",
       "Il marketing del consorzio lo fa mio nipote. Ha diciannove anni e ha scritto «CONZORZIO» sul furgone. È un genio incompreso.",
-      "Il Patata ha comprato un trattore da me nel '98. Lo sta ancora pagando. A rate. Da dodicimila lire.",
+      "Il Potato ha comprato un trattore da me nel '98. Lo sta ancora pagando. A rate. Da dodicimila lire.",
       "Il segreto di un buon pomodoro? Musica classica. Il segreto di una buona zucchina? Non dirle mai che è una zucchina. Si offende.",
       "Ho venduto un aratro anche al prete. Non so cosa ci faccia. Non chiedo. Il cliente ha sempre ragione.",
     ],
@@ -608,7 +608,7 @@ export const PNG = {
     chiacchiere: [
       "Le mie guardie sono le migliori della Bassa. Livello trenta. Le ho allenate io, a fischietto.",
       "Di notte nel parco non ci entro. Non per paura. Per regolamento. Regolamento mio.",
-      "Alla sagra del '84 ho ballato con la ragazza più bella di Casalpusterlengo. Qualcuno se lo ricorda ancora. Qualcuno se lo lega al dito.",
+      "Alla sagra del '84 ho ballato con la ragazza più bella di Saint James Borough. Qualcuno se lo ricorda ancora. Qualcuno se lo lega al dito.",
     ],
   },
   guardia1: {

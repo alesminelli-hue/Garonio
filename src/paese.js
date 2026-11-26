@@ -1,5 +1,5 @@
 // Il paese reagisce all'azienda (GDD capitolo 27.5). Quando Garonio ha la Cascina dei Salici:
-//  - gli agricoltori (Patata, Postino, Frank, Camper, Rodella) lo salutano da collega;
+//  - gli agricoltori (Potato, Postman, Frank, Camper, Rodella) lo salutano da collega;
 //  - gli altri, a volte, invece del saluto solito commentano l'azienda (3-4 frasi a testa, buone o cattive);
 //  - Ludovica, Federica, Sabrina e Ilenia sono più facili: ogni risposta non sbagliata vale qualche punto
 //    di affinità in più, e a volte salutano parlando dell'azienda.

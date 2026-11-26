@@ -19,7 +19,7 @@ import { pick, fill } from './racconto.js';
 const PILOT_GUIDA = [
   "COSA PROVARE (1/3) · NEGOZIO. Il Bubetto sta nel suo magazzino in paese (dalle 9 alle 20). Bancone: parli con lui e apri il magazzino. Scaffali: armi, vestiti, manuali (+1 punto abilità) e oggetti. Angolo dell'usato: roba rara che cambia ogni lunedì. Le armi escono man mano: in primavera fino al forcone, in estate fino alla roncola, la motosega in autunno (col Kit è già tutto in vendita).",
   "COSA PROVARE (2/3) · ARMI E MOSSE. Ogni arma porta la sua mossa nel menu Abilità dello scontro: Rastrellata (due nemici), Badilata (stordisce), Spazzata, Falciata (critico), Fendente (ignora la difesa), Motosegata (consuma benzina). Con Lottatore 3 arriva la seconda mossa. Oggetti nello scontro: trappola (stordisce), grappa (stress giù ma mira storta), pomata, panino. Il santino della nonna ti rialza una volta al giorno.",
-  "COSA PROVARE (3/3) · COMMISSIONI E ZENO. Lavagna del Bubetto, una alla volta: code di nutria, 10 piccioni (tra piazza e silos), 3 pezzi di ferro nei fossi della capezzagna (luccicano), il pacco per il Postino, i soldi di Mister Frank, 5 code di ratto (i ratti dei capannoni di notte). Ogni commissione alza la fiducia: più sconto e più roba nell'usato. In officina Zeno affila l'arma (3 gradi)... a volte ti frega.",
+  "COSA PROVARE (3/3) · COMMISSIONI E ZENO. Lavagna del Bubetto, una alla volta: code di nutria, 10 piccioni (tra piazza e silos), 3 pezzi di ferro nei fossi della capezzagna (luccicano), il pacco per il Postman, i soldi di Mister Frank, 5 code di ratto (i ratti dei capannoni di notte). Ogni commissione alza la fiducia: più sconto e più roba nell'usato. In officina Zeno affila l'arma (3 gradi)... a volte ti frega.",
 ];
 
 

@@ -23,11 +23,11 @@ export const VESTITI_IN_VENDITA = ['stivali', 'cappellino', 'casco', 'tuta', 'st
 
 export const MANUALI = [
   { id: 'manualeContadino', nome: 'Manuale del bravo contadino', prezzo: 80, capitolo: 1,
-    frase: "Edizione 1974, con le figure. Le pagine sulle patate le ha strappate il Patata." },
+    frase: "Edizione 1974, con le figure. Le pagine sulle patate le ha strappate il Potato." },
   { id: 'manualeAutodifesa', nome: 'Corso di autodifesa per corrispondenza', prezzo: 150, capitolo: 2,
     frase: "Lezione 1: non farti prendere. Lezione 2: vedi lezione 1." },
   { id: 'manualeRispondere', nome: 'Come rispondere a tono', prezzo: 250, capitolo: 3,
-    frase: "L'ha scritto un barista di Codogno. Garantito al limone." },
+    frase: "L'ha scritto un barista di Newbarley. Garantito al limone." },
   { id: 'manualeFattore', nome: 'Il Fattore moderno (VHS + libretto)', prezzo: 400, capitolo: 4,
     frase: "Il videoregistratore non è compreso. Il libretto sì, quasi tutto." },
 ];
@@ -46,7 +46,7 @@ export const ATTREZZATURA = [
 
 // Angolo dell'usato: a rotazione ogni lunedì. tipo: 'vestito' | 'arma' | 'oggetto'
 export const USATO = [
-  { tipo: 'vestito', id: 'cappelloPaglia', prezzo: 35, nota: "L'ho trovato su uno spaventapasseri. Vicino alla cascina del Patata. Coincidenze." },
+  { tipo: 'vestito', id: 'cappelloPaglia', prezzo: 35, nota: "L'ho trovato su uno spaventapasseri. Vicino alla cascina del Potato. Coincidenze." },
   { tipo: 'vestito', id: 'stivaliPostino', prezzo: 55, nota: "Erano fuori da una porta. Chi lascia gli stivali fuori, li vuole regalare." },
   { tipo: 'vestito', id: 'giubbottoFrank', prezzo: 80, nota: "Frank dice che gliel'hanno rubato. Io dico che l'ho comprato. Siamo pari." },
   { tipo: 'vestito', id: 'cornetto', prezzo: 40, nota: "Porta fortuna. A me l'ha portata: l'ho venduto." },
@@ -55,7 +55,7 @@ export const USATO = [
   { tipo: 'arma', id: 'badile', prezzo: 65, nota: "Usato pochissimo. Da un uomo che scavava tantissimo." },
   { tipo: 'oggetto', id: 'trappola', n: 3, prezzo: 12, nota: "Tre trappole al prezzo di due. Una è già scattata, ma si ricarica." },
   { tipo: 'oggetto', id: 'grappa', n: 2, prezzo: 6, nota: "Grappa della casa. Di quale casa non lo so." },
-  { tipo: 'oggetto', id: 'benzina', n: 2, prezzo: 20, nota: "Due taniche. Profumano di trattore del Postino." },
+  { tipo: 'oggetto', id: 'benzina', n: 2, prezzo: 20, nota: "Due taniche. Profumano di trattore del Postman." },
 ];
 
 // Battute del Bubetto nel negozio ({prezzo}, {nome}, {sconto})
@@ -113,8 +113,8 @@ export const LAVAGNA = {
     scusa: "Tre pezzi, Garonio. Guarda nei fossi lungo la capezzagna dei campi: luccicano.",
   },
   bubetto_pacco: {
-    da: 'bubetto', titolo: 'Un pacco per il Postino',
-    offerta: "Porta questo pacco al Postino. Ma senza che lo veda la moglie! È un regalo. Per lei. Cioè, da parte di lui. Lascia stare.",
+    da: 'bubetto', titolo: 'Un pacco per il Postman',
+    offerta: "Porta questo pacco al Postman. Ma senza che lo veda la moglie! È un regalo. Per lei. Cioè, da parte di lui. Lascia stare.",
     dai: { paccoSegreto: 1 },
     obiettivo: { consegna: { paccoSegreto: 1 }, a: 'postino' },
     torna: false,

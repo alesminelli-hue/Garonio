@@ -2,7 +2,7 @@
 // I dati stanno in src/data/vicini.js, le missioni in src/data/secondarie.js (da: 'gigante', truffaldina: true).
 //
 // Cosa fa:
-//  - sulla mappa: pozzo di Frank, alberi del confine, paletti del Postino, erpice del Patata, cani con la cuccia, garzoni;
+//  - sulla mappa: pozzo di Frank, alberi del confine, paletti del Postman, erpice del Potato, cani con la cuccia, garzoni;
 //  - i vicini fanno battute quando Garonio passa e hanno scelte in più nel dialogo (patate, voci, mais);
 //  - il Gigante offre le truffe nel suo dialogo (talkGigante in game.js chiama scelteGigante());
 //  - durante una truffa: coni di vista e udito di vicino, cane e garzone, rumore delle azioni, sospetto;
@@ -166,7 +166,7 @@ export class Cascine {
       this.paletti.push(p); this._mostraPaletto(p);
     });
 
-    // erpice del Patata
+    // erpice del Potato
     const E = BERSAGLI.prestito;
     this.erpice = add(PIX.toTexture(erpice()), 1.6, 0.85, E.x, E.z);
     this._mostraErpice();
@@ -451,7 +451,7 @@ export class Cascine {
   }
   // c'è la turbina vera del lavoro C ed è di Garonio?
   _turbinaVera() { const A = this.game.attrezzi; return !!A?.turbinaAttiva && (!A.ha || A.ha('turbina')); }
-  // il pozzo di Frank e il fosso del Patata contano come acqua per la turbina vera
+  // il pozzo di Frank e il fosso del Potato contano come acqua per la turbina vera
   _agganciaAcqua() {
     const A = this.game.attrezzi; if (!A?._acqua || A._acquaCascine) return;
     const base = A._acqua.bind(A);
@@ -748,12 +748,12 @@ export class Cascine {
   _nuovoGiorno() {
     const f = this.f, day = this.s.day;
     for (const a of this.alberi) if (a.cut && day - (f.alberi[a.id] || 0) >= BERSAGLI.ricrescita) { delete f.alberi[a.id]; this._mostraAlbero(a, false); }
-    // il Postino rimette a posto i paletti, se non c'è una truffa sul confine in corso
+    // il Postman rimette a posto i paletti, se non c'è una truffa sul confine in corso
     if (f.paletti.length && this.attiva()?.def.tipo !== 'confine') {
       f.paletti = []; this.paletti.forEach(p => this._mostraPaletto(p));
     }
-    // il Patata si riprende l'erpice dopo qualche giorno
-    if (f.erpice === 'tettoia' && Math.random() < 0.25) { f.erpice = 'patata'; this._mostraErpice(); this.game.ui.toast('Il Patata è venuto a riprendersi l\'erpice. Ha lasciato una patata come ricevuta.', 'small'); this.game.prog.dai('patata', 1); }
+    // il Potato si riprende l'erpice dopo qualche giorno
+    if (f.erpice === 'tettoia' && Math.random() < 0.25) { f.erpice = 'patata'; this._mostraErpice(); this.game.ui.toast('Il Potato è venuto a riprendersi l\'erpice. Ha lasciato una patata come ricevuta.', 'small'); this.game.prog.dai('patata', 1); }
     this._bark = {};
   }
 

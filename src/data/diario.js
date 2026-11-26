@@ -19,8 +19,8 @@ export const LUOGHI = {
   maiali:   { x: 134,  z: 68.6, nome: 'i capannoni dei maiali' },
   bar:      { x: 13.5, z: 50.6, nome: 'il bar' },
   bubetto:  { x: 45,   z: 50.0, nome: 'il magazzino del Bubetto' },
-  patata:   { x: 101,  z: 40.5, nome: 'la cascina del Patata' },
-  postino:  { x: 36.5, z: 40.5, nome: 'la cascina del Postino' },
+  patata:   { x: 101,  z: 40.5, nome: 'la cascina del Potato' },
+  postino:  { x: 36.5, z: 40.5, nome: 'la cascina del Postman' },
   frank:    { x: 144.5, z: 40.0, nome: 'il ranch di Mister Frank' },
 };
 
@@ -60,7 +60,7 @@ export const COLLEZIONI = {
       { id: 'tappo4', x: 42.5, z: 67.5, nome: 'Tappo del Welcome', testo: 'Profuma di spumante e di brutte decisioni.' },
       { id: 'tappo5', x: 3.5,  z: 78.5, nome: 'Tappo a stella', testo: 'Qualcuno l\'ha usato come fiche a poker.' },
       { id: 'tappo6', x: 50.6, z: 47.5, nome: 'Tappo del Bubetto', testo: 'Il Bubetto giura che non è suo. È suo.' },
-      { id: 'tappo7', x: 42.5, z: 37.0, nome: 'Tappo della gazzosa', testo: 'Il Postino beve gazzosa. Dice.' },
+      { id: 'tappo7', x: 42.5, z: 37.0, nome: 'Tappo della gazzosa', testo: 'Il Postman beve gazzosa. Dice.' },
       { id: 'tappo8', x: 73.5, z: 59.5, nome: 'Tappo d\'oro', testo: 'Sotto c\'è scritto «HAI VINTO». Non dice cosa.' },
     ],
   },
@@ -71,7 +71,7 @@ export const COLLEZIONI = {
     pezzi: [
       { id: 'santo1', x: 2.5,   z: 20.0, nome: 'San Isidoro', testo: 'Protettore dei contadini. Ti guarda male.' },
       { id: 'santo2', x: 20.5,  z: 30.5, nome: 'Sant\'Antonio Abate', testo: 'Protettore degli animali. Le nutrie non contano.' },
-      { id: 'santo3', x: 50.5,  z: 12.0, nome: 'San Bassiano', testo: 'Patrono di Lodi. Lo conoscono anche le zanzare.' },
+      { id: 'santo3', x: 50.5,  z: 12.0, nome: 'San Bassiano', testo: 'Patrono di Littlesound. Lo conoscono anche le zanzare.' },
       { id: 'santo4', x: 78.5,  z: 33.0, nome: 'Santa Rita', testo: 'Santa delle cause impossibili. Tipo te.' },
       { id: 'santo5', x: 88.5,  z: 50.0, nome: 'San Cristoforo', testo: 'Protettore degli automobilisti. Mettilo nella Punto.' },
       { id: 'santo6', x: 116.5, z: 40.0, nome: 'Santa Lucia', testo: 'Protettrice della vista. Utile per trovare gli altri.' },

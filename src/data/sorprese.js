@@ -29,7 +29,7 @@ export const LAVORETTI = {
       { peso: 20, testo: "Niente. Però il silenzio del laghetto vale più di un pesce.", xp: 2, stress: -4 },
       { peso: 15, testo: "Uno scarpone. Del 43. Il tuo numero. Inquietante.", xp: 1, stress: 2 },
       { peso: 6, testo: "Una bottiglia con un messaggio: «Chi trova questo biglietto è scemo». Firmato: il Consulente.", xp: 10, stress: 1 },
-      { peso: 2, testo: "Un anello d'oro! Lo vendi al Compro Oro di Lodi. Meglio non chiedersi di chi era.", soldi: 80, xp: 20, stress: -10 },
+      { peso: 2, testo: "Un anello d'oro! Lo vendi al Compro Oro di Littlesound. Meglio non chiedersi di chi era.", soldi: 80, xp: 20, stress: -10 },
       { peso: 4, testo: "Abbocca una nutria. Ti guarda. La guardi. Lei se ne va con l'esca.", xp: 3, stress: 3 },
     ],
     finita: 'I pesci per oggi hanno capito il trucco.',
