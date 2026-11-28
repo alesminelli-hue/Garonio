@@ -725,7 +725,10 @@ function tettoTex(tipo, col) {
 
 // ---------- Facciate dai fogli disegnati (src/hd/fogli.js) ----------
 // La facciata sta davanti al muro come una «finta facciata»; qui le misure in caselle e i lati/retro coi suoi colori.
+// false: gli edifici restano quelli disegnati via codice (le facciate dei fogli sono quasi quadrate, gli edifici larghi e bassi)
+export const USA_FACCIATE = false;
 export function misureFacciata(b) {
+  if (!USA_FACCIATE) return null;
   const f = HDF.foglio('f:' + b.id);
   if (!f) return null;
   const cw = b.w * 1.08, ch = cw * f.height / f.width;
