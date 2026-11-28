@@ -163,6 +163,8 @@ def main():
         if f not in cache:
             file, soglia, ombre = FOGLI[f]
             a = np.array(Image.open(O + file).convert('RGB')).astype(int)
+            if f == 'F':  # Cascina dei Salici: via il cartello «VENDESI» (ci si ricopia sopra il muro e i fiori a sinistra)
+                a = a.copy(); a[737:806, 845:934] = a[737:806, 755:844]
             cache[f] = (a, maschera(a, soglia, ombre, file.endswith('.jpg')))
         a, m = cache[f]
         meta = {}
