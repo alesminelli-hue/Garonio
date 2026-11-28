@@ -174,14 +174,16 @@ export class World {
   _makeBuilding(b) {
     // facciate e tetti disegnati in src/hd/edifici.js
     const hd = HDE.texEdificio(b);
+    // con la facciata disegnata i muri arrivano alla sua gronda (lati e retro proporzionati alla facciata)
+    const mf = hd.facciata, bh = mf ? mf.muro : b.h;
     const front = PIX.toTexture(hd.front), side = PIX.toTexture(hd.side), back = PIX.toTexture(hd.back);
     const M = t => new THREE.MeshLambertMaterial({ map: t });
-    const box = new THREE.Mesh(new THREE.BoxGeometry(b.w, b.h, b.d), [M(side), M(side), M(back), M(back), M(front), M(back)]);
-    box.position.set(b.x0 + b.w / 2, b.h / 2, b.z0 + b.d / 2);
+    const box = new THREE.Mesh(new THREE.BoxGeometry(b.w, bh, b.d), [M(side), M(side), M(back), M(back), M(front), M(back)]);
+    box.position.set(b.x0 + b.w / 2, bh / 2, b.z0 + b.d / 2);
     this.scene.add(box);
     // tetto: a capanna (di serie), a cuspide (campanile, torri) o piatto coi merli (castello)
     // con la facciata disegnata il tetto 3D non sporge davanti (la gronda coprirebbe la facciata)
-    const fac = HDF.foglio('f:' + b.id);
+    const fac = mf?.f;
     const o = fac ? 0.02 : 0.3, rh = b.d * 0.45;
     const rt = PIX.toTexture(hd.roof, true);
     rt.repeat.set(1, 1);
@@ -195,7 +197,7 @@ export class World {
       const n = Math.max(2, Math.round(b.w / 0.9)), nz = Math.max(2, Math.round(b.d / 0.9));
       for (let i = 0; i < n; i += 2) for (const z of [0.18, b.d - 0.18]) { const m = new THREE.Mesh(new THREE.BoxGeometry(b.w / n, 0.5, 0.36), mm); m.position.set((i + 0.5) * b.w / n, 0.25, z); roof.add(m); }
       for (let i = 0; i < nz; i += 2) for (const x of [0.18, b.w - 0.18]) { const m = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.5, b.d / nz), mm); m.position.set(x, 0.25, (i + 0.5) * b.d / nz); roof.add(m); }
-      roof.position.set(b.x0, b.h, b.z0);
+      roof.position.set(b.x0, bh, b.z0);
       roof.material = top.material;
     } else if (b.tetto === 'cuspide') {
       const r = Math.max(b.w, b.d) / 2 * 1.42 + 0.1;
@@ -203,20 +205,20 @@ export class World {
       geo.rotateY(Math.PI / 4);
       roof = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: rt }));
       roof.scale.set(b.w / Math.max(b.w, b.d), 1, b.d / Math.max(b.w, b.d));
-      roof.position.set(b.x0 + b.w / 2, b.h + Math.max(b.w, b.d) * 0.55, b.z0 + b.d / 2);
+      roof.position.set(b.x0 + b.w / 2, bh + Math.max(b.w, b.d) * 0.55, b.z0 + b.d / 2);
     } else {
       const shape = new THREE.Shape();
       shape.moveTo(-b.d / 2 - o, 0); shape.lineTo(b.d / 2 + o, 0); shape.lineTo(0, rh); shape.lineTo(-b.d / 2 - o, 0);
       const geo = new THREE.ExtrudeGeometry(shape, { depth: b.w + o * 2, bevelEnabled: false });
       geo.rotateY(Math.PI / 2);
       roof = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: rt }));
-      roof.position.set(b.x0 - o, b.h, b.z0 + b.d / 2);
+      roof.position.set(b.x0 - o, bh, b.z0 + b.d / 2);
     }
     this.scene.add(roof);
     // facciata disegnata (tools/fogli/taglia_fogli.py): una «finta facciata» davanti al muro, col suo tetto dipinto
     let facMat = null;
     if (fac) {
-      const cw = b.w * 1.08, ch = cw * fac.height / fac.width;
+      const { cw, ch } = mf;
       facMat = new THREE.MeshLambertMaterial({ map: PIX.toTexture(fac), alphaTest: 0.5 });
       const pl = new THREE.Mesh(new THREE.PlaneGeometry(cw, ch), facMat);
       pl.position.set(b.x0 + b.w / 2, ch / 2, b.z0 + b.d + 0.04);
