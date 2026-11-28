@@ -29,6 +29,7 @@ import { guarda } from './sguardo.js';
 import * as PIX from './pixel.js';
 import { ramp, tone as hdTono, hash as hdHash } from './hd/kit.js';
 import * as HDO from './hd/oggetti.js';
+import * as HDF from './hd/fogli.js';
 import { INTERNI, TESTI, MAIALI_FINTI, PORTE } from './data/interni.js';
 import { BUILDINGS, MAP_W, PLACES } from './map.js';
 import { SPALLE } from './world.js';
@@ -552,6 +553,7 @@ export class Interni {
       add(dav, f.x + f.w / 2, f.y - 0.04, 0.07);
     }
     // mobili
+    c.id = id; c.conMobileTv = def.mobili.some(m => m.tipo === 'mobiletv');
     for (const m of def.mobili) {
       const obj = this._mobile(m, c, seme++);
       if (obj) add(obj, m.x + m.w / 2, obj.position.y, m.parete ? 0.03 : m.z + m.d / 2);
@@ -565,7 +567,71 @@ export class Interni {
   }
 
   // un mobile: restituisce un Object3D centrato in x/z sul suo ingombro (y = altezza da terra)
+  // arredo dai fogli disegnati (src/hd/fogli.js): nome dello sprite per questo mobile, o null
+  _nomeFoglio(m, c) {
+    const ed = c.id, t = m.tipo;
+    if (m.foglio) return m.foglio;
+    const notte = ed === 'paradiso';
+    switch (t) {
+      case 'letto': case 'comodino': case 'armadio': case 'libreria': case 'lavello': case 'frigo': case 'scrivania':
+      case 'cassaforte': case 'biliardo': case 'bacheca': case 'calendario': case 'mola': case 'gomme': case 'tapis':
+      case 'sacco': case 'manubri': case 'specchio': case 'armadietti': case 'doccia': case 'stecche': return 'i:' + t;
+      case 'mobiletv': return 'i:mobiletv';
+      case 'tv': return c.conMobileTv ? 'nascondi' : 'i:televisore';
+      case 'divano': return notte ? 'i:divanoViola' : 'i:divano';
+      case 'fornelli': return 'i:stufa';
+      case 'sedia': return ed === 'bar' || notte ? 'i:sediaBar' : (m.x * 7 | 0) % 2 ? 'i:sedia2' : 'i:sedia';
+      case 'tavolo': return 'i:tavolo';
+      case 'botte': return 'i:botti';
+      case 'salami': return 'i:salumi';
+      case 'scaffale': return m.merce === 'conserve' ? 'i:scaffale' : null;
+      case 'mensola': return m.merce === 'bottiglie' ? 'i:mensoleBar' : null;
+      case 'jukebox': return notte ? 'i:jukeboxNeon' : 'i:jukebox';
+      case 'bancone': return ed === 'bar' ? 'i:banconeSolo' : notte && m.spine ? 'i:banconeNeon' : ed === 'meccanico' ? 'i:bancoLavoro' : null;
+      case 'sgabello': return ed === 'bar' ? 'nascondi' : 'i:sgabello';   // al bar gli sgabelli sono già nel disegno del bancone
+      case 'tavolino': return m.zona === 'carte' ? 'i:tavoloCarte' : 'i:tavolino';
+      case 'frigogelati': return 'i:freezer';
+      case 'slot': return m.seme ? 'i:slotBlu' : 'i:slotRossa';
+      case 'macchinetta': return 'i:caffe';
+      case 'bidone': return 'i:fusti';
+      case 'panca': return ed === 'palestra' ? 'i:pancaPesi' : null;
+      case 'carrello': case 'discoBall': case 'tendaRossa': case 'palco': case 'biliardino': case 'bancomat': return 'i:' + t;
+    }
+    return null;
+  }
+
+  // il mobile come sprite in piedi sul bordo davanti del suo ingombro (o come quadro, se sta sulla parete)
+  _mobileFoglio(m, nome) {
+    if (nome === 'nascondi') return new THREE.Group();
+    const src = HDF.foglio(nome);
+    if (!src) return null;
+    const { w, d = 0.1, h = 1 } = m;
+    const asp = src.height / src.width;
+    const map = PIX.toTexture(src);
+    if (m.parete) {
+      let pw = w, ph = w * asp;
+      if (ph > h * 1.3) { ph = h * 1.3; pw = ph / asp; }
+      const p = new THREE.Mesh(new THREE.PlaneGeometry(pw, ph), new THREE.MeshLambertMaterial({ map, transparent: true, alphaTest: 0.5 }));
+      p.userData.piatto = true;
+      p.position.y = (m.y || 0) + h / 2; p.position.z = 0.03;
+      return p;
+    }
+    // altezza che occupa sullo schermo un mobile alto h e profondo d (camera inclinata di circa 38°)
+    const hMax = (h + d * 0.8) * 1.25 + 0.15;
+    let sw = w * 1.04, sh = sw * asp;
+    if (sh > hMax) { sh = hMax; sw = Math.max(w * 0.7, Math.min(sw, sh / asp * 1.35)); }   // un po' allargato, non troppo
+    const mat = new THREE.SpriteMaterial({ map, alphaTest: 0.5 });
+    const spr = new THREE.Sprite(mat);
+    spr.center.set(0.5, 0); spr.scale.set(sw, sh, 1);
+    spr.position.set(0, m.y || 0, d / 2 - 0.02);
+    this.game.world.spriteMats.add(mat);
+    const o = new THREE.Group(); o.add(spr);
+    return o;
+  }
+
   _mobile(m, c, seme) {
+    const nf = this._nomeFoglio(m, c);
+    if (nf) { const of = this._mobileFoglio(m, nf); if (of) return of; }
     const M = t => new THREE.MeshLambertMaterial({ map: t });
     const C = (col) => new THREE.MeshLambertMaterial({ color: col });
     // contorno scuro sui bordi di ogni faccia: i mobili si staccano come gli sprite HD
