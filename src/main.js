@@ -7,6 +7,7 @@ import { avviaApp } from './app.js';
 import { UI } from './ui.js';
 import { Audio } from './audio.js';
 import { loadGaronio, loadPersonaggi } from './pixel.js';
+import { caricaFogli } from './hd/fogli.js';
 import { PLACES } from './map.js';
 import { Minimap } from './minimap.js';
 import { Pannelli } from './pannelli.js';
@@ -40,7 +41,7 @@ window.addEventListener('resize', resize); resize();
 
 const audio = new Audio();
 const ui = new UI(audio);
-await Promise.all([loadGaronio(), loadPersonaggi()]);
+await Promise.all([loadGaronio(), loadPersonaggi(), caricaFogli()]);
 const world = new World(scene);
 world.build();
 const game = new Game(world, ui, audio);

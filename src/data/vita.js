@@ -319,6 +319,7 @@ export const PARADISO_INTERNO = {
     { tipo: 'sgabello', x: 10, z: 2.6, w: 0.4, d: 0.4, h: 0.7, colore: '#c83a8a' },
     { tipo: 'divano', x: 12.2, z: 0.4, w: 2.6, d: 0.95, h: 0.9, colore: '#a8203a', zona: 'divano', etichetta: 'Il Commendatore sul divanetto' },
     { tipo: 'tappeto', pavimento: true, x: 8.4, z: 4.2, w: 3.2, d: 2.2, colore: '#3a3aa8', zona: 'pista', etichetta: 'Pista da ballo' },
+    { tipo: 'discoBall', pavimento: true, x: 9.7, z: 4.9, w: 0.55, d: 0.1, h: 0.6, y: 2.1 },   // sopra la pista (solo col foglio degli arredi)
     { tipo: 'tavolino', x: 13.2, z: 4.8, w: 0.9, d: 0.8, h: 0.75, colore: '#2a1a2a', zona: 'geometra', etichetta: 'Tavolino in penombra' },
     { tipo: 'tavolino', x: 15.8, z: 3.2, w: 0.9, d: 0.8, h: 0.75, colore: '#2a1a2a', zona: 'moreno', etichetta: 'Tavolino del Moreno' },
     { tipo: 'jukebox', x: 16.8, z: 0.25, w: 1.0, d: 0.7, h: 1.7, zona: 'jukebox', etichetta: 'Juke-box' },

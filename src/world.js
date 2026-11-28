@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import * as PIX from './pixel.js';
 import * as HDE from './hd/edifici.js';
 import * as HDO from './hd/oggetti.js';
+import * as HDF from './hd/fogli.js';
 import { MAP_W, MAP_H, AREAS, BUILDINGS, ZONES, ROADS, PROPS, PLACES, CANAL, PONTI_FIUME, buildTileGrid, inZone } from './map.js';
 
 // I dati della mappa (luoghi, strade, zone) stanno in map.js.
@@ -173,13 +174,17 @@ export class World {
   _makeBuilding(b) {
     // facciate e tetti disegnati in src/hd/edifici.js
     const hd = HDE.texEdificio(b);
+    // con la facciata disegnata i muri arrivano alla sua gronda (lati e retro proporzionati alla facciata)
+    const mf = hd.facciata, bh = mf ? mf.muro : b.h;
     const front = PIX.toTexture(hd.front), side = PIX.toTexture(hd.side), back = PIX.toTexture(hd.back);
     const M = t => new THREE.MeshLambertMaterial({ map: t });
-    const box = new THREE.Mesh(new THREE.BoxGeometry(b.w, b.h, b.d), [M(side), M(side), M(back), M(back), M(front), M(back)]);
-    box.position.set(b.x0 + b.w / 2, b.h / 2, b.z0 + b.d / 2);
+    const box = new THREE.Mesh(new THREE.BoxGeometry(b.w, bh, b.d), [M(side), M(side), M(back), M(back), M(front), M(back)]);
+    box.position.set(b.x0 + b.w / 2, bh / 2, b.z0 + b.d / 2);
     this.scene.add(box);
     // tetto: a capanna (di serie), a cuspide (campanile, torri) o piatto coi merli (castello)
-    const o = 0.3, rh = b.d * 0.45;
+    // con la facciata disegnata il tetto 3D non sporge davanti (la gronda coprirebbe la facciata)
+    const fac = mf?.f;
+    const o = fac ? 0.02 : 0.3, rh = b.d * 0.45;
     const rt = PIX.toTexture(hd.roof, true);
     rt.repeat.set(1, 1);
     let roof;
@@ -192,7 +197,7 @@ export class World {
       const n = Math.max(2, Math.round(b.w / 0.9)), nz = Math.max(2, Math.round(b.d / 0.9));
       for (let i = 0; i < n; i += 2) for (const z of [0.18, b.d - 0.18]) { const m = new THREE.Mesh(new THREE.BoxGeometry(b.w / n, 0.5, 0.36), mm); m.position.set((i + 0.5) * b.w / n, 0.25, z); roof.add(m); }
       for (let i = 0; i < nz; i += 2) for (const x of [0.18, b.w - 0.18]) { const m = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.5, b.d / nz), mm); m.position.set(x, 0.25, (i + 0.5) * b.d / nz); roof.add(m); }
-      roof.position.set(b.x0, b.h, b.z0);
+      roof.position.set(b.x0, bh, b.z0);
       roof.material = top.material;
     } else if (b.tetto === 'cuspide') {
       const r = Math.max(b.w, b.d) / 2 * 1.42 + 0.1;
@@ -200,18 +205,27 @@ export class World {
       geo.rotateY(Math.PI / 4);
       roof = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: rt }));
       roof.scale.set(b.w / Math.max(b.w, b.d), 1, b.d / Math.max(b.w, b.d));
-      roof.position.set(b.x0 + b.w / 2, b.h + Math.max(b.w, b.d) * 0.55, b.z0 + b.d / 2);
+      roof.position.set(b.x0 + b.w / 2, bh + Math.max(b.w, b.d) * 0.55, b.z0 + b.d / 2);
     } else {
       const shape = new THREE.Shape();
       shape.moveTo(-b.d / 2 - o, 0); shape.lineTo(b.d / 2 + o, 0); shape.lineTo(0, rh); shape.lineTo(-b.d / 2 - o, 0);
       const geo = new THREE.ExtrudeGeometry(shape, { depth: b.w + o * 2, bevelEnabled: false });
       geo.rotateY(Math.PI / 2);
       roof = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: rt }));
-      roof.position.set(b.x0 - o, b.h, b.z0 + b.d / 2);
+      roof.position.set(b.x0 - o, bh, b.z0 + b.d / 2);
     }
     this.scene.add(roof);
+    // facciata disegnata (tools/fogli/taglia_fogli.py): una «finta facciata» davanti al muro, col suo tetto dipinto
+    let facMat = null;
+    if (fac) {
+      const { cw, ch } = mf;
+      facMat = new THREE.MeshLambertMaterial({ map: PIX.toTexture(fac), alphaTest: 0.5 });
+      const pl = new THREE.Mesh(new THREE.PlaneGeometry(cw, ch), facMat);
+      pl.position.set(b.x0 + b.w / 2, ch / 2, b.z0 + b.d + 0.04);
+      this.scene.add(pl);
+    }
     // insegna
-    if (b.label && !hd.insegna) {
+    if (b.label && !hd.insegna && !fac) {
       const sc = PIX.sign(b.label);
       const s = this.sprite(sc, { anchorBottom: false, lit: true });
       s.position.set(b.x0 + b.w / 2, b.h - 0.5, b.z0 + b.d + 0.36);
@@ -219,7 +233,7 @@ export class World {
     }
     // px: margine in più sui fianchi, perché lo sprite (braccia comprese) è più largo del raggio di collisione
     this.solids.push({ x0: b.x0, z0: b.z0, x1: b.x0 + b.w, z1: b.z0 + b.d, px: SPALLE });
-    b.mats = [...box.material, roof.material];
+    b.mats = [...box.material, roof.material, ...(facMat ? [facMat] : [])];
     b.mats.forEach(m => { m.transparent = true; });
     // porta: true (o uno spostamento sulla x) = edificio di facciata in cui però si entra (src/dentro.js)
     if (!b.decor || b.porta) b.door = { x: b.x0 + b.w / 2 + (typeof b.porta === 'number' ? b.porta : 0), z: b.z0 + b.d + 0.5 };
@@ -366,6 +380,40 @@ export class World {
         this.solids.push({ x0: p.x - 0.1, z0: p.z - 0.1, x1: p.x + 0.1, z1: p.z + 0.1 });
       }
     }
+    this._arrediFogli();
+  }
+
+  // Oggetti di scena dai fogli disegnati (src/hd/fogli.js): ognuno cerca la casella libera più vicina al suo posto.
+  _arrediFogli() {
+    const ARREDI = [
+      ['o:pozzo', 58.5, 66.5, 0.9], ['o:carriola', 79, 67.5, 0], ['o:alberello', 70.5, 70.5, 0.3], ['o:staccionata', 57, 62, 0],
+      ['o:cassettaPosta', 41.2, 40.2, 0.1], ['o:panchina', 19.5, 60, 0.3], ['o:panchina', 29, 60.5, 0.3],
+      ['o:ballaQuadra', 59.5, 22.5, 0.6], ['o:fieno', 49.5, 25.5, 0.6], ['o:ballaQuadra', 60, 25, 0.6],
+      ['o:silo', 109, 47, 0.7], ['o:cisterna', 127.5, 70.5, 0.4], ['o:pozzo', 104.5, 40.5, 0.9], ['o:carriola', 96.5, 40.5, 0],
+      ['o:alberello', 88, 44, 0.3], ['o:cespuglioRose', 26, 50.5, 0], ['o:cassettaPosta', 104.5, 39.6, 0.1],
+    ];
+    const libera = (x, z, r) => {
+      const ch = this.grid[Math.floor(z)]?.[Math.floor(x)];
+      if (ch !== 'g' && ch !== 'q') return false;
+      return !this.solids.some(s => x + r + 0.3 > s.x0 && x - r - 0.3 < s.x1 && z + 0.5 > s.z0 && z - 0.5 < s.z1);
+    };
+    for (const [nome, x0, z0, solido] of ARREDI) {
+      const c = HDF.foglio(nome);
+      if (!c) continue;
+      const w = c.width / PIX.PX, h = c.height / PIX.PX;
+      let pos = null;
+      for (let r = 0; r <= 4 && !pos; r += 0.5) for (let a = 0; a < 8 && !pos; a++) {
+        const x = x0 + Math.cos(a * Math.PI / 4) * r, z = z0 + Math.sin(a * Math.PI / 4) * r;
+        if (libera(x, z, w / 2)) pos = [x, z];
+        if (r === 0) break;
+      }
+      if (!pos) continue;
+      const s = this.sprite(c, { w, h });
+      s.position.set(pos[0], 0, pos[1]); this.scene.add(s);
+      this._paintBlobShadow(pos[0], pos[1], w * 0.4, 0.2);
+      if (solido) this.solids.push({ x0: pos[0] - w * solido / 2, z0: pos[1] - 0.25, x1: pos[0] + w * solido / 2, z1: pos[1] + 0.15 });
+    }
+    this.groundTex.needsUpdate = true;
   }
 
   // ---------- Sprite ----------
@@ -410,7 +458,7 @@ export class World {
     if (stage > 0) {
       const tk = plot.crop + stage;
       this.cropTex[tk] ??= PIX.toTexture(PIX.crop(plot.crop, stage));
-      const s = this.sprite(this.cropTex[tk], { w: 1, h: 1.5 });
+      const s = this.sprite(this.cropTex[tk], { w: 1, h: this.cropTex[tk].image.height / PIX.PX });   // il mais maturo è più alto
       s.position.set(x + 0.5, 0, z + 0.55);
       s.userData = { stage, crop: plot.crop };
       this.scene.add(s);

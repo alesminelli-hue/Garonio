@@ -3,6 +3,34 @@
 // Scala: 20 pixel = 1 casella, come gli sprite di Garonio.
 import { makeCanvas, mirror, garonioFrames, GARONIO_ANIM } from './pixel.js';
 import * as HDM from './hd/mezzi.js';
+import * as HDF from './hd/fogli.js';
+
+// corpi dei mezzi dai fogli disegnati (src/hd/fogli.js), nelle stesse tele dei disegni via codice
+const SPECCHIA = new Set();   // nomi dei disegni che nel foglio guardano a sinistra (oggi nessuno)
+function corpo(nome, w, h, fallback) {
+  const c = HDF.adatta(nome, w, h);
+  if (!c) return fallback?.() ?? null;
+  return SPECCHIA.has(nome) ? mirror(c) : c;
+}
+// trattori di altri colori: le parti rosse del disegno girate verso il colore voluto
+function ricolora(c, hex) {
+  if (!hex || hex === '#c83a2e') return c;
+  const n = parseInt(hex.slice(1), 16), tr = (n >> 16 & 255) / 255, tg = (n >> 8 & 255) / 255, tb = (n & 255) / 255;
+  const mx = Math.max(tr, tg, tb), mn = Math.min(tr, tg, tb), dd = mx - mn;
+  const th = dd === 0 ? 0 : mx === tr ? ((tg - tb) / dd + 6) % 6 : mx === tg ? (tb - tr) / dd + 2 : (tr - tg) / dd + 4;
+  const g = c.getContext('2d'), im = g.getImageData(0, 0, c.width, c.height), d = im.data;
+  for (let i = 0; i < d.length; i += 4) {
+    if (!d[i + 3]) continue;
+    const r = d[i] / 255, gg = d[i + 1] / 255, b = d[i + 2] / 255, M = Math.max(r, gg, b), m = Math.min(r, gg, b);
+    if (M - m < 0.25 || M !== r || gg > r * 0.45) continue;   // solo i rossi saturi
+    const k = (M - m), base = m;   // stessa luce e saturazione, tinta nuova
+    const h6 = th, x = k * (1 - Math.abs(h6 % 2 - 1));
+    const [a, bb, cc] = h6 < 1 ? [k, x, 0] : h6 < 2 ? [x, k, 0] : h6 < 3 ? [0, k, x] : h6 < 4 ? [0, x, k] : h6 < 5 ? [x, 0, k] : [k, 0, x];
+    d[i] = (a + base) * 255; d[i + 1] = (bb + base) * 255; d[i + 2] = (cc + base) * 255;
+  }
+  g.putImageData(im, 0, 0);
+  return c;
+}
 
 export const VPX = 20;
 
@@ -97,16 +125,16 @@ const top = seatY => seatY - Math.round(garonioBust().h * WAIST);
 
 // Vespa: corpo 44x36, tela 48x60 (spazio sopra per Garonio)
 function vespaSide(occ) {
-  const d = base(HDM.vespaLato(), 48, 60, 2, 24);
+  const d = base(corpo('m:vespaLato', 44, 36, HDM.vespaLato), 48, 60, 2, 24);
   if (occ) {
-    const seat = 24 + 14;
+    const seat = 24 + (HDF.foglio('m:vespaLato') ? 20 : 14);
     const h = drawGaronio(d, 14, top(seat));
     sideLegsArm(d, 15, seat, 19, seat - h + 25, 29, 24 + 4);
   }
   return d.c;
 }
 function vespaFront(occ) {
-  const body = HDM.vespaDavanti();
+  const body = corpo('m:vespaDavanti', 22, 36, HDM.vespaDavanti);
   const d = pen(30, 60), cx = 15;
   if (occ) drawGaronio(d, cx, top(59 - 22));
   d.g.drawImage(body, 4, 24);
@@ -118,7 +146,7 @@ function vespaFront(occ) {
   return d.c;
 }
 function vespaBack(occ) {
-  const d = base(HDM.vespaDietro(), 30, 60, 4, 24), cx = 15;
+  const d = base(corpo('m:vespaDietro', 22, 36, HDM.vespaDietro), 30, 60, 4, 24), cx = 15;
   if (occ) {
     const { P } = d;
     P(G.jeans, cx - 6, 59 - 25, 12, 5); P(G.shoe, cx - 9, 59 - 14, 3, 3); P(G.shoe, cx + 6, 59 - 14, 3, 3);
@@ -129,33 +157,53 @@ function vespaBack(occ) {
 
 // Punto: lato 90x45, davanti/dietro 50x42 (Garonio dal finestrino, guida a sinistra)
 function puntoSide(occ) {
-  const d = base(HDM.puntoLato(), 90, 45, 0, 0);
-  if (occ) drawGaronio(d, 46, 6, { clip: [34, 9, 24, 12] });
+  const d = base(corpo('m:puntoLato', 90, 45, HDM.puntoLato), 90, 45, 0, 0);
+  if (occ) drawGaronio(d, HDF.foglio('m:puntoLato') ? 54 : 46, 6, { clip: HDF.foglio('m:puntoLato') ? [44, 10, 21, 12] : [34, 9, 24, 12] });
   return d.c;
 }
 function puntoFront(occ) {
-  const d = base(HDM.puntoDavanti(), 50, 42, 0, 0);
-  if (occ) drawGaronio(d, 31, 4, { clip: [13, 8, 26, 11] });
+  const d = base(corpo('m:puntoDavanti', 50, 42, HDM.puntoDavanti), 50, 42, 0, 0);
+  if (occ) drawGaronio(d, 31, HDF.foglio('m:puntoDavanti') ? 7 : 4, { clip: HDF.foglio('m:puntoDavanti') ? [9, 10, 32, 10] : [13, 8, 26, 11] });
   return d.c;
 }
 function puntoBack(occ) {
-  const d = base(HDM.puntoDietro(), 50, 42, 0, 0);
-  if (occ) clipped(d, [10, 8, 30, 10], () => bigBack(d, 19, 6));
+  const d = base(corpo('m:puntoDietro', 50, 42, HDM.puntoDietro), 50, 42, 0, 0);
+  if (occ) { const n = HDF.foglio('m:puntoDietro'); clipped(d, n ? [9, 10, 32, 10] : [10, 8, 30, 10], () => bigBack(d, 19, n ? 9 : 6)); }
   return d.c;
 }
 
 // Trattori: lato 76x68, davanti/dietro 56x68
+const NUOVO_TRATTORE = () => !!HDF.foglio('m:trattoreLato');
+// dal foglio disegnato il trattore non ha cabina: Garonio si disegna prima e il trattore sopra (parafanghi e volante lo coprono)
 function tractorSide(occ, col) {
+  if (NUOVO_TRATTORE()) {
+    const d = pen(76, 68);
+    if (occ) drawGaronio(d, 31, 12);
+    d.g.drawImage(ricolora(corpo('m:trattoreLato', 76, 68), TRC[col] || col), 0, 0);
+    return d.c;
+  }
   const d = base(HDM.trattoreLato(TRC[col] || col), 76, 68, 0, 0);
   if (occ) drawGaronio(d, 21, 9, { clip: TRACTOR_WIN.R });
   return d.c;
 }
 function tractorFront(occ, col) {
+  if (NUOVO_TRATTORE()) {
+    const d = pen(56, 68);
+    d.g.drawImage(ricolora(corpo('m:trattoreDavanti', 56, 68), TRC[col] || col), 0, 0);
+    if (occ) drawGaronio(d, 28, 4, { clip: [16, 5, 24, 12] });   // testa e spalle sopra il cofano
+    return d.c;
+  }
   const d = base(HDM.trattoreDavanti(TRC[col] || col), 56, 68, 0, 0);
   if (occ) { drawGaronio(d, 28, 9, { clip: TRACTOR_WIN.F }); d.P('#2a2a30', 20, 24, 16, 3); }
   return d.c;
 }
 function tractorBack(occ, col) {
+  if (NUOVO_TRATTORE()) {
+    const d = pen(56, 68);
+    d.g.drawImage(ricolora(corpo('m:trattoreDietro', 56, 68), TRC[col] || col), 0, 0);
+    if (occ) clipped(d, [16, 5, 24, 14], () => bigBack(d, 28, 4));
+    return d.c;
+  }
   const d = base(HDM.trattoreDietro(TRC[col] || col), 56, 68, 0, 0);
   if (occ) clipped(d, TRACTOR_WIN.B, () => bigBack(d, 28, 8));
   return d.c;
@@ -171,6 +219,8 @@ export function smokePuff(dark = false) {
 
 // views: R (verso destra), L, F (verso la camera), B (di spalle). Ognuna [vuoto, con Garonio].
 export function vehicleArt(kind, color) {
+  // finestrini per i piloti delle gare sul trattore dei fogli disegnati (senza cabina: testa e spalle sopra il cofano)
+  if (kind === 'trattore' && NUOVO_TRATTORE()) Object.assign(TRACTOR_WIN, { R: [18, 12, 24, 20], F: [16, 5, 24, 14], B: [16, 5, 24, 16] });
   const make = {
     vespa: [vespaSide, vespaFront, vespaBack],
     punto: [puntoSide, puntoFront, puntoBack],

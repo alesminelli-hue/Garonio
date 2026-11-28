@@ -2,6 +2,7 @@
 // Scala: 16 px = 1 casella, larghezze uguali a quelle di src/map.js (BUILDINGS).
 import { pen, ramp, tone, rng, hash, outline, text, textWidth, INK } from './kit.js';
 import { facciata as fuelHavana } from './benzinaio.js';
+import * as HDF from './fogli.js';
 
 // ---------- Materiali ----------
 function intonaco(d, x, y, w, h, col, seed = 1, scrostato = 1) {
@@ -722,7 +723,58 @@ function tettoTex(tipo, col) {
   return d.c;
 }
 
+// ---------- Facciate dai fogli disegnati (src/hd/fogli.js) ----------
+// La facciata sta davanti al muro come una «finta facciata»; qui le misure in caselle e i lati/retro coi suoi colori.
+// false: gli edifici restano quelli disegnati via codice (le facciate dei fogli sono quasi quadrate, gli edifici larghi e bassi)
+export const USA_FACCIATE = false;
+export function misureFacciata(b) {
+  if (!USA_FACCIATE) return null;
+  const f = HDF.foglio('f:' + b.id);
+  if (!f) return null;
+  const cw = b.w * 1.08, ch = cw * f.height / f.width;
+  const muro = ch * (f.height - HDF.gronda('f:' + b.id)) / f.height;   // altezza del muro sotto la gronda dipinta
+  return { f, cw, ch, muro: Math.max(b.h * 0.8, muro) };
+}
+function pezzaMuro(f, gr) {
+  // un riquadro di muro liscio dalla facciata: in alto a sinistra sotto la gronda, dentro il contorno
+  const g = f.getContext('2d');
+  const x = Math.round(f.width * 0.05), y = gr + Math.round((f.height - gr) * 0.06);
+  const w = Math.max(4, Math.round(f.width * 0.1)), h = Math.max(4, Math.round((f.height - gr) * 0.22));
+  const d = pen(w, h); d.g.drawImage(f, x, y, w, h, 0, 0, w, h);
+  return d.c;
+}
+function muroDaFacciata(f, gr, W, H) {
+  const pz = pezzaMuro(f, gr), d = pen(W, H);
+  for (let y = 0; y < H; y += pz.height) for (let x = 0; x < W; x += pz.width) {
+    // le pezze si specchiano a scacchiera: niente righe dritte di ripetizione
+    d.g.save(); d.g.translate(x + ((x / pz.width) % 2 ? pz.width : 0), y); if ((x / pz.width) % 2) d.g.scale(-1, 1);
+    d.g.drawImage(pz, 0, 0); d.g.restore();
+  }
+  ombraGronda(d, 0, 0, W);
+  const Z = ramp('#9a9488'); d.P(Z[2], 0, H - 4, W, 4); d.P(Z[3], 0, H - 4, W, 1); d.P(Z[1], 0, H - 1, W, 1);   // zoccolo
+  d.P(INK, 0, 0, 1, H); d.P(INK, W - 1, 0, 1, H);
+  return d.c;
+}
+function coloreTetto(f, gr) {
+  // la fila di tegole sopra la gronda dipinta
+  const y0 = Math.max(0, gr - 5), dd = f.getContext('2d').getImageData(0, y0, f.width, gr - y0).data;
+  let r = 0, g = 0, bb = 0, n = 0;
+  for (let i = 0; i < dd.length; i += 4) if (dd[i + 3] && dd[i] + dd[i + 1] + dd[i + 2] > 120) { r += dd[i]; g += dd[i + 1]; bb += dd[i + 2]; n++; }
+  if (!n) return null;
+  return '#' + [r, g, bb].map(v => Math.round(v / n).toString(16).padStart(2, '0')).join('');
+}
+
 export function texEdificio(b) {
+  const mf = misureFacciata(b);
+  if (mf) {
+    const gr = HDF.gronda('f:' + b.id), [tipo, , tetto] = MAT[b.id] || ['intonaco', '#e8d8b0', 'coppi'];
+    const H = Math.round(mf.muro * 16), W = Math.round(b.w * 16), D = Math.round(b.d * 16);
+    return {
+      front: muroDaFacciata(mf.f, gr, W, H), side: muroDaFacciata(mf.f, gr, D, H), back: muroDaFacciata(mf.f, gr, W, H),
+      roof: tettoTex(tetto === 'lamiera' || tipo === 'lamiera' ? 'lamiera' : 'coppi', coloreTetto(mf.f, gr) || b.roof),
+      insegna: true, facciata: mf,
+    };
+  }
   const [tipo, col, tetto] = MAT[b.id] || [b.wall === 'metallo' ? 'lamiera' : b.wall === 'legno' ? 'legno' : 'intonaco', b.wall?.[0] === '#' ? b.wall : '#e8d8b0', b.wall === 'metallo' ? 'lamiera' : 'coppi'];
   const W = Math.round(b.w * 16), H = Math.round(b.h * 16), D = Math.round(b.d * 16);
   let front;
